@@ -1,0 +1,36 @@
+{
+    "subtasks": [
+        {
+            "subtask_id": "1",
+            "task_id": "1",
+            "subtask_name": "サブタスク名1",
+            "subtask_description": "サブタスク1の説明文が入ります。サブタスク1の説明文が入ります。サブタスク1の説明文が入ります。",
+            "subtask_status": {
+                "key": 1,
+                "value": "新規"
+            },
+            "subtask_manager": 1,
+            "subtask_start_date": "2021/12/12",
+            "subtask_end_date": "2021/1/12",
+            "account_id": "1",
+            "created_at": "2021/12/12 14:35",
+            "updated_at": ""
+        },
+        {
+            "subtask_id": "2",
+            "task_id": "1",
+            "subtask_name": "サブタスク名2",
+            "subtask_description": "サブタスク2の説明文が入ります。サブタスク2の説明文が入ります。サブタスク2の説明文が入ります。",
+            "subtask_status": {
+                "key": 1,
+                "value": "新規"
+            },
+            "subtask_manager": 1,
+            "subtask_start_date": "2021/12/12",
+            "subtask_end_date": "2021/1/12",
+            "account_id": "1",
+            "created_at": "2021/12/12 14:35",
+            "updated_at": ""
+        }
+    ]
+}

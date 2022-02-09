@@ -1,28 +1,65 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <header class="header">
+      <Header
+        :accountData="accountData"
+      />
+    </header>
+    <main class="main">
+      <div class="body">
+        <router-view
+          :parents="parents"
+          :accountData="accountData"
+        />
+      </div>
+    </main>
+  </v-app>
 </template>
 
+
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Header from "@/components/common/Header"
+import account_data from "@/config/json/account.json"
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
+    Header,
+  },
+  data: () => ({
+    parents: {
+      accounts: {},
+    },
+    accountData: {},
+  }),
+
+  created() {
+    this.init()
+    this.parents.accounts = account_data.accounts
+  },
+
+  mounted() {
+    this.init()
+  },
+
+  methods: {
+    init() {
+      this.authUserCheck()
+    },
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style scoped>
+.main {
+  display: flex;
+  height: 100%;
+  padding: 24px 0;
+}
+.body {
+  width: 100%;
+}
+.header {
+  border-bottom: 1px solid #ccc;
+  padding: 8px 16px;
 }
 </style>

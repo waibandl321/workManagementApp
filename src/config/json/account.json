@@ -1,0 +1,70 @@
+{
+    "accounts": [
+        {
+            "account_id": "1",
+            "account_name": "竹野内 豊",
+            "account_status": 1,
+            "account_authority": 1,
+            "account_avatar": "#5CBBF6",
+            "account_initial": "竹豊",
+            "user_id": "",
+            "created_at": "2021/12/12 14:35",
+            "updated_at": ""
+        },
+        {
+            "account_id": "2",
+            "account_name": "反町 隆史",
+            "account_status": 1,
+            "account_authority": 1,
+            "account_avatar": "#84C199",
+            "account_initial": "反隆",
+            "user_id": "",
+            "created_at": "2021/12/12 14:35",
+            "updated_at": ""
+        },
+        {
+            "account_id": "3",
+            "account_name": "西島 秀俊",
+            "account_status": 1,
+            "account_authority": 1,
+            "account_avatar": "#E6D723",
+            "account_initial": "西秀",
+            "user_id": "",
+            "created_at": "2021/12/12 14:35",
+            "updated_at": ""
+        },
+        {
+            "account_id": "4",
+            "account_name": "中村 とおる",
+            "account_status": 1,
+            "account_authority": 1,
+            "account_avatar": "#A88FED",
+            "account_initial": "中と",
+            "user_id": "",
+            "created_at": "2021/12/12 14:35",
+            "updated_at": ""
+        },
+        {
+            "account_id": "5",
+            "account_name": "大沢 たかお",
+            "account_status": 1,
+            "account_authority": 1,
+            "account_avatar": "#D88ADE",
+            "account_initial": "大た",
+            "user_id": "",
+            "created_at": "2021/12/12 14:35",
+            "updated_at": ""
+        },
+        {
+            "account_id": "6",
+            "account_name": "小栗 旬",
+            "account_status": 1,
+            "account_authority": 1,
+            "account_avatar": "#4A545A",
+            "account_initial": "小旬",
+            "user_id": "",
+            "created_at": "2021/12/12 14:35",
+            "updated_at": ""
+        }
+    ]
+}

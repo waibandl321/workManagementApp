@@ -1,0 +1,142 @@
+{
+    "files": [
+        {
+            "file_id": 1, 
+            "file_name": "image.jpg", 
+            "file_type": "image", 
+            "file_size": "230kb", 
+            "folder_id": null, 
+            "project_id": null, 
+            "task_id": null, 
+            "subtask_id": null, 
+            "chat_id": null, 
+            "board_id": null, 
+            "message_id": null, 
+            "account_id": 1, 
+            "status": true,
+            "created_at": "2021/12/12 14:35"
+        },
+        {
+            "file_id": 2, 
+            "file_name": "excel.xlsx", 
+            "file_type": "xls", 
+            "file_size": "150kb", 
+            "folder_id": 1, 
+            "project_id": null, 
+            "task_id": null, 
+            "subtask_id": null, 
+            "chat_id": null, 
+            "board_id": null, 
+            "message_id": null, 
+            "account_id": 1, 
+            "status": true,
+            "created_at": "2021/12/12 14:35"
+        },
+        {
+            "file_id": 3, 
+            "file_name": "サンプルPDF.pdf", 
+            "file_type": "pdf", 
+            "file_size": "150kb", 
+            "folder_id": 1, 
+            "project_id": null, 
+            "task_id": null, 
+            "subtask_id": null, 
+            "chat_id": null, 
+            "board_id": null, 
+            "message_id": null, 
+            "account_id": 1, 
+            "status": true,
+            "created_at": "2021/12/12 14:35"
+        },
+        {
+            "file_id": 4, 
+            "file_name": "サンプルワード.word", 
+            "file_type": "word", 
+            "file_size": "300KB", 
+            "folder_id": 2,
+            "project_id": null, 
+            "task_id": null, 
+            "subtask_id": null, 
+            "chat_id": null, 
+            "board_id": null, 
+            "message_id": null, 
+            "account_id": 1, 
+            "status": true,
+            "created_at": "2021/12/12 14:35"
+        },
+        {
+            "file_id": 5, 
+            "file_name": "ゴミ箱.jpg", 
+            "file_type": "image", 
+            "file_size": "15KB", 
+            "folder_id": null,
+            "project_id": null, 
+            "task_id": null, 
+            "subtask_id": null, 
+            "chat_id": null, 
+            "board_id": null, 
+            "message_id": null, 
+            "account_id": 1, 
+            "status": false,
+            "created_at": "2021/12/12 14:35"
+        },
+        {
+            "file_id": 6, 
+            "file_name": "ゴミ箱(フォルダID4).jpg", 
+            "file_type": "image", 
+            "file_size": "15KB",
+            "folder_id": 4,
+            "project_id": null, 
+            "task_id": null, 
+            "subtask_id": null, 
+            "chat_id": null, 
+            "board_id": null, 
+            "message_id": null, 
+            "account_id": 1, 
+            "status": false,
+            "created_at": "2021/12/12 14:35"
+        },
+        {
+            "file_id": 7, 
+            "file_name": "ゴミ箱(フォルダID5).jpg", 
+            "file_type": "image", 
+            "file_size": "15KB",
+            "folder_id": 5,
+            "project_id": null, 
+            "task_id": null, 
+            "subtask_id": null, 
+            "chat_id": null, 
+            "board_id": null, 
+            "message_id": null, 
+            "account_id": 1, 
+            "status": false,
+            "created_at": "2021/12/12 14:35"
+        }
+    ],
+    "icons": [
+        {
+            "type": "image",
+            "icon": "mdi-file-image-outline"
+        },
+        {
+            "type": "xls",
+            "icon": "mdi-microsoft-excel"
+        },
+        {
+            "type": "word",
+            "icon": "mdi-microsoft-word"
+        },
+        {
+            "type": "pdf",
+            "icon": "mdi-file-pdf"
+        },
+        {
+            "type": "powerpoint",
+            "icon": "mdi-microsoft-powerpoint"
+        },
+        {
+            "type": "csv",
+            "icon": "mdi-file-image-outline"
+        }
+    ]
+}
