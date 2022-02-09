@@ -5,6 +5,7 @@ import store from './store/store.js'
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from "firebase/database";
 // mixins
+import utilMixin from "@/mixin/common/util.js"
 import authMixin from "./mixin/auth/auth.js"
 import taskMixin from "@/mixin/api/task.js"
 import subtaskMixin from "@/mixin/api/subtask.js"
@@ -13,21 +14,22 @@ import fileMixin from "@/mixin/api/file.js"
 import boardMixin from "@/mixin/api/board.js"
 import dashboardMixin from "@/mixin/api/dashboard.js"
 import projectMixin from "@/mixin/api/project.js"
-import utilMixin from "@/mixin/common/util.js"
 import vuetify from './plugins/vuetify'
 
 // firebase setting info
 import firebaseSettings from "@/config/settings/firebase.js"
 
 Vue.mixin(authMixin)
-Vue.use(taskMixin)
+Vue.mixin(taskMixin)
+Vue.mixin(utilMixin)
+
 Vue.use(subtaskMixin)
 Vue.use(chatMixin)
 Vue.use(fileMixin)
 Vue.use(boardMixin)
 Vue.use(dashboardMixin)
 Vue.use(projectMixin)
-Vue.use(utilMixin)
+
 
 Vue.config.productionTip = false
 

@@ -130,7 +130,6 @@
                         outlined
                         color="primary"
                         dense
-                        v-model="default_status"
                     ></v-select>
                 </div>
                 <!-- manager -->
@@ -188,8 +187,8 @@
                 <v-spacer />
                 <div style="font-size: 14px;">
                     <span>タスクID : {{ taskDetail.task_id }} </span>
-                    <span>作成者 : {{ taskDetail.task_manager }}</span>
-                    <span>作成日 : {{ taskDetail.created_at }}</span>
+                    <span>作成者 : {{ taskDetail.create_account }}</span>
+                    <span>作成日 : {{ createdDateTime(taskDetail.created) }}</span>
                 </div>
             </div>
         <v-divider />
@@ -503,7 +502,7 @@
                         outlined
                         depressed
                         class="pa-4"
-                        @click="task_delete_confirm = false"
+                        @click="execDelete()"
                     >
                         キャンセル
                     </v-btn>
@@ -526,7 +525,6 @@
 <script>
 import Editor from "@tinymce/tinymce-vue"
 import message_json from "@/config/json/message.json"
-import settings from "@/config/json/settings.json"
 import project_json from "@/config/json/projects.json"
 export default {
     props: ["taskDetail", "closeDetail", "parents", "params", "displayWidth"],
@@ -534,7 +532,6 @@ export default {
         Editor
     },
     data: () => ({
-        default_status: { key: 1, text: "未着手" },
         status_list: [],
         // message
         messages: [],
@@ -615,9 +612,12 @@ export default {
         // load data
         init() {
             this.messages = message_json.messages
-            this.status_list = settings.status_list
             this.projects = project_json.projects
             this.subtasks = this.params.subtasks
+            this.status_list = this.getTaskStatus()
+        },
+        createdDateTime(d) {
+            return d
         },
         // file upload
         inputfileClick() {
@@ -634,8 +634,12 @@ export default {
         //subtask
         record(subtask) {
             console.log(subtask)
-        }
+        },
         
+        // delete
+        execDelete() {
+            console.log('物理削除');
+        }
     }
 }
 </script>

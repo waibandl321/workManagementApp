@@ -1,5 +1,5 @@
 <template>
-    <div class="inner">
+    <div class="inner" :class="{flex: detail_active}">
         <div class="list" v-if="task_list">
             <TaskList
                 :recordClick="recordClick"
@@ -16,23 +16,17 @@
                 :displayWidth="displayWidth"
             />
         </div>
-        <div class="detail" v-else>
-            <TaskDetailDammy />
-        </div>
     </div>
 </template>
 <script>
 import TaskDetail from "@/components/pages/task/TaskDetail"
-import TaskDetailDammy from "@/components/pages/task/TaskDetailDammy"
 import TaskList from "@/components/pages/task/TaskList"
-import task_list from "@/config/json/task.json"
 import subtask_list from "@/config/json/subtask.json"
 
 export default {
     components: {
         TaskList,
         TaskDetail,
-        TaskDetailDammy
     },
 
     props: {
@@ -47,31 +41,21 @@ export default {
         tasks: [],
         subtasks: [],
         status: { text: "全てのタスク", value: 1 },
-        status_filter_items: [
-            { text: "全てのタスク", value: 1 },
-            { text: "有効なタスク", value: 2 },
-            { text: "未着手のタスク", value: 3 },
-            { text: "処理中のタスク", value: 4 },
-            { text: "社内確認待ちタスク", value: 5 },
-            { text: "期限切れタスク", value: 6 },
-            { text: "完了したタスク", value: 7 },
-        ],
-        date_filter: { text: "優先度順", value: "1" },
-        date_filter_items: [
-            { text: "優先度順", value: "1" },
-            { text: "期日が近い順", value: "2" },
-            { text: "作成日順", value: "3" },
-        ],
+        sort_status_options: [],
+        default_sort_item: { text: "作成日順", value: 2 },
+        sort_date_options: [],
       },
     }),
 
     created() {
         this.init()
+        this.params.tasks = this.apiGetTaskList()
     },
 
     methods: {
         init() {
-            this.params.tasks = task_list.tasks
+            this.params.sort_status_options = this.getStatusOptions()
+            this.params.sort_date_options = this.getSortOptions()
             this.params.subtasks = subtask_list.subtasks
         },
         recordClick(task) {
@@ -98,14 +82,17 @@ export default {
 }
 .list {
     border-right: 1px solid #ccc;
-    width: 30%;
+    width: 100%;
     padding: 0 24px;
+}
+.flex .list {
+    width: 35%;
 }
 .detail {
     padding: 0 24px;
     width: 100%;
 }
 .list + .detail {
-    width: 70%;
+    width: 65%;
 }
 </style>

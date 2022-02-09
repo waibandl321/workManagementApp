@@ -69,16 +69,16 @@ export default {
             const auth = getAuth()
             onAuthStateChanged(auth, (user) => {
                 if (user) {
-                    this.authAccountGet()
+                    this.authAccountGet(user.uid)
                 } else {
                     this.$router.push('/auth/signin', () => {})
                 }
             });
         },
 
-        authAccountGet() {
+        authAccountGet(id) {
             const db = getDatabase();
-            const userId = this.getAuthUserId()
+            const userId = id
             onValue(ref(db, '/users/' + userId), (snapshot) => {
                 const data = snapshot.val()
                 this.accountData = data
@@ -98,7 +98,7 @@ export default {
         },
 
         authAccountUpdate(accountData) {
-            const db = getDatabase();
+            const db = getDatabase()
             const userId = this.getAuthUserId()
             const account = {
                 first_name: accountData.first_name,

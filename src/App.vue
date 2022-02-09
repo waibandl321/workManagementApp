@@ -37,10 +37,6 @@ export default {
     this.parents.accounts = account_data.accounts
   },
 
-  mounted() {
-    this.init()
-  },
-
   methods: {
     init() {
       this.authUserCheck()
