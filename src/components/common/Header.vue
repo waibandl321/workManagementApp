@@ -32,7 +32,7 @@
                     @click="account()"
                     filled
                     :color="accountData.color"
-                    class="pa-2"
+                    class="pa-2 white--text"
                 >
                     {{  accountData.last_name + accountData.first_name }}
                 </v-btn>

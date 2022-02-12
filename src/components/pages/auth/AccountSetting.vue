@@ -9,7 +9,6 @@
                 ></v-progress-linear>
             </div>
             <v-card-text>
-            {{ accountData }}
             <v-alert
                 outlined
                 type="success"
@@ -143,23 +142,19 @@ export default {
         company: "",
         status: true,
         color: "",
-        isnew: true,
-        update_done: ""
+        update_done: "",
+        isnew: true
     }),
 
     created() {
-        this.init()
-    },
-    updated() {
-        this.init()
+      if(this.accountData) {
+          this.isnew = false
+      } else {
+          this.isnew = true
+      }
     },
 
     methods: {
-        init() {
-            if(this.accountData) {
-                this.isnew = false
-            }
-        },
 
         register() {
             this.loading = true

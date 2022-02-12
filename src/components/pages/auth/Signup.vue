@@ -26,6 +26,7 @@
                     v-model="valid"
                     lazy-validation
                 >
+                    
                     <div>
                         <v-text-field
                             v-model="email"

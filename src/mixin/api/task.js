@@ -2,6 +2,7 @@ import {
     getDatabase,
     ref,
     set,
+    update,
     remove,
     onValue
 } from "firebase/database";
@@ -32,20 +33,25 @@ export default {
     }),
 
     methods: {
-        getStatusOptions() {
+        // タスクリストの並べ替え選択肢
+        getSortStatusOptions() {
             return this.sort_status_options
         },
-        getSortOptions() {
+        getSortDateOptions() {
             return this.sort_date_options
         },
+
+        // タスクステータス 
         getTaskStatus() {
             return this.task_status
         },
-        // create
+        
+        // タスク作成
         apiTaskCreate(new_task) {
             const db = getDatabase();
             const userId = this.getAuthUserId()
             const id = Math.random().toString(32).substring(2)
+            const time = this.getNowTime()
             set(ref(db, '/tasks/' + id), {
                 task_id: id,
                 project_id: "",
@@ -55,16 +61,19 @@ export default {
                 task_message_post_account: "",
                 task_status: {
                     key: 1,
-                    value: "新規",
+                    text: "未着手",
                 },
                 task_manager: "",
                 task_start_date: "",
                 task_end_date: "",
                 create_account: userId,
+                created: time,
+                updated: ""
             });
             return true
         },
-        // get
+
+        // タスク一覧取得
         apiGetTaskList() {
             const db = getDatabase()
             const r = ref(db, '/tasks/')
@@ -73,13 +82,100 @@ export default {
                 d = snapshot.val()
             })
             return d
-            
         },
-        // delete
+
+        // タスク詳細取得
+        apiGetTaskDetail(id) {
+            const db = getDatabase()
+            const r = ref(db, '/tasks/' + id)
+            let d = ""
+            onValue(r, (snapshot) => {
+                d = snapshot.val()
+            })
+            return d
+        },
+        // タスク期間更新
+        apiSettingTaskTerm(terms, id) {
+            for (let i = 0; i < 2; i++) {
+                const db = getDatabase()
+                const updates = {};
+                updates['/tasks/' + id + '/task_start_date'] = terms[0]
+                if(terms[1]) {
+                    updates['/tasks/' + id + '/task_end_date'] = terms[1]
+                }
+                update(ref(db), updates);
+            }
+        },
+        apiDeleteTaskTerm(id) {
+            const db = getDatabase()
+            const updates = {};
+            updates['/tasks/' + id + '/task_start_date'] = ""
+            updates['/tasks/' + id + '/task_end_date'] = ""                
+            update(ref(db), updates);
+        },
+        // タスクステータス設定
+        apiSettingTaskStatus(id, status) {
+            const db = getDatabase()
+            const updates = {};
+            updates['/tasks/' + id + '/task_status'] = status
+            update(ref(db), updates);
+        },
+        
+        // タスク削除
         apiDeleteTask(task) {
             const db = getDatabase()
             const task_id = task.task_id
             remove(ref(db, '/tasks/' + task_id));
         },
+
+        // サブタスク作成
+        apiSubtaskCreate(subtask_name, task_id) {
+            const db = getDatabase();
+            const userId = this.getAuthUserId()
+            const id = this.createRandomId()
+            const time = this.getNowTime()
+            set(ref(db, '/subtasks/' + id), {
+                subtask_id: id,
+                task_id: task_id,
+                subtask_name: subtask_name,
+                subtask_description: "",
+                subtask_message_content: "",
+                subtask_message_post_account: "",
+                subtask_status: {
+                    key: 1,
+                    text: "未着手",
+                },
+                subtask_manager: "",
+                subtask_start_date: "",
+                subtask_end_date: "",
+                create_account: userId,
+                created: time,
+                updated: ""
+            });
+            return true
+        },
+        // サブタスク一覧取得
+        apiGetsubTaskList() {
+            const db = getDatabase()
+            const r = ref(db, 'subtasks/')
+            let d = ""
+            onValue(r, (snapshot) => {
+                d = snapshot.val()
+            })
+            return d
+        },
+        // サブタスク削除
+        apiDeleteSubtask(subtask) {
+            const db = getDatabase()
+            const subtask_id = subtask.subtask_id
+            remove(ref(db, '/subtasks/' + subtask_id));
+        },
+        apiDeleteSubtaskHasTask(subtasks) {
+            const db = getDatabase()
+            subtasks.forEach(r => {
+                const subtask_id = r.subtask_id
+                remove(ref(db, '/subtasks/' + subtask_id));
+            })
+        }
     }
 }

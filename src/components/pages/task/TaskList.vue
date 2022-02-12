@@ -1,5 +1,12 @@
 <template>
     <div class="list_inner">
+        <div class="d-flex mb-4">
+            <v-spacer />
+            <v-btn color="success" filled @click="reload()">
+                <v-icon>mdi-reload</v-icon>
+                再読み込み
+            </v-btn>
+        </div>
         <h2>タスク</h2>
         <div class="filter">
             <v-row class="ma-0">
@@ -46,6 +53,15 @@
         >
             タスクを新規作成しました！
         </v-alert>
+        <v-alert
+            dense
+            outlined
+            dismissible
+            type="error"
+            v-model="task_delete_alert"
+        >
+            タスクを削除しました。
+        </v-alert>
         <div class="mt-2 relative" v-show="task_input">
             <v-text-field
                 label="タスク名を入力"
@@ -71,11 +87,11 @@
         <table class="task-list mt-4">
             <tbody>
             <tr
-                v-for="task in task_data"
+                v-for="task in params.task_list"
                 :key="task.id"
-                @click="record(task)"
+                @click.stop="record(task)"
             >
-                <td class="py-2">
+                <td class="py-2 avatar-td">
                     <v-avatar
                         color="teal"
                         size="32"
@@ -84,11 +100,11 @@
                     </v-avatar>
                 </td>
                 <td class="py-2">{{ task.task_name }}</td>
-                <td class="py-2">{{ task.task_status.value }}</td>
-                <td>
+                <td class="py-2">{{ task.task_status.text }}</td>
+                <td class="options-td">
                     <v-btn
                         text
-                        @click="del(task)"
+                        @click.stop="del(task)"
                     >
                         <v-icon>mdi-trash-can-outline</v-icon>
                     </v-btn>
@@ -96,6 +112,44 @@
             </tr>
             </tbody>
         </table>
+        <!-- delete task confirm -->
+        <v-row justify="center">
+            <v-dialog
+            v-model="task_delete"
+            persistent
+            max-width="600px"
+            >
+            <v-card>
+                <v-card-title>
+                <span class="text-h5">タスクを削除します</span>
+                </v-card-title>
+                <v-card-text>
+                    本当によろしいですか？
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        outlined
+                        depressed
+                        class="pa-4"
+                        @click="task_delete = false"
+                    >
+                        キャンセル
+                    </v-btn>
+                    <v-btn
+                        depressed
+                        class="pa-4"
+                        color="red darken-4"
+                        outlined
+                        @click="execDelete()"
+                        
+                    >
+                        削除する
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+            </v-dialog>
+        </v-row>
     </div>
 </template>
 
@@ -103,15 +157,21 @@
 export default {
     props: {
         recordClick: Function,
-        params: Object
+        params: Object,
+        refreshTaskList: Function,
+        refreshTaskDetail: Function,
+        deleteSubtaskHasTask: Function,
     },
     data: () => ({
-        task_data: [],
         task_input: false,
         // create
         new_task_name: "",
         loading: false,
-        success: false
+        success: false,
+        // delete
+        delete_task: {},
+        task_delete: false,
+        task_delete_alert: false
     }),
 
     created() {
@@ -119,15 +179,18 @@ export default {
     },
 
     methods: {
-        init() {
-            console.log(this.params);
-            this.task_data = this.params.tasks
+        reload() {
+            this.refreshTaskList()
+            if(this.task_detail) {
+                this.refreshTaskDetail()
+            }
         },
-
+        init() {
+            this.refreshTaskList(this.delete_task ? this.delete_task : {})
+        },
         record(task) {
             this.recordClick(task)
         },
-        
         createTask() {
             this.loading = true
             const create = this.apiTaskCreate(this.new_task_name)
@@ -135,17 +198,20 @@ export default {
                 this.loading = false
                 this.success = true
                 this.new_task_name = ""
-                this.refresh()
+                this.init()
             }
         },
-
-        refresh() {
-            this.task_data = this.apiGetTaskList()
-        },
-
+        // delete
         del(task) {
-            this.apiDeleteTask(task)
-            this.refresh()
+            this.task_delete = true
+            this.delete_task = task
+        },
+        execDelete() {
+            this.apiDeleteTask(this.delete_task)
+            this.deleteSubtaskHasTask(this.delete_task)
+            this.task_delete_alert = true
+            this.task_delete = false
+            this.init()
         }
     }
 }
@@ -188,5 +254,10 @@ select:focus {
     top: 35%;
     transform: translateY(-35%);
 }
-
+.options-td {
+    width: 60px;
+}
+.options-td {
+    text-align: right;
+}
 </style>

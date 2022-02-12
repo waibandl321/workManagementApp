@@ -1,79 +1,36 @@
 <template>
     <div class="detail_inner">
+        <v-alert
+            v-model="success"
+            close-text="Close Alert"
+            color="success"
+            text
+            dense
+            dismissible
+        >
+            サブタスクを新規作成しました！
+        </v-alert>
+        <v-alert
+            dense
+            outlined
+            dismissible
+            type="error"
+            v-model="subtask_delete_alert"
+        >
+            サブタスクを削除しました。
+        </v-alert>
         <div class="d-flex align-center">
             <h2>{{ taskDetail.task_name }}</h2>            
             <v-spacer />
             <div class="relative">
-                <v-btn
-                    class="ma-2"
-                    text
-                    @click="link_area = !link_area"
-                >
-                    <v-icon>mdi-link</v-icon>
-                </v-btn>
-                <div
-                    v-if="link_area"
-                    class="task_link d-flex align-center">
-                    <div>
-                        <small>このタスクのリンク</small>
-                        https://www.example.com/task/:id/
-                    </div>
-                    <div class="ml-2">
-                        <v-btn text class="ma-2">
-                            <v-icon>mdi-content-copy</v-icon>
-                        </v-btn>
-                    </div>
-                </div>
-            </div>
-            <div class="relative">
-                <v-btn
-                    class="ma-2"
-                    text
-                    @click="task_menu = !task_menu"
-                >
-                    <v-icon>mdi-dots-vertical</v-icon>
-                </v-btn>
-                <div
-                    v-if="task_menu"
-                    class="task_menu">
-                    <div>
-                        <v-btn text class="ma-2">
-                            <v-icon class="mr-2">mdi-open-in-new</v-icon>
-                            別タブで開く
-                        </v-btn>
-                    </div>
-                    <div>
-                        <template v-if="!wide_display">
-                            <v-btn
-                                text
-                                class="ma-2"
-                                @click="wide()"
-                            >
-                                <v-icon class="mr-2">mdi-arrow-expand-all</v-icon>
-                                全画面表示
-                            </v-btn>
-                        </template>
-                        <template v-else>
-                            <v-btn
-                                text
-                                class="ma-2"
-                                @click="wide()"
-                            >
-                                <v-icon class="mr-2">mdi-arrow-collapse-all</v-icon>
-                                リストを表示
-                            </v-btn>
-                        </template>
-                    </div>
-                    <div>
-                        <v-btn
-                            text
-                            class="ma-2"
-                            @click="task_delete_confirm = !task_delete_confirm"
-                        >
-                            <v-icon>mdi-trash-can-outline</v-icon>
-                            タスクを削除
-                        </v-btn>
-                    </div>
+                <div>
+                    <v-btn
+                        text
+                        class="ma-2"
+                        @click="del()"
+                    >
+                        <v-icon>mdi-trash-can-outline</v-icon>
+                    </v-btn>
                 </div>
             </div>
             <div class="relative">
@@ -124,12 +81,14 @@
                 <div class="pr-6">
                     <v-select
                         label="ステータス"
-                        :items="status_list"
+                        :items="this.params.task_status_list"
                         item-text="text"
                         item-value="key"
                         outlined
                         color="primary"
                         dense
+                        v-model="status"
+                        @change="settingTaskStatus()"
                     ></v-select>
                 </div>
                 <!-- manager -->
@@ -185,11 +144,12 @@
                     </div>
                 </div>
                 <v-spacer />
-                <div style="font-size: 14px;">
-                    <span>タスクID : {{ taskDetail.task_id }} </span>
-                    <span>作成者 : {{ taskDetail.create_account }}</span>
-                    <span>作成日 : {{ createdDateTime(taskDetail.created) }}</span>
-                </div>
+                <ul style="font-size: 14px;">
+                    <li>タスクID : {{ taskDetail.task_id }} </li>
+                    <li>作成者 : {{ taskDetail.create_account }}</li>
+                    <li>作成日 : {{ taskDetail.created }}</li>
+                    <li>タスク担当者 : {{ taskDetail.task_manager }}</li>
+                </ul>
             </div>
         <v-divider />
         <div class="relative">
@@ -199,15 +159,7 @@
                 class="ma-2"
             >
                 <v-icon>mdi-calendar-check-outline</v-icon>
-                {{ dateRangeText }}
-            </v-btn>
-            <v-btn
-                text
-                class="ma-2"
-                @click="subtask_input = !subtask_input"
-            >
-                <v-icon>mdi-subdirectory-arrow-right</v-icon>
-                サブタスク
+                {{ taskDetail.task_start_date }} ~ {{ taskDetail.task_end_date }}
             </v-btn>
             <v-btn
                 text
@@ -224,10 +176,11 @@
                         style="display: none"
                         ref="file"
                         type="file"
+                        @change="onFileChange"
                     >
                     <v-btn
                         text
-                        @click="inputfileClick()"
+                        @click="$refs.file.click()"
                     >
                         <v-icon class="mr-2">mdi-desktop-mac</v-icon>
                         お使いのコンピューター
@@ -237,7 +190,7 @@
                     <v-btn
                         text
                         class="my-2"
-                        @click="selectFromFileAdmin()"
+                        @click="file_select_modal = true"
                     >
                         <v-icon class="mr-2">mdi-folder-multiple-outline</v-icon>
                         ファイル管理
@@ -265,47 +218,36 @@
                     <v-btn
                         text
                         color="primary"
-                        @click="term = false"
+                        @click="taskTermSetting()"
                     >保存</v-btn>
                     <v-btn
                         text
-                        @click="term = false, term_dates = []"
+                        @click="term_dates = [], term = false"
                     >キャンセル</v-btn>
                     <v-btn
                         text
                         color="red"
-                        @click="term_dates = []"
+                        @click="deleteTaskTerm()"
                     >日付を消去</v-btn>
                 </div>
             </div>
         </div>
-        <!-- subtask area -->
-        <div class="task-add-form" v-show="subtask_input">
-            <div class="relative">
-                <v-text-field
-                    label="タスク名を入力"
-                    outlined
-                    dense
-                >
-                </v-text-field>
-                <v-btn
-                    depressed
-                    class="primary alt_submit"
-                    text
-                >新規作成
-                </v-btn>
-            </div>
+        <div v-if="loading">
+            <v-progress-linear
+                indeterminate
+                color="primary"
+            ></v-progress-linear>
         </div>
         <v-divider />
-        <div class="subtask_list" v-if="subtasks">
+        <div class="subtask_list" v-if="subtask_list">
             <table class="task-list mt-4">
                 <tbody>
                 <tr
-                    v-for="subtask in subtasks"
+                    v-for="subtask in subtask_list"
                     :key="subtask.id"
-                    @click="record(subtask)"
+                    @click="subtaskRecordClick(subtask)"
                 >
-                    <td class="py-2">
+                    <td class="py-2 avatar-td">
                         <v-avatar
                             color="teal"
                             size="32"
@@ -315,34 +257,45 @@
                     </td>
                     <td class="py-2">{{ subtask.subtask_name }}</td>
                     <td class="py-2">{{ subtask.subtask_status.value }}</td>
+                    <td class="options-td">
+                        <v-btn
+                            text
+                            @click.stop="deleteSubtask(subtask)"
+                        >
+                            <v-icon>mdi-trash-can-outline</v-icon>
+                        </v-btn>
+                    </td>
                 </tr>
                 </tbody>
             </table>
-            <v-btn
-                text
-                class="ma-2"
-                color="primary"
-                @click="subtask_input_bottom = !subtask_input_bottom"
-            >
-                <v-icon >mdi-plus</v-icon>
-                サブタスクを追加
-            </v-btn>
-            <div class="task-add-form" v-show="subtask_input_bottom">
+            <!-- subtask area -->
+            <div class="task-add-form mt-2" v-if="subtask_input">
                 <div class="relative">
                     <v-text-field
                         label="タスク名を入力"
                         outlined
                         dense
+                        v-model="subtask_name"
                     >
                     </v-text-field>
                     <v-btn
                         depressed
                         class="primary alt_submit"
                         text
+                        @click="createSubtask(taskDetail)"
                     >新規作成
                     </v-btn>
                 </div>
             </div>
+            <v-btn
+                text
+                class="ma-2"
+                color="primary"
+                @click="subtask_input = !subtask_input"
+            >
+                <v-icon >mdi-plus</v-icon>
+                サブタスクを追加
+            </v-btn>
         </div>
         <!-- task detail -->
         <div class="py-6">
@@ -357,28 +310,10 @@
         <!-- files -->
         <div class="d-flex align-center mt-4 mb-2">
             <div>2 Files</div>
-            <div class="file_operation_wrap">
-                <v-btn
-                    text
-                    @click="all_file_admin = !all_file_admin"
-                >
-                    <v-icon>mdi-dots-horizontal</v-icon>
-                </v-btn>
-                <div class="drawer" v-if="all_file_admin">
-                    <v-btn text>
-                        <v-icon>mdi-trash-can-outline</v-icon>
-                        全て削除
-                    </v-btn>
-                </div>
-            </div>
             <v-spacer />
             <v-btn text>
-                <v-icon>mdi-download</v-icon>
-                ダウンロード
-            </v-btn>
-            <v-btn text>
                 <v-icon>mdi-trash-can-outline</v-icon>
-                削除
+                全てのファイルを削除
             </v-btn>
         </div>
         <v-divider />
@@ -464,7 +399,7 @@
                         outlined
                         depressed
                         class="pa-4"
-                        @click="file_select_modal = false"
+                        @click="file_select_modal = false, file_select = false"
                     >
                         キャンセル
                     </v-btn>
@@ -502,7 +437,7 @@
                         outlined
                         depressed
                         class="pa-4"
-                        @click="execDelete()"
+                        @click="task_delete_confirm = false"
                     >
                         キャンセル
                     </v-btn>
@@ -511,7 +446,8 @@
                         class="pa-4"
                         color="red darken-4"
                         outlined
-                        @click="task_delete_confirm = false"
+                        @click="execDelete(taskDetail)"
+                        
                     >
                         削除する
                     </v-btn>
@@ -523,122 +459,164 @@
 </template>
 
 <script>
+// tinymce
 import Editor from "@tinymce/tinymce-vue"
+import tinymceSettings from "@/config/settings/tinymce.js"
 import message_json from "@/config/json/message.json"
 import project_json from "@/config/json/projects.json"
+
 export default {
-    props: ["taskDetail", "closeDetail", "parents", "params", "displayWidth"],
+    props: {
+        closeDetail: Function,
+        params: Object,
+        parents: Object,
+        taskDetail: Object,
+        refreshTaskList: Function,
+        deleteSubtaskHasTask: Function,
+        initSubtaskList: Function,
+        refreshTaskDetail: Function,
+    },
     components: {
         Editor
     },
     data: () => ({
-        status_list: [],
+        edidor_settings: tinymceSettings.edidor_settings,
+        wide_display: false,
+        status: null,
         // message
         messages: [],
         //file
-        all_file_admin: false,
         file_select: false,
         file_select_modal: false,
+        selected: [],
         //priject
         select_projects: false,
         projects: null,
         project: null,
-        //link
-        link_area: false,
         // menu
-        task_menu: false,
         task_delete_confirm: false,
         // manager
         select_manager: false,
         //subtask
         subtask_input: false,
-        subtask_input_bottom: false,
-        subtasks: [],
-        // display
-        wide_display: false,
-
-        //editor
-        edidor_settings: {
-            apikey:'oq5iukdtuvton4zy3smr1m1pwaar2rfkjg98z8p1fv5q8tbt',
-            init: {
-                height : 300,
-                selector: "textarea",
-                menubar: false,
-                table_toolbar: [
-                    'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol'
-                ],
-                plugins: [
-                    'print preview fullpage importcss searchreplace autolink \
-                    autosave save directionality visualblocks visualchars fullscreen image link media template codesample \
-                    table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount \
-                    imagetools textpattern noneditable help charmap quickbars  emoticons'
-                ],
-                toolbar:[
-                    'undo redo | formatselect | bold italic backcolor | \
-                    alignleft aligncenter alignright alignjustify | \
-                    bullist numlist outdent indent | removeformat | help table'
-                ],
-            },
-            initialValue: '<p>This is the initial content of the editor</p>',
-        },
-        // file list
-        selected: [],
+        subtask_list: {},
+        subtask_name: "",
+        subtask_delete_alert: false,
+        loading: false,
+        success: false,
         // task date picker
         term: false,
         term_dates: [],
+        // status
     }),
 
     created(){
         this.init()
-    }, 
+        this.setTaskStatus()
+    },
+
+    updated() {
+        this.subtask_list = this.params.subtask_list
+        this.setTaskStatus()
+    },
     
     computed: {
-      // term_date
-        dateRangeText () {
-            return this.term_dates ? this.term_dates.join(' ~ ') : ""
-        },
+        dateRangeText() {
+            return this.taskDetail.task_start_date + " 〜 " + this.taskDetail.task_end_date
+        }
     },
 
     methods: {
+        setTaskStatus() {
+            let task_status = this.taskDetail.task_status
+            const list = this.params.task_status_list
+            list.forEach(r => {
+                r.key == task_status.key ? this.status = r : null
+            })
+        },
         
         // close detail
         close() {
             this.closeDetail()
         },
-        wide() {
-            this.wide_display = !this.wide_display
-            this.displayWidth(this.wide_display);
-        },
+        
         // load data
         init() {
+            this.subtask_list = this.params.subtask_list
             this.messages = message_json.messages
             this.projects = project_json.projects
-            this.subtasks = this.params.subtasks
-            this.status_list = this.getTaskStatus()
         },
-        createdDateTime(d) {
-            return d
-        },
-        // file upload
-        inputfileClick() {
-            this.$refs.file.click();
-        },
-        selectFromFileAdmin() {
-            this.file_select_modal = true
+        
+        // 添付ファイル
+        onFileChange(e) {
+            const files = e.target.files || e.dataTransfer.files
+            if(files) {
+                this.apiUploadFile(files[0], this.taskDetail.task_id)
+            }
         },
         // select task manager
         selectManager() {
             this.select_manager = false
         },
 
-        //subtask
-        record(subtask) {
+        // サブタスク
+        createSubtask(task) {
+            this.loading = true
+            const create = this.apiSubtaskCreate(this.subtask_name, task.task_id)
+            if(create) {
+                this.loading = false
+                this.success = true
+                this.subtask_name = ""
+            }
+            this.initSubtaskList(task)
+        },
+        deleteSubtask(subtask) {
+            this.apiDeleteSubtask(subtask)
+            this.subtask_delete_alert = true
+            this.initSubtaskList(this.taskDetail)
+        },
+        subtaskRecordClick(subtask) {
             console.log(subtask)
         },
         
-        // delete
-        execDelete() {
-            console.log('物理削除');
+        // タスク期間設定
+        taskTermSetting() {
+            this.term = false
+            this.term_dates.sort(function(a, b){
+                return (a > b ? 1 : -1);
+            })
+            this.apiSettingTaskTerm(this.term_dates, this.taskDetail.task_id)
+            this.refreshTaskDetail()
+        },
+        deleteTaskTerm() {
+            this.term_dates = [],
+            this.term = false
+            this.apiDeleteTaskTerm(this.taskDetail.task_id)
+            this.refreshTaskDetail()
+        },
+        //タスクステータス更新
+        settingTaskStatus() {
+            const status_list  = this.params.task_status_list
+            let status = ""
+            status_list.forEach(r => {
+                if(this.status == r.key) {
+                   status = r
+                }
+            })
+            this.apiSettingTaskStatus(this.taskDetail.task_id, status)
+            this.refreshTaskDetail()
+            this.refreshTaskList()
+        },
+        // タスク削除
+        del() {
+            this.task_delete_confirm = true
+        },
+        execDelete(taskDetail) {
+            let from_detail = true
+            this.apiDeleteTask(taskDetail)
+            this.deleteSubtaskHasTask(taskDetail)
+            this.task_delete_confirm = false
+            this.refreshTaskList(null, from_detail)
         }
     }
 }
@@ -697,7 +675,6 @@ export default {
 .select_project,
 .date_picker,
 .task_link,
-.task_menu,
 .select_manager {
     position: absolute;
     box-shadow: 0px 2px 8px #00000029;
@@ -715,7 +692,6 @@ export default {
     left: 20%;
     top: 100%;
 }
-.task_menu,
 .task_link {
     right: 0;
 }
@@ -738,5 +714,11 @@ export default {
 .task-list tr:hover {
     cursor: pointer;
     background-color: #f6f6f6;
+}
+.options-td {
+    width: 60px;
+}
+.options-td {
+    text-align: right;
 }
 </style>
