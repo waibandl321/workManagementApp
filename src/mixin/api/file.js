@@ -9,33 +9,36 @@ export default {
     }),
     methods: {
         // ファイルアップロード（StorageとDBへ）
-        apiUploadFile(file, id, app) {
-            console.log(file);
+        async apiUploadFile(file, id, app) {
             const storage = getStorage();
             const storageRef = ref(storage, file.name);
             const str = app + "_id"
-            const metadata = {
+            const custom_meta = {
                 customMetadata: {
                     [str]: id
                 }
             }
-            const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-            // アップロード状況の監視
+            
+            const uploadTask = uploadBytesResumable(storageRef, file, custom_meta)
             uploadTask.on('state_changed',
                 (snapshot) => {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     if(progress == 100) {
-                        this.upload_done = true
-                        const metadata = uploadTask.snapshot.metadata
-                        this.apiFileSaveDatabase(metadata, app)
-                        console.log("アップロード完了")
+                        console.log('Upload is ' + progress + '% done');
                     }
                 },
                 (error) => {
-                    console.log('error!!!' + error)
+                    console.log(error);
+                },
+                async () => {
+                    let file_meta = await this.apiGetFileMetadata(file.name)
+                    getDownloadURL(uploadTask.snapshot.ref)
+                    .then((downloadURL) => {
+                        this.apiFileSaveDatabase(app, file_meta, downloadURL)
+                    })
+                    
                 },
             );
-            this.upload_done = false
         },
 
         // Storageからファイルデータを取得してオブジェクトを返す
@@ -69,25 +72,26 @@ export default {
             })
             .catch((error) => {
                 console.log(error);
-            });
+            })
 
             return meta
         },
 
-        // ファイルのダウンロードURLの取得
         async createDownloadURL(f_name) {
-            const storage = getStorage();
-            let u = ""
+            const storage = await getStorage();
+            const forestRef = ref(storage, f_name)
+            let download_url = ""
 
-            await getDownloadURL(ref(storage, f_name))
+            await getDownloadURL(forestRef)
             .then((url) => {
-                u = url
+                download_url = url
             })
             .catch((error) => {
                 console.log(error);
-            });
-            
-            return u
+            })
+
+            return download_url
         }
+        
     }
 }

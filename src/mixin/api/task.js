@@ -122,14 +122,16 @@ export default {
         },
 
         // ファイルデータをDBに保存
-        apiFileSaveDatabase(meta, app) {
+        apiFileSaveDatabase(app, file_meta, download_url) {
             const id = this.createRandomId()
             const id_key = app + "_id"
             const arr = {
-                file_name: meta.name,
-                [id_key]: meta.customMetadata.task_id,
+                name: file_meta.name,
+                size: file_meta.size,
+                contentType: file_meta.contentType,
+                download_url: download_url,
+                [id_key]: file_meta.customMetadata.task_id,
             }
-            
             const db = getDatabase();
             set(ref(db, '/files/' + id), arr);
         },

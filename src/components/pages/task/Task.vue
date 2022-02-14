@@ -20,7 +20,6 @@
                 :closeDetail="closeDetail"
                 :deleteSubtaskHasTask="deleteSubtaskHasTask"
                 :initSubtaskList="initSubtaskList"
-                :getFileList="getFileList"
             />
         </div>
     </div>
@@ -71,10 +70,8 @@ export default {
                 const obj = Object.entries(files)
                 let arr = []
                 obj.forEach(r => {
-                    let file_name = r[1].file_name
-                    let task_id = r[1].task_id
-                    if(task_id == this.task_detail.task_id) {
-                        arr.push(this.apiGetFileFromStore(file_name))
+                    if(r[1].task_id == this.task_detail.task_id) {
+                        arr.push(r[1])
                     }
                 })
                 this.params.files = arr

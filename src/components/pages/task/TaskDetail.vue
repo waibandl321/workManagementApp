@@ -330,7 +330,16 @@
             <table class="file-table">
                 <tr v-for="(file, i) in params.files" :key="i">
                     <td>
-                        {{ file.store_file_data.name }}
+                        <img :src="file.download_url" width="40">
+                    </td>
+                    <td>
+                        {{ file.name }}
+                    </td>
+                    <td>
+                        {{ file.size }}
+                    </td>
+                    <td>
+                        {{ file.contentType }}
                     </td>
                     <td>
                         <v-btn>
@@ -495,6 +504,7 @@ export default {
         },
         // 添付ファイル追加
         onFileChange(e) {
+            this.file_select = false
             const files = e.target.files || e.dataTransfer.files
             if(files.length > 0) {
                 this.apiUploadFile(files[0], this.taskDetail.task_id, "task")
