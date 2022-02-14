@@ -120,6 +120,29 @@ export default {
             updates['/tasks/' + id + '/task_status'] = status
             update(ref(db), updates);
         },
+
+        // ファイルデータをDBに保存
+        apiFileSaveDatabase(meta, app) {
+            const id = this.createRandomId()
+            const id_key = app + "_id"
+            const arr = {
+                file_name: meta.name,
+                [id_key]: meta.customMetadata.task_id,
+            }
+            
+            const db = getDatabase();
+            set(ref(db, '/files/' + id), arr);
+        },
+        // ファイルの一覧取得
+        apiGetFiles() {
+            const db = getDatabase()
+            const r = ref(db, '/files/')
+            let d = ""
+            onValue(r, (snapshot) => {
+                d = snapshot.val()
+            })
+            return d
+        },
         
         // タスク削除
         apiDeleteTask(task) {

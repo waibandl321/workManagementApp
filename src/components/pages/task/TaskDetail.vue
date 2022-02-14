@@ -239,11 +239,11 @@
             ></v-progress-linear>
         </div>
         <v-divider />
-        <div class="subtask_list" v-if="subtask_list">
+        <div class="subtask_list" v-if="params.subtask_list">
             <table class="task-list mt-4">
                 <tbody>
                 <tr
-                    v-for="subtask in subtask_list"
+                    v-for="subtask in params.subtask_list"
                     :key="subtask.id"
                     @click="subtaskRecordClick(subtask)"
                 >
@@ -299,86 +299,48 @@
         </div>
         <!-- task detail -->
         <div class="py-6">
-            <p>■ タスク詳細</p>
+            <p class="ma-0 pb-2">■ タスク詳細</p>
+            <v-divider />
+            <div v-if="edidor_settings.initialValue">
+                <div v-html="edidor_settings.initialValue"></div>
+            </div>
+            <div v-else>タスク詳細は記載されていません。</div>
             <Editor
+                v-if="editor_mode == 'edit'"
                 ref="editor"
                 :api-key="edidor_settings.apikey"
                 :initialValue="edidor_settings.initialValue"
                 :init="edidor_settings.init"
             />
         </div>
-        <!-- files -->
-        <div class="d-flex align-center mt-4 mb-2">
-            <div>2 Files</div>
-            <v-spacer />
-            <v-btn text>
-                <v-icon>mdi-trash-can-outline</v-icon>
-                全てのファイルを削除
-            </v-btn>
-        </div>
-        <v-divider />
+        
         <!-- file list -->
-        <div class="py-4">
-            <div class="d-flex align-center py-2" v-for="i of 2" :key="i">
-                <v-checkbox
-                
-                ></v-checkbox>
-                <div class="preview">
-                    <v-img src="https://cdn.vuetifyjs.com/images/parallax/material2.jpg" width="100"/>
-                </div>
-                <div>ファイル名ファイル名</div>
+        <div v-if="params.files.length > 0">
+            <p class="ma-0 pb-2">■ 添付ファイル</p>
+            <v-divider />
+            <div class="d-flex align-center">
+                <div>{{ params.files.length }} Files</div>
                 <v-spacer />
-                <div>アップロード日時</div>
-                <div>アップした人の名前</div>
+                <v-btn text color="primary">
+                    <v-icon>mdi-trash-can-outline</v-icon>
+                    全てのファイルを削除
+                </v-btn>
             </div>
+            <v-divider />
+            <table class="file-table">
+                <tr v-for="(file, i) in params.files" :key="i">
+                    <td>
+                        {{ file.store_file_data.name }}
+                    </td>
+                    <td>
+                        <v-btn>
+                            <v-icon>mdi-trash-can-outline</v-icon>
+                        </v-btn>
+                    </td>
+                </tr>
+            </table>
         </div>
         <v-divider />
-        <!-- messages -->
-        <div class="pt-4">
-            <v-list class="pb-6">
-                <v-list-item v-for="(item, i) in messages" :key="i">
-                    <v-list-item-avatar color="primary">
-                        {{ item.account_id }}
-                    </v-list-item-avatar>
-                    
-                    <v-list-item-content>
-                        <v-list-item-title class="grey lighten-4 pa-2">
-                            <v-btn text color="primary"><v-icon>mdi-at</v-icon>{{ item.message_to }}</v-btn>
-                            {{ item.message_content }}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                
-            </v-list>
-            <v-divider />
-            <!-- message input -->
-            <div class="d-flex align-center pt-6 message_send">
-                <div class="avatar">
-                    <v-avatar
-                        color="primary"
-                        size="32"
-                    >
-                        <span class="white--text">大純</span>
-                    </v-avatar>
-                </div>
-                <div class="message_send_textarea px-2 d-flex">
-                    <v-textarea
-                        auto-grow
-                        filled
-                        rows="1"
-                    >
-                    </v-textarea>
-                    <div class="icons">
-                        <v-btn text><v-icon>mdi-at</v-icon></v-btn>
-                        <v-btn text><v-icon>mdi-emoticon</v-icon></v-btn>
-                        <v-btn text><v-icon>mdi-paperclip</v-icon></v-btn>
-                    </div>
-                </div>
-                <div class="message_send_btn">
-                    <v-btn fill color="primary" large>送信</v-btn>
-                </div>
-            </div>
-        </div>
         <!-- file select modal -->
         <v-row justify="center">
             <v-dialog
@@ -462,7 +424,6 @@
 // tinymce
 import Editor from "@tinymce/tinymce-vue"
 import tinymceSettings from "@/config/settings/tinymce.js"
-import message_json from "@/config/json/message.json"
 import project_json from "@/config/json/projects.json"
 
 export default {
@@ -480,11 +441,10 @@ export default {
         Editor
     },
     data: () => ({
+        editor_mode: "view",
         edidor_settings: tinymceSettings.edidor_settings,
         wide_display: false,
         status: null,
-        // message
-        messages: [],
         //file
         file_select: false,
         file_select_modal: false,
@@ -499,7 +459,6 @@ export default {
         select_manager: false,
         //subtask
         subtask_input: false,
-        subtask_list: {},
         subtask_name: "",
         subtask_delete_alert: false,
         loading: false,
@@ -509,50 +468,45 @@ export default {
         term_dates: [],
         // status
     }),
-
+   
     created(){
         this.init()
         this.setTaskStatus()
     },
 
+    mounted() {
+
+    },
+
     updated() {
-        this.subtask_list = this.params.subtask_list
         this.setTaskStatus()
     },
     
     computed: {
         dateRangeText() {
             return this.taskDetail.task_start_date + " 〜 " + this.taskDetail.task_end_date
-        }
+        },
     },
 
     methods: {
+        // load data
+        init() {
+            this.projects = project_json.projects
+        },
+        // 添付ファイル追加
+        onFileChange(e) {
+            const files = e.target.files || e.dataTransfer.files
+            if(files.length > 0) {
+                this.apiUploadFile(files[0], this.taskDetail.task_id, "task")
+            }
+        },
+        // status
         setTaskStatus() {
             let task_status = this.taskDetail.task_status
             const list = this.params.task_status_list
             list.forEach(r => {
                 r.key == task_status.key ? this.status = r : null
             })
-        },
-        
-        // close detail
-        close() {
-            this.closeDetail()
-        },
-        
-        // load data
-        init() {
-            this.subtask_list = this.params.subtask_list
-            this.messages = message_json.messages
-            this.projects = project_json.projects
-        },
-        
-        // 添付ファイル
-        onFileChange(e) {
-            const files = e.target.files || e.dataTransfer.files
-            if(files) {
-                this.apiUploadFile(files[0], this.taskDetail.task_id)
-            }
         },
         // select task manager
         selectManager() {
@@ -617,7 +571,11 @@ export default {
             this.deleteSubtaskHasTask(taskDetail)
             this.task_delete_confirm = false
             this.refreshTaskList(null, from_detail)
-        }
+        },
+        // 詳細画面閉じる
+        close() {
+            this.closeDetail()
+        },
     }
 }
 </script>
@@ -720,5 +678,19 @@ export default {
 }
 .options-td {
     text-align: right;
+}
+.file-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.file-table tr:not(:first-child) {
+    border-top: 1px solid #ccc;
+}
+.file-table td,
+.file-table th {
+    text-align: left;
+    font-size: 14px;
+    padding: 8px;
+    vertical-align: center;
 }
 </style>

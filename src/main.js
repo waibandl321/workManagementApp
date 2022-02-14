@@ -6,6 +6,7 @@ import store from './store/store.js'
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from "firebase/database";
 
+
 // mixins
 import utilMixin from "@/mixin/common/util.js"
 import authMixin from "./mixin/auth/auth.js"
@@ -37,8 +38,8 @@ Vue.use(projectMixin)
 Vue.config.productionTip = false
 
 // Initialize Firebase
-const app = initializeApp(firebaseSettings.firebaseConfig);
-getDatabase(app);
+const firebaseApp = initializeApp(firebaseSettings.firebaseConfig);
+getDatabase(firebaseApp);
 
 new Vue({
   router,

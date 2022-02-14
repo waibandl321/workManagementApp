@@ -20,6 +20,7 @@
                 :closeDetail="closeDetail"
                 :deleteSubtaskHasTask="deleteSubtaskHasTask"
                 :initSubtaskList="initSubtaskList"
+                :getFileList="getFileList"
             />
         </div>
     </div>
@@ -50,26 +51,47 @@ export default {
         sort_status_options: [],
         default_sort_item: { text: "作成日順", value: 2 },
         sort_date_options: [],
+        files: []
       },
     }),
 
     created() {
         this.init()
     },
+    mounted() {
+        this.getFileList()
+    },
+    updated() {},
 
     methods: {
+        // ファイルデータの取得
+        getFileList() {
+            const files = this.apiGetFiles()
+            if(files) {
+                const obj = Object.entries(files)
+                let arr = []
+                obj.forEach(r => {
+                    let file_name = r[1].file_name
+                    let task_id = r[1].task_id
+                    if(task_id == this.task_detail.task_id) {
+                        arr.push(this.apiGetFileFromStore(file_name))
+                    }
+                })
+                this.params.files = arr
+            }
+        },
         init() {
             this.refreshTaskList() // list refresh
             this.params.sort_status_options = this.getSortStatusOptions() // sort status
             this.params.sort_date_options = this.getSortDateOptions() // sort date
             this.params.task_status_list = this.getTaskStatus() // status
         },
-        
         // タスク詳細へ
         recordClick(task) {
             this.detail_active = true
             this.initSubtaskList(task)
             this.task_detail = task
+            this.getFileList()
         },
         // サブタスク一覧
         initSubtaskList(task) {
