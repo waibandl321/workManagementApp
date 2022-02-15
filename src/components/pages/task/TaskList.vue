@@ -9,25 +9,27 @@
         </div>
         <h2>タスク</h2>
         <div class="filter">
-            <v-row class="ma-0">
+            <v-row class="my-0">
                 <v-col cols="6" class="filter-box">
                     <v-select
-                        :items="params.sort_status_options"
-                        v-model="params.status"
+                        label="ステータスで絞り込む"
+                        :items="this.params.task_status_list"
                         item-text="text"
-                        item-value="value"
-                        dense
+                        item-value="key"
                         outlined
+                        color="primary"
+                        dense
                     ></v-select>
                 </v-col>
                 <v-col cols="6" class="filter-box">
                     <v-select
-                        :items="params.sort_date_options"
-                        v-model="params.default_sort_item"
+                        label="優先度で絞り込む"
+                        :items="this.params.task_priorities"
                         item-text="text"
-                        item-value="value"
-                        dense
+                        item-value="key"
                         outlined
+                        color="primary"
+                        dense
                     ></v-select>
                 </v-col>
             </v-row>
@@ -65,8 +67,6 @@
         <div class="mt-2 relative" v-show="task_input">
             <v-text-field
                 label="タスク名を入力"
-                outlined
-                dense
                 v-model="new_task_name"
             >
             </v-text-field>
@@ -85,31 +85,32 @@
             ></v-progress-linear>
         </div>
         <table class="task-list mt-4">
+            <thead>
+                <tr>
+                    <td>タスク名</td>
+                    <td>優先度</td>
+                    <td>ステータス</td>
+                    <td></td>
+                </tr>
+            </thead>
             <tbody>
-            <tr
-                v-for="task in params.task_list"
-                :key="task.id"
-                @click.stop="record(task)"
-            >
-                <td class="py-2 avatar-td">
-                    <v-avatar
-                        color="teal"
-                        size="32"
-                    >
-                        <span class="white--text">大純</span>
-                    </v-avatar>
-                </td>
-                <td class="py-2">{{ task.task_name }}</td>
-                <td class="py-2">{{ task.task_status.text }}</td>
-                <td class="options-td">
-                    <v-btn
-                        text
-                        @click.stop="del(task)"
-                    >
-                        <v-icon>mdi-trash-can-outline</v-icon>
-                    </v-btn>
-                </td>
-            </tr>
+                <tr
+                    v-for="task in params.task_list"
+                    :key="task.id"
+                    @click.stop="record(task)"
+                >
+                    <td class="py-2">{{ task.task_name }}</td>
+                    <td class="py-2">{{ task.task_priority.text }}</td>
+                    <td class="py-2">{{ task.task_status.text }}</td>
+                    <td class="options-td">
+                        <v-btn
+                            text
+                            @click.stop="del(task)"
+                        >
+                            <v-icon>mdi-trash-can-outline</v-icon>
+                        </v-btn>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <!-- delete task confirm -->
@@ -236,11 +237,18 @@ select:focus {
     table-layout: unset;
     width: 100%;
 }
-.task-list tr {
+thead {
+    background-color: #eee;
+}
+td {
+    font-size: 14px;
+    padding: 4px;
+}
+tbody tr {
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
 }
-.task-list tr:hover {
+tbody tr:hover {
     cursor: pointer;
     background-color: #f6f6f6;
 }

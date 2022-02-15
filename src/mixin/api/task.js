@@ -30,6 +30,11 @@ export default {
             { text: "期日が近い順", value: 1 },
             { text: "作成日順", value: 2 },
         ],
+        task_priorities: [
+            { key: 1, text: "最優先" },
+            { key: 2, text: "中" },
+            { key: 3, text: "低(後回しでOK)" },
+        ]
     }),
 
     methods: {
@@ -39,6 +44,9 @@ export default {
         },
         getSortDateOptions() {
             return this.sort_date_options
+        },
+        getTaskPriorities() {
+            return this.task_priorities
         },
 
         // タスクステータス 
@@ -62,6 +70,10 @@ export default {
                 task_status: {
                     key: 1,
                     text: "未着手",
+                },
+                task_priority: {
+                    key: 2,
+                    text: "中"
                 },
                 task_manager: "",
                 task_start_date: "",
@@ -120,7 +132,13 @@ export default {
             updates['/tasks/' + id + '/task_status'] = status
             update(ref(db), updates);
         },
-
+        // タスク優先度設定
+        apiSettingTaskPriority(id, priority) {
+            const db = getDatabase()
+            const updates = {};
+            updates['/tasks/' + id + '/task_priority'] = priority
+            update(ref(db), updates);
+        }, 
         // タスク概要説明文
         apiUpdateTaskDescription(id, description) {
             const db = getDatabase()

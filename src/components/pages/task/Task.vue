@@ -46,11 +46,10 @@ export default {
       params: {
         task_list: {},
         task_status_list: {},
+        task_priorities: {},
         subtask_list: {},
         status: { text: "全てのタスク", value: 1 },
-        sort_status_options: [],
         default_sort_item: { text: "作成日順", value: 2 },
-        sort_date_options: [],
         files: []
       },
     }),
@@ -82,9 +81,8 @@ export default {
         },
         init() {
             this.refreshTaskList() // list refresh
-            this.params.sort_status_options = this.getSortStatusOptions() // sort status
-            this.params.sort_date_options = this.getSortDateOptions() // sort date
             this.params.task_status_list = this.getTaskStatus() // status
+            this.params.task_priorities = this.getTaskPriorities() // priorities
         },
         // タスク詳細へ
         recordClick(task) {
