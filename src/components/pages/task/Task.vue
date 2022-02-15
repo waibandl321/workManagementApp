@@ -20,6 +20,7 @@
                 :closeDetail="closeDetail"
                 :deleteSubtaskHasTask="deleteSubtaskHasTask"
                 :initSubtaskList="initSubtaskList"
+                :getFileList="getFileList"
             />
         </div>
     </div>
@@ -65,7 +66,7 @@ export default {
     methods: {
         // ファイルデータの取得
         getFileList() {
-            const files = this.apiGetFiles()
+            let files = this.apiGetFiles()
             if(files) {
                 const obj = Object.entries(files)
                 let arr = []
@@ -75,6 +76,8 @@ export default {
                     }
                 })
                 this.params.files = arr
+            } else {
+                this.params.files = []
             }
         },
         init() {

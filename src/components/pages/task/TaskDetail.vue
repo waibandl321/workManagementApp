@@ -1,24 +1,5 @@
 <template>
     <div class="detail_inner">
-        <v-alert
-            v-model="success"
-            close-text="Close Alert"
-            color="success"
-            text
-            dense
-            dismissible
-        >
-            サブタスクを新規作成しました！
-        </v-alert>
-        <v-alert
-            dense
-            outlined
-            dismissible
-            type="error"
-            v-model="subtask_delete_alert"
-        >
-            サブタスクを削除しました。
-        </v-alert>
         <div class="d-flex align-center">
             <h2>{{ taskDetail.task_name }}</h2>            
             <v-spacer />
@@ -232,15 +213,10 @@
                 </div>
             </div>
         </div>
-        <div v-if="loading">
-            <v-progress-linear
-                indeterminate
-                color="primary"
-            ></v-progress-linear>
-        </div>
         <v-divider />
-        <div class="subtask_list" v-if="params.subtask_list">
-            <table class="task-list mt-4">
+        <div class="subtask_list " v-if="params.subtask_list">
+            <p class="mt-6 mb-0 pb-2">■ サブタスク</p>
+            <table class="task-list">
                 <tbody>
                 <tr
                     v-for="subtask in params.subtask_list"
@@ -268,6 +244,27 @@
                 </tr>
                 </tbody>
             </table>
+            <v-alert
+                v-model="success"
+                close-text="Close Alert"
+                color="success"
+                class="mt-2"
+                text
+                dense
+                dismissible
+            >
+                サブタスクを新規作成しました！
+            </v-alert>
+            <v-alert
+                dense
+                outlined
+                class="mt-2"
+                dismissible
+                type="error"
+                v-model="subtask_delete_alert"
+            >
+                サブタスクを削除しました。
+            </v-alert>
             <!-- subtask area -->
             <div class="task-add-form mt-2" v-if="subtask_input">
                 <div class="relative">
@@ -315,19 +312,54 @@
         </div>
         
         <!-- file list -->
-        <div v-if="params.files.length > 0">
+        <div>
             <p class="ma-0 pb-2">■ 添付ファイル</p>
-            <v-divider />
-            <div class="d-flex align-center">
-                <div>{{ params.files.length }} Files</div>
-                <v-spacer />
-                <v-btn text color="primary">
-                    <v-icon>mdi-trash-can-outline</v-icon>
-                    全てのファイルを削除
-                </v-btn>
+            <div>
+                <v-alert
+                    v-model="file_upload_done"
+                    close-text="Close Alert"
+                    color="success"
+                    text
+                    dense
+                    dismissible
+                >
+                    ファイルをアップロードしました。
+                </v-alert>
+                <v-alert
+                    dense
+                    outlined
+                    dismissible
+                    type="error"
+                    v-model="file_delete_done"
+                >
+                    ファイルを削除しました。
+                </v-alert>
             </div>
             <v-divider />
-            <table class="file-table">
+            <div>
+                <div v-if="!params.files.length > 0">添付ファイルはありません。</div>
+                <div class="d-flex align-center" v-else>
+                    <div>{{ params.files.length }} Files</div>
+                    <v-spacer />
+                    <v-btn
+                        text
+                        color="primary"
+                        @click="delete_all_file_modal = true"
+                    >
+                        <v-icon>mdi-trash-can-outline</v-icon>
+                        全てのファイルを削除
+                    </v-btn>
+                </div>
+            </div>
+            
+            <div v-if="file_loading" class="text-center py-6">
+                <v-progress-circular
+                    :size="50"
+                    color="primary"
+                    indeterminate
+                ></v-progress-circular>
+            </div>
+            <table class="file-table" v-else>
                 <tr v-for="(file, i) in params.files" :key="i">
                     <td>
                         <img :src="file.download_url" width="40">
@@ -341,15 +373,18 @@
                     <td>
                         {{ file.contentType }}
                     </td>
-                    <td>
-                        <v-btn>
+                    <td class="operation-td">
+                        <v-btn
+                            @click="deleteFileSelected(file)"
+                            text
+                        >
                             <v-icon>mdi-trash-can-outline</v-icon>
                         </v-btn>
                     </td>
                 </tr>
             </table>
         </div>
-        <v-divider />
+        
         <!-- file select modal -->
         <v-row justify="center">
             <v-dialog
@@ -387,6 +422,81 @@
             </v-card>
             </v-dialog>
         </v-row>
+        <!-- ファイル削除 -->
+         <v-row justify="center">
+            <v-dialog
+            v-model="delete_file_modal"
+            persistent
+            max-width="600px"
+            >
+            <v-card>
+                <v-card-title>
+                <span class="text-h5">選択肢したファイルを削除します</span>
+                </v-card-title>
+                <v-card-text>
+                    本当によろしいですか？
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        outlined
+                        depressed
+                        class="pa-4"
+                        @click="delete_file_modal = false"
+                    >
+                        キャンセル
+                    </v-btn>
+                    <v-btn
+                        depressed
+                        class="pa-4"
+                        color="red darken-4"
+                        outlined
+                        @click="execDeleteFile(file)"
+                        
+                    >
+                        削除する
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+            </v-dialog>
+        </v-row>
+        <!-- 全てのファイルを削除確認 -->
+         <v-row justify="center">
+            <v-dialog
+            v-model="delete_all_file_modal"
+            persistent
+            max-width="600px"
+            >
+            <v-card>
+                <v-card-title>
+                <span class="text-h5">このタスクにアップされている全てのファイルを削除します</span>
+                </v-card-title>
+                <v-card-text>
+                    本当によろしいですか？
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        outlined
+                        depressed
+                        class="pa-4"
+                        @click="delete_all_file_modal = false"
+                    >
+                        キャンセル
+                    </v-btn>
+                    <v-btn
+                        depressed
+                        class="pa-4"
+                        color="red darken-4"
+                        outlined
+                        @click="execDeleteAllFile(params.files)"
+                    >
+                        削除する
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+            </v-dialog>
+        </v-row>
 
         <!-- delete task confirm -->
         <v-row justify="center">
@@ -417,7 +527,7 @@
                         class="pa-4"
                         color="red darken-4"
                         outlined
-                        @click="execDelete(taskDetail)"
+                        @click="execDeleteTask(taskDetail)"
                         
                     >
                         削除する
@@ -445,6 +555,7 @@ export default {
         deleteSubtaskHasTask: Function,
         initSubtaskList: Function,
         refreshTaskDetail: Function,
+        getFileList: Function
     },
     components: {
         Editor
@@ -457,7 +568,12 @@ export default {
         //file
         file_select: false,
         file_select_modal: false,
-        selected: [],
+        delete_file_modal: false,
+        delete_all_file_modal: false,
+        file_loading: false,
+        file_upload_done: false,
+        file_delete_done: false,
+        delete_file: {},
         //priject
         select_projects: false,
         projects: null,
@@ -482,33 +598,42 @@ export default {
         this.init()
         this.setTaskStatus()
     },
-
-    mounted() {
-
-    },
-
     updated() {
         this.setTaskStatus()
     },
-    
     computed: {
         dateRangeText() {
             return this.taskDetail.task_start_date + " 〜 " + this.taskDetail.task_end_date
         },
     },
-
     methods: {
-        // load data
         init() {
             this.projects = project_json.projects
         },
-        // 添付ファイル追加
+        // ファイルアップロード
         onFileChange(e) {
+            this.file_loading = true
             this.file_select = false
             const files = e.target.files || e.dataTransfer.files
             if(files.length > 0) {
                 this.apiUploadFile(files[0], this.taskDetail.task_id, "task")
             }
+        },
+        // ファイル削除
+        deleteFileSelected(file_data) {
+            this.delete_file_modal = true
+            this.delete_file = file_data
+        },
+        execDeleteFile() {
+            this.file_loading = true
+            this.apiDeleteFileStorage(this.delete_file)
+        },
+        execDeleteAllFile(files) {
+            this.delete_all_file_modal = false
+            this.file_loading = true
+            files.forEach(r => {
+                this.apiDeleteFileStorage(r)
+            })
         },
         // status
         setTaskStatus() {
@@ -525,10 +650,8 @@ export default {
 
         // サブタスク
         createSubtask(task) {
-            this.loading = true
             const create = this.apiSubtaskCreate(this.subtask_name, task.task_id)
             if(create) {
-                this.loading = false
                 this.success = true
                 this.subtask_name = ""
             }
@@ -575,7 +698,7 @@ export default {
         del() {
             this.task_delete_confirm = true
         },
-        execDelete(taskDetail) {
+        execDeleteTask(taskDetail) {
             let from_detail = true
             this.apiDeleteTask(taskDetail)
             this.deleteSubtaskHasTask(taskDetail)
@@ -702,5 +825,8 @@ export default {
     font-size: 14px;
     padding: 8px;
     vertical-align: center;
+}
+.operation-td {
+    width: 60px;
 }
 </style>

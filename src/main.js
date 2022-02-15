@@ -12,6 +12,7 @@ import utilMixin from "@/mixin/common/util.js"
 import authMixin from "./mixin/auth/auth.js"
 import taskMixin from "@/mixin/api/task.js"
 import fileMixin from "@/mixin/api/file.js"
+import fileRelatedDatabaseMixin from "@/mixin/api/file_relatied_db.js"
 import subtaskMixin from "@/mixin/api/subtask.js"
 import chatMixin from "@/mixin/api/chat.js"
 import boardMixin from "@/mixin/api/board.js"
@@ -26,6 +27,7 @@ Vue.mixin(authMixin)
 Vue.mixin(taskMixin)
 Vue.mixin(utilMixin)
 Vue.mixin(fileMixin)
+Vue.mixin(fileRelatedDatabaseMixin)
 
 Vue.use(subtaskMixin)
 Vue.use(chatMixin)

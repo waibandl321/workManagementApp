@@ -1,4 +1,11 @@
-import { getStorage, ref, uploadBytesResumable, getDownloadURL, getMetadata } from "firebase/storage";
+import { 
+    getStorage,
+    ref,
+    uploadBytesResumable,
+    getDownloadURL,
+    getMetadata,
+    deleteObject
+} from "firebase/storage";
 
 
 
@@ -10,11 +17,13 @@ export default {
     methods: {
         // ファイルアップロード（StorageとDBへ）
         async apiUploadFile(file, id, app) {
+            const db_id = this.createRandomId()
             const storage = getStorage();
             const storageRef = ref(storage, file.name);
             const str = app + "_id"
             const custom_meta = {
                 customMetadata: {
+                    db_id: db_id,
                     [str]: id
                 }
             }
@@ -24,7 +33,7 @@ export default {
                 (snapshot) => {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     if(progress == 100) {
-                        console.log('Upload is ' + progress + '% done');
+                        console.log("upload prosess : " + progress + "%");
                     }
                 },
                 (error) => {
@@ -34,9 +43,13 @@ export default {
                     let file_meta = await this.apiGetFileMetadata(file.name)
                     getDownloadURL(uploadTask.snapshot.ref)
                     .then((downloadURL) => {
-                        this.apiFileSaveDatabase(app, file_meta, downloadURL)
+                        this.apiFileSaveDatabase(db_id, app, file_meta, downloadURL)
                     })
-                    
+                    .then(() => {
+                        this.getFileList()
+                        this.file_upload_done = true
+                        this.file_loading = false
+                    })
                 },
             );
         },
@@ -77,6 +90,7 @@ export default {
             return meta
         },
 
+        // ダウンロードURLの作成
         async createDownloadURL(f_name) {
             const storage = await getStorage();
             const forestRef = ref(storage, f_name)
@@ -91,7 +105,20 @@ export default {
             })
 
             return download_url
-        }
-        
+        },
+
+        // ストレージからファイルを削除
+        apiDeleteFileStorage(file) {
+            const storage = getStorage();
+            const desertRef = ref(storage, file.name);
+            deleteObject(desertRef)
+            .then(() => {
+                this.apiDeleteFileDatabase(file)
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+            return true
+        },
     }
 }

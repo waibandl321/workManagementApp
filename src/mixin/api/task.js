@@ -120,31 +120,6 @@ export default {
             updates['/tasks/' + id + '/task_status'] = status
             update(ref(db), updates);
         },
-
-        // ファイルデータをDBに保存
-        apiFileSaveDatabase(app, file_meta, download_url) {
-            const id = this.createRandomId()
-            const id_key = app + "_id"
-            const arr = {
-                name: file_meta.name,
-                size: file_meta.size,
-                contentType: file_meta.contentType,
-                download_url: download_url,
-                [id_key]: file_meta.customMetadata.task_id,
-            }
-            const db = getDatabase();
-            set(ref(db, '/files/' + id), arr);
-        },
-        // ファイルの一覧取得
-        apiGetFiles() {
-            const db = getDatabase()
-            const r = ref(db, '/files/')
-            let d = ""
-            onValue(r, (snapshot) => {
-                d = snapshot.val()
-            })
-            return d
-        },
         
         // タスク削除
         apiDeleteTask(task) {
@@ -189,12 +164,13 @@ export default {
             })
             return d
         },
-        // サブタスク削除
+        // サブタスク削除(単体)
         apiDeleteSubtask(subtask) {
             const db = getDatabase()
             const subtask_id = subtask.subtask_id
             remove(ref(db, '/subtasks/' + subtask_id));
         },
+        // 親タスク削除時のサブタスク削除
         apiDeleteSubtaskHasTask(subtasks) {
             const db = getDatabase()
             subtasks.forEach(r => {
