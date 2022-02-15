@@ -214,8 +214,9 @@
             </div>
         </div>
         <v-divider />
-        <div class="subtask_list " v-if="params.subtask_list">
-            <p class="mt-6 mb-0 pb-2">■ サブタスク</p>
+        <div class="subtask_list" v-if="params.subtask_list">
+            <p class="font-weight-bold mt-4">■ サブタスク</p>
+            <v-divider />
             <table class="task-list">
                 <tbody>
                 <tr
@@ -296,24 +297,52 @@
         </div>
         <!-- task detail -->
         <div class="py-6">
-            <p class="ma-0 pb-2">■ タスク詳細</p>
+            <v-card-actions class="px-0">
+                <div class="font-weight-bold">■ タスク詳細</div>
+                <v-spacer />
+                <div v-if="!desc_edit">
+                    <v-btn
+                        color="primary"
+                        text
+                        @click="desc_edit = true"
+                        class="px-4"
+                    >
+                    <v-icon class="mr-2">mdi-pencil-outline</v-icon>編集
+                    </v-btn>
+                </div>
+                <div v-else>
+                    <v-btn
+                        color="primary"
+                        @click="updateTaskDescription()"
+                        class="px-4"
+                    >
+                    <v-icon class="mr-2">mdi-content-save-outline</v-icon>編集を保存
+                    </v-btn>
+                </div>
+            </v-card-actions>
             <v-divider />
-            <div v-if="edidor_settings.initialValue">
-                <div v-html="edidor_settings.initialValue"></div>
+            <div v-if="desc_edit">
+                <Editor
+                    ref="editor"
+                    :api-key="edidor_settings.apikey"
+                    :init="edidor_settings.init"
+                    v-model.trim="taskDetail.task_description"
+                />
             </div>
-            <div v-else>タスク詳細は記載されていません。</div>
-            <Editor
-                v-if="editor_mode == 'edit'"
-                ref="editor"
-                :api-key="edidor_settings.apikey"
-                :initialValue="edidor_settings.initialValue"
-                :init="edidor_settings.init"
-            />
+            <div class="editor_body" v-else>
+                <div v-if="taskDetail.task_description">
+                    <div v-html="taskDetail.task_description"></div>
+                </div>
+                <div v-else>
+                    タスクの詳細がありません
+                </div>
+            </div>
         </div>
         
         <!-- file list -->
-        <div>
-            <p class="ma-0 pb-2">■ 添付ファイル</p>
+        <div class="mt-6">
+            <p class="font-weight-bold">■ 添付ファイル</p>
+            <v-divider />
             <div>
                 <v-alert
                     v-model="file_upload_done"
@@ -335,8 +364,8 @@
                     ファイルを削除しました。
                 </v-alert>
             </div>
-            <v-divider />
-            <div>
+            
+            <div class="pt-4">
                 <div v-if="!params.files.length > 0">添付ファイルはありません。</div>
                 <div class="d-flex align-center" v-else>
                     <div>{{ params.files.length }} Files</div>
@@ -364,15 +393,9 @@
                     <td>
                         <img :src="file.download_url" width="40">
                     </td>
-                    <td>
-                        {{ file.name }}
-                    </td>
-                    <td>
-                        {{ file.size }}
-                    </td>
-                    <td>
-                        {{ file.contentType }}
-                    </td>
+                    <td>{{ file.name }}</td>
+                    <td>{{ file.size }}</td>
+                    <td>{{ file.contentType }}</td>
                     <td class="operation-td">
                         <v-btn
                             @click="deleteFileSelected(file)"
@@ -561,10 +584,12 @@ export default {
         Editor
     },
     data: () => ({
-        editor_mode: "view",
-        edidor_settings: tinymceSettings.edidor_settings,
+        // layout
         wide_display: false,
         status: null,
+        // タスク詳細
+        desc_edit: false,
+        edidor_settings: tinymceSettings.edidor_settings,
         //file
         file_select: false,
         file_select_modal: false,
@@ -634,6 +659,12 @@ export default {
             files.forEach(r => {
                 this.apiDeleteFileStorage(r)
             })
+        },
+        // 概要
+        updateTaskDescription() {
+            this.apiUpdateTaskDescription(this.taskDetail.task_id, this.taskDetail.task_description);
+            this.desc_edit = false
+
         },
         // status
         setTaskStatus() {
@@ -798,8 +829,10 @@ export default {
     table-layout: unset;
     width: 100%;
 }
-.task-list tr {
+.task-list tr:not(:first-child) {
     border-top: 1px solid #ccc;
+}
+.task-list tr {
     border-bottom: 1px solid #ccc;
 }
 .task-list tr:hover {
@@ -816,7 +849,7 @@ export default {
     width: 100%;
     border-collapse: collapse;
 }
-.file-table tr:not(:first-child) {
+.file-table tbody tr:not(:first-child) {
     border-top: 1px solid #ccc;
 }
 .file-table td,
@@ -828,5 +861,14 @@ export default {
 }
 .operation-td {
     width: 60px;
+}
+/* editor style */
+.editor_body {
+    padding: 24px;
+    background-color: #f9f9f9;
+}
+.editor_body >>> p,
+.editor_body >>> li {
+    font-size: 14px;
 }
 </style>

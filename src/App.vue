@@ -48,14 +48,16 @@ export default {
 <style scoped>
 .main {
   display: flex;
-  height: 100%;
-  padding: 24px 0;
+  height: calc(100vh - 70px);
+  box-sizing: border-box;
 }
 .body {
   width: 100%;
 }
 .header {
   border-bottom: 1px solid #ccc;
-  padding: 8px 16px;
+  height: 70px;
+  line-height: 70px;
+  padding: 0 16px;
 }
 </style>

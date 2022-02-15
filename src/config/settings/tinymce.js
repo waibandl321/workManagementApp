@@ -2,7 +2,9 @@ export default {
     edidor_settings: {
         apikey:'oq5iukdtuvton4zy3smr1m1pwaar2rfkjg98z8p1fv5q8tbt',
         init: {
-            height : 300,
+            language: 'ja',
+            language_url : 'path/to/ja.js',
+            height : 400,
             selector: "textarea",
             menubar: false,
             table_toolbar: [
@@ -20,6 +22,5 @@ export default {
                 bullist numlist outdent indent | removeformat | help table'
             ],
         },
-        initialValue: '<p>This is the initial content of the editor</p>',
     }
 }

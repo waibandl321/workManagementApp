@@ -155,16 +155,21 @@ export default {
     display: flex;
     height: 100%;
 }
+.list,
+.detail {
+    box-sizing: border-box;
+    padding: 24px 24px 10%;
+    height: 100%;
+    overflow-y: auto;
+}
 .list {
     border-right: 1px solid #ccc;
     width: 100%;
-    padding: 0 24px;
 }
 .flex .list {
     width: 35%;
 }
 .detail {
-    padding: 0 24px;
     width: 100%;
 }
 .list + .detail {

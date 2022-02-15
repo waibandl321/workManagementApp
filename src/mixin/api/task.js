@@ -120,6 +120,14 @@ export default {
             updates['/tasks/' + id + '/task_status'] = status
             update(ref(db), updates);
         },
+
+        // タスク概要説明文
+        apiUpdateTaskDescription(id, description) {
+            const db = getDatabase()
+            const updates = {};
+            updates['/tasks/' + id + '/task_description'] = description
+            update(ref(db), updates);
+        },
         
         // タスク削除
         apiDeleteTask(task) {
