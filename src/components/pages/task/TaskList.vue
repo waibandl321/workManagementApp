@@ -20,7 +20,7 @@
                         color="primary"
                         dense
                         v-model="status"
-                        @change="changeStatus()"
+                        @change="filterStatus()"
                     ></v-select>
                 </v-col>
                 <v-col cols="6" class="filter-box">
@@ -33,7 +33,7 @@
                         color="primary"
                         dense
                         v-model="priority"
-                        @change="changePriority()"
+                        @change="filterPriority()"
                     ></v-select>
                 </v-col>
             </v-row>
@@ -198,17 +198,7 @@ export default {
         init() {
             this.refreshTaskList(this.delete_task ? this.delete_task : {})
         },
-        changeStatus() {
-            if(this.status == 0) {
-                this.refreshTaskList()
-            }
-            else if(this.priority) {
-                this.filterStatusAndPriority(this.priority)
-            }
-            else {
-                this.filterStatus()
-            }
-        },
+        // 絞り込み
         filterStatus() {
             const list = this.params.task_status_list
             let filter_key = Number
@@ -217,21 +207,7 @@ export default {
                     filter_key = r.key
                 }   
             });
-            this.filterListStatus(filter_key)
-        },
-        changePriority() {
-            if(this.priority == 0) {
-                this.refreshTaskList()
-            }
-            else if(this.status) {
-                this.filterStatusAndPriority(this.status)
-            }
-            else {
-                this.filterPriority()
-            }
-        },
-        filterStatusAndPriority(other_filter_option) {
-            console.log(other_filter_option)
+            this.filterListStatus(filter_key, this.priority)
         },
         filterPriority() {
             const list = this.params.task_status_list
@@ -241,7 +217,7 @@ export default {
                     filter_key = r.key
                 }   
             });
-            this.filterListPriority(filter_key)
+            this.filterListPriority(filter_key, this.status)
         },
         record(task) {
             this.recordClick(task)

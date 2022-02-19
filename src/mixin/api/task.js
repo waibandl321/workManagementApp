@@ -50,12 +50,10 @@ export default {
         getTaskPriorities() {
             return this.task_priorities
         },
-
-        // タスクステータス 
+        // タスクステータス取得
         getTaskStatus() {
             return this.task_status
         },
-        
         // タスク作成
         apiTaskCreate(new_task) {
             const db = getDatabase();

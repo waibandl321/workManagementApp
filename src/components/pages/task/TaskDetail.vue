@@ -6,7 +6,7 @@
             >
                 <div v-if="tasknameEdit" class="taskname_edit">
                     <v-text-field
-                        v-model="taskname"
+                        v-model="taskDetail.task_name"
                     >
                     </v-text-field>
                     <v-btn
@@ -622,7 +622,6 @@ export default {
         status: null,
         // タスク名
         tasknameEdit: false,
-        taskname: "",
         // タスク詳細
         desc_edit: false,
         edidor_settings: tinymceSettings.edidor_settings,
@@ -674,7 +673,6 @@ export default {
     methods: {
         init() {
             this.projects = project_json.projects
-            this.taskname = this.taskDetail.task_name
         },
         // ファイルアップロード
         onFileChange(e) {
@@ -703,7 +701,7 @@ export default {
         },
         // タスク名
         tasknameUpdate() {
-            this.apiUpdateTaskname(this.taskDetail.task_id, this.taskname)
+            this.apiUpdateTaskname(this.taskDetail.task_id, this.taskDetail.task_name)
             this.tasknameEdit = false
             this.refreshTaskDetail()
             this.refreshTaskList()
