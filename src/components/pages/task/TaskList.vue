@@ -19,6 +19,8 @@
                         outlined
                         color="primary"
                         dense
+                        v-model="status"
+                        @change="changeStatus()"
                     ></v-select>
                 </v-col>
                 <v-col cols="6" class="filter-box">
@@ -30,6 +32,8 @@
                         outlined
                         color="primary"
                         dense
+                        v-model="priority"
+                        @change="changePriority()"
                     ></v-select>
                 </v-col>
             </v-row>
@@ -162,6 +166,8 @@ export default {
         refreshTaskList: Function,
         refreshTaskDetail: Function,
         deleteSubtaskHasTask: Function,
+        filterListStatus: Function,
+        filterListPriority: Function,
     },
     data: () => ({
         task_input: false,
@@ -172,7 +178,10 @@ export default {
         // delete
         delete_task: {},
         task_delete: false,
-        task_delete_alert: false
+        task_delete_alert: false,
+        // filter
+        priority: null,
+        status: null
     }),
 
     created() {
@@ -188,6 +197,51 @@ export default {
         },
         init() {
             this.refreshTaskList(this.delete_task ? this.delete_task : {})
+        },
+        changeStatus() {
+            if(this.status == 0) {
+                this.refreshTaskList()
+            }
+            else if(this.priority) {
+                this.filterStatusAndPriority(this.priority)
+            }
+            else {
+                this.filterStatus()
+            }
+        },
+        filterStatus() {
+            const list = this.params.task_status_list
+            let filter_key = Number
+            list.forEach(r => {
+                if(r.key == this.status) {
+                    filter_key = r.key
+                }   
+            });
+            this.filterListStatus(filter_key)
+        },
+        changePriority() {
+            if(this.priority == 0) {
+                this.refreshTaskList()
+            }
+            else if(this.status) {
+                this.filterStatusAndPriority(this.status)
+            }
+            else {
+                this.filterPriority()
+            }
+        },
+        filterStatusAndPriority(other_filter_option) {
+            console.log(other_filter_option)
+        },
+        filterPriority() {
+            const list = this.params.task_status_list
+            let filter_key = Number
+            list.forEach(r => {
+                if(r.key == this.priority) {
+                    filter_key = r.key
+                }   
+            });
+            this.filterListPriority(filter_key)
         },
         record(task) {
             this.recordClick(task)

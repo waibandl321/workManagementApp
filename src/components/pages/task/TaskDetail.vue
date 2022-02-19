@@ -2,9 +2,31 @@
     <div class="detail_inner">
         <div class="d-flex align-center">
             <div
-                class="text-h5 font-weight-bold"
+                class="text-h5 font-weight-bold taskname"
             >
-            {{ taskDetail.task_name }}
+                <div v-if="tasknameEdit" class="taskname_edit">
+                    <v-text-field
+                        v-model="taskname"
+                    >
+                    </v-text-field>
+                    <v-btn
+                        color="primary"
+                        @click="tasknameUpdate()"
+                        class="taskname_edit_save px-2"
+                    >
+                        保存
+                    </v-btn>
+                </div>
+                <div v-else>
+                <v-btn
+                    text
+                    color="primary"
+                    @click="tasknameEdit = true"
+                >
+                    <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                {{ taskDetail.task_name }}
+                </div>
             </div>
             <v-spacer></v-spacer>
             <div>
@@ -598,6 +620,9 @@ export default {
         // layout
         wide_display: false,
         status: null,
+        // タスク名
+        tasknameEdit: false,
+        taskname: "",
         // タスク詳細
         desc_edit: false,
         edidor_settings: tinymceSettings.edidor_settings,
@@ -649,6 +674,7 @@ export default {
     methods: {
         init() {
             this.projects = project_json.projects
+            this.taskname = this.taskDetail.task_name
         },
         // ファイルアップロード
         onFileChange(e) {
@@ -675,10 +701,18 @@ export default {
                 this.apiDeleteFileStorage(r)
             })
         },
+        // タスク名
+        tasknameUpdate() {
+            this.apiUpdateTaskname(this.taskDetail.task_id, this.taskname)
+            this.tasknameEdit = false
+            this.refreshTaskDetail()
+            this.refreshTaskList()
+        },
         // 概要
         updateTaskDescription() {
             this.apiUpdateTaskDescription(this.taskDetail.task_id, this.taskDetail.task_description);
             this.desc_edit = false
+            this.refreshTaskDetail()
 
         },
         // 優先度
@@ -850,6 +884,15 @@ export default {
 .file_select {
     right: 0;
     top: 100%;
+}
+.taskname {
+    position: relative;
+    width: 80%;
+}
+.taskname_edit_save {
+    position: absolute;
+    right: 0;
+    top: 8px;
 }
 .task_link {
     right: 0;

@@ -11,6 +11,7 @@ export default {
 
     data: () => ({
         task_status: [
+            { key: 0, text: "指定しない" },
             { key: 1, text: "未着手" },
             { key: 2, text: "処理中" },
             { key: 3, text: "社内確認待ち" },
@@ -31,6 +32,7 @@ export default {
             { text: "作成日順", value: 2 },
         ],
         task_priorities: [
+            { key: 0, text: "指定しない" },
             { key: 1, text: "最優先" },
             { key: 2, text: "中" },
             { key: 3, text: "低(後回しでOK)" },
@@ -138,7 +140,14 @@ export default {
             const updates = {};
             updates['/tasks/' + id + '/task_priority'] = priority
             update(ref(db), updates);
-        }, 
+        },
+        // タスク名
+        apiUpdateTaskname(id, taskname) {
+            const db = getDatabase()
+            const updates = {};
+            updates['/tasks/' + id + '/task_name'] = taskname
+            update(ref(db), updates);
+        },
         // タスク概要説明文
         apiUpdateTaskDescription(id, description) {
             const db = getDatabase()

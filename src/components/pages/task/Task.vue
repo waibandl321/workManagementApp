@@ -8,6 +8,8 @@
                 :refreshTaskList="refreshTaskList"
                 :refreshTaskDetail="refreshTaskDetail"
                 :deleteSubtaskHasTask="deleteSubtaskHasTask"
+                :filterListStatus="filterListStatus"
+                :filterListPriority="filterListPriority"
             />
         </div>
         <div class="detail" v-if="detail_active">
@@ -44,7 +46,7 @@ export default {
       task_detail: [],
       task_list_layout: true,
       params: {
-        task_list: {},
+        task_list: [],
         task_status_list: {},
         task_priorities: {},
         subtask_list: {},
@@ -125,6 +127,31 @@ export default {
                 this.detail_active = false
             }
             this.params.task_list = this.apiGetTaskList()
+        },
+        // タスクリストの絞り込み
+        filterListStatus(filter_key) {
+            this.refreshTaskList()
+            let arr = []
+            let obj = {}
+            Object.entries(this.params.task_list).forEach(r => {
+                if(r[1].task_status.key == filter_key) {
+                    arr.push(r)
+                }
+            })
+            obj = Object.fromEntries(arr)
+            this.params.task_list = obj
+        },
+        filterListPriority(filter_key) {
+            this.refreshTaskList()
+            let arr = []
+            let obj = {}
+            Object.entries(this.params.task_list).forEach(r => {
+                if(r[1].task_priority.key == filter_key) {
+                    arr.push(r)
+                }
+            })
+            obj = Object.fromEntries(arr)
+            this.params.task_list = obj
         },
         // リスト削除 => 詳細情報の削除
         deleteTaskDetail(delete_item) {
