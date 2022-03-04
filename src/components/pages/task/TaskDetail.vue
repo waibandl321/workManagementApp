@@ -156,50 +156,6 @@
                 <v-spacer />
             </div>
         <v-divider />
-        <!-- manager -->
-       
-        <div
-            class="py-2 relative d-flex align-center"
-        >
-            <v-btn
-                text
-                color="primary"
-                @click="select_manager = !select_manager"
-            >
-                <v-icon>mdi-plus</v-icon>担当者を追加
-            </v-btn>
-            <div 
-                class="select_manager"
-                v-if="select_manager"
-            >
-                <div
-                    v-for="(account, i) in parents.accounts"
-                    :key="i"
-                    class="py-1"
-                >   
-                    <v-btn
-                        text
-                        @click="selectManager()"
-                    >
-                        <v-avatar
-                            :color="account.account_avatar"
-                            size="32"
-                            class="mr-2"
-                        >
-                            <span class="white--text">{{ account.account_initial }}</span>
-                        </v-avatar>
-                        {{ account.account_name }}
-                    </v-btn>
-                </div>
-            </div>
-            <!-- <ul style="font-size: 14px;">
-                <li>タスクID : {{ taskDetail.task_id }} </li>
-                <li>作成者 : {{ taskDetail.create_account }}</li>
-                <li>作成日 : {{ taskDetail.created }}</li>
-                <li>タスク担当者 : {{ taskDetail.task_manager }}</li>
-            </ul> -->
-        </div>
-        <v-divider />
         <div class="subtask_list" v-if="params.subtask_list">
             <v-card-actions class="px-0">
                 <p class="font-weight-bold my-0">■ サブタスク</p>
@@ -214,21 +170,13 @@
                 </v-btn>
             </v-card-actions>
             <v-divider />
-            <table class="task-list">
+            <table class="task-list subtask-list">
                 <tbody>
                 <tr
                     v-for="subtask in params.subtask_list"
                     :key="subtask.id"
                     @click="subtaskRecordClick(subtask)"
                 >
-                    <td class="py-2 avatar-td">
-                        <v-avatar
-                            color="teal"
-                            size="32"
-                        >
-                            <span class="white--text">大純</span>
-                        </v-avatar>
-                    </td>
                     <td class="py-2">{{ subtask.subtask_name }}</td>
                     <td class="py-2">{{ subtask.subtask_status.value }}</td>
                     <td class="options-td">
@@ -330,41 +278,19 @@
             <v-card-actions class="relative px-0">
                 <p class="font-weight-bold mb-0">■ 添付ファイル</p>
                 <v-spacer />
+                <input
+                    style="display: none"
+                    ref="file"
+                    type="file"
+                    @change="onFileChange"
+                >
                 <v-btn
                     text
                     color="primary"
-                    @click="file_select = !file_select"
+                    @click="$refs.file.click()"
                 >
                     <v-icon>mdi-paperclip</v-icon>ファイルを添付する
                 </v-btn>
-                <!-- file select -->
-                <div class="file_select" v-if="file_select">
-                    <div>
-                        <input
-                            style="display: none"
-                            ref="file"
-                            type="file"
-                            @change="onFileChange"
-                        >
-                        <v-btn
-                            text
-                            @click="$refs.file.click()"
-                        >
-                            <v-icon class="mr-2">mdi-desktop-mac</v-icon>
-                            お使いのコンピューター
-                        </v-btn>
-                    </div>
-                    <div>
-                        <v-btn
-                            text
-                            class="my-2"
-                            @click="file_select_modal = true"
-                        >
-                            <v-icon class="mr-2">mdi-folder-multiple-outline</v-icon>
-                            ファイル管理
-                        </v-btn>
-                    </div>
-                </div>
             </v-card-actions>
             <v-divider />
             <div>
@@ -441,43 +367,7 @@
             </table>
         </div>
         
-        <!-- file select modal -->
-        <v-row justify="center">
-            <v-dialog
-                v-model="file_select_modal"
-                persistent
-                max-width="600px"
-            >
-            <v-card>
-                <v-card-title>
-                <span class="text-h5">ファイル管理</span>
-                </v-card-title>
-                <v-card-text>
-                    アップロードするファイルを選択してください
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        outlined
-                        depressed
-                        class="pa-4"
-                        @click="file_select_modal = false, file_select = false"
-                    >
-                        キャンセル
-                    </v-btn>
-                    <v-btn
-                        depressed
-                        class="pa-4"
-                        color="primary"
-                        filled
-                        @click="file_select_modal = false"
-                    >
-                        Save
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-            </v-dialog>
-        </v-row>
+        
         <!-- ファイル削除 -->
          <v-row justify="center">
             <v-dialog
@@ -605,7 +495,6 @@ export default {
     props: {
         closeDetail: Function,
         params: Object,
-        parents: Object,
         taskDetail: Object,
         refreshTaskList: Function,
         deleteSubtaskHasTask: Function,
@@ -628,8 +517,6 @@ export default {
         //タスク優先度
         priority: null,
         //file
-        file_select: false,
-        file_select_modal: false,
         delete_file_modal: false,
         delete_all_file_modal: false,
         file_loading: false,
@@ -642,8 +529,6 @@ export default {
         project: null,
         // menu
         task_delete_confirm: false,
-        // manager
-        select_manager: false,
         //subtask
         subtask_input: false,
         subtask_name: "",
@@ -786,12 +671,14 @@ export default {
             })
             this.apiSettingTaskTerm(this.term_dates, this.taskDetail.task_id)
             this.refreshTaskDetail()
+            this.refreshTaskList()
         },
         deleteTaskTerm() {
             this.term_dates = [],
             this.term = false
             this.apiDeleteTaskTerm(this.taskDetail.task_id)
             this.refreshTaskDetail()
+            this.refreshTaskList()
         },
         
         // タスク削除
@@ -898,7 +785,6 @@ export default {
 .alt_submit {
     position: absolute;
     right: 8px;
-    z-index: 2;
     top: 35%;
     transform: translateY(-35%);
 }
@@ -910,6 +796,13 @@ td {
     table-layout: unset;
     width: 100%;
 }
+.subtask-list tr {
+    background-color: #f6f6f6;
+}
+.subtask-list td {
+    padding: 0 16px;
+}
+
 .task-list tr:not(:first-child) {
     border-top: 1px solid #ccc;
 }

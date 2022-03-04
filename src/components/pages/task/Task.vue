@@ -1,10 +1,16 @@
 <template>
-    <div class="inner" :class="{flex: detail_active}">
-        <div class="list" v-if="task_list_layout">
+    <div class="inner"
+        :class="{flex: detail_active}"
+        ref="resizeArea"
+    >
+        <div class="list"
+            v-if="task_list_layout"
+            ref="list"
+            :style="{ width: list_width, borderColor: resizeLineColor }"
+        >
             <TaskList
                 :recordClick="recordClick"
                 :params="params"
-                :parents="parents"
                 :refreshTaskList="refreshTaskList"
                 :refreshTaskDetail="refreshTaskDetail"
                 :deleteSubtaskHasTask="deleteSubtaskHasTask"
@@ -12,9 +18,20 @@
                 :filterListPriority="filterListPriority"
             />
         </div>
-        <div class="detail" v-if="detail_active">
+        <div class="x-layout-split"
+            v-if="detail_active"
+            ref="resizeLine"
+            draggable="true" 
+            @drag="resize"
+            @dragend="resizeEnd"
+        >
+        </div>
+        <div class="detail"
+            v-if="detail_active"
+            ref="detailArea"
+            :style="{ width: detail_width }"
+        >
             <TaskDetail
-                :parents="parents"
                 :params="params"
                 :taskDetail="task_detail"
                 :refreshTaskList="refreshTaskList"
@@ -37,9 +54,7 @@ export default {
         TaskDetail,
     },
 
-    props: {
-        parents: Object
-    },
+    props: {},
 
     data: () => ({
       detail_active: false,
@@ -54,17 +69,38 @@ export default {
         default_sort_item: { text: "作成日順", value: 2 },
         files: []
       },
+      list_width: '100%',
+      detail_width: '',
+      resizeLineColor: '#ddd',
     }),
 
     created() {
-        this.init()
-    },
-    mounted() {
+        this.params.task_status_list = this.getTaskStatus() // status
+        this.params.task_priorities = this.getTaskPriorities() // priorities
+        this.getTaskList()
         this.getFileList()
+        this.refreshTaskList()
     },
-    updated() {},
-
+    
     methods: {
+        getTaskList() {
+            this.params.task_list = this.apiGetTaskList()
+        },
+        // タスク一覧更新
+        refreshTaskList(delete_item, from_delete) {
+            if(delete_item) {
+                this.deleteTaskDetail(delete_item)
+            }
+            if(from_delete) {
+                this.task_detail = []
+                this.detail_active = false
+            }
+            this.params.task_list = this.apiGetTaskList()
+        },
+         // タスク詳細の更新
+        refreshTaskDetail() {
+            this.task_detail = this.apiGetTaskDetail(this.task_detail.task_id)
+        },
         // ファイルデータの取得
         getFileList() {
             let files = this.apiGetFiles()
@@ -81,14 +117,11 @@ export default {
                 this.params.files = []
             }
         },
-        init() {
-            this.refreshTaskList() // list refresh
-            this.params.task_status_list = this.getTaskStatus() // status
-            this.params.task_priorities = this.getTaskPriorities() // priorities
-        },
-        // タスク詳細へ
+        // タスクリストクリック
         recordClick(task) {
             this.detail_active = true
+            this.list_width = '40%'
+            this.detail_width = '60%'
             this.initSubtaskList(task)
             this.task_detail = task
             this.getFileList()
@@ -97,7 +130,7 @@ export default {
         initSubtaskList(task) {
             if(task.task_id) {
                 let subtasks = []
-                let obj = this.apiGetsubTaskList()
+                let obj = this.apiGetSubtaskList()
                 if(obj) {
                     let arr = Object.entries(obj)
                     arr.forEach(r => {
@@ -116,18 +149,9 @@ export default {
         // 詳細画面close
         closeDetail() {
             this.detail_active = false
+            this.list_width = "100%"
         },
-        // タスク一覧更新
-        refreshTaskList(delete_item, from_delete) {
-            if(delete_item) {
-                this.deleteTaskDetail(delete_item)
-            }
-            if(from_delete) {
-                this.task_detail = []
-                this.detail_active = false
-            }
-            this.params.task_list = this.apiGetTaskList()
-        },
+        
         // タスクリストの絞り込み
         filterListStatus(filter_key, priority) {
             this.refreshTaskList()
@@ -184,36 +208,55 @@ export default {
             }
             return true
         },
-        // タスク詳細の更新
-        refreshTaskDetail() {
-            this.task_detail = this.apiGetTaskDetail(this.task_detail.task_id)
+        // 要素のリサイズ
+        resize(event) {
+            if(event.clientX != 0) {
+                this.list_width = event.x + 'px'
+                this.detail_width = (window.innerWidth - event.x) + 'px'
+                this.resizeLineColor = "#1976d2"
+            }
         },
-    }
+        resizeEnd() {
+            this.resizeLineColor = "#ddd"
+        }
+    }   
 }
 </script>
 <style scoped>
 .inner {
     display: flex;
     height: 100%;
+    overflow-y: hidden;
 }
 .list,
 .detail {
     box-sizing: border-box;
-    padding: 24px 24px 10%;
-    height: 100%;
-    overflow-y: auto;
+    padding: 24px 16px 10%;
+    height: calc(100vh - 70px);
+    overflow: auto;
 }
 .list {
-    border-right: 1px solid #ccc;
-    width: 100%;
+    border-right: 3px solid;
 }
-.flex .list {
-    width: 35%;
+.list::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
 }
-.detail {
-    width: 100%;
+.list::-webkit-scrollbar-track {
+  border-radius: 5px;
+  box-shadow: 0 0 4px #aaa inset;
 }
-.list + .detail {
-    width: 65%;
+.list::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: #bbb;
+}
+.x-layout-split {
+    width: 3px;
+    opacity: 0;
+    transform: translateX(-3px);
+    background-color: #ccc;
+}
+.x-layout-split:hover {
+    cursor: col-resize;
 }
 </style>

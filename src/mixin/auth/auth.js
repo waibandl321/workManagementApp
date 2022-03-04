@@ -71,6 +71,7 @@ export default {
                 if (user) {
                     this.authAccountGet(user.uid)
                 } else {
+                    this.loading = false
                     this.$router.push('/auth/signin', () => {})
                 }
             });
@@ -82,6 +83,7 @@ export default {
             onValue(ref(db, '/users/' + userId), (snapshot) => {
                 const data = snapshot.val()
                 this.accountData = data
+                this.loading = false
             });
         },
 

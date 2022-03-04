@@ -40,7 +40,7 @@ export default {
     }),
 
     methods: {
-        // タスクリストの並べ替え選択肢
+        
         getSortStatusOptions() {
             return this.sort_status_options
         },
@@ -60,7 +60,7 @@ export default {
             const userId = this.getAuthUserId()
             const id = Math.random().toString(32).substring(2)
             const time = this.getNowTime()
-            set(ref(db, '/tasks/' + id), {
+            set(ref(db, '/tasks/' + userId + '/' + id), {
                 task_id: id,
                 project_id: "",
                 task_name: new_task,
@@ -88,7 +88,8 @@ export default {
         // タスク一覧取得
         apiGetTaskList() {
             const db = getDatabase()
-            const r = ref(db, '/tasks/')
+            const userId = this.getAuthUserId()
+            const r = ref(db, '/tasks/' + userId)
             let d = ""
             onValue(r, (snapshot) => {
                 d = snapshot.val()
@@ -99,7 +100,8 @@ export default {
         // タスク詳細取得
         apiGetTaskDetail(id) {
             const db = getDatabase()
-            const r = ref(db, '/tasks/' + id)
+            const userId = this.getAuthUserId()
+            const r = ref(db, '/tasks/' + userId + '/' + id)
             let d = ""
             onValue(r, (snapshot) => {
                 d = snapshot.val()
@@ -110,8 +112,9 @@ export default {
         apiSettingTaskTerm(terms, id) {
             for (let i = 0; i < 2; i++) {
                 const db = getDatabase()
+                const userId = this.getAuthUserId()
                 const updates = {};
-                updates['/tasks/' + id + '/task_start_date'] = terms[0]
+                updates['/tasks/' + userId + '/' + id + '/task_start_date'] = terms[0]
                 if(terms[1]) {
                     updates['/tasks/' + id + '/task_end_date'] = terms[1]
                 }
@@ -120,45 +123,51 @@ export default {
         },
         apiDeleteTaskTerm(id) {
             const db = getDatabase()
+            const userId = this.getAuthUserId()
             const updates = {};
-            updates['/tasks/' + id + '/task_start_date'] = ""
-            updates['/tasks/' + id + '/task_end_date'] = ""                
+            updates['/tasks/' + userId + '/' + id + '/task_start_date'] = ""
+            updates['/tasks/' + userId + '/' + id + '/task_end_date'] = ""                
             update(ref(db), updates);
         },
         // タスクステータス設定
         apiSettingTaskStatus(id, status) {
             const db = getDatabase()
+            const userId = this.getAuthUserId()
             const updates = {};
-            updates['/tasks/' + id + '/task_status'] = status
+            updates['/tasks/' + userId + '/' + id + '/task_status'] = status
             update(ref(db), updates);
         },
         // タスク優先度設定
         apiSettingTaskPriority(id, priority) {
             const db = getDatabase()
+            const userId = this.getAuthUserId()
             const updates = {};
-            updates['/tasks/' + id + '/task_priority'] = priority
+            updates['/tasks/' + userId + '/' + id + '/task_priority'] = priority
             update(ref(db), updates);
         },
         // タスク名
         apiUpdateTaskname(id, taskname) {
             const db = getDatabase()
+            const userId = this.getAuthUserId()
             const updates = {};
-            updates['/tasks/' + id + '/task_name'] = taskname
+            updates['/tasks/' + userId + '/' + id + '/task_name'] = taskname
             update(ref(db), updates);
         },
         // タスク概要説明文
         apiUpdateTaskDescription(id, description) {
             const db = getDatabase()
+            const userId = this.getAuthUserId()
             const updates = {};
-            updates['/tasks/' + id + '/task_description'] = description
+            updates['/tasks/' + userId + '/' + id + '/task_description'] = description
             update(ref(db), updates);
         },
         
         // タスク削除
         apiDeleteTask(task) {
             const db = getDatabase()
+            const userId = this.getAuthUserId()
             const task_id = task.task_id
-            remove(ref(db, '/tasks/' + task_id));
+            remove(ref(db, '/tasks/' + userId + '/' + task_id));
         },
 
         // サブタスク作成
@@ -167,7 +176,7 @@ export default {
             const userId = this.getAuthUserId()
             const id = this.createRandomId()
             const time = this.getNowTime()
-            set(ref(db, '/subtasks/' + id), {
+            set(ref(db, '/subtasks/' + userId + '/' + id), {
                 subtask_id: id,
                 task_id: task_id,
                 subtask_name: subtask_name,
@@ -188,9 +197,10 @@ export default {
             return true
         },
         // サブタスク一覧取得
-        apiGetsubTaskList() {
+        apiGetSubtaskList() {
             const db = getDatabase()
-            const r = ref(db, 'subtasks/')
+            const userId = this.getAuthUserId()
+            const r = ref(db, 'subtasks/' + userId)
             let d = ""
             onValue(r, (snapshot) => {
                 d = snapshot.val()
@@ -200,15 +210,17 @@ export default {
         // サブタスク削除(単体)
         apiDeleteSubtask(subtask) {
             const db = getDatabase()
+            const userId = this.getAuthUserId()
             const subtask_id = subtask.subtask_id
-            remove(ref(db, '/subtasks/' + subtask_id));
+            remove(ref(db, '/subtasks/' + userId + '/' + subtask_id));
         },
         // 親タスク削除時のサブタスク削除
         apiDeleteSubtaskHasTask(subtasks) {
             const db = getDatabase()
+            const userId = this.getAuthUserId()
             subtasks.forEach(r => {
                 const subtask_id = r.subtask_id
-                remove(ref(db, '/subtasks/' + subtask_id));
+                remove(ref(db, '/subtasks/' + userId + '/' + subtask_id));
             })
         }
     }

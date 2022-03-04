@@ -7,10 +7,18 @@
     </header>
     <main class="main">
       <div class="body">
-        <router-view
-          :parents="parents"
-          :accountData="accountData"
-        />
+         <div v-if="loading">
+            <v-progress-linear
+                indeterminate
+                color="primary"
+            ></v-progress-linear>
+        </div>
+        <div v-else>
+          <router-view
+            :parents="parents"
+            :accountData="accountData"
+          />
+        </div>
       </div>
     </main>
   </v-app>
@@ -29,18 +37,21 @@ export default {
     parents: {
       accounts: {},
     },
+    loading: true,
     accountData: {},
   }),
 
   created() {
-    this.init()
+    this.authUserCheck()
     this.parents.accounts = account_data.accounts
   },
 
+  mounted() {
+    this.authUserCheck()
+  },
+
   methods: {
-    init() {
-      this.authUserCheck()
-    },
+    
   }
 }
 </script>
@@ -50,6 +61,7 @@ export default {
   display: flex;
   height: calc(100vh - 70px);
   box-sizing: border-box;
+  overflow: hidden;
 }
 .body {
   width: 100%;

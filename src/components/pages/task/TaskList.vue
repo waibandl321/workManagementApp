@@ -1,123 +1,130 @@
 <template>
     <div class="list_inner">
-        <div class="d-flex mb-4">
-            <v-spacer />
-            <v-btn color="success" filled @click="reload()">
-                <v-icon>mdi-reload</v-icon>
-                再読み込み
-            </v-btn>
-        </div>
-        <h2>タスク</h2>
-        <div class="filter">
-            <v-row class="my-0">
-                <v-col cols="6" class="filter-box">
-                    <v-select
-                        label="ステータスで絞り込む"
-                        :items="this.params.task_status_list"
-                        item-text="text"
-                        item-value="key"
-                        outlined
-                        color="primary"
-                        dense
-                        v-model="status"
-                        @change="filterStatus()"
-                    ></v-select>
-                </v-col>
-                <v-col cols="6" class="filter-box">
-                    <v-select
-                        label="優先度で絞り込む"
-                        :items="this.params.task_priorities"
-                        item-text="text"
-                        item-value="key"
-                        outlined
-                        color="primary"
-                        dense
-                        v-model="priority"
-                        @change="filterPriority()"
-                    ></v-select>
-                </v-col>
-            </v-row>
-        </div>
-        <!-- add task -->
-        <div class="task-add">
-            <v-btn
-                color="primary"
-                text
-                @click="task_input = !task_input"
-            >
-                <v-icon>mdi-plus</v-icon>
-                タスクを追加
-            </v-btn>
-        </div>
-        <v-alert
-            v-model="success"
-            close-text="Close Alert"
-            color="success"
-            text
-            dense
-            dismissible
-        >
-            タスクを新規作成しました！
-        </v-alert>
-        <v-alert
-            dense
-            outlined
-            dismissible
-            type="error"
-            v-model="task_delete_alert"
-        >
-            タスクを削除しました。
-        </v-alert>
-        <div class="mt-2 relative" v-show="task_input">
-            <v-text-field
-                label="タスク名を入力"
-                v-model="new_task_name"
-            >
-            </v-text-field>
-            <v-btn
-                depressed
-                class="primary alt_submit"
-                text
-                @click="createTask()"
-            >新規作成
-            </v-btn>
-        </div>
-        <div v-if="loading">
-            <v-progress-linear
-                indeterminate
-                color="primary"
-            ></v-progress-linear>
-        </div>
-        <table class="task-list mt-4">
-            <thead>
-                <tr>
-                    <td>タスク名</td>
-                    <td>優先度</td>
-                    <td>ステータス</td>
-                    <td></td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr
-                    v-for="task in params.task_list"
-                    :key="task.id"
-                    @click.stop="record(task)"
+        <div class="list_head">
+            <div class="d-flex mb-4">
+                <v-spacer />
+                <v-btn color="success" filled @click="reload()">
+                    <v-icon>mdi-reload</v-icon>
+                    再読み込み
+                </v-btn>
+            </div>
+            <h2>タスク</h2>
+            <div class="filter">
+                <v-row class="my-0">
+                    <v-col cols="6" class="filter-box">
+                        <v-select
+                            label="ステータスで絞り込む"
+                            :items="this.params.task_status_list"
+                            item-text="text"
+                            item-value="key"
+                            outlined
+                            color="primary"
+                            dense
+                            v-model="status"
+                            @change="filterStatus()"
+                        ></v-select>
+                    </v-col>
+                    <v-col cols="6" class="filter-box">
+                        <v-select
+                            label="優先度で絞り込む"
+                            :items="this.params.task_priorities"
+                            item-text="text"
+                            item-value="key"
+                            outlined
+                            color="primary"
+                            dense
+                            v-model="priority"
+                            @change="filterPriority()"
+                        ></v-select>
+                    </v-col>
+                </v-row>
+            </div>
+            <!-- add task -->
+            <div class="task-add">
+                <v-btn
+                    color="primary"
+                    text
+                    @click="task_input = !task_input"
                 >
-                    <td class="py-2">{{ task.task_name }}</td>
-                    <td class="py-2">{{ task.task_priority.text }}</td>
-                    <td class="py-2">{{ task.task_status.text }}</td>
-                    <td class="options-td">
-                        <v-btn
-                            text
-                            @click.stop="del(task)"
-                        >
-                            <v-icon>mdi-trash-can-outline</v-icon>
-                        </v-btn>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <!-- delete task confirm -->
+                    <v-icon>mdi-plus</v-icon>
+                    タスクを追加
+                </v-btn>
+            </div>
+            <v-alert
+                v-model="success"
+                close-text="Close Alert"
+                color="success"
+                text
+                dense
+                dismissible
+            >
+                タスクを新規作成しました！
+            </v-alert>
+            <v-alert
+                dense
+                outlined
+                dismissible
+                type="error"
+                v-model="task_delete_alert"
+            >
+                タスクを削除しました。
+            </v-alert>
+            <div class="mt-2 relative" v-show="task_input">
+                <v-text-field
+                    label="タスク名を入力"
+                    v-model="new_task_name"
+                >
+                </v-text-field>
+                <v-btn
+                    depressed
+                    class="primary alt_submit"
+                    text
+                    @click="createTask()"
+                >新規作成
+                </v-btn>
+            </div>
+            <div v-if="loading">
+                <v-progress-linear
+                    indeterminate
+                    color="primary"
+                ></v-progress-linear>
+            </div>
+        </div>
+        
+        <div class="list_body">
+            <table
+                class="task-list mt-4"
+            >
+                <thead>
+                    <tr>
+                        <td>タスク名</td>
+                        <td>優先度</td>
+                        <td>ステータス</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="task in params.task_list"
+                        :key="task.id"
+                        @click.stop="record(task)"
+                    >
+                        <td class="py-2">{{ task.task_name }}</td>
+                        <td class="py-2">{{ task.task_priority.text }}</td>
+                        <td class="py-2">{{ task.task_status.text }}</td>
+                        <td class="options-td">
+                            <v-btn
+                                text
+                                @click.stop="del(task)"
+                            >
+                                <v-icon>mdi-trash-can-outline</v-icon>
+                            </v-btn>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- タスク削除確認モーダル -->
         <v-row justify="center">
             <v-dialog
             v-model="task_delete"
@@ -252,6 +259,7 @@ export default {
 .list_inner >>> .v-text-field__details {
     display: none;
 }
+
 .filter-box {
     max-width: 300px;
 }

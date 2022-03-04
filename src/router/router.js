@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import Dashboard from '@/components/pages/dashboard/Dashboard'
 import Chat from '@/components/pages/chat/Chat'
 import Board from '@/components/pages/board/Board'
-import File from '@/components/pages/file/File'
 import Project from '@/components/pages/project/Project'
 import Task from '@/components/pages/task/Task'
 import Signup from '@/components/pages/auth/Signup'
@@ -18,11 +17,6 @@ export default new Router({
     {
       path: '/',
       component: Dashboard
-    },
-    {
-      path: '/file',
-      name: 'file',
-      component: File
     },
     {
       path: '/project',

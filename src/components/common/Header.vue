@@ -8,14 +8,6 @@
                     <v-icon color="primary" x-large>mdi-home-variant-outline</v-icon>
                 </v-btn>
             </div>
-            <div class="pr-4">
-                <v-text-field
-                    color="primary darken-2"
-                    label="サイト内検索"
-                    required
-                    style="width: 250px;"
-                ></v-text-field>
-            </div>
         </div>
         <v-spacer />
         <div class="d-flex align-center">
@@ -26,16 +18,25 @@
                 >
                     <v-icon color="primary" x-large>mdi-apps</v-icon>
                 </v-btn>
-            </div>  
-            <div class="pl-4" v-if="accountData">
-                <v-btn
-                    @click="account()"
-                    filled
-                    :color="accountData.color"
-                    class="pa-2 white--text"
-                >
-                    {{  accountData.last_name + accountData.first_name }}
-                </v-btn>
+            </div>
+            <div>
+                <div class="pl-4" v-if="!accountData.first_name">
+                    <v-progress-circular
+                        :size="24"
+                        color="primary"
+                        indeterminate
+                    ></v-progress-circular>
+                </div>
+                <div class="pl-4" v-else>
+                    <v-btn
+                        @click="account()"
+                        filled
+                        :color="accountData.color"
+                        class="pa-2 white--text"
+                    >
+                        {{  accountData.last_name + accountData.first_name }}
+                    </v-btn>
+                </div>
             </div>
         </div>
         <!-- 機能メニュー -->
@@ -208,9 +209,10 @@ input[type="text"] {
 .add {
     right: 80px;
 }
-.account_menu,
-.drawer {
+.header .account_menu,
+.header .drawer {
     right: 0;
+    line-height: unset;
 }
 .name {
     margin-top: -12px;
