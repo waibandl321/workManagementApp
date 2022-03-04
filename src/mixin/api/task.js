@@ -116,7 +116,7 @@ export default {
                 const updates = {};
                 updates['/tasks/' + userId + '/' + id + '/task_start_date'] = terms[0]
                 if(terms[1]) {
-                    updates['/tasks/' + id + '/task_end_date'] = terms[1]
+                    updates['/tasks/' + userId + '/' + id + '/task_end_date'] = terms[1]
                 }
                 update(ref(db), updates);
             }
