@@ -1,108 +1,232 @@
 <template>
-    <div class="inner">
-        <div class="list" v-if="project_list">
+    <div class="inner"
+        :class="{flex: detail_active}"
+        ref="resizeArea"
+    >
+        <div class="list"
+            v-if="project_list_layout"
+            ref="list"
+            :style="{ width: list_width, borderColor: resizeLineColor }"
+        >
             <ProjectList
                 :recordClick="recordClick"
                 :params="params"
-                :parents="parents"
+                :refreshProjectList="refreshProjectList"
+                :refreshProjectDetail="refreshProjectDetail"
+                :filterListStatus="filterListStatus"
+                :filterListPriority="filterListPriority"
             />
         </div>
-        <div class="detail" v-if="detail_active">
+        <div class="x-layout-split"
+            v-if="detail_active"
+            ref="resizeLine"
+            draggable="true"
+            @drag="resize"
+            @dragend="resizeEnd"
+        >
+        </div>
+        <div class="detail"
+            v-if="detail_active"
+            ref="detailArea"
+            :style="{ width: detail_width }"
+        >
             <ProjectDetail
-                :parents="parents"
                 :params="params"
                 :projectDetail="project_detail"
+                :refreshProjectList="refreshProjectList"
+                :refreshProjectDetail="refreshProjectDetail"
                 :closeDetail="closeDetail"
-                :displayWidth="displayWidth"
+                :getFileList="getFileList"
             />
-        </div>
-        <div class="detail" v-else>
-            <ProjectDetailDammy />
         </div>
     </div>
 </template>
 <script>
 import ProjectDetail from "@/components/pages/project/ProjectDetail"
-import ProjectDetailDammy from "@/components/pages/project/ProjectDetailDammy"
 import ProjectList from "@/components/pages/project/ProjectList"
-import project_list from "@/config/json/projects.json"
 
 export default {
     components: {
         ProjectList,
         ProjectDetail,
-        ProjectDetailDammy
     },
 
-    props: {
-        parents: Object
-    },
+    props: {},
 
     data: () => ({
       detail_active: false,
       project_detail: [],
-      project_list: true,
+      project_list_layout: true,
       params: {
-        projects: [],
+        project_list: [],
+        project_status_list: {},
+        project_priorities: {},
         status: { text: "全てのプロジェクト", value: 1 },
-        status_filter_items: [
-            { text: "全てのプロジェクト", value: 1 },
-            { text: "有効なプロジェクト", value: 2 },
-            { text: "未着手のプロジェクト", value: 3 },
-            { text: "処理中のプロジェクト", value: 4 },
-            { text: "社内確認待ちプロジェクト", value: 5 },
-            { text: "期限切れプロジェクト", value: 6 },
-            { text: "完了したプロジェクト", value: 7 },
-        ],
-        date_filter: { text: "優先度順", value: "1" },
-        date_filter_items: [
-            { text: "優先度順", value: "1" },
-            { text: "期日が近い順", value: "2" },
-            { text: "作成日順", value: "3" },
-        ],
+        default_sort_item: { text: "作成日順", value: 2 },
+        files: []
       },
+      list_width: '100%',
+      detail_width: '',
+      resizeLineColor: '#ddd',
     }),
 
     created() {
-        this.init()
+        this.params.project_status_list = this.getProjectStatus() // status
+        this.params.project_priorities = this.getProjectPriorities() // priorities
+        this.getProjectList()
+        this.getFileList()
+        this.refreshProjectList()
     },
-
+    
     methods: {
-        init() {
-            this.params.projects = project_list.projects
+        getProjectList() {
+            this.params.project_list = this.apiGetProjectList()
         },
+        // プロジェクト一覧更新
+        refreshProjectList(delete_item, from_delete) {
+            if(delete_item) {
+                this.deleteProjectDetail(delete_item)
+            }
+            if(from_delete) {
+                this.project_detail = []
+                this.detail_active = false
+            }
+            this.params.project_list = this.apiGetProjectList()
+        },
+         // プロジェクト詳細の更新
+        refreshProjectDetail() {
+            this.project_detail = this.apiGetProjectDetail(this.project_detail.project_id)
+        },
+        // ファイルデータの取得
+        getFileList() {
+            let files = this.apiGetFiles()
+            if(files) {
+                const obj = Object.entries(files)
+                let arr = []
+                obj.forEach(r => {
+                    if(r[1].project_id == this.project_detail.project_id) {
+                        arr.push(r[1])
+                    }
+                })
+                this.params.files = arr
+            } else {
+                this.params.files = []
+            }
+        },
+        // プロジェクトリストクリック
         recordClick(project) {
             this.detail_active = true
+            this.list_width = '40%'
+            this.detail_width = '60%'
             this.project_detail = project
+            this.getFileList()
         },
+        
+
+        // 詳細画面close
         closeDetail() {
             this.detail_active = false
+            this.list_width = "100%"
         },
-        displayWidth(status) {
-            if(status) {
-                this.project_list = false
-            } else {
-                this.project_list = true
+        
+        // プロジェクトリストの絞り込み
+        filterListStatus(filter_key, priority) {
+            this.refreshProjectList()
+            if(filter_key != 0) {
+                this.filter(filter_key, "project_status")
             }
+            if(priority) {
+                this.filter(priority, "project_priority")
+            }
+        },
+        filterListPriority(filter_key, status) {
+            this.refreshProjectList()
+            if(filter_key != 0) {
+                this.filter(filter_key, "project_priority")
+            }
+            if(status) {
+                this.filter(status, "project_status")
+            }
+        },
+        filter(filter_key, filter_text) {
+            let arr = []
+            let obj = {}
+            if( filter_text == "project_status" ) {
+                Object.entries(this.params.project_list).forEach(r => {
+                    if(r[1].project_status.key == filter_key) {
+                        arr.push(r)
+                    }
+                })
+                obj = Object.fromEntries(arr)
+                this.params.project_list = obj
+            }
+            else if( filter_text == "project_priority" ) {
+                Object.entries(this.params.project_list).forEach(r => {
+                    if(r[1].project_priority.key == filter_key) {
+                        arr.push(r)
+                    }
+                })
+                obj = Object.fromEntries(arr)
+                this.params.project_list = obj
+            }
+        },
+        // リスト削除 => 詳細情報の削除
+        deleteProjectDetail(delete_item) {
+            if(delete_item.project_id == this.project_detail.project_id) {
+                this.project_detail = []
+                this.detail_active = false
+            }
+        },
+        
+        // 要素のリサイズ
+        resize(event) {
+            if(event.clientX != 0) {
+                this.list_width = event.x + 'px'
+                this.detail_width = (window.innerWidth - event.x) + 'px'
+                this.resizeLineColor = "#1976d2"
+            }
+        },
+        resizeEnd() {
+            this.resizeLineColor = "#ddd"
         }
-    }
+    }   
 }
 </script>
 <style scoped>
 .inner {
     display: flex;
     height: 100%;
+    overflow-y: hidden;
+}
+.list,
+.detail {
+    box-sizing: border-box;
+    padding: 24px 16px 10%;
+    height: calc(100vh - 70px);
+    overflow: auto;
 }
 .list {
-    border-right: 1px solid #ccc;
-    width: 30%;
-    padding: 0 24px;
+    border-right: 3px solid;
 }
-.detail {
-    padding: 0 24px;
-    width: 100%;
+.list::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
 }
-.list + .detail {
-    width: 70%;
+.list::-webkit-scrollbar-track {
+  border-radius: 5px;
+  box-shadow: 0 0 4px #aaa inset;
+}
+.list::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: #bbb;
+}
+.x-layout-split {
+    width: 3px;
+    opacity: 0;
+    transform: translateX(-3px);
+    background-color: #ccc;
+}
+.x-layout-split:hover {
+    cursor: col-resize;
 }
 </style>

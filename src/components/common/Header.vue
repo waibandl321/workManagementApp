@@ -181,7 +181,7 @@ export default {
 .inner >>> .v-btn:not(.v-btn--round).v-size--default {
     height: auto;
     min-height: auto;
-    min-width: auto;
+    text-align: left;
     padding: 0;
 }
 input:focus {
@@ -212,7 +212,7 @@ input[type="text"] {
 .header .account_menu,
 .header .drawer {
     right: 0;
-    line-height: unset;
+    line-height: normal;
 }
 .name {
     margin-top: -12px;

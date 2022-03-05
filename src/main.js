@@ -24,17 +24,19 @@ import vuetify from './plugins/vuetify'
 import firebaseSettings from "@/config/settings/firebase.js"
 
 Vue.mixin(authMixin)
+Vue.mixin(projectMixin)
 Vue.mixin(taskMixin)
 Vue.mixin(utilMixin)
 Vue.mixin(fileMixin)
 Vue.mixin(fileRelatedDatabaseMixin)
+
 
 Vue.use(subtaskMixin)
 Vue.use(chatMixin)
 
 Vue.use(boardMixin)
 Vue.use(dashboardMixin)
-Vue.use(projectMixin)
+
 
 
 Vue.config.productionTip = false

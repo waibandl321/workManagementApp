@@ -12,13 +12,26 @@ export default {
         apiFileSaveDatabase(db_id, app, file_meta, download_url) {
             const userId = this.getAuthUserId()
             const id_key = app + "_id"
-            const arr = {
-                db_id: db_id,
-                name: file_meta.name,
-                size: file_meta.size,
-                contentType: file_meta.contentType,
-                download_url: download_url,
-                [id_key]: file_meta.customMetadata.task_id,
+            let arr = {}
+            if(app == "task") {
+                arr = {
+                    db_id: db_id,
+                    name: file_meta.name,
+                    size: file_meta.size,
+                    contentType: file_meta.contentType,
+                    download_url: download_url,
+                    [id_key]: file_meta.customMetadata.task_id,
+                }
+            }
+            else if(app == "project") {
+                arr = {
+                    db_id: db_id,
+                    name: file_meta.name,
+                    size: file_meta.size,
+                    contentType: file_meta.contentType,
+                    download_url: download_url,
+                    [id_key]: file_meta.customMetadata.project_id,
+                }
             }
             const db = getDatabase();
             set(ref(db, '/files/' + userId + '/' + db_id), arr);
