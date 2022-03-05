@@ -21,7 +21,7 @@
         <div class="x-layout-split"
             v-if="detail_active"
             ref="resizeLine"
-            draggable="true" 
+            draggable="true"
             @drag="resize"
             @dragend="resizeEnd"
         >

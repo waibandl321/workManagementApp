@@ -32,7 +32,7 @@
             <div>
                 <v-btn
                     text
-                    @click="del()"
+                    @click="deleteConfirm()"
                 >
                     <v-icon>mdi-trash-can-outline</v-icon>
                 </v-btn>
@@ -640,10 +640,6 @@ export default {
             this.refreshTaskDetail()
             this.refreshTaskList()
         },
-        // select task manager
-        selectManager() {
-            this.select_manager = false
-        },
 
         // サブタスク
         createSubtask(task) {
@@ -682,13 +678,14 @@ export default {
         },
         
         // タスク削除
-        del() {
+        deleteConfirm() {
             this.task_delete_confirm = true
         },
         execDeleteTask(taskDetail) {
             let from_detail = true
             this.apiDeleteTask(taskDetail)
             this.deleteSubtaskHasTask(taskDetail)
+            this.execDeleteAllFile(this.params.files)
             this.task_delete_confirm = false
             this.refreshTaskList(null, from_detail)
         },
