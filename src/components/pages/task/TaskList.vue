@@ -175,6 +175,7 @@ export default {
         deleteSubtaskHasTask: Function,
         filterListStatus: Function,
         filterListPriority: Function,
+        deleteAllFile: Function,
     },
     data: () => ({
         task_input: false,
@@ -247,6 +248,7 @@ export default {
         execDelete() {
             this.apiDeleteTask(this.delete_task)
             this.deleteSubtaskHasTask(this.delete_task)
+            this.deleteAllFile(this.params.files)
             this.task_delete_alert = true
             this.task_delete = false
             this.init()

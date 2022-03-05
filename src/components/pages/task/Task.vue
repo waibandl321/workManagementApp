@@ -16,6 +16,7 @@
                 :deleteSubtaskHasTask="deleteSubtaskHasTask"
                 :filterListStatus="filterListStatus"
                 :filterListPriority="filterListPriority"
+                :deleteAllFile="deleteAllFile"
             />
         </div>
         <div class="x-layout-split"
@@ -40,6 +41,7 @@
                 :deleteSubtaskHasTask="deleteSubtaskHasTask"
                 :initSubtaskList="initSubtaskList"
                 :getFileList="getFileList"
+                :deleteAllFile="deleteAllFile"
             />
         </div>
     </div>
@@ -116,6 +118,12 @@ export default {
             } else {
                 this.params.files = []
             }
+        },
+        // 全ての添付ファイルを削除
+        deleteAllFile(files) {
+            files.forEach(r => {
+                this.apiDeleteFileStorage(r)
+            })
         },
         // タスクリストクリック
         recordClick(task) {

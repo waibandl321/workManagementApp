@@ -174,6 +174,7 @@ export default {
         refreshProjectDetail: Function,
         filterListStatus: Function,
         filterListPriority: Function,
+        deleteAllFile: Function,
     },
     data: () => ({
         project_input: false,
@@ -245,6 +246,7 @@ export default {
         },
         execDelete() {
             this.apiDeleteProject(this.delete_project)
+            this.deleteAllFile(this.params.files)
             this.project_delete_alert = true
             this.project_delete = false
             this.init()

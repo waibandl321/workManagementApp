@@ -500,7 +500,8 @@ export default {
         deleteSubtaskHasTask: Function,
         initSubtaskList: Function,
         refreshTaskDetail: Function,
-        getFileList: Function
+        getFileList: Function,
+        deleteAllFile: Function,
     },
     components: {
         Editor
@@ -580,9 +581,7 @@ export default {
         execDeleteAllFile(files) {
             this.delete_all_file_modal = false
             this.file_loading = true
-            files.forEach(r => {
-                this.apiDeleteFileStorage(r)
-            })
+            this.deleteAllFile(files)
         },
         // タスク名
         tasknameUpdate() {

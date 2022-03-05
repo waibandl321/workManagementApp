@@ -1,6 +1,6 @@
 <template>
     <div class="detail_inner">
-        <div class="d-flex align-center">
+        <div class="d-flex align-center pb-2">
             <div
                 class="text-h5 font-weight-bold projectname"
             >
@@ -396,7 +396,9 @@ export default {
         projectDetail: Object,
         refreshProjectList: Function,
         refreshProjectDetail: Function,
-        getFileList: Function
+        getFileList: Function,
+        deleteAllFile: Function,
+
     },
     components: {
         Editor
@@ -465,9 +467,7 @@ export default {
         execDeleteAllFile(files) {
             this.delete_all_file_modal = false
             this.file_loading = true
-            files.forEach(r => {
-                this.apiDeleteFileStorage(r)
-            })
+            this.deleteAllFile(files)
         },
         // プロジェクト名
         projectNameUpdate() {
@@ -552,7 +552,7 @@ export default {
         execDeleteProject(projectDetail) {
             let from_detail = true
             this.apiDeleteProject(projectDetail)
-            this.execDeleteAllFile(this.params.files)
+            this.deleteAllFile(this.params.files)
             this.project_delete_confirm = false
             this.refreshProjectList(null, from_detail)
         },

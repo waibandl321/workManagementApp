@@ -15,6 +15,7 @@
                 :refreshProjectDetail="refreshProjectDetail"
                 :filterListStatus="filterListStatus"
                 :filterListPriority="filterListPriority"
+                :deleteAllFile="deleteAllFile"
             />
         </div>
         <div class="x-layout-split"
@@ -37,6 +38,7 @@
                 :refreshProjectDetail="refreshProjectDetail"
                 :closeDetail="closeDetail"
                 :getFileList="getFileList"
+                :deleteAllFile="deleteAllFile"
             />
         </div>
     </div>
@@ -112,6 +114,12 @@ export default {
             } else {
                 this.params.files = []
             }
+        },
+        // 全ての添付ファイルを削除
+        deleteAllFile(files) {
+            files.forEach(r => {
+                this.apiDeleteFileStorage(r)
+            })
         },
         // プロジェクトリストクリック
         recordClick(project) {
