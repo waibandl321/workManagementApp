@@ -4,6 +4,7 @@
             <div class="pr-4">
                 <v-btn
                     text
+                    to="/"
                 >
                     <v-icon color="primary" x-large>mdi-home-variant-outline</v-icon>
                 </v-btn>
@@ -59,52 +60,21 @@
         </div>
         <!-- profile -->
         <div class="account_menu" v-if="account_menu">
-            <v-row>
-                <v-col cols="3">
-                    <v-avatar
-                        color="teal"
-                        size="32"
-                    >
-                    <span class="white--text">大純</span>
-                </v-avatar>
-                </v-col>
-                <v-col cols="9">
-                    <p>アカウント名</p>
-                    <p>権限</p>
-                </v-col>
-            </v-row>
-            <hr>
-            <div>
-                <div>
-                    <v-btn
-                        text
-                        @click="accountEdit()"
-                    >
-                        アカウント情報編集
-                    </v-btn>
-                </div>
-                <div>
-                    <v-btn
-                        text
-                    >
-                        ヘルプ
-                    </v-btn>
-                </div>
-                <div>
-                    <v-btn
-                        text
-                    >
-                        プライバシーポリシー
-                    </v-btn>
-                </div>
-                <div>
-                    <v-btn
-                        text
-                        @click="signout()"
-                    >
-                    ログアウト
-                    </v-btn>
-                </div>
+            <div class="py-2">
+                <v-btn
+                    text
+                    @click="accountEdit()"
+                >
+                    アカウント情報編集
+                </v-btn>
+            </div>
+            <div class="py-2">
+                <v-btn
+                    text
+                    @click="signout()"
+                >
+                ログアウト
+                </v-btn>
             </div>
         </div>
         <div>

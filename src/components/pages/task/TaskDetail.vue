@@ -44,35 +44,39 @@
                 </v-btn>
             </div>
         </div>
-        <div>
-            <div class="relative" v-if="!project">
-                <v-btn
-                    class="ma-2"
-                    text
-                    color="primary"
-                    @click="select_projects = !select_projects"
-                >
-                    <v-icon>mdi-plus</v-icon>プロジェクトに紐付ける
-                </v-btn>
-                <div class="select_project" v-if="select_projects">
-                    <div
-                        v-for="(project, i) in projects"
-                        :key="i">
-                        <v-btn
-                            text
+        <!-- プロジェクト選択 -->
+        <div class="py-4">
+            <div class="project_selectbox">
+                <div class="project_select d-flex align-center">
+                    <div class="mr-2" style="width: 120px;">プロジェクト : </div>
+                    <div class="project_select_body">
+                        <select
+                            v-model="taskDetail.project_id"
+                            @change="setProject()"
                         >
-                            <v-icon>mdi-timeline-check-outline</v-icon>
-                            <span class="pl-2">{{ project.project_name }}</span>
-                        </v-btn>
+                            <option
+                                v-for="(item, i) in params.project_list"
+                                :key="i"
+                                :value="item.project_id"
+                            >
+                                {{ item.project_name }}
+                            </option>
+                        </select>
+                        <div class="select_init" v-if="taskDetail.project_id">
+                            <v-btn
+                                fab
+                                outlined
+                                x-small
+                                @click="initProject()"
+                            >
+                                <v-icon>mdi-close</v-icon>
+                            </v-btn>
+                        </div>
+                        <div class="select_init" v-else>
+                            <v-icon color="gray">mdi-menu-down</v-icon>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div v-else>
-                <v-btn
-                    class="ma-2"
-                    text
-                    outlined
-                >プロジェクト名</v-btn>
             </div>
         </div>
         
@@ -83,7 +87,7 @@
                 <v-col cols="4">
                     <v-select
                         label="ステータス"
-                        :items="this.params.task_status_list"
+                        :items="params.task_status_list"
                         item-text="text"
                         item-value="key"
                         outlined
@@ -97,7 +101,7 @@
                 <v-col cols="4">
                     <v-select
                         label="優先度"
-                        :items="this.params.task_priorities"
+                        :items="params.task_priorities"
                         item-text="text"
                         item-value="key"
                         v-model="priority"
@@ -489,7 +493,6 @@
 // tinymce
 import Editor from "@tinymce/tinymce-vue"
 import tinymceSettings from "@/config/settings/tinymce.js"
-import project_json from "@/config/json/projects.json"
 
 export default {
     props: {
@@ -524,9 +527,8 @@ export default {
         file_upload_done: false,
         file_delete_done: false,
         delete_file: {},
-        //priject
+        // project
         select_projects: false,
-        projects: null,
         project: null,
         // menu
         task_delete_confirm: false,
@@ -543,10 +545,10 @@ export default {
     }),
    
     created(){
-        this.init()
         this.setTaskStatus()
         this.setTaskPriority()
     },
+   
     updated() {
         this.setTaskStatus()
         this.setTaskPriority()
@@ -557,8 +559,16 @@ export default {
         },
     },
     methods: {
-        init() {
-            this.projects = project_json.projects
+        
+        setProject() {
+            this.apiSettingProjectId(this.taskDetail.task_id, this.taskDetail.project_id)
+            this.refreshTaskDetail()
+            this.refreshTaskList()
+        },
+        initProject() {
+            this.apiInitProjectId(this.taskDetail.task_id)
+            this.refreshTaskDetail()
+            this.refreshTaskList()
         },
         // ファイルアップロード
         onFileChange(e) {
@@ -746,7 +756,6 @@ export default {
     display: none;
 }
 .file_select,
-.select_project,
 .date_picker,
 .task_link,
 .select_manager {
@@ -757,10 +766,31 @@ export default {
     z-index: 2;
 }
 .date_picker,
-.select_manager,
-.select_project {
+.select_manager {
     left: 0;
     top: 100%;
+}
+.project_selectbox select {
+    width: 100%;
+    border: 1px solid #ccc;
+    min-height: 40px;
+    border-radius: 4px;
+    padding: 0 48px 0 12px;
+}
+.project_selectbox select:focus {
+    border: 1px solid #1976d2;
+    outline: none;
+}
+
+.project_select_body {
+    position: relative;
+    width: auto;
+}
+.select_init {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 .file_select {
     right: 0;
@@ -840,4 +870,5 @@ td {
 .editor_body >>> li {
     font-size: 14px;
 }
+
 </style>

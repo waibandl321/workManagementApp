@@ -75,7 +75,7 @@ export default {
     created() {
         this.params.project_status_list = this.getProjectStatus() // status
         this.params.project_priorities = this.getProjectPriorities() // priorities
-        this.getProjectList()
+        this.params.project_list = this.apiGetProjectList()
         this.getFileList()
         this.refreshProjectList()
     },

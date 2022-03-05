@@ -63,6 +63,7 @@ export default {
       task_detail: [],
       task_list_layout: true,
       params: {
+        project_list: {},
         task_list: [],
         task_status_list: {},
         task_priorities: {},
@@ -79,7 +80,8 @@ export default {
     created() {
         this.params.task_status_list = this.getTaskStatus() // status
         this.params.task_priorities = this.getTaskPriorities() // priorities
-        this.getTaskList()
+        this.params.project_list = this.apiGetProjectList() // projects
+        this.params.task_list = this.apiGetTaskList()
         this.getFileList()
         this.refreshTaskList()
     },

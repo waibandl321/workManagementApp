@@ -108,7 +108,7 @@ export default {
             })
             return d
         },
-        // タスク期間更新
+        // タスク期間
         apiSettingTaskTerm(terms, id) {
             for (let i = 0; i < 2; i++) {
                 const db = getDatabase()
@@ -135,6 +135,21 @@ export default {
             const userId = this.getAuthUserId()
             const updates = {};
             updates['/tasks/' + userId + '/' + id + '/task_status'] = status
+            update(ref(db), updates);
+        },
+        // プロジェクト紐付け
+        apiSettingProjectId(id, project_id) {
+            const db = getDatabase()
+            const userId = this.getAuthUserId()
+            const updates = {};
+            updates['/tasks/' + userId + '/' + id + '/project_id'] = project_id
+            update(ref(db), updates);
+        },
+        apiInitProjectId(id) {
+            const db = getDatabase()
+            const userId = this.getAuthUserId()
+            const updates = {};
+            updates['/tasks/' + userId + '/' + id + '/project_id'] = ""
             update(ref(db), updates);
         },
         // タスク優先度設定
