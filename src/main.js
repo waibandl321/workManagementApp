@@ -13,28 +13,18 @@ import authMixin from "./mixin/auth/auth.js"
 import taskMixin from "@/mixin/api/task.js"
 import fileMixin from "@/mixin/api/file.js"
 import fileRelatedDatabaseMixin from "@/mixin/api/file_relatied_db.js"
-import subtaskMixin from "@/mixin/api/subtask.js"
-import chatMixin from "@/mixin/api/chat.js"
-import boardMixin from "@/mixin/api/board.js"
 import dashboardMixin from "@/mixin/api/dashboard.js"
-import projectMixin from "@/mixin/api/project.js"
 import vuetify from './plugins/vuetify'
 
 // firebase setting info
 import firebaseSettings from "@/config/settings/firebase.js"
 
 Vue.mixin(authMixin)
-Vue.mixin(projectMixin)
 Vue.mixin(taskMixin)
 Vue.mixin(utilMixin)
 Vue.mixin(fileMixin)
 Vue.mixin(fileRelatedDatabaseMixin)
 
-
-Vue.use(subtaskMixin)
-Vue.use(chatMixin)
-
-Vue.use(boardMixin)
 Vue.use(dashboardMixin)
 
 

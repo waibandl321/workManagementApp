@@ -2,7 +2,6 @@ import {
     getAuth,
     createUserWithEmailAndPassword,
     signOut,
-    onAuthStateChanged,
     signInWithEmailAndPassword
 }
 from "firebase/auth";
@@ -63,18 +62,6 @@ export default {
             });
         },
 
-        
-        authUserCheck() {
-            const auth = getAuth()
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    this.authAccountGet(user.uid)
-                } else {
-                    this.loading = false
-                    this.$router.push('/auth/signin', () => {})
-                }
-            });
-        },
 
         routeAuthCheck() {
             const auth = getAuth()
