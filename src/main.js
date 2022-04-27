@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router/router'
-import store from './store/store.js'
+import store from './store/index.js'
 // firebase
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from "firebase/database";
@@ -9,8 +9,11 @@ import { getDatabase } from "firebase/database";
 
 // mixins
 import utilMixin from "@/mixin/common/util.js"
-import authMixin from "./mixin/auth/auth.js"
+import authMixin from "./mixin/firebase/auth.js"
+
 import accountMixin from "./mixin/api/account.js"
+import accountStore from "./mixin/store/account.js"
+
 import taskMixin from "@/mixin/api/task.js"
 import fileMixin from "@/mixin/api/file.js"
 import fileRelatedDatabaseMixin from "@/mixin/api/file_relatied_db.js"
@@ -21,7 +24,9 @@ import vuetify from './plugins/vuetify'
 import firebaseSettings from "@/config/settings/firebase.js"
 
 Vue.mixin(authMixin)
+
 Vue.mixin(accountMixin)
+Vue.mixin(accountStore)
 
 Vue.mixin(taskMixin)
 Vue.mixin(fileMixin)

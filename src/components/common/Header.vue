@@ -127,7 +127,7 @@ export default {
         this.account_menu = false
      },
      accountEdit() {
-         this.$router.push('/auth/account')
+         this.$router.push('/account')
          this.account_menu = false
 
      }

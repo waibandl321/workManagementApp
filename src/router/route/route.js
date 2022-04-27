@@ -3,7 +3,7 @@ import Dashboard from '@/components/pages/dashboard/DashboardIndex'
 import Task from '@/components/pages/task/TaskIndex'
 import Signup from '@/components/pages/auth/Signup'
 import Signin from '@/components/pages/auth/Signin'
-import AccountSetting from '@/components/pages/auth/AccountSetting'
+import AccountIndex from '@/components/pages/account/AccountIndex'
 
 export default 
     [
@@ -27,8 +27,8 @@ export default
           component: Signin
         },
         {
-          path: '/auth/account',
+          path: '/account',
           name: 'account_setting',
-          component: AccountSetting
+          component: AccountIndex
         }
     ]

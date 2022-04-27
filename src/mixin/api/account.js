@@ -7,44 +7,54 @@ import {
 }
 from "firebase/database";
 
+import { getAuth } from "firebase/auth";
+
 export default {
     methods: {
-        // アカウント取得
-        authAccountGet(id) {
+        getAuthUser() {
+            const auth = getAuth();
+            const current = auth.currentUser
+            return current
+        },
+        // アカウント情報取得
+        apiGetAccount() {
+            let account = {}
             const db = getDatabase();
-            const userId = id
-            onValue(ref(db, '/users/' + userId), (snapshot) => {
-                const data = snapshot.val()
-                this.accountData = data
-                this.loading = false
+            const user = this.getAuthUser();
+            
+            onValue(ref(db, '/users/' + user.uid), (snapshot) => {
+                account = snapshot.val()
             });
+
+            return account
+            
         },
 
         // アカウント登録
-        authAccountRegister(firstName, lastName, status, color) {
-            const userId = this.getAuthUserId()
+        apiAccountRegister(account_info) {
+            const user = this.getAuthUser()
             const db = getDatabase();
-            set(ref(db, '/users/' + userId), {
-                first_name: firstName,
-                last_name: lastName,
-                status: status,
-                color: color
+            set(ref(db, '/users/' + user.uid), {
+                first_name: account_info.first_name,
+                last_name: account_info.last_name,
+                status: account_info.status,
+                color: account_info.color
             });
         },
 
         // アカウント更新
-        authAccountUpdate(accountData) {
+        apiAccountUpdate(account_info) {
             const db = getDatabase()
-            const userId = this.getAuthUserId()
+            const user = this.getAuthUser()
             const account = {
-                first_name: accountData.first_name,
-                last_name: accountData.last_name,
-                status: accountData.status,
-                color: accountData.color
+                first_name: account_info.first_name,
+                last_name: account_info.last_name,
+                status: account_info.status,
+                color: account_info.color
             }
 
             const updates = {};
-            updates['/users/' + userId] = account;
+            updates['/users/' + user.uid] = account;
             
             update(ref(db), updates);
         },
