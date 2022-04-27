@@ -1,42 +1,37 @@
+// modules
 import Vue from 'vue'
 import Router from 'vue-router'
-import Dashboard from '@/components/pages/dashboard/Dashboard'
-import Chat from '@/components/pages/chat/Chat'
-import Board from '@/components/pages/board/Board'
-import Project from '@/components/pages/project/Project'
-import Task from '@/components/pages/task/Task'
+
+// components
+import Dashboard from '@/components/pages/dashboard/DashboardIndex'
+import Task from '@/components/pages/task/TaskIndex'
 import Signup from '@/components/pages/auth/Signup'
 import Signin from '@/components/pages/auth/Signin'
 import AccountSetting from '@/components/pages/auth/AccountSetting'
 
+// mixins
+import Auth from '@/mixin/auth/auth.js'
+
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
+  scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  },
   routes: [
     {
       path: '/',
       component: Dashboard
     },
     {
-      path: '/project',
-      name: 'project',
-      component: Project
-    },
-    {
       path: '/task',
       name: 'task',
       component: Task
-    },
-    {
-      path: '/chat',
-      name: 'chat',
-      component: Chat
-    },
-    {
-      path: '/board',
-      name: 'board',
-      component: Board
     },
     {
       path: '/auth/signup',
@@ -55,3 +50,22 @@ export default new Router({
     }
   ]
 })
+
+// ナビゲーションガード
+router.beforeEach((to, from, next) => {
+  if(!to.path.includes('/auth/')) {
+    // 認証チェック
+    if(!Auth.methods.routeAuthCheck()) {
+      next({
+        path: '/auth/signin',
+      })
+    } else {
+        next()
+      }
+  } else {
+    next()
+  }
+  next()
+})
+
+export default router

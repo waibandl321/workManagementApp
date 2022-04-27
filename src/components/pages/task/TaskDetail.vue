@@ -25,14 +25,14 @@
                 >
                     <v-icon>mdi-pencil</v-icon>
                 </v-btn>
-                {{ taskDetail.task_name }}
+                {{ taskDetail.task_name ? taskDetail.task_name : '' }}
                 </div>
             </div>
             <v-spacer></v-spacer>
             <div>
                 <v-btn
                     text
-                    @click="deleteConfirm()"
+                    @click="task_delete_confirm = true"
                 >
                     <v-icon>mdi-trash-can-outline</v-icon>
                 </v-btn>
@@ -44,42 +44,6 @@
                 </v-btn>
             </div>
         </div>
-        <!-- プロジェクト選択 -->
-        <div class="py-4">
-            <div class="project_selectbox">
-                <div class="project_select d-flex align-center">
-                    <div class="mr-2" style="width: 120px;">プロジェクト : </div>
-                    <div class="project_select_body">
-                        <select
-                            v-model="taskDetail.project_id"
-                            @change="setProject()"
-                        >
-                            <option
-                                v-for="(item, i) in params.project_list"
-                                :key="i"
-                                :value="item.project_id"
-                            >
-                                {{ item.project_name }}
-                            </option>
-                        </select>
-                        <div class="select_init" v-if="taskDetail.project_id">
-                            <v-btn
-                                fab
-                                outlined
-                                x-small
-                                @click="initProject()"
-                            >
-                                <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                        </div>
-                        <div class="select_init" v-else>
-                            <v-icon color="gray">mdi-menu-down</v-icon>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
         <v-divider />
             <div class="d-flex align-center py-4">
                 <!-- status -->
@@ -179,10 +143,9 @@
                 <tr
                     v-for="subtask in params.subtask_list"
                     :key="subtask.id"
-                    @click="subtaskRecordClick(subtask)"
                 >
-                    <td class="py-2">{{ subtask.subtask_name }}</td>
-                    <td class="py-2">{{ subtask.subtask_status.value }}</td>
+                    <td class="py-2">{{ subtask.subtask_name ? subtask.subtask_name : '' }}</td>
+                    <td class="py-2">{{ subtask.subtask_status.value ? subtask.subtask_status.value : '' }}</td>
                     <td class="options-td">
                         <v-btn
                             text
@@ -490,7 +453,7 @@
 </template>
 
 <script>
-// tinymce
+// エディタ
 import Editor from "@tinymce/tinymce-vue"
 import tinymceSettings from "@/config/settings/tinymce.js"
 
@@ -511,37 +474,39 @@ export default {
     },
     data: () => ({
         // layout
-        wide_display: false,
         status: null,
+
         // タスク名
         tasknameEdit: false,
-        // タスク詳細
+
+        // タスク詳細テキスト
         desc_edit: false,
         edidor_settings: tinymceSettings.edidor_settings,
+
         //タスク優先度
         priority: null,
-        //file
+
+        //添付ファイル
         delete_file_modal: false,
         delete_all_file_modal: false,
         file_loading: false,
         file_upload_done: false,
         file_delete_done: false,
         delete_file: {},
-        // project
-        select_projects: false,
-        project: null,
-        // menu
-        task_delete_confirm: false,
-        //subtask
+
+        //サブタスク
         subtask_input: false,
         subtask_name: "",
         subtask_delete_alert: false,
         loading: false,
         success: false,
-        // task date picker
+        
+        // タスク期日
         term: false,
         term_dates: [],
-        // status
+
+        // タスク削除確認
+        task_delete_confirm: false,
     }),
    
     created(){
@@ -559,17 +524,6 @@ export default {
         },
     },
     methods: {
-        
-        setProject() {
-            this.apiSettingProjectId(this.taskDetail.task_id, this.taskDetail.project_id)
-            this.refreshTaskDetail()
-            this.refreshTaskList()
-        },
-        initProject() {
-            this.apiInitProjectId(this.taskDetail.task_id)
-            this.refreshTaskDetail()
-            this.refreshTaskList()
-        },
         // ファイルアップロード
         onFileChange(e) {
             this.file_loading = true
@@ -593,7 +547,7 @@ export default {
             this.file_loading = true
             this.deleteAllFile(files)
         },
-        // タスク名
+        // タスク名更新
         tasknameUpdate() {
             this.apiUpdateTaskname(this.taskDetail.task_id, this.taskDetail.task_name)
             this.tasknameEdit = false
@@ -687,9 +641,6 @@ export default {
         },
         
         // タスク削除
-        deleteConfirm() {
-            this.task_delete_confirm = true
-        },
         execDeleteTask(taskDetail) {
             let from_detail = true
             this.apiDeleteTask(taskDetail)
@@ -706,169 +657,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.relative {
-    position: relative;
-}
-.detail_inner {
-    padding-bottom: 60px;
-}
-.detail_inner >>> .v-text-field__details {
-    display: none;
-}
-.relative {
-    position: relative;
-}
-.file_operation_wrap {
-    position: relative;
-}
-.drawer {
-    position: absolute;
-    bottom: 50%;
-    left: 100%;
-    box-shadow: 0px 2px 8px #00000029;
-    padding: 1rem;
-    background-color: #fff;
-    z-index: 2;
-}
-.message_send {
-    position: relative;
-}
-.avatar {
-    width: 40px;
-}
-.message_send_btn {
-    width: 80px;
-}
-.message_send_textarea {
-    width: calc(100% - 120px);
-}
-.icons {
-    position: absolute;
-    bottom: 8px;
-    right: 10%;
-}
-.v-btn:not(.v-btn--round).v-size--default {
-    min-width: unset;
-    padding: 0 4px;
-}
-.message_send_textarea >>> .v-text-field__details {
-    display: none;
-}
-.file_select,
-.date_picker,
-.task_link,
-.select_manager {
-    position: absolute;
-    box-shadow: 0px 2px 8px #00000029;
-    padding: 0.5rem 1rem;
-    background-color: #fff;
-    z-index: 2;
-}
-.date_picker,
-.select_manager {
-    left: 0;
-    top: 100%;
-}
-.project_selectbox select {
-    width: 100%;
-    border: 1px solid #ccc;
-    min-height: 40px;
-    border-radius: 4px;
-    padding: 0 48px 0 12px;
-}
-.project_selectbox select:focus {
-    border: 1px solid #1976d2;
-    outline: none;
-}
-
-.project_select_body {
-    position: relative;
-    width: auto;
-}
-.select_init {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-.file_select {
-    right: 0;
-    top: 100%;
-}
-.taskname {
-    position: relative;
-    width: 80%;
-}
-.taskname_edit_save {
-    position: absolute;
-    right: 0;
-    top: 8px;
-}
-.task_link {
-    right: 0;
-}
-.alt_submit {
-    position: absolute;
-    right: 8px;
-    top: 35%;
-    transform: translateY(-35%);
-}
-td {
-    font-size: 14px;
-}
-.task-list {
-    border-collapse: collapse;
-    table-layout: unset;
-    width: 100%;
-}
-.subtask-list tr {
-    background-color: #f6f6f6;
-}
-.subtask-list td {
-    padding: 0 16px;
-}
-
-.task-list tr:not(:first-child) {
-    border-top: 1px solid #ccc;
-}
-.task-list tr {
-    border-bottom: 1px solid #ccc;
-}
-.task-list tr:hover {
-    cursor: pointer;
-    background-color: #f6f6f6;
-}
-.options-td {
-    width: 60px;
-}
-.options-td {
-    text-align: right;
-}
-.file-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-.file-table tbody tr:not(:first-child) {
-    border-top: 1px solid #ccc;
-}
-.file-table td,
-.file-table th {
-    font-size: 14px;
-    padding: 8px;
-    vertical-align: center;
-}
-.operation-td {
-    text-align: right;
-}
-/* editor style */
-.editor_body {
-    padding: 24px;
-    background-color: #f9f9f9;
-}
-.editor_body >>> p,
-.editor_body >>> li {
-    font-size: 14px;
-}
-
-</style>
+<style scoped src="./scoped.css"></style>

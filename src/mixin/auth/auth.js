@@ -50,11 +50,10 @@ export default {
         authSignIn(email, password) {
             const auth = getAuth();
             signInWithEmailAndPassword(auth, email, password)
-            .then((result) => {
-                if(result) {
-                    this.loading = false
-                    this.$router.push('/', () => {})
-                }
+            .then((userCredential) => {
+                console.log(userCredential);
+                this.loading = false
+                this.$router.push('/', () => {})
             })
             .catch((error) => {
                 this.loading = false
@@ -75,6 +74,11 @@ export default {
                     this.$router.push('/auth/signin', () => {})
                 }
             });
+        },
+
+        routeAuthCheck() {
+            const auth = getAuth()
+            return auth.currentUser
         },
 
         authAccountGet(id) {

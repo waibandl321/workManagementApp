@@ -1,0 +1,34 @@
+<template>
+    <div class="body">
+        <Header />
+        <div class="main">
+            <Task />
+        </div>
+    </div>
+</template>
+
+<script>
+import Header from '@/components/common/Header'
+import Task from './Task.vue'
+export default {
+    components: {
+        Header,
+        Task,
+    },
+    data: () => ({}),
+    created() {},
+    computed: {},
+    methods: {},
+}
+</script>
+<style scoped>
+.body {
+  width: 100%;
+}
+.header {
+  border-bottom: 1px solid #ccc;
+  height: 70px;
+  line-height: 70px;
+  padding: 0 16px;
+}
+</style>

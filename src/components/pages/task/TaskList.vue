@@ -3,7 +3,7 @@
         <div class="list_head">
             <div class="d-flex mb-4">
                 <v-spacer />
-                <v-btn color="success" filled @click="reload()">
+                <v-btn color="success" filled @click="reload()" ref="loadList">
                     <v-icon>mdi-reload</v-icon>
                     再読み込み
                 </v-btn>
@@ -97,18 +97,24 @@
             >
                 <thead>
                     <tr>
+                        <td class="drag-icon-td">
+                            <v-icon>mdi-drag</v-icon>
+                        </td>
                         <td>タスク名</td>
                         <td>優先度</td>
                         <td>ステータス</td>
                         <td></td>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody is="draggable" tag="tbody">
                     <tr
                         v-for="task in params.task_list"
                         :key="task.id"
                         @click.stop="record(task)"
                     >
+                        <td class="drag-icon-td">
+                            <v-icon>mdi-drag</v-icon>
+                        </td>
                         <td class="py-2">{{ task.task_name }}</td>
                         <td class="py-2">{{ task.task_priority.text }}</td>
                         <td class="py-2">{{ task.task_status.text }}</td>
@@ -166,7 +172,12 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
+
 export default {
+    components: {
+        draggable
+    },
     props: {
         recordClick: Function,
         params: Object,
@@ -257,55 +268,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.list_inner >>> .v-text-field__details {
-    display: none;
-}
-
-.filter-box {
-    max-width: 300px;
-}
-select {
-    border: 1px solid #ccc;
-    height: 40px;
-}
-select:focus {
-    outline: none;
-}
-.task-list {
-    border-collapse: collapse;
-    table-layout: unset;
-    width: 100%;
-}
-thead {
-    background-color: #eee;
-}
-td {
-    font-size: 14px;
-    padding: 4px;
-}
-tbody tr {
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-}
-tbody tr:hover {
-    cursor: pointer;
-    background-color: #f6f6f6;
-}
-.relative {
-    position: relative;
-}
-.alt_submit {
-    position: absolute;
-    right: 8px;
-    z-index: 2;
-    top: 35%;
-    transform: translateY(-35%);
-}
-.options-td {
-    width: 60px;
-}
-.options-td {
-    text-align: right;
-}
-</style>
+<style scoped src="./scoped.css"></style>

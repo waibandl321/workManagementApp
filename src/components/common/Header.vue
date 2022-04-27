@@ -1,97 +1,92 @@
 <template>
-    <div class="inner d-flex align-center">
-        <div class="d-flex align-center">
-            <div class="pr-4">
-                <v-btn
-                    text
-                    to="/"
-                >
-                    <v-icon color="primary" x-large>mdi-home-variant-outline</v-icon>
-                </v-btn>
-            </div>
-        </div>
-        <v-spacer />
-        <div class="d-flex align-center">
-            <div class="pl-4">
-                <v-btn
-                    text
-                    @click="drawer()"
-                >
-                    <v-icon color="primary" x-large>mdi-apps</v-icon>
-                </v-btn>
-            </div>
-            <div>
-                <div class="pl-4" v-if="!accountData.first_name">
-                    <v-progress-circular
-                        :size="24"
-                        color="primary"
-                        indeterminate
-                    ></v-progress-circular>
-                </div>
-                <div class="pl-4" v-else>
+    <div class="header">
+        <div class="inner d-flex align-center">
+            <div class="d-flex align-center">
+                <div class="pr-4">
                     <v-btn
-                        @click="account()"
-                        filled
-                        :color="accountData.color"
-                        class="pa-2 white--text"
+                        text
+                        to="/"
                     >
-                        {{  accountData.last_name + accountData.first_name }}
+                        <v-icon color="primary" x-large>mdi-home-variant-outline</v-icon>
                     </v-btn>
                 </div>
             </div>
-        </div>
-        <!-- 機能メニュー -->
-        <div class="drawer" v-if="drawer_menu">
-            <div
-                v-for="(item, i) in functions"
-                :key="i"
-                class="pa-2"
-            >
-            <v-btn
-                class="justify-flex-start"
-                text
-                :to="item.path"
-                @click="drawer_menu = false"
-            >
-                <v-icon>{{ item.icon }}</v-icon>
-                <span class="pl-2">{{ item.text }}</span>
-            </v-btn>
+            <v-spacer />
+            <div class="d-flex align-center">
+                <div class="pl-4">
+                    <v-btn
+                        text
+                        @click="drawer()"
+                    >
+                        <v-icon color="primary" x-large>mdi-apps</v-icon>
+                    </v-btn>
+                </div>
+                <div>
+                    <div class="pl-4">
+                        <v-btn
+                            @click="account()"
+                            filled
+                            color="primary"
+                            class="pa-2 white--text"
+                        >
+                            アカウント名
+                        </v-btn>
+                    </div>
+                </div>
             </div>
-        </div>
-        <!-- profile -->
-        <div class="account_menu" v-if="account_menu">
-            <div class="py-2">
-                <v-btn
-                    text
-                    @click="accountEdit()"
+            <!-- 機能メニュー -->
+            <div class="drawer" v-if="drawer_menu">
+                <div
+                    v-for="(item, i) in functions"
+                    :key="i"
+                    class="pa-2"
                 >
-                    アカウント情報編集
-                </v-btn>
-            </div>
-            <div class="py-2">
                 <v-btn
+                    class="justify-flex-start"
                     text
-                    @click="signout()"
+                    :to="item.path"
+                    @click="drawer_menu = false"
                 >
-                ログアウト
+                    <v-icon>{{ item.icon }}</v-icon>
+                    <span class="pl-2">{{ item.text }}</span>
                 </v-btn>
+                </div>
             </div>
-        </div>
-        <div>
-             <v-alert
-                dense
-                outlined
-                type="error"
-                v-if="error"
-            >
-                {{ error }}
-            </v-alert>
-        </div>
-        <div v-if="loading">
-            <v-progress-linear
-                indeterminate
-                color="primary"
-            ></v-progress-linear>
+            <!-- profile -->
+            <div class="account_menu" v-if="account_menu">
+                <div class="py-2">
+                    <v-btn
+                        text
+                        @click="accountEdit()"
+                    >
+                        アカウント情報編集
+                    </v-btn>
+                </div>
+                <div class="py-2">
+                    <v-btn
+                        text
+                        @click="signout()"
+                    >
+                    ログアウト
+                    </v-btn>
+                </div>
+            </div>
+            <div>
+                <v-alert
+                    dense
+                    outlined
+                    type="error"
+                    v-if="error"
+                >
+                    {{ error }}
+                </v-alert>
+            </div>
+            <div v-if="loading">
+                <v-progress-linear
+                    indeterminate
+                    color="primary"
+                ></v-progress-linear>
+            </div>
         </div>
     </div>
 </template>
@@ -102,7 +97,6 @@
 export default {
  props: {
      parents: Object,
-     accountData: Object
  },
  data: () => ({
      loading: false,
@@ -111,11 +105,8 @@ export default {
      account_menu: false,
      functions: [
          { text: "ダッシュボード", path: "/", icon: "mdi-view-dashboard-outline" },
-         { text: "ファイル管理", path: "/file", icon: "mdi-folder-multiple-outline" },
          { text: "プロジェクト", path: "/project", icon: "mdi-calendar-check-outline" },
          { text: "タスク", path: "/task", icon: "mdi-format-list-checks" },
-         { text: "チャット", path: "/chat", icon: "mdi-chat-processing-outline" },
-         { text: "掲示板", path: "/board", icon: "mdi-playlist-check" },
      ],
  }),
  methods: {
