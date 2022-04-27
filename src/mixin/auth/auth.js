@@ -5,22 +5,17 @@ import {
     signInWithEmailAndPassword
 }
 from "firebase/auth";
-import {
-    getDatabase,
-    ref,
-    set,
-    update,
-    onValue
-}
-from "firebase/database";
+
 
 export default {
     methods: {
+        // ログインユーザーID取得
         getAuthUserId() {
             const auth = getAuth();
             return auth.currentUser.uid;
         },
 
+        // サインアップ
         authSignUp(email, password) {
             const auth = getAuth();
             createUserWithEmailAndPassword(auth, email, password)
@@ -35,6 +30,7 @@ export default {
             });
         },
 
+        // サインアウト
         authSignOut() {
             const auth = getAuth();
             signOut(auth).then(() => {
@@ -46,12 +42,14 @@ export default {
             });
         },
 
+        // サインイン
         authSignIn(email, password) {
             const auth = getAuth();
             signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log(userCredential);
                 this.loading = false
+                this.auth = true
                 this.$router.push('/', () => {})
             })
             .catch((error) => {
@@ -62,49 +60,6 @@ export default {
             });
         },
 
-
-        routeAuthCheck() {
-            const auth = getAuth()
-            return auth.currentUser
-        },
-
-        authAccountGet(id) {
-            const db = getDatabase();
-            const userId = id
-            onValue(ref(db, '/users/' + userId), (snapshot) => {
-                const data = snapshot.val()
-                this.accountData = data
-                this.loading = false
-            });
-        },
-
-        authAccountRegister(firstName, lastName, company, status, color) {
-            const userId = this.getAuthUserId()
-            const db = getDatabase();
-            set(ref(db, '/users/' + userId), {
-                first_name: firstName,
-                last_name: lastName,
-                company : company,
-                status: status,
-                color: color
-            });
-        },
-
-        authAccountUpdate(accountData) {
-            const db = getDatabase()
-            const userId = this.getAuthUserId()
-            const account = {
-                first_name: accountData.first_name,
-                last_name: accountData.last_name,
-                company : accountData.company,
-                status: accountData.status,
-                color: accountData.color
-            }
-
-            const updates = {};
-            updates['/users/' + userId] = account;
-            
-            update(ref(db), updates);
-        },
+        
     }
 }

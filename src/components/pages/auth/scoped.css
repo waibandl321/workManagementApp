@@ -1,0 +1,18 @@
+.auth {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #eee;
+    opacity: 1;
+}
+.card {
+    width: 320px;
+}
+.submit {
+    width: 100%;
+}

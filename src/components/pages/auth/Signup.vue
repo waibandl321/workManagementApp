@@ -76,57 +76,38 @@
 
 export default {
     data: () => ({
-      loading: false,
-      valid: true,
-      email: '',
-      emailRules: [
+        valid: true,
+        email: '',
+        emailRules: [
         v => !!v || 'メールアドレスは入力必須です',
         v => /.+@.+\..+/.test(v) || 'メールアドレスの形式で入力してください',
-      ],
-      passwordRules: [
-          v => !!v || 'パスワードは入力必須です',
-      ],
-      password: '',
-      error: '',
+        ],
+        passwordRules: [
+            v => !!v || 'パスワードは入力必須です',
+        ],
+        password: '',
+
+        loading: false,
+        error: '',
     }),
 
     methods: {
       // sign up
-      signup () {
-        const valid = this.$refs.form.validate();
-        if(valid) {
-            this.loading = true
-            this.authSignUp(this.email, this.password)
-        }
-      },
-      reset () {
-        this.$refs.form.reset()
-      },
-      resetValidation () {
-        this.$refs.form.resetValidation()
-      },
+        signup () {
+            const valid = this.$refs.form.validate();
+            if(valid) {
+                this.loading = true
+                this.authSignUp(this.email, this.password)
+            }
+        },
+        reset () {
+            this.$refs.form.reset()
+        },
+        resetValidation () {
+            this.$refs.form.resetValidation()
+        },
     },
 }
 </script>
 
-
-<style scoped>
-.auth {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #eee;
-    opacity: 1;
-}
-.card {
-    width: 320px;
-}
-.submit {
-    width: 100%;
-}
-</style>
+<style scoped src="./scoped.css"></style>

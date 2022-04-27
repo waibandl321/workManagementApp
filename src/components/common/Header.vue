@@ -105,7 +105,6 @@ export default {
      account_menu: false,
      functions: [
          { text: "ダッシュボード", path: "/", icon: "mdi-view-dashboard-outline" },
-         { text: "プロジェクト", path: "/project", icon: "mdi-calendar-check-outline" },
          { text: "タスク", path: "/task", icon: "mdi-format-list-checks" },
      ],
  }),
