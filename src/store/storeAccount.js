@@ -8,7 +8,10 @@ const activate = {
         },
         UPDATE_ACCOUNT_DATA (state, account) {
             state.account = account
-        }
+        },
+        DELETE_ACCOUNT_DATA (state) {
+            state.account = {}
+        },
     },
     actions: {
         setAccountData({ commit }, account) {
@@ -16,6 +19,9 @@ const activate = {
         },
         updateAccountData({ commit }, account) {
             commit("UPDATE_ACCOUNT_DATA", account)
+        },
+        deleteAccountData({ commit }) {
+            commit("DELETE_ACCOUNT_DATA")
         },
     },
 }

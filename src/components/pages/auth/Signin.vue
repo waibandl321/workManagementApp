@@ -94,20 +94,19 @@ export default {
 
     methods: {
         reset () {
-        this.$refs.form.reset()
+            this.$refs.form.reset()
         },
         resetValidation () {
-        this.$refs.form.resetValidation()
+            this.$refs.form.resetValidation()
         },
         // サインイン(ログイン)
-        signin () {
+        async signin () {
             const valid = this.$refs.form.validate();
             if(valid) {
                 this.loading = true
-                this.authSignIn(this.email, this.password)
-                if(this.auth) {
-                    this.$router.push('/')
-                }
+                const uid = await this.firebaseSignin(this.email, this.password)
+                this.storeSetFirebaseUid(uid)
+                this.pageMove('/')
             }
         },
     },

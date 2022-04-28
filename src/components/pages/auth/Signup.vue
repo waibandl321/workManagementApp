@@ -92,12 +92,12 @@ export default {
     }),
 
     methods: {
-      // sign up
+        // サインアップ
         signup () {
             const valid = this.$refs.form.validate();
             if(valid) {
                 this.loading = true
-                this.authSignUp(this.email, this.password)
+                this.firebaseSignup(this.email, this.password)
             }
         },
         reset () {

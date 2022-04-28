@@ -12,7 +12,7 @@ import {
 
 export default {
     data: () => ({
-        upload_done: false,
+        // upload_done: false,
     }),
     methods: {
         // ファイルアップロード（StorageとDBへ）

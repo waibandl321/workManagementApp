@@ -10,8 +10,15 @@ export default {
             let today = Date(time);
             return today
         },
+
+        // ランダムIDのセット
         createRandomId() {
             return Math.random().toString(32).substring(2)
+        },
+
+        // ページ遷移
+        pageMove(page) {
+            this.$router.push(page, () => {})
         }
     }
 }

@@ -16,7 +16,7 @@ export default {
         },
 
         // サインアップ
-        authSignUp(email, password) {
+        firebaseSignup(email, password) {
             const auth = getAuth();
             createUserWithEmailAndPassword(auth, email, password)
             .then(() => {
@@ -31,11 +31,10 @@ export default {
         },
 
         // サインアウト
-        authSignOut() {
+        firebaseSignout() {
             const auth = getAuth();
             signOut(auth).then(() => {
                 this.loading = false
-                this.$router.push('/auth/signin', () => {})
             }).catch((error) => {
                 this.loading = false
                 console.log(error.message);
@@ -43,21 +42,22 @@ export default {
         },
 
         // サインイン
-        authSignIn(email, password) {
+        async firebaseSignin(email, password) {
+            let _uid = ''
             const auth = getAuth();
-            signInWithEmailAndPassword(auth, email, password)
+            await signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                console.log(userCredential);
                 this.loading = false
-                this.auth = true
-                this.$router.push('/', () => {})
+                _uid = userCredential.user.uid
             })
             .catch((error) => {
                 this.loading = false
                 const errorMessage = error.message;
-                console.log('error message' + errorMessage);
                 this.error = '入力されたメールアドレスもしくは、パスワードが間違っています。'
+                console.log('error message' + errorMessage);
             });
+
+            return _uid
         },
 
         

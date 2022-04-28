@@ -29,7 +29,7 @@
                             color="primary"
                             class="pa-2 white--text"
                         >
-                            アカウント名
+                            UID: {{ uid }}
                         </v-btn>
                     </div>
                 </div>
@@ -95,43 +95,53 @@
 
 
 export default {
- props: {
-     parents: Object,
- },
- data: () => ({
-     loading: false,
-     error: "",
-     drawer_menu: false,
-     account_menu: false,
-     functions: [
-         { text: "ダッシュボード", path: "/", icon: "mdi-view-dashboard-outline" },
-         { text: "タスク", path: "/task", icon: "mdi-format-list-checks" },
-     ],
- }),
- methods: {
-     add() {
-         this.drawer_menu = false
-         this.account_menu = false
-     },
-     drawer() {
-         this.account_menu = false
-         this.drawer_menu = !this.drawer_menu
-     },
-     account() {
-         this.drawer_menu = false
-         this.account_menu = !this.account_menu
-     },
-     signout() {
-        //signout
-        this.authSignOut()
-        this.account_menu = false
-     },
-     accountEdit() {
-         this.$router.push('/account')
-         this.account_menu = false
+    props: {
+        parents: Object,
+    },
+    data: () => ({
+        loading: false,
+        error: "",
+        drawer_menu: false,
+        account_menu: false,
+        functions: [
+            { text: "ダッシュボード", path: "/", icon: "mdi-view-dashboard-outline" },
+            { text: "タスク", path: "/task", icon: "mdi-format-list-checks" },
+        ],
 
-     }
- }
+        uid: null,
+    }),
+
+    created() {
+        this.uid = this.storeGetFirebaseUid()
+    },
+
+    methods: {
+        add() {
+            this.drawer_menu = false
+            this.account_menu = false
+        },
+        drawer() {
+            this.account_menu = false
+            this.drawer_menu = !this.drawer_menu
+        },
+        account() {
+            this.drawer_menu = false
+            this.account_menu = !this.account_menu
+        },
+        signout() {
+            //signout
+            this.account_menu = false
+            this.firebaseSignout()
+            this.storeDeleteAccountInfo()
+            this.pageMove('/auth/signin')
+            
+        },
+        accountEdit() {
+            this.$router.push('/account')
+            this.account_menu = false
+
+        }
+    }
 }
 </script>
 <style scoped>
