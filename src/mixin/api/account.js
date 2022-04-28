@@ -16,18 +16,15 @@ export default {
             const current = auth.currentUser
             return current
         },
+
         // アカウント情報取得
-        apiGetAccount() {
+        apiGetAccount(uid) {
             let account = {}
             const db = getDatabase();
-            const user = this.getAuthUser();
-            
-            onValue(ref(db, '/users/' + user.uid), (snapshot) => {
+            onValue(ref(db, '/users/' + uid), (snapshot) => {
                 account = snapshot.val()
             });
-
             return account
-            
         },
 
         // アカウント登録

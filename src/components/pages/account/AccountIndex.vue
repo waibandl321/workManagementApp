@@ -42,10 +42,10 @@ export default {
         this.accountRead()
     },
     methods: {
-        accountRead() {
+        async accountRead() {
             this.params.success = ""
             this.params.error = ""
-            this.params.account_info = this.storeGetAccountInfo()
+            this.params.account_info = await this.apiGetAccount(this.storeGetFirebaseUid())
         },
     },
 }
