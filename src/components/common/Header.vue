@@ -32,10 +32,10 @@
                         <v-btn
                             @click="accountEdit()"
                             filled
-                            color="primary"
+                            :color="'#' + parents.user_info.color"
                             class="pa-2 white--text"
                         >
-                            ログイン中: {{ account_info.last_name }} {{ account_info.first_name }}
+                            ログイン中: {{ parents.user_info.last_name }} {{ parents.user_info.first_name }}
                         </v-btn>
                     </div>
                 </div>
@@ -84,24 +84,20 @@ export default {
             { text: "ダッシュボード", path: "/", icon: "mdi-view-dashboard-outline" },
             { text: "タスク一覧", path: "/task", icon: "mdi-format-list-checks" },
         ],
-        account_info: {}
     }),
 
     created() {
-        this.accountRead()
     },
 
     methods: {
         signout() {
             this.firebaseSignout()
             this.storeDeleteAccountInfo()
+            this.parents.user_info = {}
             this.pageMove('/auth/signin')
         },
-        async accountRead() {
-            this.account_info = await this.apiGetAccount(this.storeGetFirebaseUid())
-        },
         accountEdit() {
-            this.$router.push('/account')
+            this.pageMove('/account')
         }
     }
 }

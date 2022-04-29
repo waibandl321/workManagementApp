@@ -1,6 +1,6 @@
 <template>
     <div class="body">
-        <Header />
+        <Header :parents="parents"/>
         <div class="main">
             <div class="pa-6">
                 <DashboadTask />
@@ -17,10 +17,20 @@ export default {
         Header,
         DashboadTask
     },
-    data: () => ({}),
-    created() {},
-    computed: {},
-    methods: {},
+    data: () => ({
+        parents: {
+            user_info: {}
+        }
+    }),
+    created() {
+        console.log(this.$store.state.account.account)
+        this.init()
+    },
+    methods: {
+        init() {
+            this.parents.user_info = this.storeGetAccountInfo()
+        }
+    }
 }
 </script>
 <style scoped>

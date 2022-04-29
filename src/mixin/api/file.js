@@ -17,7 +17,7 @@ export default {
     methods: {
         // ファイルアップロード（StorageとDBへ）
         async apiUploadFile(file, id, app) {
-            const userId = this.getAuthUserId()
+            const userId = this.storeGetFirebaseUid()
             const db_id = this.createRandomId()
             const storage = getStorage();
             const storageRef = ref(storage, userId + '/' + file.name);
@@ -58,7 +58,7 @@ export default {
         // ファイルのメタデータの取得
         async apiGetFileMetadata(f_name) {
             const storage = getStorage()
-            const userId = this.getAuthUserId()
+            const userId = this.storeGetFirebaseUid()
             const forestRef = ref(storage, userId + '/' + f_name);
             let meta = ""
 
@@ -77,7 +77,7 @@ export default {
         // ストレージからファイルを削除
         apiDeleteFileStorage(file) {
             const storage = getStorage();
-            const userId = this.getAuthUserId()
+            const userId = this.storeGetFirebaseUid()
             const desertRef = ref(storage, userId + '/' + file.name);
             deleteObject(desertRef)
             .then(() => {

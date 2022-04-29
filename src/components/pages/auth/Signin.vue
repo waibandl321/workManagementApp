@@ -100,14 +100,61 @@ export default {
             this.$refs.form.resetValidation()
         },
         // サインイン(ログイン)
-        async signin () {
+        signin () {
             const valid = this.$refs.form.validate();
             if(valid) {
                 this.loading = true
-                const uid = await this.firebaseSignin(this.email, this.password)
-                this.storeSetFirebaseUid(uid)
-                this.pageMove('/')
+
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        console.log("サインイン開始");
+                        const uid = this.firebaseSignin(this.email, this.password)
+                        resolve(uid)
+                    }, 0);
+                })
+                .then((uid) => {
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            console.log("ストアにUIDセット");
+                            this.storeSetFirebaseUid(uid)
+                            resolve(uid)
+                        }, 0);
+                    })
+                })
+                .then((uid) => {
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            console.log("アカウント存在チェック");
+                            const data = this.isExistAccount(uid)
+                            resolve(data)
+                        }, 0);
+                    })
+                })
+                .then((account) => {
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            this.storeSetAccountInfo(account)
+                            resolve()
+                        }, 0);
+                    })
+                })
+                .then(() => {
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            this.loading = false
+                            this.pageMove('/')
+                            resolve()
+                        }, 0);
+                    })
+                })
+                .catch((reason) => {
+                    console.log(reason.messege);
+                });
             }
+        },
+
+        async isExistAccount(uid) {
+            return await this.apiGetAccount(uid)
         },
     },
 }

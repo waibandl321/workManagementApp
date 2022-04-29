@@ -19,12 +19,22 @@ export default {
 
         // アカウント情報取得
         async apiGetAccount(uid) {
-            let account = {}
-            const db = getDatabase();
-            await onValue(ref(db, '/users/' + uid), (snapshot) => {
-                account = snapshot.val()
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    console.log(uid);
+                    const db = getDatabase();
+                    onValue(ref(db, '/users/' + uid), (snapshot) => {
+                        return resolve(snapshot.val());
+                    });
+                }, 0);
+            })
+            .catch((reason) => {
+                console.log(reason.messege);
             });
-            return account
+        },
+
+        dataLog(data) {
+            console.log(data);
         },
 
         // アカウント登録

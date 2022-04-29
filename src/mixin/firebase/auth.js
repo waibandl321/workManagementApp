@@ -9,12 +9,6 @@ from "firebase/auth";
 
 export default {
     methods: {
-        // ログインユーザーID取得
-        getAuthUserId() {
-            const auth = getAuth();
-            return auth.currentUser.uid;
-        },
-
         // サインアップ
         async firebaseSignup(email, password) {
             const auth = getAuth();

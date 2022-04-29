@@ -1,6 +1,8 @@
 <template>
     <div class="body">
-        <Header />
+        <Header
+            :parents="parents"
+        />
         <div class="main">
             <Task />
         </div>
@@ -15,10 +17,23 @@ export default {
         Header,
         Task,
     },
-    data: () => ({}),
-    created() {},
-    computed: {},
-    methods: {},
+    data: () => ({
+        parents: {
+            user_info: {}
+        }
+    }),
+    created() {
+        console.log(this.$store.state.account.account)
+    },
+    mounted() {
+        console.log(this.$store.state.account.account)
+        this.init()
+    },
+    methods: {
+        init() {
+            this.parents.user_info = this.storeGetAccountInfo()
+        }
+    }
 }
 </script>
 <style scoped>

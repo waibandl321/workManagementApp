@@ -10,7 +10,7 @@ export default {
     methods: {
         // ファイルデータをDBに保存
         apiFileSaveDatabase(db_id, app, file_meta, download_url) {
-            const userId = this.getAuthUserId()
+            const userId = this.storeGetFirebaseUid()
             const id_key = app + "_id"
             let arr = {}
             if(app == "task") {
@@ -40,7 +40,7 @@ export default {
         // ファイルの一覧取得
         apiGetFiles() {
             const db = getDatabase()
-            const userId = this.getAuthUserId()
+            const userId = this.storeGetFirebaseUid()
             const r = ref(db, '/files/' + userId)
             let d = ""
             onValue(r, (snapshot) => {
@@ -51,7 +51,7 @@ export default {
         // データベースからファイルを削除
         apiDeleteFileDatabase(file) {
             const db = getDatabase();
-            const userId = this.getAuthUserId()
+            const userId = this.storeGetFirebaseUid()
             remove(ref(db, '/files/' + userId + '/' + file.db_id))
             .then(() => {
                 this.getFileList()
