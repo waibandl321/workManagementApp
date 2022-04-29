@@ -68,8 +68,7 @@ export default {
         async register() {
             this.params.account_info.status = true
             this.params.account_info.color = this.setAccountAvatarColor()
-
-            await this.apiAccountRegister(this.params.account_info, this.storeGetFirebaseUid())
+            await this.apiAccountCreate(this.params.account_info, this.storeGetFirebaseUid())
             this.storeSetAccountInfo(this.params.account_info)
             this.params.success = true
         },

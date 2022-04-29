@@ -18,17 +18,17 @@ export default {
         },
 
         // アカウント情報取得
-        apiGetAccount(uid) {
+        async apiGetAccount(uid) {
             let account = {}
             const db = getDatabase();
-            onValue(ref(db, '/users/' + uid), (snapshot) => {
+            await onValue(ref(db, '/users/' + uid), (snapshot) => {
                 account = snapshot.val()
             });
             return account
         },
 
         // アカウント登録
-        async apiAccountRegister(account_info, uid) {
+        async apiAccountCreate(account_info, uid) {
             const db = getDatabase();
             await set(ref(db, '/users/' + uid), {
                 first_name: account_info.first_name,

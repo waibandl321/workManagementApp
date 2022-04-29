@@ -58,7 +58,5 @@ export default {
 
             return _uid
         },
-
-        
     }
 }
