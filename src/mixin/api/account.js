@@ -28,10 +28,9 @@ export default {
         },
 
         // アカウント登録
-        apiAccountRegister(account_info) {
-            const user = this.getAuthUser()
+        async apiAccountRegister(account_info, uid) {
             const db = getDatabase();
-            set(ref(db, '/users/' + user.uid), {
+            await set(ref(db, '/users/' + uid), {
                 first_name: account_info.first_name,
                 last_name: account_info.last_name,
                 status: account_info.status,

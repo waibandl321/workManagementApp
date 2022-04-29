@@ -1,20 +1,20 @@
 <template>
     <v-card>
         <v-card-text>
-        <v-alert
-            outlined
-            type="success"
-            text
-            v-if="!params.success"
-        >
-            タスク管理アプリにユーザー登録いただきありがとうございます！<br>
-            基本情報の簡単な設定を済ませて、アプリを楽しんでください。
-        </v-alert>
-        <div v-if="params.success">
-            <v-alert type="success">
-            {{ params.success }}
+            <v-alert
+                outlined
+                type="success"
+                text
+                v-if="!params.success"
+            >
+                基本情報の簡単な設定を済ませて、アプリを楽しんでください。
             </v-alert>
-        </div>
+            <v-alert
+                type="success"
+                v-else
+            >
+                アカウント情報を登録しました。「閉じる」ボタンを押してアプリケーションの利用を開始してください。 
+            </v-alert>
         </v-card-text>
         <v-divider />
         <v-card-title>
@@ -47,7 +47,7 @@
             </v-btn>
             <v-btn
                 text
-                @click="cancel()"
+                @click="pageMove('/')"
             >
                 閉じる
             </v-btn>
@@ -65,16 +65,14 @@ export default {
 
     },
     methods: {
-        register() {
+        async register() {
             this.params.account_info.status = true
             this.params.account_info.color = this.setAccountAvatarColor()
 
-            this.apiAccountRegister(this.params.account_info)
+            await this.apiAccountRegister(this.params.account_info, this.storeGetFirebaseUid())
             this.storeSetAccountInfo(this.params.account_info)
-
-            this.params.message = "アカウント情報を登録しました。"
+            this.params.success = true
         },
-        
     }
 }
 </script>

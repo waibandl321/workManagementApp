@@ -34,7 +34,7 @@ export default {
         params: {
             loading: false,
             account_info: {},
-            success: "",
+            success: null,
             error: ""
         }
     }),
@@ -43,7 +43,7 @@ export default {
     },
     methods: {
         async accountRead() {
-            this.params.success = ""
+            this.params.success = null
             this.params.error = ""
             this.params.account_info = await this.apiGetAccount(this.storeGetFirebaseUid())
         },

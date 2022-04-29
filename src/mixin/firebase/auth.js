@@ -16,12 +16,11 @@ export default {
         },
 
         // サインアップ
-        firebaseSignup(email, password) {
+        async firebaseSignup(email, password) {
             const auth = getAuth();
-            createUserWithEmailAndPassword(auth, email, password)
+            await createUserWithEmailAndPassword(auth, email, password)
             .then(() => {
                 this.loading = false
-                this.$router.push('/auth/account', () => {})
             })
             .catch((error) => {
                 const errorMessage = error.message;

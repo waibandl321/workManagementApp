@@ -2,7 +2,7 @@
     <v-card>
         <div>
             <v-alert type="success" v-if="params.success">
-            {{ params.success }}
+            {{ params.success ? "アカウント情報を更新しました。「閉じる」ボタンからアプリケーションにお戻りください。" : "" }}
             </v-alert>
         </div>
         <v-card-title>
@@ -57,7 +57,7 @@ export default {
         accountUpdate() {
             this.apiAccountUpdate(this.params.account_info)
             this.storeUpdateAccountInfo(this.copyJson(this.params.account_info))
-            this.params.success = "アカウント情報を更新しました。"
+            this.params.success = true
         },
         copyJson(value) {
             return JSON.parse(JSON.stringify(value))

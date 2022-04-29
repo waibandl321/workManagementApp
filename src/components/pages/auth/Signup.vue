@@ -93,11 +93,12 @@ export default {
 
     methods: {
         // サインアップ
-        signup () {
+        async signup () {
             const valid = this.$refs.form.validate();
             if(valid) {
                 this.loading = true
-                this.firebaseSignup(this.email, this.password)
+                await this.firebaseSignup(this.email, this.password)
+                this.pageMove('/account')
             }
         },
         reset () {
