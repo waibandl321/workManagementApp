@@ -20,13 +20,11 @@ export default {
         // アカウント情報取得
         async apiGetAccount(uid) {
             return new Promise((resolve) => {
-                setTimeout(() => {
-                    console.log(uid);
-                    const db = getDatabase();
-                    onValue(ref(db, '/users/' + uid), (snapshot) => {
-                        return resolve(snapshot.val());
-                    });
-                }, 0);
+                console.log(uid);
+                const db = getDatabase();
+                onValue(ref(db, '/users/' + uid), (snapshot) => {
+                    return resolve(snapshot.val());
+                });
             })
             .catch((reason) => {
                 console.log(reason.messege);

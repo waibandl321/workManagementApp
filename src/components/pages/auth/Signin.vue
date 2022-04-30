@@ -106,45 +106,37 @@ export default {
                 this.loading = true
 
                 return new Promise((resolve) => {
-                    setTimeout(() => {
-                        console.log("サインイン開始");
-                        const uid = this.firebaseSignin(this.email, this.password)
-                        resolve(uid)
-                    }, 0);
+                    console.log("サインイン開始");
+                    const uid = this.firebaseSignin(this.email, this.password)
+                    resolve(uid)
                 })
                 .then((uid) => {
                     return new Promise((resolve) => {
-                        setTimeout(() => {
-                            console.log("ストアにUIDセット");
-                            this.storeSetFirebaseUid(uid)
-                            resolve(uid)
-                        }, 0);
+                        console.log("ストアにUIDセット");
+                        this.storeSetFirebaseUid(uid)
+                        resolve(uid)
                     })
                 })
                 .then((uid) => {
                     return new Promise((resolve) => {
-                        setTimeout(() => {
-                            console.log("アカウント存在チェック");
-                            const data = this.isExistAccount(uid)
-                            resolve(data)
-                        }, 0);
+                        console.log("アカウント存在チェック");
+                        const data = this.isExistAccount(uid)
+                        resolve(data)
                     })
                 })
                 .then((account) => {
                     return new Promise((resolve) => {
-                        setTimeout(() => {
-                            this.storeSetAccountInfo(account)
-                            resolve()
-                        }, 0);
+                        console.log("ストアにアカウント情報セット");
+                        this.storeSetAccountInfo(account)
+                        resolve()
                     })
                 })
                 .then(() => {
                     return new Promise((resolve) => {
-                        setTimeout(() => {
-                            this.loading = false
-                            this.pageMove('/')
-                            resolve()
-                        }, 0);
+                        console.log("ログイン後ページ遷移");
+                        this.pageMove('/')
+                        this.loading = false
+                        resolve()
                     })
                 })
                 .catch((reason) => {

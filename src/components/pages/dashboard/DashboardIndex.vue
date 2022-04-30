@@ -23,7 +23,6 @@ export default {
         }
     }),
     created() {
-        console.log(this.$store.state.account.account)
         this.init()
     },
     methods: {

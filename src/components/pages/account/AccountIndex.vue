@@ -45,7 +45,7 @@ export default {
         async accountRead() {
             this.params.success = null
             this.params.error = ""
-            this.params.account_info = this.apiGetAccount(this.storeGetFirebaseUid())
+            this.params.account_info = this.storeGetAccountInfo()
         },
     },
 }
