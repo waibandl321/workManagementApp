@@ -7,12 +7,6 @@
             <TaskList
                 :params="params"
                 :recordClick="recordClick"
-                :refreshTaskList="refreshTaskList"
-                :refreshTaskDetail="refreshTaskDetail"
-                :deleteSubtaskHasTask="deleteSubtaskHasTask"
-                :filterListStatus="filterListStatus"
-                :filterListPriority="filterListPriority"
-                :deleteAllFile="deleteAllFile"
             />
         </div>
         <!-- タスク詳細 -->
@@ -22,14 +16,8 @@
         >
             <TaskDetail
                 :params="params"
-                :taskDetail="task_detail"
-                :refreshTaskList="refreshTaskList"
-                :refreshTaskDetail="refreshTaskDetail"
+                :viewer="viewer"
                 :closeDetail="closeDetail"
-                :deleteSubtaskHasTask="deleteSubtaskHasTask"
-                :initSubtaskList="initSubtaskList"
-                :getFileList="getFileList"
-                :deleteAllFile="deleteAllFile"
             />
         </div>
     </div>
@@ -47,7 +35,7 @@ export default {
     mixins: [myMixin],
     data: () => ({
       detail_active: false,
-      task_detail: [],
+      viewer: [],
       params: {
         task_list: [],
         task_status_list: {},
@@ -60,19 +48,19 @@ export default {
     }),
 
     created() {
-        this.params.task_status_list = this.getTaskStatus() // status
-        this.params.task_priorities = this.getTaskPriorities() // priorities
-        this.params.task_list = this.apiGetTaskList()
+        this.params.task_status_list = this.getTaskStatus()
+        this.params.task_priorities = this.getTaskPriorities()
+        this.readTasklist()
         this.getFileList()
-        this.refreshTaskList()
     },
     
     methods: {
+        
         // 一覧レコードクリック
         recordClick(task) {
             this.detail_active = true
             this.initSubtaskList(task)
-            this.task_detail = task
+            this.viewer = task
             this.getFileList()
         },
 

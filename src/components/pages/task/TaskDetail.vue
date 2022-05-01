@@ -6,7 +6,7 @@
             >
                 <div v-if="tasknameEdit" class="taskname_edit">
                     <v-text-field
-                        v-model="taskDetail.task_name"
+                        v-model="viewer.task_name"
                     >
                     </v-text-field>
                     <v-btn
@@ -25,7 +25,7 @@
                 >
                     <v-icon>mdi-pencil</v-icon>
                 </v-btn>
-                {{ taskDetail.task_name ? taskDetail.task_name : '' }}
+                {{ viewer.task_name ? viewer.task_name : '' }}
                 </div>
             </div>
             <v-spacer></v-spacer>
@@ -83,7 +83,7 @@
                         text
                     >
                         <v-icon class="mr-2">mdi-calendar-check-outline</v-icon>
-                        {{ taskDetail.task_start_date }} ~ {{ taskDetail.task_end_date }}
+                        {{ viewer.task_start_date }} ~ {{ viewer.task_end_date }}
                     </v-btn>
                     <!-- date picker -->
                     <div class="date_picker" v-if="term">
@@ -190,7 +190,7 @@
                         depressed
                         class="primary alt_submit px-4"
                         text
-                        @click="createSubtask(taskDetail)"
+                        @click="createSubtask(viewer)"
                     >新規作成
                     </v-btn>
                 </div>
@@ -227,12 +227,12 @@
                     ref="editor"
                     :api-key="edidor_settings.apikey"
                     :init="edidor_settings.init"
-                    v-model.trim="taskDetail.task_description"
+                    v-model.trim="viewer.task_description"
                 />
             </div>
             <div class="editor_body" v-else>
-                <div v-if="taskDetail.task_description">
-                    <div v-html="taskDetail.task_description"></div>
+                <div v-if="viewer.task_description">
+                    <div v-html="viewer.task_description"></div>
                 </div>
                 <div v-else>
                     タスクの詳細がありません
@@ -440,7 +440,7 @@
                         class="pa-4"
                         color="red darken-4"
                         outlined
-                        @click="execDeleteTask(taskDetail)"
+                        @click="execDeleteTask(viewer)"
                         
                     >
                         削除する
@@ -461,13 +461,7 @@ export default {
     props: {
         closeDetail: Function,
         params: Object,
-        taskDetail: Object,
-        refreshTaskList: Function,
-        deleteSubtaskHasTask: Function,
-        initSubtaskList: Function,
-        refreshTaskDetail: Function,
-        getFileList: Function,
-        deleteAllFile: Function,
+        viewer: Object,
     },
     components: {
         Editor
@@ -520,7 +514,7 @@ export default {
     },
     computed: {
         dateRangeText() {
-            return this.taskDetail.task_start_date + " 〜 " + this.taskDetail.task_end_date
+            return this.viewer.task_start_date + " 〜 " + this.viewer.task_end_date
         },
     },
     methods: {
@@ -530,7 +524,7 @@ export default {
             this.file_select = false
             const files = e.target.files || e.dataTransfer.files
             if(files.length > 0) {
-                this.apiUploadFile(files[0], this.taskDetail.task_id, "task")
+                this.apiUploadFile(files[0], this.viewer.task_id, "task")
             }
         },
         // ファイル削除
@@ -549,21 +543,21 @@ export default {
         },
         // タスク名更新
         tasknameUpdate() {
-            this.apiUpdateTaskname(this.taskDetail.task_id, this.taskDetail.task_name)
+            this.apiUpdateTaskname(this.viewer.task_id, this.viewer.task_name)
             this.tasknameEdit = false
             this.refreshTaskDetail()
-            this.refreshTaskList()
+            this.readTasklist()
         },
         // 概要
         updateTaskDescription() {
-            this.apiUpdateTaskDescription(this.taskDetail.task_id, this.taskDetail.task_description);
+            this.apiUpdateTaskDescription(this.viewer.task_id, this.viewer.task_description);
             this.desc_edit = false
             this.refreshTaskDetail()
 
         },
         // 優先度
         setTaskPriority() {
-            let task_priority = this.taskDetail.task_priority
+            let task_priority = this.viewer.task_priority
             const list = this.params.task_priorities
             list.forEach(r => {
                 r.key == task_priority.key ? this.priority = r : null
@@ -578,13 +572,13 @@ export default {
                    priority = r
                 }
             })
-            this.apiSettingTaskPriority(this.taskDetail.task_id, priority)
+            this.apiSettingTaskPriority(this.viewer.task_id, priority)
             this.refreshTaskDetail()
-            this.refreshTaskList()
+            this.readTasklist()
         },
         //タスクステータスセット
         setTaskStatus() {
-            let task_status = this.taskDetail.task_status
+            let task_status = this.viewer.task_status
             const list = this.params.task_status_list
             list.forEach(r => {
                 r.key == task_status.key ? this.status = r : null
@@ -599,9 +593,9 @@ export default {
                    status = r
                 }
             })
-            this.apiSettingTaskStatus(this.taskDetail.task_id, status)
+            this.apiSettingTaskStatus(this.viewer.task_id, status)
             this.refreshTaskDetail()
-            this.refreshTaskList()
+            this.readTasklist()
         },
 
         // サブタスク
@@ -616,7 +610,7 @@ export default {
         deleteSubtask(subtask) {
             this.apiDeleteSubtask(subtask)
             this.subtask_delete_alert = true
-            this.initSubtaskList(this.taskDetail)
+            this.initSubtaskList(this.viewer)
         },
         subtaskRecordClick(subtask) {
             console.log(subtask)
@@ -628,26 +622,26 @@ export default {
             this.term_dates.sort(function(a, b){
                 return (a > b ? 1 : -1);
             })
-            this.apiSettingTaskTerm(this.term_dates, this.taskDetail.task_id)
+            this.apiSettingTaskTerm(this.term_dates, this.viewer.task_id)
             this.refreshTaskDetail()
-            this.refreshTaskList()
+            this.readTasklist()
         },
         deleteTaskTerm() {
             this.term_dates = [],
             this.term = false
-            this.apiDeleteTaskTerm(this.taskDetail.task_id)
+            this.apiDeleteTaskTerm(this.viewer.task_id)
             this.refreshTaskDetail()
-            this.refreshTaskList()
+            this.readTasklist()
         },
         
         // タスク削除
-        execDeleteTask(taskDetail) {
+        execDeleteTask(delete_item) {
             let from_detail = true
-            this.apiDeleteTask(taskDetail)
-            this.deleteSubtaskHasTask(taskDetail)
+            this.apiDeleteTask(delete_item)
+            this.deleteSubtaskHasTask(delete_item)
             this.execDeleteAllFile(this.params.files)
             this.task_delete_confirm = false
-            this.refreshTaskList(null, from_detail)
+            this.readTasklist(null, from_detail)
         },
         // 詳細画面閉じる
         close() {

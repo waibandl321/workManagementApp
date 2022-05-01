@@ -1,7 +1,8 @@
 export default {
     methods: {
-        getTaskList() {
-            this.params.task_list = this.apiGetTaskList()
+        // タスク一覧読み込み
+        async readTasklist() {
+            this.params.task_list = await this.apiGetTaskList()
         },
         // タスク一覧更新
         refreshTaskList(delete_item, from_delete) {
@@ -59,46 +60,46 @@ export default {
             }
         },
         // タスクリストの絞り込み
-        filterListStatus(filter_key, priority) {
-            this.refreshTaskList()
-            if(filter_key != 0) {
-                this.filter(filter_key, "task_status")
-            }
-            if(priority) {
-                this.filter(priority, "task_priority")
-            }
-        },
-        filterListPriority(filter_key, status) {
-            this.refreshTaskList()
-            if(filter_key != 0) {
-                this.filter(filter_key, "task_priority")
-            }
-            if(status) {
-                this.filter(status, "task_status")
-            }
-        },
-        filter(filter_key, filter_text) {
-            let arr = []
-            let obj = {}
-            if( filter_text == "task_status" ) {
-                Object.entries(this.params.task_list).forEach(r => {
-                    if(r[1].task_status.key == filter_key) {
-                        arr.push(r)
-                    }
-                })
-                obj = Object.fromEntries(arr)
-                this.params.task_list = obj
-            }
-            else if( filter_text == "task_priority" ) {
-                Object.entries(this.params.task_list).forEach(r => {
-                    if(r[1].task_priority.key == filter_key) {
-                        arr.push(r)
-                    }
-                })
-                obj = Object.fromEntries(arr)
-                this.params.task_list = obj
-            }
-        },
+        // filterListStatus(filter_key, priority) {
+        //     this.refreshTaskList()
+        //     if(filter_key != 0) {
+        //         this.filter(filter_key, "task_status")
+        //     }
+        //     if(priority) {
+        //         this.filter(priority, "task_priority")
+        //     }
+        // },
+        // filterListPriority(filter_key, status) {
+        //     this.refreshTaskList()
+        //     if(filter_key != 0) {
+        //         this.filter(filter_key, "task_priority")
+        //     }
+        //     if(status) {
+        //         this.filter(status, "task_status")
+        //     }
+        // },
+        // filter(filter_key, filter_text) {
+        //     let arr = []
+        //     let obj = {}
+        //     if( filter_text == "task_status" ) {
+        //         Object.entries(this.params.task_list).forEach(r => {
+        //             if(r[1].task_status.key == filter_key) {
+        //                 arr.push(r)
+        //             }
+        //         })
+        //         obj = Object.fromEntries(arr)
+        //         this.params.task_list = obj
+        //     }
+        //     else if( filter_text == "task_priority" ) {
+        //         Object.entries(this.params.task_list).forEach(r => {
+        //             if(r[1].task_priority.key == filter_key) {
+        //                 arr.push(r)
+        //             }
+        //         })
+        //         obj = Object.fromEntries(arr)
+        //         this.params.task_list = obj
+        //     }
+        // },
         // リスト削除 => 詳細情報の削除
         deleteTaskDetail(delete_item) {
             if(delete_item.task_id == this.task_detail.task_id) {

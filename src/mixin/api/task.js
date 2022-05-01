@@ -40,11 +40,9 @@ export default {
     }),
 
     methods: {
-        // タスクステータス絞り込みオプション
         getSortStatusOptions() {
             return this.sort_status_options
         },
-        // タスク期日絞り込みオプション
         getSortDateOptions() {
             return this.sort_date_options
         },
@@ -56,6 +54,7 @@ export default {
         getTaskStatus() {
             return this.task_status
         },
+        
         // タスク作成
         apiTaskCreate(new_task) {
             const db = getDatabase();
@@ -89,15 +88,17 @@ export default {
         },
 
         // タスク一覧取得
-        apiGetTaskList() {
-            const db = getDatabase()
-            const userId = this.storeGetFirebaseUid()
-            const r = ref(db, '/tasks/' + userId)
-            let d = ""
-            onValue(r, (snapshot) => {
-                d = snapshot.val()
+        async apiGetTaskList() {
+            return new Promise((resolve,) => {
+                const db = getDatabase()
+                const r = ref(db, '/tasks/' + this.storeGetFirebaseUid())
+                onValue(r, (snapshot) => {
+                    return resolve(snapshot.val())
+                })
             })
-            return d
+            .catch((reason) => {
+                console.log(reason.messege);
+            });
         },
 
         // タスク詳細取得

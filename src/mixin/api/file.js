@@ -11,9 +11,7 @@ import {
 
 
 export default {
-    data: () => ({
-        // upload_done: false,
-    }),
+    data: () => ({}),
     methods: {
         // ファイルアップロード（StorageとDBへ）
         async apiUploadFile(file, id, app) {

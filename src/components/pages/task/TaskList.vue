@@ -1,40 +1,32 @@
 <template>
     <div class="list_inner">
         <div class="list_head">
-            <div class="d-flex mb-4">
-                <v-spacer />
-                <v-btn color="success" filled @click="reload()" ref="loadList">
-                    <v-icon>mdi-reload</v-icon>
-                    再読み込み
-                </v-btn>
-            </div>
-            <h2>タスク</h2>
             <div class="filter">
                 <v-row class="my-0">
                     <v-col cols="6" class="filter-box">
                         <v-select
                             label="ステータスで絞り込む"
-                            :items="this.params.task_status_list"
+                            :items="params.task_status_list"
                             item-text="text"
                             item-value="key"
                             outlined
                             color="primary"
                             dense
-                            v-model="status"
-                            @change="filterStatus()"
+                            v-model="filter_status"
+                            @change="filterList()"
                         ></v-select>
                     </v-col>
                     <v-col cols="6" class="filter-box">
                         <v-select
                             label="優先度で絞り込む"
-                            :items="this.params.task_priorities"
+                            :items="params.task_priorities"
                             item-text="text"
                             item-value="key"
                             outlined
                             color="primary"
                             dense
-                            v-model="priority"
-                            @change="filterPriority()"
+                            v-model="filter_priority"
+                            @change="filterList()"
                         ></v-select>
                     </v-col>
                 </v-row>
@@ -108,8 +100,8 @@
                 </thead>
                 <tbody is="draggable" tag="tbody">
                     <tr
-                        v-for="task in params.task_list"
-                        :key="task.id"
+                        v-for="(task, i) in filter_items"
+                        :key="i"
                         @click.stop="record(task)"
                     >
                         <td class="drag-icon-td">
@@ -181,12 +173,6 @@ export default {
     props: {
         recordClick: Function,
         params: Object,
-        refreshTaskList: Function,
-        refreshTaskDetail: Function,
-        deleteSubtaskHasTask: Function,
-        filterListStatus: Function,
-        filterListPriority: Function,
-        deleteAllFile: Function,
     },
     data: () => ({
         task_input: false,
@@ -199,44 +185,33 @@ export default {
         task_delete: false,
         task_delete_alert: false,
         // filter
-        priority: null,
-        status: null
+        filter_items: [],
+        filter_status: null,
+        filter_priority: null
     }),
 
     created() {
-        this.init()
+        // this.init()
+        this.filterList()
     },
 
     methods: {
-        reload() {
-            this.refreshTaskList()
-            if(this.task_detail) {
-                this.refreshTaskDetail()
-            }
-        },
         init() {
-            this.refreshTaskList(this.delete_task ? this.delete_task : {})
+            // this.readTasklist(this.delete_task ? this.delete_task : {})
         },
         // 絞り込み
-        filterStatus() {
-            const list = this.params.task_status_list
-            let filter_key = Number
-            list.forEach(r => {
-                if(r.key == this.status) {
-                    filter_key = r.key
-                }   
-            });
-            this.filterListStatus(filter_key, this.priority)
-        },
-        filterPriority() {
-            const list = this.params.task_status_list
-            let filter_key = Number
-            list.forEach(r => {
-                if(r.key == this.priority) {
-                    filter_key = r.key
-                }   
-            });
-            this.filterListPriority(filter_key, this.status)
+        filterList() {
+            let result = Object.entries(this.params.task_list)
+            if(this.filter_status) {
+                result = result.filter(x => x[1].task_status.key === this.filter_status)
+            }
+            if(this.filter_priority) {
+                result = result.filter(
+                    x => x[1].task_priority.key === this.filter_priority
+                )
+            }
+            result = Object.fromEntries(result);
+            this.filter_items = result
         },
         record(task) {
             this.recordClick(task)

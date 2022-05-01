@@ -48,6 +48,7 @@ export default {
             })
             return d
         },
+        
         // データベースからファイルを削除
         apiDeleteFileDatabase(file) {
             const db = getDatabase();
