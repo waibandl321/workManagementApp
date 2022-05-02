@@ -1,5 +1,6 @@
 <template>
     <div class="detail_inner">
+        {{ viewer.task_id }}
         <div class="d-flex align-center">
             <div
                 class="text-h5 font-weight-bold taskname"
@@ -49,6 +50,7 @@
                 <!-- status -->
                 <v-row>
                 <v-col cols="4">
+                    {{ viewer.task_status }}
                     <v-select
                         label="ステータス"
                         :items="params.task_status_list"
@@ -57,18 +59,19 @@
                         outlined
                         color="primary"
                         dense
-                        v-model="status"
+                        v-model="viewer.task_status"
                         @change="settingTaskStatus()"
                     ></v-select>
                 </v-col>
                 <!-- 優先度 -->
                 <v-col cols="4">
+                    {{ viewer.task_priority }}
                     <v-select
                         label="優先度"
                         :items="params.task_priorities"
                         item-text="text"
                         item-value="key"
-                        v-model="priority"
+                        v-model="viewer.task_priority"
                         outlined
                         color="primary"
                         dense
@@ -461,7 +464,7 @@ import myMixin from "./task.js"
 export default {
     props: {
         closeDetail: Function,
-        deleteFromDetail: Function,
+        listRefresh: Function,
         params: Object,
         viewer: Object,
     },
@@ -470,20 +473,20 @@ export default {
         Editor
     },
     data: () => ({
-        // layout
+        //タスク情報
         status: null,
-
-        // タスク名
+        priority: null,
         tasknameEdit: false,
-
-        // タスク詳細テキスト
         desc_edit: false,
+        term: false,
+        term_dates: [],
+        // テキストエディタ
         edidor_settings: tinymceSettings.edidor_settings,
 
-        //タスク優先度
-        priority: null,
+        
+        
 
-        //添付ファイル
+        // ファイル
         delete_file_modal: false,
         delete_all_file_modal: false,
         file_loading: false,
@@ -497,10 +500,6 @@ export default {
         subtask_delete_alert: false,
         loading: false,
         success: false,
-        
-        // タスク期日
-        term: false,
-        term_dates: [],
 
         // タスク削除確認
         task_delete_modal: false,
@@ -544,21 +543,19 @@ export default {
             this.file_loading = true
             this.deleteAllFile(files)
         },
-        // タスク名更新
+        // 更新
         tasknameUpdate() {
             this.apiUpdateTaskname(this.viewer.task_id, this.viewer.task_name)
             this.tasknameEdit = false
             this.refreshTaskDetail()
             this.readTasklist()
         },
-        // 概要
         updateTaskDescription() {
             this.apiUpdateTaskDescription(this.viewer.task_id, this.viewer.task_description);
             this.desc_edit = false
             this.refreshTaskDetail()
 
         },
-        // 優先度
         setTaskPriority() {
             let task_priority = this.viewer.task_priority
             const list = this.params.task_priorities
@@ -568,14 +565,7 @@ export default {
         },
         //タスク優先度更新
         settingTaskPriority() {
-            const list = this.params.task_priorities
-            let priority = ""
-            list.forEach(r => {
-                if(this.priority == r.key) {
-                   priority = r
-                }
-            })
-            this.apiSettingTaskPriority(this.viewer.task_id, priority)
+            this.apiSettingTaskPriority(this.viewer.task_id, this.viewer.priority)
             this.refreshTaskDetail()
             this.readTasklist()
         },
@@ -589,16 +579,8 @@ export default {
         },
         //タスクステータス更新
         settingTaskStatus() {
-            const status_list  = this.params.task_status_list
-            let status = ""
-            status_list.forEach(r => {
-                if(this.status == r.key) {
-                   status = r
-                }
-            })
-            this.apiSettingTaskStatus(this.viewer.task_id, status)
-            this.refreshTaskDetail()
-            this.readTasklist()
+            console.log(this.viewer.task_status);
+            
         },
 
         // サブタスク
@@ -644,7 +626,7 @@ export default {
             this.execDeleteAllFile(this.params.files)
             this.task_delete_modal = false
             this.close()
-            this.deleteFromDetail(true)
+            this.listRefresh("タスクを削除しました。")
         },
 
         // 詳細画面閉じる

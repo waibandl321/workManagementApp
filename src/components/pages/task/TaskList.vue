@@ -42,25 +42,6 @@
                     タスクを追加
                 </v-btn>
             </div>
-            <v-alert
-                v-model="success"
-                close-text="Close Alert"
-                color="success"
-                text
-                dense
-                dismissible
-            >
-                タスクを新規作成しました！
-            </v-alert>
-            <v-alert
-                dense
-                outlined
-                dismissible
-                type="error"
-                v-model="task_delete_alert"
-            >
-                タスクを削除しました。
-            </v-alert>
             <div class="mt-2 relative" v-show="task_input">
                 <v-text-field
                     label="タスク名を入力"
@@ -174,6 +155,7 @@ export default {
     mixins: [myMixin],
     props: {
         recordClick: Function,
+        listRefresh: Function,
         params: Object,
     },
     data: () => ({
@@ -182,11 +164,9 @@ export default {
         // create
         create_task_name: "",
         loading: false,
-        success: false,
         // delete
         delete_task: {},
         deleteModal: false,
-        task_delete_alert: false,
         // filter
         filter_items: [],
         filter_status: null,
@@ -196,9 +176,8 @@ export default {
     created() {
         this.top_readTasklist()
     },
-
-    // apiからデータ取得する関係で、task_listにデータがセットされているかを検知する目的で記述
     watch: {
+        // タスク一覧データ変更監視
         task_list: {
             handler: function(nObj, oObj) {
                 console.log(nObj, oObj)
@@ -214,6 +193,7 @@ export default {
         async top_readTasklist() {
             this.task_list = await this.readTasklist()
         },
+
         // リストの絞り込み
         filterList() {
             let result = Object.entries(this.task_list)
@@ -234,9 +214,8 @@ export default {
         // タスク作成
         createTask() {
             if(this.apiTaskCreate(this.create_task_name)) {
-                this.success = true
                 this.create_task_name = ""
-                this.top_readTasklist()
+                this.listRefresh("タスクを新規作成しました")
             }
         },
         // タスク削除
@@ -248,9 +227,8 @@ export default {
             this.apiDeleteTask(this.delete_task)
             this.deleteSubtaskHasTask(this.delete_task)
             this.deleteAllFile(this.params.files)
-            this.task_delete_alert = true
             this.deleteModal = false
-            this.top_readTasklist()
+            this.listRefresh("タスクを削除しました。")
         }
     }
 }

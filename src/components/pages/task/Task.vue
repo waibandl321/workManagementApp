@@ -5,9 +5,19 @@
             class="list"
             :class="{'list_mode': !detail_mode}"
         >
+            <v-alert
+                dense
+                outlined
+                dismissible
+                type="error"
+                v-if="message"
+            >
+                {{ message }}
+            </v-alert>
             <TaskList
                 :params="params"
                 :recordClick="recordClick"
+                :listRefresh="listRefresh"
                 ref="taskList"
             />
         </div>
@@ -20,7 +30,7 @@
                 :params="params"
                 :viewer="viewer"
                 :closeDetail="closeDetail"
-                :deleteFromDetail="deleteFromDetail"
+                :listRefresh="listRefresh"
             />
         </div>
     </div>
@@ -46,8 +56,10 @@ export default {
         subtask_list: {},
         status: { text: "全てのタスク", value: 1 },
         default_sort_item: { text: "作成日順", value: 2 },
-        files: []
+        files: [],
       },
+
+      message: "",
     }),
 
     created() {
@@ -70,8 +82,10 @@ export default {
             this.detail_mode = false
         },
 
-        deleteFromDetail() {
+        listRefresh(message) {
+            this.message = ""
             this.$refs.taskList.top_readTasklist()
+            this.message = message
         }
     }   
 }
