@@ -76,6 +76,7 @@
                         <td>タスク名</td>
                         <td>ステータス</td>
                         <td>優先度</td>
+                        <td>期日</td>
                         <td>作成日</td>
                         <td></td>
                     </tr>
@@ -90,9 +91,10 @@
                             <v-icon>mdi-drag</v-icon>
                         </td>
                         <td class="py-2">{{ task.task_name }}</td>
-                        <td class="py-2">{{ extractTaskStatus(task.task_status) }}</td>
-                        <td class="py-2">{{ extractTaskPriority(task.task_priority) }}</td>
-                        <td>2022/12/12 17:00</td>
+                        <td class="py-2">{{ extractTaskStatus(task.task_status.key) }}</td>
+                        <td class="py-2">{{ extractTaskPriority(task.task_priority.key) }}</td>
+                        <td class="py-2">{{ task.task_start_date }} ~ {{ task.task_end_date }}</td>
+                        <td class="py-2">{{ convertDatetimeFromUnixtime(task.created) }}</td>
                         <td class="options-td">
                             <v-btn
                                 text

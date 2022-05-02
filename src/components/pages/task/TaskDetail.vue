@@ -1,10 +1,11 @@
 <template>
     <div class="detail_inner">
-        <div class="d-flex align-center">
+        <!-- タスク名・削除 -->
+        <div class="d-flex align-center pb-2">
             <div
                 class="text-h5 font-weight-bold taskname"
             >
-                <div v-if="tasknameEdit" class="taskname_edit">
+                <div v-if="task_name_edit" class="taskname_edit">
                     <v-text-field
                         v-model="viewer.task_name"
                     >
@@ -21,7 +22,7 @@
                 <v-btn
                     text
                     color="primary"
-                    @click="tasknameEdit = true"
+                    @click="task_name_edit = true"
                 >
                     <v-icon>mdi-pencil</v-icon>
                 </v-btn>
@@ -45,9 +46,9 @@
             </div>
         </div>
         <v-divider />
-            <div class="d-flex align-center py-4">
-                <!-- status -->
-                <v-row>
+        <!-- ステータス・優先度設定 -->
+        <div class="d-flex align-center py-4">
+            <v-row>
                 <v-col cols="4">
                     <v-select
                         label="ステータス"
@@ -61,7 +62,6 @@
                         @change="updateTaskStatus()"
                     ></v-select>
                 </v-col>
-                <!-- 優先度 -->
                 <v-col cols="4">
                     <v-select
                         label="優先度"
@@ -75,55 +75,61 @@
                         @change="updateTaskPriority()"
                     ></v-select>
                 </v-col>
-                <!-- 期日 -->
-                <v-col cols="4" class="relative">
-                    <v-btn
-                        @click="term = !term" 
-                        color="primary"
-                        text
-                    >
-                        <v-icon class="mr-2">mdi-calendar-check-outline</v-icon>
-                        {{ viewer.task_start_date }} ~ {{ viewer.task_end_date }}
-                    </v-btn>
-                    <!-- date picker -->
-                    <div class="date_picker" v-if="term">
-                        <v-text-field
-                            v-model="dateRangeText"
-                            label="期間を選択"
-                            prepend-icon="mdi-calendar"
-                            readonly
-                        ></v-text-field>
-                        <div>
-                            <v-date-picker
-                                v-model="term_dates"
-                                no-title
-                                range
-                                color="primary"
-                            ></v-date-picker>
-                        </div>
-                        <v-divider />
-                        <div class="mt-2">
-                            <v-btn
-                                text
-                                color="primary"
-                                @click="updateTaskTerm()"
-                            >保存</v-btn>
-                            <v-btn
-                                text
-                                @click="term_dates = [], term = false"
-                            >キャンセル</v-btn>
-                            <v-btn
-                                text
-                                color="red"
-                                @click="deleteTaskTerm()"
-                            >日付を消去</v-btn>
-                        </div>
-                    </div>
-                </v-col>
-                </v-row>
-                <v-spacer />
-            </div>
+            </v-row>
+            <v-spacer />
+        </div>
         <v-divider />
+        <!-- 期日設定 -->
+        <div class="py-2 d-flex align-center">
+            <div class="font-weight-bold">■ タスク期日</div>
+            <div class="ml-4 relative">
+                <v-btn
+                    @click="term = !term" 
+                    color="primary"
+                    text
+                >
+                    <v-icon class="mr-2">mdi-calendar-check-outline</v-icon>
+                    {{ viewer.task_start_date }} ~ {{ viewer.task_end_date }}
+                </v-btn>
+                <!-- date picker -->
+                <div class="date_picker" v-if="term">
+                    <v-text-field
+                        v-model="dateRangeText"
+                        label="期間を選択"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                    ></v-text-field>
+                    <div>
+                        <v-date-picker
+                            v-model="term_dates"
+                            no-title
+                            range
+                            color="primary"
+                        ></v-date-picker>
+                    </div>
+                    <v-divider />
+                    <div class="mt-2">
+                        <v-btn
+                            text
+                            color="primary"
+                            @click="updateTaskTerm()"
+                        >保存</v-btn>
+                        <v-btn
+                            text
+                            @click="term_dates = [], term = false"
+                        >キャンセル</v-btn>
+                        <v-btn
+                            text
+                            color="red"
+                            @click="deleteTaskTerm()"
+                        >日付を消去</v-btn>
+                    </div>
+                </div>
+            </div>
+            <v-spacer />
+        </div>
+        <v-divider />
+        <!-- サブタスク一覧 -->
         <div class="subtask_list" v-if="params.subtask_list">
             <v-card-actions class="px-0">
                 <p class="font-weight-bold my-0">■ サブタスク</p>
@@ -196,10 +202,10 @@
                 </div>
             </div>
         </div>
-        <!-- task detail -->
-        <div class="py-6">
+        <!-- 概要 -->
+        <div class="py-4">
             <v-card-actions class="px-0">
-                <div class="font-weight-bold">■ タスク詳細</div>
+                <div class="font-weight-bold">■ タスク概要</div>
                 <v-spacer />
                 <div v-if="!desc_editor">
                     <v-btn
@@ -208,7 +214,7 @@
                         @click="desc_editor = true"
                         class="px-4"
                     >
-                    <v-icon class="mr-2">mdi-pencil-outline</v-icon>詳細を編集
+                    <v-icon class="mr-2">mdi-pencil-outline</v-icon>概要を編集
                     </v-btn>
                 </div>
                 <div v-else>
@@ -217,7 +223,7 @@
                         @click="updateTaskDescription()"
                         class="px-4"
                     >
-                    <v-icon class="mr-2">mdi-content-save-outline</v-icon>編集を保存
+                    <v-icon class="mr-2">mdi-content-save-outline</v-icon>編集内容を保存
                     </v-btn>
                 </div>
             </v-card-actions>
@@ -239,8 +245,7 @@
                 </div>
             </div>
         </div>
-        
-        <!-- file list -->
+        <!-- 添付ファイル -->
         <div class="mt-6">
             <v-card-actions class="relative px-0">
                 <p class="font-weight-bold mb-0">■ 添付ファイル</p>
@@ -411,7 +416,7 @@
             </v-dialog>
         </v-row>
 
-        <!-- delete task confirm -->
+        <!-- タスク削除モーダル -->
         <v-row justify="center">
             <v-dialog
                 v-model="task_delete_modal"
@@ -473,7 +478,7 @@ export default {
         //タスク情報
         status: null,
         priority: null,
-        tasknameEdit: false,
+        task_name_edit: false,
         desc_editor: false,
         term: false,
         term_dates: [],
@@ -535,7 +540,7 @@ export default {
         // タスク情報の更新
         tasknameUpdate() {
             this.apiUpdateTaskname(this.viewer.task_id, this.viewer.task_name)
-            this.tasknameEdit = false
+            this.task_name_edit = false
             this.readTasklist()
         },
         updateTaskDescription() {

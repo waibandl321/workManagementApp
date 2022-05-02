@@ -4,11 +4,28 @@ export default {
     }),
 
     methods: {
-        // 現在時刻を返す
-        getNowTime() {
-            let time = new Date()
-            let today = Date(time);
-            return today
+
+        getCurrentUnixtime() {
+            var date = new Date() ;
+            var a = date.getTime();
+            var b = Math.floor( a / 1000 );
+            return b
+        },
+
+        convertDatetimeFromUnixtime(value) {
+            let date = new Date(value*1000)
+
+            const year = date.getFullYear()
+            const month = date.getMonth() + 1
+            const day = date.getDate()
+            const time = date.getHours()
+            const minutes = date.getMinutes()
+
+            return year + '/'
+            + month + '/'
+            + day + ' '
+            + time + ':'
+            + minutes
         },
 
         // ランダムIDのセット

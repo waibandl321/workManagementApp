@@ -77,7 +77,7 @@ export default {
                 task_start_date: "",
                 task_end_date: "",
                 create_account: this.storeGetFirebaseUid(),
-                created: this.getNowTime(),
+                created: this.getCurrentUnixtime(),
                 updated: ""
             }
 
@@ -181,7 +181,7 @@ export default {
             const db = getDatabase();
             const userId = this.storeGetFirebaseUid()
             const id = this.createRandomId()
-            const time = this.getNowTime()
+            const time = this.getCurrentUnixtime()
             set(ref(db, '/subtasks/' + userId + '/' + id), {
                 subtask_id: id,
                 task_id: task_id,

@@ -11,7 +11,7 @@
     overflow: auto;
 }
 .list {
-    width: 40%;
+    width: 50%;
     border-right: 2px solid #ccc;
 }
 .list.list_mode {
@@ -19,7 +19,7 @@
     border: none;
 }
 .detail {
-    width: 60%;
+    width: 50%;
 }
 /* 一覧 */
 .list_inner >>> .v-text-field__details {
