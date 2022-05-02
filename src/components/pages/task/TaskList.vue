@@ -111,56 +111,36 @@
         <!-- タスク削除確認モーダル -->
         <v-row justify="center">
             <v-dialog
-            v-model="deleteModal"
-            persistent
-            max-width="600px"
+                v-model="task_delete_modal"
+                persistent
+                max-width="600px"
             >
-            <v-card>
-                <v-card-title>
-                <span class="text-h5">タスクを削除します</span>
-                </v-card-title>
-                <v-card-text>
-                    本当によろしいですか？
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        outlined
-                        depressed
-                        class="pa-4"
-                        @click="deleteModal = false"
-                    >
-                        キャンセル
-                    </v-btn>
-                    <v-btn
-                        depressed
-                        class="pa-4"
-                        color="red darken-4"
-                        outlined
-                        @click="execDelete()"
-                        
-                    >
-                        削除する
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
+                <ConfirmDelete
+                    :closeModal="closeModal"
+                    :item="delete_item"
+                    :execDeleteTask="execDeleteTask"
+                />
             </v-dialog>
         </v-row>
     </div>
 </template>
 
 <script>
+import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
+
 import draggable from 'vuedraggable'
 import myMixin from "./task.js"
 
 export default {
     components: {
-        draggable
+        draggable,
+        ConfirmDelete
     },
     mixins: [myMixin],
     props: {
         recordClick: Function,
         listRefresh: Function,
+        closeDetail: Function,
         params: Object,
     },
     data: () => ({
@@ -172,8 +152,8 @@ export default {
         loading: false,
         
         // 削除
-        delete_task: {},
-        deleteModal: false,
+        delete_item: {},
+        task_delete_modal: false,
         
         // 絞り込み
         filter_items: [],
@@ -247,16 +227,21 @@ export default {
         },
         // タスク削除
         deleteConfirm(task) {
-            this.deleteModal = true
-            this.delete_task = task
+            this.task_delete_modal = true
+            this.delete_item = task
         },
-        execDelete() {
-            this.apiDeleteTask(this.delete_task)
-            this.deleteSubtaskHasTask(this.delete_task)
+        execDeleteTask() {
+            this.apiDeleteTask(this.delete_item)
+            this.deleteSubtaskHasTask(this.delete_item)
             this.deleteAllFile(this.params.files)
-            this.deleteModal = false
+            this.task_delete_modal = false
+            this.closeDetail()
             this.listRefresh("タスクを削除しました。")
-        }
+        },
+        closeModal() {
+            this.task_delete_modal = false
+        },
+
     }
 }
 </script>

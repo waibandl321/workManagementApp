@@ -6,10 +6,8 @@
             :class="{'list_mode': !detail_mode}"
         >
             <v-alert
-                dense
-                outlined
                 dismissible
-                type="error"
+                type="info"
                 v-if="message"
             >
                 {{ message }}
@@ -18,6 +16,7 @@
                 :params="params"
                 :recordClick="recordClick"
                 :listRefresh="listRefresh"
+                :closeDetail="closeDetail"
                 ref="taskList"
             />
         </div>

@@ -32,6 +32,7 @@
             <v-spacer></v-spacer>
             <div>
                 <v-btn
+                    color="primary"
                     text
                     @click="task_delete_modal = true"
                 >
@@ -419,60 +420,39 @@
         <!-- タスク削除モーダル -->
         <v-row justify="center">
             <v-dialog
-                v-model="task_delete_modal"
                 persistent
                 max-width="600px"
+                v-model="task_delete_modal"
             >
-            <v-card>
-                <v-card-title>
-                <span class="text-h5">タスクを削除します</span>
-                </v-card-title>
-                <v-card-text>
-                    本当によろしいですか？
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        outlined
-                        depressed
-                        class="pa-4"
-                        @click="task_delete_modal = false"
-                    >
-                        キャンセル
-                    </v-btn>
-                    <v-btn
-                        depressed
-                        class="pa-4"
-                        color="red darken-4"
-                        outlined
-                        @click="execDeleteTask(viewer)"
-                        
-                    >
-                        削除する
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
+                <ConfirmDelete
+                    :closeModal="closeModal"
+                    :item="viewer"
+                    :execDeleteTask="execDeleteTask"
+                />
             </v-dialog>
         </v-row>
     </div>
 </template>
 
 <script>
+import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
 // エディタ
 import Editor from "@tinymce/tinymce-vue"
 import tinymceSettings from "@/config/settings/tinymce.js"
+
 import myMixin from "./task.js"
 
 export default {
+    mixins: [myMixin],
+    components: {
+        Editor,
+        ConfirmDelete
+    },
     props: {
         closeDetail: Function,
         listRefresh: Function,
         params: Object,
         viewer: Object,
-    },
-    mixins: [myMixin],
-    components: {
-        Editor
     },
     data: () => ({
         //タスク情報
@@ -596,6 +576,9 @@ export default {
             this.task_delete_modal = false
             this.close()
             this.listRefresh("タスクを削除しました。")
+        },
+        closeModal() {
+            this.task_delete_modal = false
         },
 
         // 詳細画面閉じる
