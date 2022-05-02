@@ -64,7 +64,7 @@
             <div class="mt-2 relative" v-show="task_input">
                 <v-text-field
                     label="タスク名を入力"
-                    v-model="new_task_name"
+                    v-model="create_task_name"
                 >
                 </v-text-field>
                 <v-btn
@@ -180,7 +180,7 @@ export default {
         task_input: false,
         task_list: [],
         // create
-        new_task_name: "",
+        create_task_name: "",
         loading: false,
         success: false,
         // delete
@@ -233,13 +233,11 @@ export default {
         listClick(task) {
             this.recordClick(task)
         },
+        // タスク作成
         createTask() {
-            this.loading = true
-            const create = this.apiTaskCreate(this.new_task_name)
-            if(create) {
-                this.loading = false
+            if(this.apiTaskCreate(this.create_task_name)) {
                 this.success = true
-                this.new_task_name = ""
+                this.create_task_name = ""
                 this.top_readTasklist()
             }
         },

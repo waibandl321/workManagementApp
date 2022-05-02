@@ -57,12 +57,8 @@ export default {
         
         // タスク作成
         apiTaskCreate(new_task) {
-            const db = getDatabase();
-            const userId = this.storeGetFirebaseUid()
             const id = Math.random().toString(32).substring(2)
-            const time = this.getNowTime()
-
-            set(ref(db, '/tasks/' + userId + '/' + id), {
+            const data_obj = {
                 task_id: id,
                 project_id: "",
                 task_name: new_task,
@@ -80,11 +76,19 @@ export default {
                 task_manager: "",
                 task_start_date: "",
                 task_end_date: "",
-                create_account: userId,
-                created: time,
+                create_account: this.storeGetFirebaseUid(),
+                created: this.getNowTime(),
                 updated: ""
-            });
-            return true
+            }
+
+            try {
+                const db = getDatabase();
+                set(ref(db, '/tasks/' + this.storeGetFirebaseUid() + '/' + id), data_obj)
+                return true
+            } catch (error) {
+                console.log(error);
+                return false
+            }
         },
 
         // タスク一覧取得
