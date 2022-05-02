@@ -207,8 +207,7 @@ export default {
     watch: {
         // タスク一覧データ変更監視
         task_list: {
-            handler: function(nObj, oObj) {
-                console.log(nObj, oObj)
+            handler: function() {
                 this.filterList()
                 this.sortByCreated()
             },
@@ -225,7 +224,7 @@ export default {
 
         // リストの絞り込み
         filterList() {
-            let result = Object.entries(this.task_list)
+            let result = this.convertObject(this.task_list)
             if(this.filter_text) {
                 result = result.filter(x => x[1].task_name.includes(this.filter_text))
             }
@@ -237,12 +236,12 @@ export default {
                     x => x[1].task_priority.key === this.filter_priority
                 )
             }
-            result = Object.fromEntries(result);
+            result = this.convertArray(result);
             this.filter_items = result
         },
         sortByDeadline() {
             this.sort_by_deadline = !this.sort_by_deadline
-            let result = Object.entries(this.task_list)
+            let result = this.convertObject(this.task_list)
             if(this.sort_by_deadline) {
                 result = result.sort((a, b) => {
                     return (a[1].task_deadline > b[1].task_deadline) ? 1 : -1;
@@ -252,12 +251,12 @@ export default {
                     return (a[1].task_deadline < b[1].task_deadline) ? 1 : -1;
                 })
             }
-            result = Object.fromEntries(result);
+            result = this.convertArray(result);
             this.filter_items = result
         },
         sortByCreated() {
             this.sort_by_created = !this.sort_by_created
-            let result = Object.entries(this.task_list)
+            let result = this.convertObject(this.task_list)
             if(this.sort_by_created) {
                 result = result.sort((a, b) => {
                     return (a[1].created > b[1].created) ? 1 : -1;
@@ -267,7 +266,7 @@ export default {
                     return (a[1].created < b[1].created) ? 1 : -1;
                 })
             }
-            result = Object.fromEntries(result);
+            result = this.convertArray(result);
             this.filter_items = result
         },
         listClick(task) {
