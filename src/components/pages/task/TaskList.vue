@@ -102,7 +102,7 @@
                     <tr
                         v-for="(task, i) in filter_items"
                         :key="i"
-                        @click.stop="record(task)"
+                        @click.stop="listClick(task)"
                     >
                         <td class="drag-icon-td">
                             <v-icon>mdi-drag</v-icon>
@@ -213,7 +213,7 @@ export default {
             result = Object.fromEntries(result);
             this.filter_items = result
         },
-        record(task) {
+        listClick(task) {
             this.recordClick(task)
         },
         createTask() {
