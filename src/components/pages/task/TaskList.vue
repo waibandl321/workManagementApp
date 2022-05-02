@@ -113,7 +113,7 @@
                         <td class="options-td">
                             <v-btn
                                 text
-                                @click.stop="del(task)"
+                                @click.stop="deleteConfirm(task)"
                             >
                                 <v-icon>mdi-trash-can-outline</v-icon>
                             </v-btn>
@@ -125,7 +125,7 @@
         <!-- タスク削除確認モーダル -->
         <v-row justify="center">
             <v-dialog
-            v-model="task_delete"
+            v-model="deleteModal"
             persistent
             max-width="600px"
             >
@@ -142,7 +142,7 @@
                         outlined
                         depressed
                         class="pa-4"
-                        @click="task_delete = false"
+                        @click="deleteModal = false"
                     >
                         キャンセル
                     </v-btn>
@@ -185,7 +185,7 @@ export default {
         success: false,
         // delete
         delete_task: {},
-        task_delete: false,
+        deleteModal: false,
         task_delete_alert: false,
         // filter
         filter_items: [],
@@ -243,9 +243,9 @@ export default {
                 this.init()
             }
         },
-        // delete
-        del(task) {
-            this.task_delete = true
+        // タスク削除
+        deleteConfirm(task) {
+            this.deleteModal = true
             this.delete_task = task
         },
         execDelete() {
@@ -253,7 +253,7 @@ export default {
             this.deleteSubtaskHasTask(this.delete_task)
             this.deleteAllFile(this.params.files)
             this.task_delete_alert = true
-            this.task_delete = false
+            this.deleteModal = false
             this.init()
         }
     }
