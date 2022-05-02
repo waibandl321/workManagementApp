@@ -32,7 +32,7 @@
             <div>
                 <v-btn
                     text
-                    @click="task_delete_confirm = true"
+                    @click="task_delete_modal = true"
                 >
                     <v-icon>mdi-trash-can-outline</v-icon>
                 </v-btn>
@@ -414,9 +414,9 @@
         <!-- delete task confirm -->
         <v-row justify="center">
             <v-dialog
-            v-model="task_delete_confirm"
-            persistent
-            max-width="600px"
+                v-model="task_delete_modal"
+                persistent
+                max-width="600px"
             >
             <v-card>
                 <v-card-title>
@@ -431,7 +431,7 @@
                         outlined
                         depressed
                         class="pa-4"
-                        @click="task_delete_confirm = false"
+                        @click="task_delete_modal = false"
                     >
                         キャンセル
                     </v-btn>
@@ -502,7 +502,7 @@ export default {
         term_dates: [],
 
         // タスク削除確認
-        task_delete_confirm: false,
+        task_delete_modal: false,
     }),
    
     created(){
@@ -642,7 +642,7 @@ export default {
             this.apiDeleteTask(delete_item)
             this.deleteSubtaskHasTask(delete_item)
             this.execDeleteAllFile(this.params.files)
-            this.task_delete_confirm = false
+            this.task_delete_modal = false
             this.readTasklist(null, from_detail)
         },
         // 詳細画面閉じる

@@ -191,9 +191,10 @@ export default {
         // タスク削除
         apiDeleteTask(task) {
             const db = getDatabase()
-            const userId = this.storeGetFirebaseUid()
-            const task_id = task.task_id
-            remove(ref(db, '/tasks/' + userId + '/' + task_id));
+            const updates = {};
+            updates['/tasks/' + this.storeGetFirebaseUid() + '/' + task.task_id] = null;
+
+            return update(ref(db), updates);
         },
 
         // サブタスク作成

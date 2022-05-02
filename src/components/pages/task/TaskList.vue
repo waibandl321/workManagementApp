@@ -240,7 +240,7 @@ export default {
                 this.loading = false
                 this.success = true
                 this.new_task_name = ""
-                this.init()
+                this.top_readTasklist()
             }
         },
         // タスク削除
@@ -254,7 +254,7 @@ export default {
             this.deleteAllFile(this.params.files)
             this.task_delete_alert = true
             this.deleteModal = false
-            this.init()
+            this.top_readTasklist()
         }
     }
 }
