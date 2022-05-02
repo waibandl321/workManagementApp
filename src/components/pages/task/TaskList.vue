@@ -15,7 +15,7 @@
                 <v-row class="my-0">
                     <v-col class="filter-box">
                         <v-select
-                            label="ステータスで絞り込む"
+                            label="ステータスで絞り込み"
                             :items="params.task_status_list"
                             item-text="text"
                             item-value="key"
@@ -28,7 +28,7 @@
                     </v-col>
                     <v-col class="filter-box">
                         <v-select
-                            label="優先度で絞り込む"
+                            label="優先度で絞り込み"
                             :items="params.task_priorities"
                             item-text="text"
                             item-value="key"
@@ -89,11 +89,11 @@
                         <td>
                             <v-btn
                                 text
-                                @click="sortByDeadline()"
+                                @click="sortByDeadline"
                             >
                                 締切日
                                 <v-icon small>
-                                    {{ sort_deadline ? 'mdi-arrow-up' : 'mdi-arrow-down' }}
+                                    {{ sort_by_deadline ? 'mdi-arrow-up' : 'mdi-arrow-down' }}
                                 </v-icon>
                             </v-btn>
                         </td>
@@ -101,9 +101,12 @@
                         <td>
                             <v-btn
                                 text
+                                @click="sortByCreated"
                             >
                                 作成日時
-                                <v-icon small>mdi-arrow-down</v-icon>
+                                <v-icon small>
+                                    {{ sort_by_created ? 'mdi-arrow-up' : 'mdi-arrow-down' }}
+                                </v-icon>
                             </v-btn>
                         </td>
                         <td class="options-td"></td>
@@ -189,7 +192,8 @@ export default {
         filter_text: "",
         filter_status: null,
         filter_priority: null,
-        sort_deadline: false,
+        sort_by_deadline: false,
+        sort_by_created: true,
     }),
 
     created() {
@@ -206,6 +210,7 @@ export default {
             handler: function(nObj, oObj) {
                 console.log(nObj, oObj)
                 this.filterList()
+                this.sortByCreated()
             },
             deep : true,
             immediate: true
@@ -236,15 +241,30 @@ export default {
             this.filter_items = result
         },
         sortByDeadline() {
-            this.sort_deadline = !this.sort_deadline
+            this.sort_by_deadline = !this.sort_by_deadline
             let result = Object.entries(this.task_list)
-            if(this.sort_deadline) {
+            if(this.sort_by_deadline) {
                 result = result.sort((a, b) => {
                     return (a[1].task_deadline > b[1].task_deadline) ? 1 : -1;
                 })
             } else {
                 result = result.sort((a, b) => {
                     return (a[1].task_deadline < b[1].task_deadline) ? 1 : -1;
+                })
+            }
+            result = Object.fromEntries(result);
+            this.filter_items = result
+        },
+        sortByCreated() {
+            this.sort_by_created = !this.sort_by_created
+            let result = Object.entries(this.task_list)
+            if(this.sort_by_created) {
+                result = result.sort((a, b) => {
+                    return (a[1].created > b[1].created) ? 1 : -1;
+                })
+            } else {
+                result = result.sort((a, b) => {
+                    return (a[1].created < b[1].created) ? 1 : -1;
                 })
             }
             result = Object.fromEntries(result);
