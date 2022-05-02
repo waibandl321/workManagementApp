@@ -1,5 +1,4 @@
-.inner {
-    display: flex;
+.inner {    
     height: 100%;
     overflow-y: hidden;
 }
@@ -7,19 +6,14 @@
 .detail {
     box-sizing: border-box;
     padding: 24px 16px 10%;
-    height: calc(100vh - 70px);
-    overflow: auto;
 }
 .list {
-    width: 50%;
-    border-right: 2px solid #ccc;
-}
-.list.list_mode {
+    overflow: auto;
     width: 100%;
-    border: none;
+    height: calc(100vh - 70px);
 }
 .detail {
-    width: 50%;
+    height: calc(100vh - 70px);
 }
 /* 一覧 */
 .list_inner >>> .v-text-field__details {
@@ -144,10 +138,26 @@
     position: relative;
     width: 80%;
 }
+.taskname_edit {
+    position: relative;
+}
+.taskname_edit_input {
+    background-color: #fff;
+    padding: 8px 72px 8px 12px;
+    min-width: 400px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+.taskname_edit_input:focus {
+    border: none;
+    outline: none;
+}
 .taskname_edit_save {
     position: absolute;
-    right: 0;
-    top: 8px;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 .task_link {
     right: 0;

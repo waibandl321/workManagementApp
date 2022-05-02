@@ -200,10 +200,6 @@ export default {
         this.top_readTasklist()
     },
 
-    computed: {
-        
-    },
-
     watch: {
         // タスク一覧データ変更監視
         task_list: {
@@ -219,7 +215,7 @@ export default {
     methods: {
         // リストの初期読み込み
         async top_readTasklist() {
-            this.task_list = await this.readTasklist()
+            this.task_list = await this.apiGetTaskList()
         },
 
         // リストの絞り込み

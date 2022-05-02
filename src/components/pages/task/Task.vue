@@ -1,15 +1,12 @@
 <template>
     <div class="inner">
-        <!-- タスク一覧 -->
-        <div
-            class="list"
-            :class="{'list_mode': !detail_mode}"
-        >
+        <div class="list">
             <v-alert
                 dismissible
                 outlined
                 color="purple"
                 v-if="message"
+                dense
             >
                 {{ message }}
             </v-alert>
@@ -21,11 +18,7 @@
                 ref="taskList"
             />
         </div>
-        <!-- タスク詳細 -->
-        <div
-            class="detail"
-            v-if="detail_mode"
-        >
+        <div>
             <TaskDetail
                 :params="params"
                 :viewer="viewer"
@@ -33,6 +26,7 @@
                 :listRefresh="listRefresh"
             />
         </div>
+           
     </div>
 </template>
 <script>
@@ -47,7 +41,6 @@ export default {
     },
     mixins: [myMixin],
     data: () => ({
-      detail_mode: false,
       viewer: [],
       params: {
         task_list: [],
@@ -57,6 +50,8 @@ export default {
         status: { text: "全てのタスク", value: 1 },
         default_sort_item: { text: "作成日順", value: 2 },
         files: [],
+
+        detail_mode: false,
       },
 
       message: "",
@@ -71,7 +66,7 @@ export default {
     methods: {
         // 一覧レコードクリック
         recordClick(task) {
-            this.detail_mode = true
+            this.params.detail_mode = true
             this.initSubtaskList(task)
             this.viewer = task
             this.getFileList()
@@ -79,7 +74,7 @@ export default {
 
         // 詳細閉じる
         closeDetail() {
-            this.detail_mode = false
+            this.params.detail_mode = false
         },
 
         listRefresh(message) {
@@ -90,4 +85,5 @@ export default {
     }   
 }
 </script>
+
 <style scoped src="./scoped.css"></style>
