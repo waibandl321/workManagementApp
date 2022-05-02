@@ -19,6 +19,14 @@ export default {
         // ページ遷移
         pageMove(page) {
             this.$router.push(page, () => {})
+        },
+        
+        // 配列・オブジェクト変換
+        convertObject(value) {
+            return Object.entries(value)
+        },
+        convertArray(value) {
+            return Object.fromEntries(value)
         }
     }
 }

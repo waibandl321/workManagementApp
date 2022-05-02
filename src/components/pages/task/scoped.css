@@ -61,7 +61,7 @@
     transform: translateY(-35%);
 }
 .options-td {
-    width: 60px;
+    width: 40px;
 }
 .options-td {
     text-align: right;
@@ -182,12 +182,6 @@ td {
 .task-list tr:hover {
     cursor: pointer;
     background-color: #f6f6f6;
-}
-.options-td {
-    width: 60px;
-}
-.options-td {
-    text-align: right;
 }
 .file-table {
     width: 100%;

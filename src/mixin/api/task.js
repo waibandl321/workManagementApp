@@ -117,21 +117,9 @@ export default {
             return d
         },
 
-        // タスク期間
-        apiSettingTaskTerm(terms, id) {
-            for (let i = 0; i < 2; i++) {
-                const db = getDatabase()
-                const userId = this.storeGetFirebaseUid()
-                const updates = {};
-                updates['/tasks/' + userId + '/' + id + '/task_start_date'] = terms[0]
-                if(terms[1]) {
-                    updates['/tasks/' + userId + '/' + id + '/task_end_date'] = terms[1]
-                }
-                update(ref(db), updates);
-            }
-        },
+        
 
-        // タスク期日更新
+        // 更新
         apiDeleteTaskTerm(id) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
@@ -140,41 +128,20 @@ export default {
             updates['/tasks/' + userId + '/' + id + '/task_end_date'] = ""                
             update(ref(db), updates);
         },
-        // タスクステータス設定
-        apiSettingTaskStatus(id, status) {
+        apiUpdateTaskStatus(id, status) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
             updates['/tasks/' + userId + '/' + id + '/task_status'] = status
             update(ref(db), updates);
         },
-
-        // プロジェクト紐付け
-        apiSettingProjectId(id, project_id) {
-            const db = getDatabase()
-            const userId = this.storeGetFirebaseUid()
-            const updates = {};
-            updates['/tasks/' + userId + '/' + id + '/project_id'] = project_id
-            update(ref(db), updates);
-        },
-        apiInitProjectId(id) {
-            const db = getDatabase()
-            const userId = this.storeGetFirebaseUid()
-            const updates = {};
-            updates['/tasks/' + userId + '/' + id + '/project_id'] = ""
-            update(ref(db), updates);
-        },
-
-        // タスク優先度設定
-        apiSettingTaskPriority(id, priority) {
+        apiUpdateTaskPriority(id, priority) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
             updates['/tasks/' + userId + '/' + id + '/task_priority'] = priority
             update(ref(db), updates);
         },
-
-        // タスク名更新
         apiUpdateTaskname(id, taskname) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
@@ -182,13 +149,21 @@ export default {
             updates['/tasks/' + userId + '/' + id + '/task_name'] = taskname
             update(ref(db), updates);
         },
-
-        // タスク概要説明文更新
         apiUpdateTaskDescription(id, description) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
             updates['/tasks/' + userId + '/' + id + '/task_description'] = description
+            update(ref(db), updates);
+        },
+        apiUpdateTaskTerm(terms, task_id) {
+            const db = getDatabase()
+            const userId = this.storeGetFirebaseUid()
+            const updates = {};
+            updates['/tasks/' + userId + '/' + task_id + '/task_start_date'] = terms[0]
+            if(terms[1]) {
+                updates['/tasks/' + userId + '/' + task_id + '/task_end_date'] = terms[1]
+            }
             update(ref(db), updates);
         },
         

@@ -74,8 +74,9 @@
                             <v-icon>mdi-drag</v-icon>
                         </td>
                         <td>タスク名</td>
-                        <td>優先度</td>
                         <td>ステータス</td>
+                        <td>優先度</td>
+                        <td>作成日</td>
                         <td></td>
                     </tr>
                 </thead>
@@ -89,12 +90,14 @@
                             <v-icon>mdi-drag</v-icon>
                         </td>
                         <td class="py-2">{{ task.task_name }}</td>
-                        <td class="py-2">{{ task.task_priority.text }}</td>
-                        <td class="py-2">{{ task.task_status.text }}</td>
+                        <td class="py-2">{{ extractTaskStatus(task.task_status) }}</td>
+                        <td class="py-2">{{ extractTaskPriority(task.task_priority) }}</td>
+                        <td>2022/12/12 17:00</td>
                         <td class="options-td">
                             <v-btn
                                 text
                                 @click.stop="deleteConfirm(task)"
+                                color="primary"
                             >
                                 <v-icon>mdi-trash-can-outline</v-icon>
                             </v-btn>
@@ -161,13 +164,16 @@ export default {
     data: () => ({
         task_input: false,
         task_list: [],
-        // create
+        
+        // 作成
         create_task_name: "",
         loading: false,
-        // delete
+        
+        // 削除
         delete_task: {},
         deleteModal: false,
-        // filter
+        
+        // 絞り込み
         filter_items: [],
         filter_status: null,
         filter_priority: null
@@ -176,6 +182,11 @@ export default {
     created() {
         this.top_readTasklist()
     },
+
+    computed: {
+        
+    },
+
     watch: {
         // タスク一覧データ変更監視
         task_list: {
@@ -210,6 +221,20 @@ export default {
         },
         listClick(task) {
             this.recordClick(task)
+        },
+
+        // 優先度・ステータス文字列変換
+        extractTaskStatus(status_key) {
+            let result = this.params.task_status_list
+            result = result.filter(v => v.key === status_key)
+            result = result[0].text
+            return result
+        },
+        extractTaskPriority(priority_key) {
+            let result = this.params.task_priorities
+            result = result.filter(v => v.key === priority_key)
+            result = result[0].text
+            return result
         },
         // タスク作成
         createTask() {

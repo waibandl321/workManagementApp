@@ -1,6 +1,5 @@
 <template>
     <div class="detail_inner">
-        {{ viewer.task_id }}
         <div class="d-flex align-center">
             <div
                 class="text-h5 font-weight-bold taskname"
@@ -50,7 +49,6 @@
                 <!-- status -->
                 <v-row>
                 <v-col cols="4">
-                    {{ viewer.task_status }}
                     <v-select
                         label="ステータス"
                         :items="params.task_status_list"
@@ -60,12 +58,11 @@
                         color="primary"
                         dense
                         v-model="viewer.task_status"
-                        @change="settingTaskStatus()"
+                        @change="updateTaskStatus()"
                     ></v-select>
                 </v-col>
                 <!-- 優先度 -->
                 <v-col cols="4">
-                    {{ viewer.task_priority }}
                     <v-select
                         label="優先度"
                         :items="params.task_priorities"
@@ -75,7 +72,7 @@
                         outlined
                         color="primary"
                         dense
-                        @change="settingTaskPriority()"
+                        @change="updateTaskPriority()"
                     ></v-select>
                 </v-col>
                 <!-- 期日 -->
@@ -109,7 +106,7 @@
                             <v-btn
                                 text
                                 color="primary"
-                                @click="taskTermSetting()"
+                                @click="updateTaskTerm()"
                             >保存</v-btn>
                             <v-btn
                                 text
@@ -204,11 +201,11 @@
             <v-card-actions class="px-0">
                 <div class="font-weight-bold">■ タスク詳細</div>
                 <v-spacer />
-                <div v-if="!desc_edit">
+                <div v-if="!desc_editor">
                     <v-btn
                         color="primary"
                         text
-                        @click="desc_edit = true"
+                        @click="desc_editor = true"
                         class="px-4"
                     >
                     <v-icon class="mr-2">mdi-pencil-outline</v-icon>詳細を編集
@@ -225,7 +222,7 @@
                 </div>
             </v-card-actions>
             <v-divider />
-            <div v-if="desc_edit">
+            <div v-if="desc_editor">
                 <Editor
                     ref="editor"
                     :api-key="edidor_settings.apikey"
@@ -477,14 +474,12 @@ export default {
         status: null,
         priority: null,
         tasknameEdit: false,
-        desc_edit: false,
+        desc_editor: false,
         term: false,
         term_dates: [],
+
         // テキストエディタ
         edidor_settings: tinymceSettings.edidor_settings,
-
-        
-        
 
         // ファイル
         delete_file_modal: false,
@@ -505,15 +500,8 @@ export default {
         task_delete_modal: false,
     }),
    
-    created(){
-        this.setTaskStatus()
-        this.setTaskPriority()
-    },
-   
-    updated() {
-        this.setTaskStatus()
-        this.setTaskPriority()
-    },
+    created(){},
+
     computed: {
         dateRangeText() {
             return this.viewer.task_start_date + " 〜 " + this.viewer.task_end_date
@@ -543,44 +531,23 @@ export default {
             this.file_loading = true
             this.deleteAllFile(files)
         },
-        // 更新
+
+        // タスク情報の更新
         tasknameUpdate() {
             this.apiUpdateTaskname(this.viewer.task_id, this.viewer.task_name)
             this.tasknameEdit = false
-            this.refreshTaskDetail()
             this.readTasklist()
         },
         updateTaskDescription() {
             this.apiUpdateTaskDescription(this.viewer.task_id, this.viewer.task_description);
-            this.desc_edit = false
-            this.refreshTaskDetail()
+            this.desc_editor = false
 
         },
-        setTaskPriority() {
-            let task_priority = this.viewer.task_priority
-            const list = this.params.task_priorities
-            list.forEach(r => {
-                r.key == task_priority.key ? this.priority = r : null
-            })
+        updateTaskStatus() {
+            this.apiUpdateTaskStatus(this.viewer.task_id, this.viewer.task_status)
         },
-        //タスク優先度更新
-        settingTaskPriority() {
-            this.apiSettingTaskPriority(this.viewer.task_id, this.viewer.priority)
-            this.refreshTaskDetail()
-            this.readTasklist()
-        },
-        //タスクステータスセット
-        setTaskStatus() {
-            let task_status = this.viewer.task_status
-            const list = this.params.task_status_list
-            list.forEach(r => {
-                r.key == task_status.key ? this.status = r : null
-            })
-        },
-        //タスクステータス更新
-        settingTaskStatus() {
-            console.log(this.viewer.task_status);
-            
+        updateTaskPriority() {
+            this.apiUpdateTaskPriority(this.viewer.task_id, this.viewer.task_priority)
         },
 
         // サブタスク
@@ -597,26 +564,23 @@ export default {
             this.subtask_delete_alert = true
             this.initSubtaskList(this.viewer)
         },
-        subtaskRecordClick(subtask) {
-            console.log(subtask)
-        },
         
         // タスク期間設定
-        taskTermSetting() {
+        updateTaskTerm() {
             this.term = false
             this.term_dates.sort(function(a, b){
                 return (a > b ? 1 : -1);
             })
-            this.apiSettingTaskTerm(this.term_dates, this.viewer.task_id)
-            this.refreshTaskDetail()
-            this.readTasklist()
+            this.apiUpdateTaskTerm(this.term_dates, this.viewer.task_id)
+            this.viewer.task_start_date = this.term_dates[0]
+            this.viewer.task_end_date = this.term_dates[1]
         },
         deleteTaskTerm() {
-            this.term_dates = [],
+            this.term_dates = []
             this.term = false
             this.apiDeleteTaskTerm(this.viewer.task_id)
-            this.refreshTaskDetail()
-            this.readTasklist()
+            this.viewer.task_start_date = ""
+            this.viewer.task_end_date = ""
         },
         
         // タスク削除
