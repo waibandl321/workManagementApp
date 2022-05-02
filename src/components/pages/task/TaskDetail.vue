@@ -456,6 +456,7 @@
 // エディタ
 import Editor from "@tinymce/tinymce-vue"
 import tinymceSettings from "@/config/settings/tinymce.js"
+import myMixin from "./task.js"
 
 export default {
     props: {
@@ -463,6 +464,7 @@ export default {
         params: Object,
         viewer: Object,
     },
+    mixins: [myMixin],
     components: {
         Editor
     },

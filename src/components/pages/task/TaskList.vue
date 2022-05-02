@@ -165,17 +165,20 @@
 
 <script>
 import draggable from 'vuedraggable'
+import myMixin from "./task.js"
 
 export default {
     components: {
         draggable
     },
+    mixins: [myMixin],
     props: {
         recordClick: Function,
         params: Object,
     },
     data: () => ({
         task_input: false,
+        task_list: [],
         // create
         new_task_name: "",
         loading: false,
@@ -191,17 +194,31 @@ export default {
     }),
 
     created() {
-        // this.init()
-        this.filterList()
+        this.top_readTasklist()
+    },
+
+    // apiからデータ取得する関係で、task_listにデータがセットされているかを検知する目的で記述
+    // 後に他にもいい方法がないか模索する
+    watch: {
+        task_list: {
+            handler: function(nObj, oObj) {
+                console.log(nObj, oObj)
+                this.filterList()
+            },
+            deep : true,
+            immediate: true
+        }
     },
 
     methods: {
-        init() {
-            // this.readTasklist(this.delete_task ? this.delete_task : {})
+        // リストの初期読み込み
+        async top_readTasklist() {
+            this.task_list = await this.readTasklist()
         },
-        // 絞り込み
+        // リストの絞り込み
         filterList() {
-            let result = Object.entries(this.params.task_list)
+            console.log(this.task_list);
+            let result = Object.entries(this.task_list)
             if(this.filter_status) {
                 result = result.filter(x => x[1].task_status.key === this.filter_status)
             }

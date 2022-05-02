@@ -50,12 +50,10 @@ export default {
     created() {
         this.params.task_status_list = this.getTaskStatus()
         this.params.task_priorities = this.getTaskPriorities()
-        this.readTasklist()
         this.getFileList()
     },
     
     methods: {
-        
         // 一覧レコードクリック
         recordClick(task) {
             this.detail_active = true
