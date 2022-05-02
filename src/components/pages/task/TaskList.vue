@@ -2,8 +2,18 @@
     <div class="list_inner">
         <div class="list_head">
             <div class="filter">
+                <div>
+                    <v-text-field
+                        label="タスク名をテキスト検索"
+                        outlined
+                        dense
+                        color="primary"
+                        v-model.trim="filter_text"
+                        @change="filterList()"
+                    ></v-text-field>
+                </div>
                 <v-row class="my-0">
-                    <v-col cols="6" class="filter-box">
+                    <v-col class="filter-box">
                         <v-select
                             label="ステータスで絞り込む"
                             :items="params.task_status_list"
@@ -16,7 +26,7 @@
                             @change="filterList()"
                         ></v-select>
                     </v-col>
-                    <v-col cols="6" class="filter-box">
+                    <v-col class="filter-box">
                         <v-select
                             label="優先度で絞り込む"
                             :items="params.task_priorities"
@@ -79,17 +89,18 @@
                         <td>
                             <v-btn
                                 text
-                                class="px-0"
+                                @click="sortByDeadline()"
                             >
                                 締切日
-                                <v-icon small>mdi-arrow-down</v-icon>
+                                <v-icon small>
+                                    {{ sort_deadline ? 'mdi-arrow-up' : 'mdi-arrow-down' }}
+                                </v-icon>
                             </v-btn>
                         </td>
                         <td>タスク実施期間</td>
                         <td>
                             <v-btn
                                 text
-                                class="px-0"
                             >
                                 作成日時
                                 <v-icon small>mdi-arrow-down</v-icon>
@@ -175,8 +186,10 @@ export default {
         
         // 絞り込み
         filter_items: [],
+        filter_text: "",
         filter_status: null,
-        filter_priority: null
+        filter_priority: null,
+        sort_deadline: false,
     }),
 
     created() {
@@ -208,6 +221,9 @@ export default {
         // リストの絞り込み
         filterList() {
             let result = Object.entries(this.task_list)
+            if(this.filter_text) {
+                result = result.filter(x => x[1].task_name.includes(this.filter_text))
+            }
             if(this.filter_status) {
                 result = result.filter(x => x[1].task_status.key === this.filter_status)
             }
@@ -215,6 +231,21 @@ export default {
                 result = result.filter(
                     x => x[1].task_priority.key === this.filter_priority
                 )
+            }
+            result = Object.fromEntries(result);
+            this.filter_items = result
+        },
+        sortByDeadline() {
+            this.sort_deadline = !this.sort_deadline
+            let result = Object.entries(this.task_list)
+            if(this.sort_deadline) {
+                result = result.sort((a, b) => {
+                    return (a[1].task_deadline > b[1].task_deadline) ? 1 : -1;
+                })
+            } else {
+                result = result.sort((a, b) => {
+                    return (a[1].task_deadline < b[1].task_deadline) ? 1 : -1;
+                })
             }
             result = Object.fromEntries(result);
             this.filter_items = result
