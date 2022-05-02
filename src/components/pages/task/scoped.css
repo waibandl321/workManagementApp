@@ -14,6 +14,10 @@
     width: 40%;
     border-right: 2px solid #ccc;
 }
+.list.list_mode {
+    width: 100%;
+    border: none;
+}
 .detail {
     width: 60%;
 }

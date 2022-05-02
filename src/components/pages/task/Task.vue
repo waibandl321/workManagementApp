@@ -3,21 +3,24 @@
         <!-- タスク一覧 -->
         <div
             class="list"
+            :class="{'list_mode': !detail_mode}"
         >
             <TaskList
                 :params="params"
                 :recordClick="recordClick"
+                ref="taskList"
             />
         </div>
         <!-- タスク詳細 -->
         <div
             class="detail"
-            v-if="detail_active"
+            v-if="detail_mode"
         >
             <TaskDetail
                 :params="params"
                 :viewer="viewer"
                 :closeDetail="closeDetail"
+                :deleteFromDetail="deleteFromDetail"
             />
         </div>
     </div>
@@ -34,7 +37,7 @@ export default {
     },
     mixins: [myMixin],
     data: () => ({
-      detail_active: false,
+      detail_mode: false,
       viewer: [],
       params: {
         task_list: [],
@@ -56,7 +59,7 @@ export default {
     methods: {
         // 一覧レコードクリック
         recordClick(task) {
-            this.detail_active = true
+            this.detail_mode = true
             this.initSubtaskList(task)
             this.viewer = task
             this.getFileList()
@@ -64,9 +67,12 @@ export default {
 
         // 詳細閉じる
         closeDetail() {
-            this.detail_active = false
-            this.list_width = "100%"
+            this.detail_mode = false
         },
+
+        deleteFromDetail() {
+            this.$refs.taskList.top_readTasklist()
+        }
     }   
 }
 </script>

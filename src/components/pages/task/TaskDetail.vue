@@ -461,6 +461,7 @@ import myMixin from "./task.js"
 export default {
     props: {
         closeDetail: Function,
+        deleteFromDetail: Function,
         params: Object,
         viewer: Object,
     },
@@ -638,13 +639,14 @@ export default {
         
         // タスク削除
         execDeleteTask(delete_item) {
-            let from_detail = true
             this.apiDeleteTask(delete_item)
             this.deleteSubtaskHasTask(delete_item)
             this.execDeleteAllFile(this.params.files)
             this.task_delete_modal = false
-            this.readTasklist(null, from_detail)
+            this.close()
+            this.deleteFromDetail(true)
         },
+
         // 詳細画面閉じる
         close() {
             this.closeDetail()

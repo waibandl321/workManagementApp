@@ -11,7 +11,7 @@ export default {
             }
             if(from_delete) {
                 this.task_detail = []
-                this.detail_active = false
+                this.detail_mode = false
             }
             this.params.task_list = this.apiGetTaskList()
         },
@@ -63,7 +63,7 @@ export default {
         deleteTaskDetail(delete_item) {
             if(delete_item.task_id == this.task_detail.task_id) {
                 this.task_detail = []
-                this.detail_active = false
+                this.detail_mode = false
             }
         },
         // サブタスクの削除

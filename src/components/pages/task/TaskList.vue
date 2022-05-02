@@ -198,7 +198,6 @@ export default {
     },
 
     // apiからデータ取得する関係で、task_listにデータがセットされているかを検知する目的で記述
-    // 後に他にもいい方法がないか模索する
     watch: {
         task_list: {
             handler: function(nObj, oObj) {
@@ -217,7 +216,6 @@ export default {
         },
         // リストの絞り込み
         filterList() {
-            console.log(this.task_list);
             let result = Object.entries(this.task_list)
             if(this.filter_status) {
                 result = result.filter(x => x[1].task_status.key === this.filter_status)
