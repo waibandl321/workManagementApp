@@ -76,9 +76,26 @@
                         <td>タスク名</td>
                         <td>ステータス</td>
                         <td>優先度</td>
-                        <td>期日</td>
-                        <td>作成日</td>
-                        <td></td>
+                        <td>
+                            <v-btn
+                                text
+                                class="px-0"
+                            >
+                                締切日
+                                <v-icon small>mdi-arrow-down</v-icon>
+                            </v-btn>
+                        </td>
+                        <td>タスク実施期間</td>
+                        <td>
+                            <v-btn
+                                text
+                                class="px-0"
+                            >
+                                作成日時
+                                <v-icon small>mdi-arrow-down</v-icon>
+                            </v-btn>
+                        </td>
+                        <td class="options-td"></td>
                     </tr>
                 </thead>
                 <tbody is="draggable" tag="tbody">
@@ -93,7 +110,8 @@
                         <td class="py-2">{{ task.task_name }}</td>
                         <td class="py-2">{{ extractTaskStatus(task.task_status.key) }}</td>
                         <td class="py-2">{{ extractTaskPriority(task.task_priority.key) }}</td>
-                        <td class="py-2">{{ task.task_start_date }} ~ {{ task.task_end_date }}</td>
+                        <td class="py-2">{{ task.task_deadline }}</td>
+                        <td class="py-2">実施期間が入ります</td>
                         <td class="py-2">{{ convertDatetimeFromUnixtime(task.created) }}</td>
                         <td class="options-td">
                             <v-btn

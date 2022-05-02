@@ -7,7 +7,8 @@
         >
             <v-alert
                 dismissible
-                type="info"
+                outlined
+                color="purple"
                 v-if="message"
             >
                 {{ message }}

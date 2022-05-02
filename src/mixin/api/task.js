@@ -74,8 +74,7 @@ export default {
                     text: "中"
                 },
                 task_manager: "",
-                task_start_date: "",
-                task_end_date: "",
+                task_deadline: null,
                 create_account: this.storeGetFirebaseUid(),
                 created: this.getCurrentUnixtime(),
                 updated: ""
@@ -124,8 +123,7 @@ export default {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
-            updates['/tasks/' + userId + '/' + id + '/task_start_date'] = ""
-            updates['/tasks/' + userId + '/' + id + '/task_end_date'] = ""                
+            updates['/tasks/' + userId + '/' + id + '/task_deadline'] = null
             update(ref(db), updates);
         },
         apiUpdateTaskStatus(id, status) {
@@ -156,14 +154,11 @@ export default {
             updates['/tasks/' + userId + '/' + id + '/task_description'] = description
             update(ref(db), updates);
         },
-        apiUpdateTaskTerm(terms, task_id) {
+        apiUpdateTaskTerm(task_deadline, task_id) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
-            updates['/tasks/' + userId + '/' + task_id + '/task_start_date'] = terms[0]
-            if(terms[1]) {
-                updates['/tasks/' + userId + '/' + task_id + '/task_end_date'] = terms[1]
-            }
+            updates['/tasks/' + userId + '/' + task_id + '/task_deadline'] = task_deadline
             update(ref(db), updates);
         },
         
@@ -190,8 +185,8 @@ export default {
                 subtask_message_content: "",
                 subtask_message_post_account: "",
                 subtask_status: {
-                    key: 1,
-                    text: "未着手",
+                    key: 0,
+                    text: "指定しない",
                 },
                 subtask_manager: "",
                 subtask_start_date: "",

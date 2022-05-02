@@ -90,21 +90,20 @@
                     text
                 >
                     <v-icon class="mr-2">mdi-calendar-check-outline</v-icon>
-                    {{ viewer.task_start_date }} ~ {{ viewer.task_end_date }}
+                    <span class="ml-2">{{ viewer.task_deadline }}</span>
                 </v-btn>
                 <!-- date picker -->
                 <div class="date_picker" v-if="term">
                     <v-text-field
-                        v-model="dateRangeText"
-                        label="期間を選択"
+                        v-model="task_deadline"
+                        label="日付を選択"
                         prepend-icon="mdi-calendar"
                         readonly
                     ></v-text-field>
                     <div>
                         <v-date-picker
-                            v-model="term_dates"
+                            v-model="task_deadline"
                             no-title
-                            range
                             color="primary"
                         ></v-date-picker>
                     </div>
@@ -117,7 +116,7 @@
                         >保存</v-btn>
                         <v-btn
                             text
-                            @click="term_dates = [], term = false"
+                            @click="task_deadline = [], term = false"
                         >キャンセル</v-btn>
                         <v-btn
                             text
@@ -461,7 +460,7 @@ export default {
         task_name_edit: false,
         desc_editor: false,
         term: false,
-        term_dates: [],
+        task_deadline: null,
 
         // テキストエディタ
         edidor_settings: tinymceSettings.edidor_settings,
@@ -484,14 +483,7 @@ export default {
         // タスク削除確認
         task_delete_modal: false,
     }),
-   
-    created(){},
 
-    computed: {
-        dateRangeText() {
-            return this.viewer.task_start_date + " 〜 " + this.viewer.task_end_date
-        },
-    },
     methods: {
         // ファイルアップロード
         onFileChange(e) {
@@ -521,7 +513,7 @@ export default {
         tasknameUpdate() {
             this.apiUpdateTaskname(this.viewer.task_id, this.viewer.task_name)
             this.task_name_edit = false
-            this.readTasklist()
+            this.listRefresh()
         },
         updateTaskDescription() {
             this.apiUpdateTaskDescription(this.viewer.task_id, this.viewer.task_description);
@@ -533,6 +525,12 @@ export default {
         },
         updateTaskPriority() {
             this.apiUpdateTaskPriority(this.viewer.task_id, this.viewer.task_priority)
+        },
+        updateTaskTerm() {
+            this.term = false
+            this.apiUpdateTaskTerm(this.task_deadline, this.viewer.task_id)
+            this.viewer.task_deadline = this.task_deadline
+            this.listRefresh()
         },
 
         // サブタスク
@@ -551,21 +549,12 @@ export default {
         },
         
         // タスク期間設定
-        updateTaskTerm() {
-            this.term = false
-            this.term_dates.sort(function(a, b){
-                return (a > b ? 1 : -1);
-            })
-            this.apiUpdateTaskTerm(this.term_dates, this.viewer.task_id)
-            this.viewer.task_start_date = this.term_dates[0]
-            this.viewer.task_end_date = this.term_dates[1]
-        },
+        
         deleteTaskTerm() {
-            this.term_dates = []
+            this.task_deadline = null
             this.term = false
             this.apiDeleteTaskTerm(this.viewer.task_id)
-            this.viewer.task_start_date = ""
-            this.viewer.task_end_date = ""
+            this.viewer.task_deadline = null
         },
         
         // タスク削除

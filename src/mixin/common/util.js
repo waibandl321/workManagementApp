@@ -16,13 +16,13 @@ export default {
             let date = new Date(value*1000)
 
             const year = date.getFullYear()
-            const month = date.getMonth() + 1
-            const day = date.getDate()
+            const month = ("0"+ (date.getMonth() + 1)).slice(-2);
+            const day = ("0"+ date.getDate()).slice(-2);
             const time = date.getHours()
             const minutes = date.getMinutes()
 
-            return year + '/'
-            + month + '/'
+            return year + '-'
+            + month + '-'
             + day + ' '
             + time + ':'
             + minutes
