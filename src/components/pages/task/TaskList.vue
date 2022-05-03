@@ -225,11 +225,11 @@ export default {
                 result = result.filter(x => x[1].task_name.includes(this.filter_text))
             }
             if(this.filter_status) {
-                result = result.filter(x => x[1].task_status.key === this.filter_status)
+                result = result.filter(x => x[1].task_status === this.filter_status)
             }
             if(this.filter_priority) {
                 result = result.filter(
-                    x => x[1].task_priority.key === this.filter_priority
+                    x => x[1].task_priority === this.filter_priority
                 )
             }
             result = this.convertArray(result);
