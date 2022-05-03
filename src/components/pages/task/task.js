@@ -1,24 +1,5 @@
 export default {
     methods: {
-        // タスク一覧読み込み
-        async readTasklist() {
-            return await this.apiGetTaskList()
-        },
-        // タスク一覧更新
-        refreshTaskList(delete_item, from_delete) {
-            if(delete_item) {
-                this.deleteTaskDetail(delete_item)
-            }
-            if(from_delete) {
-                this.task_detail = []
-                this.detail_mode = false
-            }
-            this.params.task_list = this.apiGetTaskList()
-        },
-         // タスク詳細の更新
-        refreshTaskDetail() {
-            this.task_detail = this.apiGetTaskDetail(this.task_detail.task_id)
-        },
         // ファイルデータの取得
         getFileList() {
             let files = this.apiGetFiles()
@@ -59,7 +40,6 @@ export default {
                 }
             }
         },
-        
         // リスト削除 => 詳細情報の削除
         deleteTaskDetail(delete_item) {
             if(delete_item.task_id == this.task_detail.task_id) {

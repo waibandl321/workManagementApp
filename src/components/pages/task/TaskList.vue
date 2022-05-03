@@ -116,14 +116,14 @@
                     <tr
                         v-for="(task, i) in filter_items"
                         :key="i"
-                        @click.stop="listClick(task)"
+                        @click.stop="recordClick(task)"
                     >
                         <td class="drag-icon-td">
                             <v-icon>mdi-drag</v-icon>
                         </td>
                         <td class="py-2">{{ task.task_name }}</td>
-                        <td class="py-2">{{ extractTaskStatus(task.task_status.key) }}</td>
-                        <td class="py-2">{{ extractTaskPriority(task.task_priority.key) }}</td>
+                        <td class="py-2">{{ extractTaskStatus(task.task_status) }}</td>
+                        <td class="py-2">{{ extractTaskPriority(task.task_priority) }}</td>
                         <td class="py-2">{{ task.task_deadline }}</td>
                         <td class="py-2">実施期間が入ります</td>
                         <td class="py-2">{{ convertDatetimeFromUnixtime(task.created) }}</td>
@@ -265,31 +265,28 @@ export default {
             result = this.convertArray(result);
             this.filter_items = result
         },
-        listClick(task) {
-            this.recordClick(task)
-        },
 
         // 優先度・ステータス文字列変換
-        extractTaskStatus(status_key) {
+        extractTaskStatus(status) {
             let result = this.params.task_status_list
-            result = result.filter(v => v.key === status_key)
+            result = result.filter(v => v.key === status)
             result = result[0].text
             return result
         },
-        extractTaskPriority(priority_key) {
+        extractTaskPriority(priority) {
             let result = this.params.task_priorities
-            result = result.filter(v => v.key === priority_key)
+            result = result.filter(v => v.key === priority)
             result = result[0].text
             return result
         },
-        // タスク作成
+        // 作成
         createTask() {
             if(this.apiTaskCreate(this.create_task_name)) {
                 this.create_task_name = ""
                 this.listRefresh("タスクを新規作成しました")
             }
         },
-        // タスク削除
+        // 削除
         deleteConfirm(task) {
             this.task_delete_modal = true
             this.delete_item = task

@@ -46,51 +46,13 @@ export default {
         getSortDateOptions() {
             return this.sort_date_options
         },
-        // タスク優先度絞り込みオプション
         getTaskPriorities() {
             return this.task_priorities
-        },
-        // タスクステータス取得
+        },        
         getTaskStatus() {
             return this.task_status
         },
-        
-        // タスク作成
-        apiTaskCreate(new_task) {
-            const id = Math.random().toString(32).substring(2)
-            const data_obj = {
-                task_id: id,
-                project_id: "",
-                task_name: new_task,
-                task_description: "",
-                task_message_content: "",
-                task_message_post_account: "",
-                task_status: {
-                    key: 1,
-                    text: "未着手",
-                },
-                task_priority: {
-                    key: 2,
-                    text: "中"
-                },
-                task_manager: "",
-                task_deadline: null,
-                create_account: this.storeGetFirebaseUid(),
-                created: this.getCurrentUnixtime(),
-                updated: ""
-            }
-
-            try {
-                const db = getDatabase();
-                set(ref(db, '/tasks/' + this.storeGetFirebaseUid() + '/' + id), data_obj)
-                return true
-            } catch (error) {
-                console.log(error);
-                return false
-            }
-        },
-
-        // タスク一覧取得
+        // 取得
         async apiGetTaskList() {
             return new Promise((resolve,) => {
                 const db = getDatabase()
@@ -103,20 +65,69 @@ export default {
                 console.log(reason.messege);
             });
         },
-
-        // タスク詳細取得
-        apiGetTaskDetail(id) {
+        apiGetSubtaskList() {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
-            const r = ref(db, '/tasks/' + userId + '/' + id)
+            const r = ref(db, 'subtasks/' + userId)
             let d = ""
             onValue(r, (snapshot) => {
                 d = snapshot.val()
             })
             return d
         },
-
         
+        // 作成
+        apiTaskCreate(new_task) {
+            const id = Math.random().toString(32).substring(2)
+            const data_obj = {
+                task_id: id,
+                project_id: "",
+                task_name: new_task,
+                task_description: "",
+                task_message_content: "",
+                task_message_post_account: "",
+                task_status: 0,
+                task_priority: 0,
+                task_manager: "",
+                task_deadline: null,
+                create_account: this.storeGetFirebaseUid(),
+                created: this.getCurrentUnixtime(),
+                updated: ""
+            }
+            try {
+                const db = getDatabase();
+                set(ref(db, '/tasks/' + this.storeGetFirebaseUid() + '/' + id), data_obj)
+                return true
+            } catch (error) {
+                console.log(error);
+                return false
+            }
+        },
+        apiSubtaskCreate(subtask_name, task_id) {
+            const db = getDatabase();
+            const userId = this.storeGetFirebaseUid()
+            const id = this.createRandomId()
+            const time = this.getCurrentUnixtime()
+            set(ref(db, '/subtasks/' + userId + '/' + id), {
+                subtask_id: id,
+                task_id: task_id,
+                subtask_name: subtask_name,
+                subtask_description: "",
+                subtask_message_content: "",
+                subtask_message_post_account: "",
+                subtask_status: {
+                    key: 0,
+                    text: "指定しない",
+                },
+                subtask_manager: "",
+                subtask_start_date: "",
+                subtask_end_date: "",
+                create_account: userId,
+                created: time,
+                updated: ""
+            });
+            return true
+        },
 
         // 更新
         apiDeleteTaskTerm(id) {
@@ -162,7 +173,7 @@ export default {
             update(ref(db), updates);
         },
         
-        // タスク削除
+        // 削除
         apiDeleteTask(task) {
             const db = getDatabase()
             const updates = {};
@@ -170,55 +181,13 @@ export default {
 
             return update(ref(db), updates);
         },
-
-        // サブタスク作成
-        apiSubtaskCreate(subtask_name, task_id) {
-            const db = getDatabase();
-            const userId = this.storeGetFirebaseUid()
-            const id = this.createRandomId()
-            const time = this.getCurrentUnixtime()
-            set(ref(db, '/subtasks/' + userId + '/' + id), {
-                subtask_id: id,
-                task_id: task_id,
-                subtask_name: subtask_name,
-                subtask_description: "",
-                subtask_message_content: "",
-                subtask_message_post_account: "",
-                subtask_status: {
-                    key: 0,
-                    text: "指定しない",
-                },
-                subtask_manager: "",
-                subtask_start_date: "",
-                subtask_end_date: "",
-                create_account: userId,
-                created: time,
-                updated: ""
-            });
-            return true
-        },
-
-        // サブタスク一覧取得
-        apiGetSubtaskList() {
-            const db = getDatabase()
-            const userId = this.storeGetFirebaseUid()
-            const r = ref(db, 'subtasks/' + userId)
-            let d = ""
-            onValue(r, (snapshot) => {
-                d = snapshot.val()
-            })
-            return d
-        },
-
-        // サブタスク削除(単体)
         apiDeleteSubtask(subtask) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const subtask_id = subtask.subtask_id
             remove(ref(db, '/subtasks/' + userId + '/' + subtask_id));
         },
-
-        // 親タスク削除時のサブタスク同時削除
+        // 親タスク削除時にサブタスクがある場合
         apiDeleteSubtaskHasTask(subtasks) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
