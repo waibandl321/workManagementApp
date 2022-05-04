@@ -8,27 +8,20 @@ import {
 } from "firebase/storage";
 
 
-
-
 export default {
     data: () => ({}),
     methods: {
+
+        
         // ファイルアップロード（StorageとDBへ）
-        async apiUploadFile(file, id, app) {
-            const userId = this.storeGetFirebaseUid()
+        async apiUploadFile(file, task_id) {
             const db_id = this.createRandomId()
-            const storage = getStorage();
-            const storageRef = ref(storage, userId + '/' + file.name);
-            const str = app + "_id"
-            const custom_meta = {
-                customMetadata: {
-                    db_id: db_id,
-                    [str]: id
-                }
-            }
-            const uploadTask = uploadBytesResumable(storageRef, file, custom_meta)
+            const storageRef = ref( this.firebaseStorageModule(), this.storeGetFirebaseUid() + '/' + file.name );
+            const uploadTask = uploadBytesResumable(storageRef, file, customMetadata(db_id, task_id))
+            
             uploadTask.on('state_changed',
                 (snapshot) => {
+                    console.log(snapshot);
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     if(progress == 100) {
                         console.log("upload prosess : " + progress + "%");
@@ -41,7 +34,7 @@ export default {
                     let file_meta = await this.apiGetFileMetadata(file.name)
                     getDownloadURL(uploadTask.snapshot.ref)
                     .then((downloadURL) => {
-                        this.apiFileSaveDatabase(db_id, app, file_meta, downloadURL)
+                        this.apiFileSaveDatabase(db_id, "task", file_meta, downloadURL)
                     })
                     .then(() => {
                         this.getFileList()
@@ -50,14 +43,20 @@ export default {
                     })
                 },
             );
-        },
 
+            function customMetadata(db_id, task_id) {
+                return {
+                    customMetadata: {
+                        db_id: db_id,
+                        task_id: task_id
+                    }
+                }
+            }
+        },
 
         // ファイルのメタデータの取得
         async apiGetFileMetadata(f_name) {
-            const storage = getStorage()
-            const userId = this.storeGetFirebaseUid()
-            const forestRef = ref(storage, userId + '/' + f_name);
+            const forestRef = ref( this.firebaseStorageModule(), this.storeGetFirebaseUid() + '/' + f_name );
             let meta = ""
 
             await getMetadata(forestRef)
@@ -71,12 +70,9 @@ export default {
             return meta
         },
 
-
         // ストレージからファイルを削除
-        apiDeleteFileStorage(file) {
-            const storage = getStorage();
-            const userId = this.storeGetFirebaseUid()
-            const desertRef = ref(storage, userId + '/' + file.name);
+        deleteFileOnStorage(file) {
+            const desertRef = ref( this.firebaseStorageModule(), this.storeGetFirebaseUid() + '/' + file.name );
             deleteObject(desertRef)
             .then(() => {
                 this.apiDeleteFileDatabase(file)
@@ -86,5 +82,9 @@ export default {
             });
             return true
         },
+
+        firebaseStorageModule() {
+            return getStorage();
+        }
     }
 }

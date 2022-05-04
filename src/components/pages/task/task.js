@@ -1,13 +1,15 @@
 export default {
+    data: () => ({
+        
+    }),
     methods: {
-        // ファイルデータの取得
         getFileList() {
             let files = this.apiGetFiles()
             if(files) {
                 const obj = Object.entries(files)
                 let arr = []
-                obj.forEach(r => {
-                    if(r[1].task_id == this.task_detail.task_id) {
+                obj.forEach(r => {                    
+                    if(r[1].task_id == this.viewer.task_id) {
                         arr.push(r[1])
                     }
                 })
@@ -19,7 +21,7 @@ export default {
         // 全ての添付ファイルを削除
         deleteAllFile(files) {
             files.forEach(r => {
-                this.apiDeleteFileStorage(r)
+                this.deleteFileOnStorage(r)
             })
         },
         // サブタスク一覧

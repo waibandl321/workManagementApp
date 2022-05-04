@@ -507,7 +507,7 @@ export default {
             this.file_select = false
             const files = e.target.files || e.dataTransfer.files
             if(files.length > 0) {
-                this.apiUploadFile(files[0], this.viewer.task_id, "task")
+                this.apiUploadFile(files[0], this.viewer.task_id)
             }
         },
         // ファイル削除
@@ -517,7 +517,7 @@ export default {
         },
         execDeleteFile() {
             this.file_loading = true
-            this.apiDeleteFileStorage(this.delete_file)
+            this.deleteFileOnStorage(this.delete_file)
         },
         execDeleteAllFile(files) {
             this.delete_all_file_modal = false
