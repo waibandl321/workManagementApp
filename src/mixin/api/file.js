@@ -56,13 +56,13 @@ export default {
 
         // ダウンロードpathを返す
         async storageDownloadPath(fullPath) {
-            return await getDownloadURL( ref(this.readStorageModule(), fullPath) )
-                .then((url) => {
-                    return url
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            return getDownloadURL( ref(this.readStorageModule(), fullPath) )
+            .then((url) => {
+                return url
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         },
 
         // 削除

@@ -324,10 +324,11 @@
                             indeterminate
                         ></v-progress-circular>
                     </div>
+                    
                     <table class="file-table" v-else>
                         <tr v-for="(file, i) in params.files" :key="i">
                             <td>
-                                <img :src="file.download_url" width="40">
+                                <img :src="outputDownloadPath(file.name)" width="40">
                             </td>
                             <td>{{ file.name }}</td>
                             <td>{{ file.size }}</td>
@@ -351,6 +352,7 @@
                             </td>
                         </tr>
                     </table>
+                    {{ params.files }}
                 </div>
                 
                 
@@ -503,7 +505,7 @@ export default {
     methods: {
         // ファイルアップロード
         async onFileChange(e) {
-            // this.file_loading = true
+            this.file_loading = true
             this.file_select = false
             const files = e.target.files || e.dataTransfer.files
 
@@ -521,12 +523,16 @@ export default {
                     return this.firebaseSaveFile(res)
                 })
                 .then(() => {
+                    this.file_loading = false
                     this.getFileList()
                 })
                 .catch((error) => {
                     console.log(error);
                 })
             }
+        },
+        async outputDownloadPath(filename) {
+            return await this.storageDownloadPath( this.storeGetFirebaseUid() + '/' + filename )
         },
         // ファイル削除
         deleteFileSelected(file_data) {
