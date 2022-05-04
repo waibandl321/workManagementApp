@@ -503,12 +503,28 @@ export default {
     methods: {
         // ファイルアップロード
         onFileChange(e) {
-            this.file_loading = true
+            // this.file_loading = true
             this.file_select = false
             const files = e.target.files || e.dataTransfer.files
+
             if(files.length > 0) {
-                this.apiUploadFile(files[0], this.viewer.task_id)
+                const promise = new Promise((resolve, reject) => {
+                    resolve();
+                    reject()
+                });
+                
+                promise
+                .then(() => {
+                    this.uploadFileToStorage(files[0], this.viewer.task_id)
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
             }
+            
+
+
+            
         },
         // ファイル削除
         deleteFileSelected(file_data) {
