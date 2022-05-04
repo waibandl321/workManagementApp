@@ -12,21 +12,21 @@ import {
 export default {
     data: () => ({}),
     methods: {
-        firebaseStorageModule() {
+        readStorageModule() {
             return getStorage();
         },
-        returnFilePath(file_name) {
+        initStorageFilePath(file_name) {
             return this.storeGetFirebaseUid() + '/' + file_name
         },
 
         // 成功した場合、アップロードしたファイルのメタデータを返す
-        async uploadFileToStorage(file, task_id) {
+        async storageUploadFile(file, task_id) {
             const db_id = this.createRandomId()
-            const storageRef = ref( this.firebaseStorageModule(), this.returnFilePath(file.name) );
+            const storageRef = ref( this.readStorageModule(), this.initStorageFilePath(file.name) );
             
             return await uploadBytes(storageRef, file, customMetadata(db_id, task_id))
                 .then((snapshot) => {
-                    return this.returnFileMetadataOnStorage(snapshot.ref.fullPath)
+                    return this.storageFileMetadata(snapshot.ref.fullPath)
                 })
                 .catch((error) => {
                     console.log(error);
@@ -42,8 +42,8 @@ export default {
             }
         },
 
-        async returnFileMetadataOnStorage(path) {
-            const forestRef = ref( this.firebaseStorageModule(), path );
+        async storageFileMetadata(path) {
+            const forestRef = ref( this.readStorageModule(), path );
             return await getMetadata(forestRef)
             .then((metadata) => {
                 return metadata
@@ -55,9 +55,8 @@ export default {
         },
 
         // ダウンロードpathを返す
-        async downloadFilePath(fullPath) {
-            const forestRef = ref(this.firebaseStorageModule(), fullPath);
-            return await getDownloadURL( forestRef )
+        async storageDownloadPath(fullPath) {
+            return await getDownloadURL( ref(this.readStorageModule(), fullPath) )
                 .then((url) => {
                     return url
                 })
@@ -66,12 +65,12 @@ export default {
                 });
         },
 
-        // ストレージからファイルを削除
-        deleteFileOnStorage(file) {
-            const desertRef = ref( this.firebaseStorageModule(), this.storeGetFirebaseUid() + '/' + file.name );
+        // 削除
+        storageDeleteFile(file) {
+            const desertRef = ref( this.readStorageModule(), this.storeGetFirebaseUid() + '/' + file.name );
             deleteObject(desertRef)
             .then(() => {
-                this.apiDeleteFileDatabase(file)
+                this.firebaseDeleteFile(file)
             })
             .catch((error) => {
                 console.log(error);

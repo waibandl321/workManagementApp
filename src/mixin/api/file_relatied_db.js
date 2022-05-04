@@ -9,7 +9,7 @@ import {
 export default {
     methods: {
         // ファイルデータをDBに保存
-        saveFileMetadataToStorage(data) {
+        firebaseSaveFile(data) {
             const obj = {
                     db_id: data.customMetadata.db_id,
                     name: data.name,
@@ -23,7 +23,7 @@ export default {
         },
 
         // ファイルの一覧取得
-        apiGetFiles() {
+        firebaseReadFile() {
             const db = getDatabase()
             const r = ref( db, '/files/' + this.storeGetFirebaseUid() )
             let d = ""
@@ -34,7 +34,7 @@ export default {
         },
         
         // データベースからファイルを削除
-        apiDeleteFileDatabase(file) {
+        firebaseDeleteFile(file) {
             const db = getDatabase();
             const userId = this.storeGetFirebaseUid()
             remove(ref(db, '/files/' + userId + '/' + file.db_id))

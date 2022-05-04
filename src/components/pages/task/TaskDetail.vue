@@ -515,10 +515,10 @@ export default {
                 
                 uploadPromise
                 .then(() => {
-                    return this.uploadFileToStorage(files[0], this.viewer.task_id)
+                    return this.storageUploadFile(files[0], this.viewer.task_id)
                 })
                 .then((res) => {
-                    return this.saveFileMetadataToStorage(res)
+                    return this.firebaseSaveFile(res)
                 })
                 .then(() => {
                     this.getFileList()
@@ -535,7 +535,7 @@ export default {
         },
         execDeleteFile() {
             this.file_loading = true
-            this.deleteFileOnStorage(this.delete_file)
+            this.storageDeleteFile(this.delete_file)
         },
         execDeleteAllFile(files) {
             this.delete_all_file_modal = false

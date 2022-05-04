@@ -4,7 +4,7 @@ export default {
     }),
     methods: {
         getFileList() {
-            let files = this.apiGetFiles()
+            let files = this.firebaseReadFile()
             if(files) {
                 const obj = Object.entries(files)
                 let arr = []
@@ -21,7 +21,7 @@ export default {
         // 全ての添付ファイルを削除
         deleteAllFile(files) {
             files.forEach(r => {
-                this.deleteFileOnStorage(r)
+                this.storageDeleteFile(r)
             })
         },
         // サブタスク一覧
