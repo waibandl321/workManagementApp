@@ -3,7 +3,7 @@ import {
     ref,
     // uploadBytesResumable,
     uploadBytes,
-    // getDownloadURL,
+    getDownloadURL,
     getMetadata,
     deleteObject
 } from "firebase/storage";
@@ -19,19 +19,18 @@ export default {
             return this.storeGetFirebaseUid() + '/' + file_name
         },
 
-        uploadFileToStorage(file, task_id) {
+        // 成功した場合、アップロードしたファイルのメタデータを返す
+        async uploadFileToStorage(file, task_id) {
             const db_id = this.createRandomId()
             const storageRef = ref( this.firebaseStorageModule(), this.returnFilePath(file.name) );
             
-            uploadBytes(storageRef, file, customMetadata(db_id, task_id))
-            .then((snapshot) => {
-                // アップロード成功
-                console.log(snapshot);
-            })
-            .catch((error) => {
-                // 失敗
-                console.log(error);
-            })
+            return await uploadBytes(storageRef, file, customMetadata(db_id, task_id))
+                .then((snapshot) => {
+                    return this.returnFileMetadataOnStorage(snapshot.ref.fullPath)
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
             
             function customMetadata(db_id, task_id) {
                 return {
@@ -42,22 +41,29 @@ export default {
                 }
             }
         },
-       
-        // ファイルのメタデータの取得
-        async apiGetFileMetadata(f_name) {
 
-            const forestRef = ref( this.firebaseStorageModule(), this.returnFilePath(f_name) );
-            let meta = ""
-
-            await getMetadata(forestRef)
+        async returnFileMetadataOnStorage(path) {
+            const forestRef = ref( this.firebaseStorageModule(), path );
+            return await getMetadata(forestRef)
             .then((metadata) => {
-                meta = metadata
+                return metadata
             })
             .catch((error) => {
                 console.log(error);
-            })
+            });
 
-            return meta
+        },
+
+        // ダウンロードpathを返す
+        async downloadFilePath(fullPath) {
+            const forestRef = ref(this.firebaseStorageModule(), fullPath);
+            return await getDownloadURL( forestRef )
+                .then((url) => {
+                    return url
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         },
 
         // ストレージからファイルを削除

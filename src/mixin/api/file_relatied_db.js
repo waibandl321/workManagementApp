@@ -9,39 +9,23 @@ import {
 export default {
     methods: {
         // ファイルデータをDBに保存
-        apiFileSaveDatabase(db_id, app, file_meta, download_url) {
-            const userId = this.storeGetFirebaseUid()
-            const id_key = app + "_id"
-            let arr = {}
-            if(app == "task") {
-                arr = {
-                    db_id: db_id,
-                    name: file_meta.name,
-                    size: file_meta.size,
-                    contentType: file_meta.contentType,
-                    download_url: download_url,
-                    [id_key]: file_meta.customMetadata.task_id,
+        saveFileMetadataToStorage(data) {
+            const obj = {
+                    db_id: data.customMetadata.db_id,
+                    name: data.name,
+                    size: data.size,
+                    contentType: data.contentType,
+                    task_id: data.customMetadata.task_id,
                 }
-            }
-            else if(app == "project") {
-                arr = {
-                    db_id: db_id,
-                    name: file_meta.name,
-                    size: file_meta.size,
-                    contentType: file_meta.contentType,
-                    download_url: download_url,
-                    [id_key]: file_meta.customMetadata.project_id,
-                }
-            }
+            
             const db = getDatabase();
-            set(ref(db, '/files/' + userId + '/' + db_id), arr);
+            set(ref(db, '/files/' + this.storeGetFirebaseUid() + '/' + data.customMetadata.db_id), obj);
         },
 
         // ファイルの一覧取得
         apiGetFiles() {
             const db = getDatabase()
-            const userId = this.storeGetFirebaseUid()
-            const r = ref(db, '/files/' + userId)
+            const r = ref( db, '/files/' + this.storeGetFirebaseUid() )
             let d = ""
             onValue(r, (snapshot) => {
                 d = snapshot.val()

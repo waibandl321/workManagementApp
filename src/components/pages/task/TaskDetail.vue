@@ -502,29 +502,31 @@ export default {
 
     methods: {
         // ファイルアップロード
-        onFileChange(e) {
+        async onFileChange(e) {
             // this.file_loading = true
             this.file_select = false
             const files = e.target.files || e.dataTransfer.files
 
             if(files.length > 0) {
-                const promise = new Promise((resolve, reject) => {
+                const uploadPromise = new Promise((resolve, reject) => {
                     resolve();
                     reject()
                 });
                 
-                promise
+                uploadPromise
                 .then(() => {
-                    this.uploadFileToStorage(files[0], this.viewer.task_id)
+                    return this.uploadFileToStorage(files[0], this.viewer.task_id)
+                })
+                .then((res) => {
+                    return this.saveFileMetadataToStorage(res)
+                })
+                .then(() => {
+                    this.getFileList()
                 })
                 .catch((error) => {
                     console.log(error);
                 })
             }
-            
-
-
-            
         },
         // ファイル削除
         deleteFileSelected(file_data) {
