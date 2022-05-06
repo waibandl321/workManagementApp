@@ -158,7 +158,7 @@
                         </v-btn>
                     </v-card-actions>
                     <v-divider />
-                    <table class="task-list subtask-list">
+                    <table class="basic-list underlayer-list">
                         <tbody>
                         <tr
                             v-for="subtask in params.subtask_list"

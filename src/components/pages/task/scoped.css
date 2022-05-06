@@ -22,25 +22,25 @@
 .filter-box {
     max-width: 300px;
 }
-.task-list {
+.basic-list {
     border-collapse: collapse;
     table-layout: unset;
     width: 100%;
 }
-.task-list thead {
+.basic-list thead {
     background-color: #eee;
 }
-.task-list td {
+.basic-list td {
     font-size: 14px;
     padding: 4px;
 }
 .drag-icon-td {
     width: 32px;
 }
-.task-list tbody tr {
+.basic-list tbody tr {
     border-bottom: 1px solid #ccc;
 }
-.task-list tbody tr:hover {
+.basic-list tbody tr:hover {
     cursor: pointer;
     background-color: #f6f6f6;
 }
@@ -179,25 +179,25 @@
 td {
     font-size: 14px;
 }
-.task-list {
+.basic-list {
     border-collapse: collapse;
     table-layout: unset;
     width: 100%;
 }
-.subtask-list tr {
+.underlayer-list tr {
     background-color: #f6f6f6;
 }
-.subtask-list td {
+.underlayer-list td {
     padding: 0 16px;
 }
 
-.task-list tr:not(:first-child) {
+.basic-list tr:not(:first-child) {
     border-top: 1px solid #ccc;
 }
-.task-list tr {
+.basic-list tr {
     border-bottom: 1px solid #ccc;
 }
-.task-list tr:hover {
+.basic-list tr:hover {
     cursor: pointer;
     background-color: #f6f6f6;
 }

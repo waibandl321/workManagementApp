@@ -76,7 +76,7 @@
         
         <div class="list_body">
             <table
-                class="task-list mt-4"
+                class="basic-list mt-4"
             >
                 <thead>
                     <tr>

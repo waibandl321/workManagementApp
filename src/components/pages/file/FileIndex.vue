@@ -3,7 +3,7 @@
         <Header :parents="parents"/>
         <div class="main">
             <div class="pa-6">
-                
+                <FileList />
             </div>
         </div>
     </div>
@@ -11,11 +11,12 @@
 
 <script>
 import Header from '@/components/common/Header'
+import FileList from '@/components/pages/file/FileList.vue'
 
 export default {
     components: {
         Header,
-        
+        FileList
     },
     data: () => ({
         parents: {
