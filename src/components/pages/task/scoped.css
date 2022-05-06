@@ -13,7 +13,7 @@
     height: calc(100vh - 70px);
 }
 .detail {
-    height: calc(100vh - 70px);
+    padding-bottom: 120px!important;
 }
 /* 一覧 */
 .list_inner >>> .v-text-field__details {
