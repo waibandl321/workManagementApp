@@ -1,6 +1,7 @@
 // components
 import Dashboard from '@/components/pages/dashboard/DashboardIndex'
 import Task from '@/components/pages/task/TaskIndex'
+import File from '@/components/pages/file/FileIndex'
 import Signup from '@/components/pages/auth/Signup'
 import Signin from '@/components/pages/auth/Signin'
 import AccountIndex from '@/components/pages/account/AccountIndex'
@@ -15,6 +16,11 @@ export default
           path: '/task',
           name: 'task',
           component: Task
+        },
+        {
+          path: '/file',
+          name: 'file',
+          component: File
         },
         {
           path: '/auth/signup',

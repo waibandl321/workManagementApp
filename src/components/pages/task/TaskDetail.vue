@@ -352,7 +352,6 @@
                             </td>
                         </tr>
                     </table>
-                    {{ params.files }}
                 </div>
                 
                 

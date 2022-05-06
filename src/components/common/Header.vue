@@ -83,6 +83,7 @@ export default {
         functions: [
             { text: "ダッシュボード", path: "/", icon: "mdi-view-dashboard-outline" },
             { text: "タスク一覧", path: "/task", icon: "mdi-format-list-checks" },
+            { text: "ファイル管理", path: "/file", icon: "mdi-folder" },
         ],
     }),
 

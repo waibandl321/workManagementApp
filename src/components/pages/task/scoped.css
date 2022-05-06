@@ -70,6 +70,14 @@
 .detail_inner >>> .v-text-field__details {
     display: none;
 }
+.v-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+.v-dialog .v-sheet.v-card {
+    border-radius: 0;
+}
 .relative {
     position: relative;
 }
@@ -212,9 +220,26 @@ td {
 /* editor style */
 .editor_body {
     padding: 24px;
-    background-color: #f9f9f9;
-}
-.editor_body >>> p,
-.editor_body >>> li {
+    background-color: #f5f5f8;
     font-size: 14px;
+}
+.editor_body >>> h2:first-child {
+    margin-top: 0;
+}
+.editor_body >>> h2 {
+    margin-top: 40px;
+    margin-bottom: 12px;
+}
+.editor_body >>> h3 {
+    margin-top: 24px;
+    margin-bottom: 12px;
+}
+.editor_body >>> pre {
+    padding: 16px;
+    background-color: #222;
+    color: #fff;
+    font-size: 12px;
+}
+.editor_body {
+    color: #222;
 }
