@@ -306,5 +306,5 @@ export default {
     }
 }
 </script>
-
+<style scoped src="../../../assets/css/original.css"></style>
 <style scoped src="./scoped.css"></style>

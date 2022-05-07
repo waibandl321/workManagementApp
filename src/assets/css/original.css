@@ -1,0 +1,25 @@
+.basic-list {
+    border-collapse: collapse;
+    table-layout: unset;
+    width: 100%;
+}
+.basic-list thead {
+    background-color: #eee;
+}
+.basic-list tbody tr {
+    border-bottom: 1px solid #ccc;
+}
+.basic-list tbody tr:hover {
+    cursor: pointer;
+    background-color: #f6f6f6;
+}
+.basic-list td {
+    font-size: 14px;
+    padding: 4px;
+}
+.options-td {
+    width: 40px;
+}
+.options-td {
+    text-align: right;
+}

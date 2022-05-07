@@ -22,27 +22,8 @@
 .filter-box {
     max-width: 300px;
 }
-.basic-list {
-    border-collapse: collapse;
-    table-layout: unset;
-    width: 100%;
-}
-.basic-list thead {
-    background-color: #eee;
-}
-.basic-list td {
-    font-size: 14px;
-    padding: 4px;
-}
 .drag-icon-td {
     width: 32px;
-}
-.basic-list tbody tr {
-    border-bottom: 1px solid #ccc;
-}
-.basic-list tbody tr:hover {
-    cursor: pointer;
-    background-color: #f6f6f6;
 }
 .relative {
     position: relative;
@@ -54,12 +35,7 @@
     top: 35%;
     transform: translateY(-35%);
 }
-.options-td {
-    width: 40px;
-}
-.options-td {
-    text-align: right;
-}
+
 /* 詳細 */
 .relative {
     position: relative;
@@ -179,27 +155,11 @@
 td {
     font-size: 14px;
 }
-.basic-list {
-    border-collapse: collapse;
-    table-layout: unset;
-    width: 100%;
-}
 .underlayer-list tr {
     background-color: #f6f6f6;
 }
 .underlayer-list td {
     padding: 0 16px;
-}
-
-.basic-list tr:not(:first-child) {
-    border-top: 1px solid #ccc;
-}
-.basic-list tr {
-    border-bottom: 1px solid #ccc;
-}
-.basic-list tr:hover {
-    cursor: pointer;
-    background-color: #f6f6f6;
 }
 .file-table {
     width: 100%;
