@@ -108,18 +108,20 @@ export default {
     }),
     methods: {
         executeCreateFolder() {
-            this.params.success = `「フォルダ : ${this.folder_name}」を作成しました。`
             const formdata = {
-                "id": this.createRandomId(),
-                "uid": this.storeGetFirebaseUid(),
-                "type": 0,
-                "name": this.folder_name,
-                "size": "",
-                "upload_at": this.getCurrentUnixtime(),
-                "delete": 0,
+                "id"           : this.createRandomId(),
+                "uid"          : this.storeGetFirebaseUid(),
+                "type"         : 0,
+                "name"         : this.folder_name,
+                "size"         : "",
+                "upload_at"    : this.getCurrentUnixtime(),
+                "delete"       : 0,
                 "parent_dir_id": this.params.now_dir,
             }
+            //保存処理
+            this.firebaseCreateShareFiles(formdata)
             this.params.filter_items.push(formdata)
+            this.params.success    = `「フォルダ : ${this.folder_name}」を作成しました。`
             this.createFolderModal = false
         },
     }

@@ -164,6 +164,7 @@ export default {
         this.readShareFiles()
     },
     methods: {
+        
         searchFileList() {
             let result = this.params.filter_items
             if(this.search_text) {
@@ -174,13 +175,20 @@ export default {
             }
         },
         pushBreadcrumbs(select_dir_id) {
-            // クリックされたディレクトリ情報をパンくずリストに追加する
+            this.params.now_dir = select_dir_id
+            
             let result = this.params.file_data
-            result = result.filter(v => v.id == select_dir_id)
+            result = Object.keys(result)
+                    .map((key) => {
+                        return [key, result[key]];
+                    })
+                    .filter(r => r[1].id == select_dir_id)
+            
+            // TODO:配列構造をシンプルにしたい
             this.breadcrumbs.push(
                 {
                     href: select_dir_id,
-                    text: result[0].name,
+                    text: result[0][1].name,
                 }
             )
             // 現在表示されているディレクトリをチェックし、disabled属性を設定する

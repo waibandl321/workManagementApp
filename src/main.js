@@ -16,6 +16,8 @@ import authStore from "./mixin/store/auth.js"
 import accountMixin from "./mixin/api/account.js"
 import accountStore from "./mixin/store/account.js"
 
+import shareFilesMixin from "./mixin/api/share_files.js"
+
 import taskMixin from "@/mixin/api/task.js"
 import fileMixin from "@/mixin/api/file.js"
 import fileRelatedDatabaseMixin from "@/mixin/api/file_relatied_db.js"
@@ -32,6 +34,8 @@ Vue.mixin(authStore)
 
 Vue.mixin(accountMixin)
 Vue.mixin(accountStore)
+
+Vue.mixin(shareFilesMixin)
 
 Vue.mixin(taskMixin)
 Vue.mixin(fileMixin)

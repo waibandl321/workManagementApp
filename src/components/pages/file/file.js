@@ -2,19 +2,44 @@ export default {
     data: () => ({
         files: [],
     }),
+    created() {
+
+    },
     methods: {
-        readShareFiles(select_dir_id) {
-            // TODO:Firebase読み込みに変更
-            let items = this.params.file_data
-            this.params.now_dir = "0"
-            if(select_dir_id) {
-                this.params.now_dir = select_dir_id
-                items = items.filter((v) => v.parent_dir_id == select_dir_id)
-            } else {
-                items = items.filter((v) => v.parent_dir_id == "0")
-            }
-            this.params.filter_items = items
+        async readShareFiles(select_dir_id) {
+            const promise = new Promise((resolve) => {
+                resolve();
+            });
+            promise
+            .then( async () => {
+                return await this.firebaseReadShareFiles()
+            })
+            .then((files) => {
+                this.params.file_data = files
+                let result = []
+                this.params.now_dir = "0"
+                
+                if(select_dir_id) {
+                    this.params.now_dir = select_dir_id
+                    Object.keys(files).forEach((key) =>  {
+                        if(files[key].parent_dir_id == select_dir_id) {
+                            result.push(files[key])
+                        }
+                    });
+                } else {
+                    Object.keys(files).forEach((key) =>  {
+                        if(files[key].parent_dir_id == "0") {
+                            result.push(files[key])
+                        }
+                    });
+                }
+                this.params.filter_items = result
+            })
+            .catch((error) => {
+                console.log(error);
+            })
         },
+        
         uploadChange() {
             this.params.dragging = false
             this.params.loading  = true
