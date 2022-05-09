@@ -516,7 +516,7 @@ export default {
                 
                 uploadPromise
                 .then(() => {
-                    return this.storageUploadFile(files[0], this.viewer.task_id)
+                    return this.storageUploadFunctionFile(files[0], this.viewer.task_id)
                 })
                 .then((res) => {
                     return this.firebaseSaveFile(res)

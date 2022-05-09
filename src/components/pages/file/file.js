@@ -37,29 +37,5 @@ export default {
                 console.log(error);
             })
         },
-        
-        uploadChange() {
-            this.params.dragging = false
-            this.params.loading  = true
-            let files           =  event.target.files
-
-            for (let i = 0; i < files.length; i++) {
-                const data = {
-                    "id"           : this.createRandomId(),
-                    "uid"          : this.storeGetFirebaseUid(),
-                    "type"         : 1,
-                    "name"         : files[i].name,
-                    "size"         : files[i].size,
-                    "upload_at"    : this.getCurrentUnixtime(),
-                    "delete"       : 0,
-                    "parent_dir_id": this.params.now_dir,
-                }
-                // 保存処理
-                this.firebaseCreateShareFiles(data)
-                this.params.filter_items.push(data)
-            }
-            this.params.success    = `「フォルダ : ${this.folder_name}」を作成しました。`
-            this.params.loading = false
-        },
     }
 }

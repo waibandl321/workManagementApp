@@ -126,6 +126,43 @@ export default {
             }
             this.readShareFiles(this.params.now_dir)
         },
+        shareFileFormdata(file) {
+            return {
+                    "id"           : this.createRandomId(),
+                    "uid"          : this.storeGetFirebaseUid(),
+                    "type"         : 1,
+                    "name"         : file.name,
+                    "size"         : file.size,
+                    "upload_at"    : this.getCurrentUnixtime(),
+                    "delete"       : 0,
+                    "parent_dir_id": this.params.now_dir,
+            }
+        },
+        async uploadChange() {
+            this.params.dragging = false
+            this.params.loading  = true
+            let files            =  event.target.files
+
+            for (let i = 0; i < files.length; i++) {
+                const data = this.shareFileFormdata(files[i])
+                // 保存処理
+                await this.firebaseCreateShareFiles(data)
+                .then(() => {
+                    console.log("DBへの保存成功");
+                    return this.storageUploadShareFile(data)
+                })
+                .then((downloadPath) => {
+                    console.log("ストレージへの保存成功");
+                    console.log(downloadPath);
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+            }
+
+            this.params.loading = false
+            this.readShareFiles(this.params.now_dir)
+        },
     }
 }
 </script>

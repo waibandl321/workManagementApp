@@ -3,13 +3,10 @@
 * 
 */
 import { getDatabase, ref, set, onValue, update } from "firebase/database";
-// import { getStorage, uploadBytes, getDownloadURL, getMetadata, deleteObject } from "firebase/storage";
 
 export default {
     methods: {
         async firebaseCreateShareFiles(formdata) {
-            // データtypeがファイルの場合は、ストレージにインデックス
-
             // データベースに保存
             const db = getDatabase();
             return await set(ref(db, '/share_files/' + this.storeGetFirebaseUid() + '/' + formdata.id), formdata)
@@ -17,9 +14,10 @@ export default {
                 return true
             })
             .catch((error) => {
-                console.log(error);
+                console.log(error)
             })
         },
+        
         firebaseReadShareFiles() {
             return new Promise((resolve) => {
                 const db = getDatabase();

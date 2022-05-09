@@ -5,11 +5,6 @@
             <!-- ドラッグ&ドロップ対応 -->
             <div
                 class="file-contents"
-                :class="{dragging: params.dragging}"
-                @dragenter.stop="params.dragging = true"
-                @dragleave.stop="params.dragging = false"
-                @dragover.prevent
-                @drop.prevent="uploadChange()"
             >
                 <MessageViewer :params="params" />
                 <!-- アイテムリスト -->
@@ -22,12 +17,6 @@
                     :params="params"
                     v-if="params.mode == 'trashbox'"
                 />
-                <div
-                    class="dragging-message text-h4 white--text"
-                    v-if="params.dragging"
-                >
-                    ドラッグ&amp;ドロップでアップロードしてください
-                </div>
             </div>
         </div>
     </div>
@@ -56,7 +45,6 @@ export default {
             success: "",
             error: "",
             loading: false,
-            dragging: false,
             mode: 'list',
             filter_items: [],
             file_data: [

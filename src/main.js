@@ -19,7 +19,7 @@ import accountStore from "./mixin/store/account.js"
 import shareFilesMixin from "./mixin/api/share_files.js"
 
 import taskMixin from "@/mixin/api/task.js"
-import fileMixin from "@/mixin/api/file.js"
+import storageMixin from "@/mixin/api/storage.js"
 import fileRelatedDatabaseMixin from "@/mixin/api/file_relatied_db.js"
 import dashboardMixin from "@/mixin/api/dashboard.js"
 
@@ -38,7 +38,7 @@ Vue.mixin(accountStore)
 Vue.mixin(shareFilesMixin)
 
 Vue.mixin(taskMixin)
-Vue.mixin(fileMixin)
+Vue.mixin(storageMixin)
 Vue.mixin(fileRelatedDatabaseMixin)
 Vue.mixin(dashboardMixin)
 
