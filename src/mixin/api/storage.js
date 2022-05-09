@@ -22,7 +22,7 @@ export default {
         // 成功した場合、アップロードしたファイルのメタデータを返す
         async storageUploadFunctionFile(file, id) {
             const db_id = this.createRandomId()
-            const storageRef = ref( this.readStorageModule(), this.initStorageFilePath(file.name) );
+            const storageRef = ref( getStorage(), this.initStorageFilePath(file.name) );
             
             return await uploadBytes(storageRef, file, customMetadata(db_id, id))
                 .then((snapshot) => {
@@ -43,7 +43,7 @@ export default {
         },
 
         async storageUploadShareFile(file) {
-            const storageRef = ref( this.readStorageModule(), this.initStorageFilePath(file.name) );
+            const storageRef = ref( getStorage(), this.initStorageFilePath(file.name) );
             return await uploadBytes(storageRef, file)
                 .then((snapshot) => {
                     return this.storageDownloadPath(snapshot.ref.fullPath)
@@ -54,7 +54,7 @@ export default {
         },
 
         async storageFileMetadata(path) {
-            const forestRef = ref( this.readStorageModule(), path );
+            const forestRef = ref( getStorage(), path );
             return await getMetadata(forestRef)
             .then((metadata) => {
                 return metadata
@@ -66,7 +66,7 @@ export default {
 
         // ダウンロードpathを返す
         async storageDownloadPath(fullPath) {
-            return getDownloadURL( ref(this.readStorageModule(), fullPath) )
+            return getDownloadURL( ref(getStorage(), fullPath) )
             .then((url) => {
                 return url
             })
@@ -77,7 +77,7 @@ export default {
 
         // 削除
         storageDeleteFile(file) {
-            const desertRef = ref( this.readStorageModule(), this.storeGetFirebaseUid() + '/' + file.name );
+            const desertRef = ref( getStorage(), this.storeGetFirebaseUid() + '/' + file.name );
             deleteObject(desertRef)
             .then(() => {
                 this.firebaseDeleteFile(file)
@@ -88,7 +88,7 @@ export default {
             return true
         },
         async storageDeleteShareFile(file) {
-            const desertRef = ref( this.readStorageModule(), this.storeGetFirebaseUid() + '/' + file.name );
+            const desertRef = ref( getStorage(), this.storeGetFirebaseUid() + '/' + file.name );
             return await deleteObject(desertRef)
             .then(() => {
                 return true

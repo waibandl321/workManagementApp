@@ -146,14 +146,10 @@ export default {
             for (let i = 0; i < files.length; i++) {
                 const data = this.shareFileFormdata(files[i])
                 // 保存処理
-                await this.firebaseCreateShareFiles(data)
-                .then(() => {
-                    console.log("DBへの保存成功");
-                    return this.storageUploadShareFile(data)
-                })
+                await this.storageUploadShareFile(data)
                 .then((downloadPath) => {
-                    console.log("ストレージへの保存成功");
-                    console.log(downloadPath);
+                    data.download_path = downloadPath
+                    this.firebaseCreateShareFiles(data)
                 })
                 .catch((error) => {
                     console.log(error);

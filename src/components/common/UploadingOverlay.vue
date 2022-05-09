@@ -5,7 +5,7 @@
       class="py-6"
     >
       <v-card-text>
-        アップロード中
+        処理中
         <v-progress-linear
           indeterminate
           color="white"
