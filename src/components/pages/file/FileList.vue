@@ -232,9 +232,14 @@ export default {
             this.params.success = ""
             this.deleteModal = true
         },
-        executeDelete(delete_item) {
-            this.params.success = `アイテム：${delete_item.name}を削除しました`
-            this.deleteModal = false
+        async executeDelete(delete_item) {
+            const result = await this.firebaseDeleteShareFiles(delete_item)
+            if(result) {
+                this.params.success = `アイテム：${delete_item.name}を削除しました`
+                this.deleteModal = false
+                this.readShareFiles(this.params.now_dir)
+            }
+            
         }
     }
 }

@@ -107,7 +107,7 @@ export default {
         folder_name: "",
     }),
     methods: {
-        executeCreateFolder() {
+        async executeCreateFolder() {
             const formdata = {
                 "id"           : this.createRandomId(),
                 "uid"          : this.storeGetFirebaseUid(),
@@ -119,10 +119,12 @@ export default {
                 "parent_dir_id": this.params.now_dir,
             }
             //保存処理
-            this.firebaseCreateShareFiles(formdata)
-            this.params.filter_items.push(formdata)
-            this.params.success    = `「フォルダ : ${this.folder_name}」を作成しました。`
-            this.createFolderModal = false
+            const result = await this.firebaseCreateShareFiles(formdata)
+            if(result) {
+                this.params.success    = `「フォルダ : ${this.folder_name}」を作成しました。`
+                this.createFolderModal = false
+            }
+            this.readShareFiles(this.params.now_dir)
         },
     }
 }
