@@ -17,11 +17,14 @@ const router = new Router({
   routes: [...Route]
 })
 
+
+
 // ナビゲーションガード
 router.beforeEach((to, from, next) => {
   if(!to.path.includes('/auth/')) {
     // ログインチェック
-    Utils.methods.isSignin(to, from, next)
+    Utils.methods.isSignin()
+    // Utils.methods.isSignin(to, from, next)
   } else {
     next()
   }
