@@ -23,8 +23,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if(!to.path.includes('/auth/')) {
     // ログインチェック
-    Utils.methods.isSignin()
-    // Utils.methods.isSignin(to, from, next)
+    Utils.methods.isSignin(next)
   } else {
     next()
   }

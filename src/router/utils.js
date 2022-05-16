@@ -19,7 +19,7 @@ export default {
           })
           .then((user) => {
             if(user) {
-              console.log(user)
+              console.log(user);
             }
           })
           .catch((err) => {

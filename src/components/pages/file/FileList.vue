@@ -21,7 +21,7 @@
         <!-- パンくず -->
         <v-breadcrumbs
             :items="breadcrumbs"
-            class="pa-0 mt-4"
+            class="pa-0 my-4"
         >
             <template v-slot:item="{ item }">
                 <v-breadcrumbs-item
@@ -36,19 +36,6 @@
                 <v-icon>mdi-chevron-right</v-icon>
             </template>
         </v-breadcrumbs>
-
-        <!-- リンク -->
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" text>
-                <v-icon>mdi-delete</v-icon>
-                ゴミ箱
-            </v-btn>
-            <v-btn color="primary" text>
-                <v-icon>mdi-cached</v-icon>
-                全アイテム削除
-            </v-btn>
-        </v-card-actions>
 
         <!-- リストテーブル -->
         <table class="basic-list">
@@ -77,7 +64,7 @@
                     </td>
                     <td>{{ item.uid }}</td>
                     <td>{{ convertDatetimeFromUnixtime(item.upload_at) }}</td>
-                    <td>{{ item.size }}</td>
+                    <td>{{ outputFilesize(item) }}</td>
                     <td>
                         <v-menu offset-y>
                             <template v-slot:activator="{ on, attrs }">
@@ -163,8 +150,49 @@ export default {
     created() {
         this.readShareFiles()
     },
-    methods: {
+    computed: {
         
+    },
+    methods: {
+        outputFilesize(item) {
+            if(item.type === 0) {
+                return ""
+            } else {
+                return convertUnitSize(item.size)
+            }
+
+            function convertUnitSize(byte) {
+                const KB = 1024
+                const MB = Math.pow(KB, 2)
+                const GB = Math.pow(KB, 3)
+
+                let target = null
+                let unit = 'B'
+
+                if( byte >= KB ) {
+                    target = KB
+                    unit = 'KB'
+                }
+                if( byte >= MB ) {
+                    target = MB
+                    unit = 'MB'
+                }
+                if( byte >= GB ) {
+                    target = GB
+                    unit = 'KB'
+                }
+                return `${convertSize(target, byte)} ${unit}`
+            }
+            function convertSize(target, byte) {
+                let size = null
+                if( target ) {
+                    size =  Math.round( (byte / target) * 10 ) / 10
+                } else {
+                    size = byte
+                }
+                return size
+            }
+        },
         searchFileList() {
             let result = this.params.filter_items
             if(this.search_text) {
@@ -182,8 +210,7 @@ export default {
                     .map((key) => {
                         return [key, result[key]];
                     })
-                    .filter(r => r[1].id == select_dir_id)
-            
+                    .filter(r => r[1].id == select_dir_id)            
             // TODO:配列構造をシンプルにしたい
             this.breadcrumbs.push(
                 {
@@ -248,7 +275,7 @@ export default {
             this.params.success = `アイテム：${delete_item.name}を削除しました`
             this.params.loading = false
             this.readShareFiles(this.params.now_dir)
-        }
+        },
     }
 }
 </script>
