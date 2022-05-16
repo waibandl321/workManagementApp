@@ -4,16 +4,16 @@ export default {
     }),
 
     methods: {
-
+        // 日時取得と出力形式整形
         getCurrentUnixtime() {
             var date = new Date() ;
             var a = date.getTime();
             var b = Math.floor( a / 1000 );
             return b
         },
-
-        convertDatetimeFromUnixtime(value) {
+        convertDatetimeFromUnixtime(value, format) {
             let date = new Date(value*1000)
+            let fm = format
 
             const year = date.getFullYear()
             const month = ("0"+ (date.getMonth() + 1)).slice(-2);
@@ -21,11 +21,11 @@ export default {
             const time = date.getHours()
             const minutes = date.getMinutes()
 
-            return year + '-'
-            + month + '-'
-            + day + ' '
-            + time + ':'
-            + minutes
+            return fm.replace("yyyy", year)
+                    .replace("mm", month)
+                    .replace("dd", day)
+                    .replace("hh", time)
+                    .replace("mm", minutes)
         },
 
         // ランダムIDのセット
@@ -44,6 +44,40 @@ export default {
         },
         convertArray(value) {
             return Object.fromEntries(value)
+        },
+
+        // ファイルサイズ変換
+        convertUnitSize(byte) {
+            const KB = 1024
+            const MB = Math.pow(KB, 2)
+            const GB = Math.pow(KB, 3)
+
+            let target = null
+            let unit = 'B'
+
+            if( byte >= KB ) {
+                target = KB
+                unit = 'KB'
+            }
+            if( byte >= MB ) {
+                target = MB
+                unit = 'MB'
+            }
+            if( byte >= GB ) {
+                target = GB
+                unit = 'KB'
+            }
+            return `${convertSize(target, byte)} ${unit}`
+
+            function convertSize(target, byte) {
+                let size = null
+                if( target ) {
+                    size =  Math.round( (byte / target) * 10 ) / 10
+                } else {
+                    size = byte
+                }
+                return size
+            }
         }
     }
 }

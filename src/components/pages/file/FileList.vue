@@ -63,7 +63,7 @@
                         <span class="ml-2">{{ item.name }}</span>
                     </td>
                     <td>{{ item.uid }}</td>
-                    <td>{{ convertDatetimeFromUnixtime(item.upload_at) }}</td>
+                    <td>{{ convertDatetimeFromUnixtime(item.upload_at, "yyyy/mm/dd") }}</td>
                     <td>{{ outputFilesize(item) }}</td>
                     <td>
                         <v-menu offset-y>
@@ -156,41 +156,9 @@ export default {
     methods: {
         outputFilesize(item) {
             if(item.type === 0) {
-                return ""
+                return
             } else {
-                return convertUnitSize(item.size)
-            }
-
-            function convertUnitSize(byte) {
-                const KB = 1024
-                const MB = Math.pow(KB, 2)
-                const GB = Math.pow(KB, 3)
-
-                let target = null
-                let unit = 'B'
-
-                if( byte >= KB ) {
-                    target = KB
-                    unit = 'KB'
-                }
-                if( byte >= MB ) {
-                    target = MB
-                    unit = 'MB'
-                }
-                if( byte >= GB ) {
-                    target = GB
-                    unit = 'KB'
-                }
-                return `${convertSize(target, byte)} ${unit}`
-            }
-            function convertSize(target, byte) {
-                let size = null
-                if( target ) {
-                    size =  Math.round( (byte / target) * 10 ) / 10
-                } else {
-                    size = byte
-                }
-                return size
+                return this.convertUnitSize(item.size)
             }
         },
         searchFileList() {
@@ -230,7 +198,7 @@ export default {
         listClick(item) {
             // TODO:ファイルの場合はプレビュー表示
             if(item.type != 0) return;
-            this.readShareFiles(item.id, 'record')
+            this.readShareFiles(item.id)
             this.pushBreadcrumbs(item.id)
         },
         clickDir(select_dir_id) {

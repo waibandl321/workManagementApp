@@ -126,7 +126,7 @@
                         <td class="py-2">{{ extractTaskPriority(task.task_priority) }}</td>
                         <td class="py-2">{{ task.task_deadline }}</td>
                         <td class="py-2">実施期間が入ります</td>
-                        <td class="py-2">{{ convertDatetimeFromUnixtime(task.created) }}</td>
+                        <td class="py-2">{{ convertDatetimeFromUnixtime(task.created, "yyyy/mm/dd hh:mm") }}</td>
                         <td class="options-td">
                             <v-btn
                                 text
