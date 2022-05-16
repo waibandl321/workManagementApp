@@ -56,6 +56,9 @@
                 <v-text-field
                     label="タスク名を入力"
                     v-model="create_task_name"
+                    @compositionstart="composing = true"
+                    @compositionend="composing = false"
+                    @keydown.prevent.enter.exact="createTask()"
                 >
                 </v-text-field>
                 <v-btn
@@ -180,6 +183,7 @@ export default {
         task_list: [],
         
         // 作成
+        composing: false,
         create_task_name: "",
         loading: false,
         
@@ -281,9 +285,12 @@ export default {
         },
         // 作成
         createTask() {
-            if(this.apiTaskCreate(this.create_task_name)) {
-                this.create_task_name = ""
-                this.listRefresh("タスクを新規作成しました")
+            if(!this.composing && this.create_task_name) {
+                if(this.apiTaskCreate(this.create_task_name)) {
+                    this.create_task_name = ""
+                    this.composing = false
+                    this.listRefresh("タスクを新規作成しました")
+                }
             }
         },
         // 削除

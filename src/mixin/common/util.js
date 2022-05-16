@@ -6,8 +6,7 @@ export default {
     methods: {
         // 日時取得と出力形式整形
         getCurrentUnixtime() {
-            var date = new Date() ;
-            var a = date.getTime();
+            var a = new Date().getTime();
             var b = Math.floor( a / 1000 );
             return b
         },
@@ -48,12 +47,11 @@ export default {
 
         // ファイルサイズ変換
         convertUnitSize(byte) {
+            let target = null
+            let unit = 'B'
             const KB = 1024
             const MB = Math.pow(KB, 2)
             const GB = Math.pow(KB, 3)
-
-            let target = null
-            let unit = 'B'
 
             if( byte >= KB ) {
                 target = KB
