@@ -44,7 +44,7 @@
                         color="blue-grey"
                         class="pa-2 white--text"
                         filled
-                        @click="signout()"
+                        to="/auth/signout"
                     >
                         ログアウト
                     </v-btn>
@@ -86,17 +86,8 @@ export default {
             { text: "ファイル管理", path: "/file", icon: "mdi-folder" },
         ],
     }),
-
-    created() {
-    },
-
+    created() {},
     methods: {
-        signout() {
-            this.firebaseSignout()
-            this.storeDeleteAccountInfo()
-            this.parents.user_info = {}
-            this.pageMove('/auth/signin')
-        },
         accountEdit() {
             this.pageMove('/account')
         }

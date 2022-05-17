@@ -4,6 +4,7 @@ import Task from '@/components/pages/task/TaskIndex'
 import File from '@/components/pages/file/FileIndex'
 import Signup from '@/components/pages/auth/Signup'
 import Signin from '@/components/pages/auth/Signin'
+import Signout from '@/components/pages/auth/Signout'
 import AccountIndex from '@/components/pages/account/AccountIndex'
 
 export default 
@@ -24,13 +25,18 @@ export default
         },
         {
           path: '/auth/signup',
-          name: 'Signup',
+          name: 'signup',
           component: Signup
         },
         {
           path: '/auth/signin',
-          name: 'Signin',
+          name: 'signin',
           component: Signin
+        },
+        {
+          path: '/auth/signout',
+          name: 'signout',
+          component: Signout
         },
         {
           path: '/account',

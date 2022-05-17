@@ -26,10 +26,10 @@ export default {
         // サインアウト
         firebaseSignout() {
             const auth = getAuth();
-            signOut(auth).then(() => {
-                this.loading = false
+            signOut(auth)
+            .then((res) => {
+                console.log(res);
             }).catch((error) => {
-                this.loading = false
                 console.log(error.message);
             });
         },

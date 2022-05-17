@@ -85,18 +85,18 @@
             persistent
             width="400"
         >
-            <UploadingOverlay />
+            <LoadingOverlay />
         </v-dialog>
     </div>
 </template>
 
 <script>
-import UploadingOverlay from '@/components/common/UploadingOverlay.vue'
+import LoadingOverlay from '@/components/common/LoadingOverlay.vue'
 import myMixin from './file'
 
 export default {
     components: {
-        UploadingOverlay
+        LoadingOverlay
     },
     props: {
         params: Object
