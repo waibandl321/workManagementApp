@@ -1,7 +1,6 @@
 import { 
     getStorage,
     ref,
-    // uploadBytesResumable,
     uploadBytes,
     getDownloadURL,
     getMetadata,
@@ -21,12 +20,13 @@ export default {
 
         // 成功した場合、アップロードしたファイルのメタデータを返す
         async storageUploadFunctionFile(file, id) {
+            console.log(file);
             const db_id = this.createRandomId()
             const storageRef = ref( getStorage(), this.initStorageFilePath(file.name) );
             
             return await uploadBytes(storageRef, file, customMetadata(db_id, id))
                 .then((snapshot) => {
-                    return this.storageFileMetadata(snapshot.ref.fullPath)
+                    return this.storageFileMetadata(snapshot.ref)
                 })
                 .catch((error) => {
                     console.log(error);
@@ -46,15 +46,15 @@ export default {
             const storageRef = ref( getStorage(), this.initStorageFilePath(file.name) );
             return await uploadBytes(storageRef, file)
                 .then((snapshot) => {
-                    return this.storageDownloadPath(snapshot.ref.fullPath)
+                    return this.storageDownloadPath(snapshot.ref)
                 })
                 .catch((error) => {
                     console.log(error);
                 })
         },
 
-        async storageFileMetadata(path) {
-            const forestRef = ref( getStorage(), path );
+        async storageFileMetadata(data) {
+            const forestRef = ref( getStorage(), data.fullPath );
             return await getMetadata(forestRef)
             .then((metadata) => {
                 return metadata
@@ -65,8 +65,9 @@ export default {
         },
 
         // ダウンロードpathを返す
-        async storageDownloadPath(fullPath) {
-            return getDownloadURL( ref(getStorage(), fullPath) )
+        async storageDownloadPath(data) {
+            const storage = getStorage()
+            return getDownloadURL( ref(storage, data) )
             .then((url) => {
                 return url
             })

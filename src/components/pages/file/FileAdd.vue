@@ -35,7 +35,6 @@
             </v-menu>
             <input
                 type="file"
-                multiple
                 @change="uploadChange"
                 ref="pseudoInputFile"
                 style="display: none;"
@@ -141,24 +140,23 @@ export default {
             }
             this.readShareFiles(this.params.now_dir)
         },
-        async uploadChange() {
+        async uploadChange(e) {
             this.params.dragging = false
             this.params.loading  = true
-            let files            =  event.target.files
+            const files = e.target.files || e.dataTransfer.files
 
             for (let i = 0; i < files.length; i++) {
-                const data = this.shareFileFormdata(files[i])
+                const custom_metadata = this.shareFileFormdata(files[i])
                 // 保存処理
-                await this.storageUploadShareFile(data)
+                await this.storageUploadShareFile(files[i])
                 .then((downloadPath) => {
-                    data.download_path = downloadPath
-                    this.firebaseCreateShareFiles(data)
+                    custom_metadata.download_path = downloadPath
+                    this.firebaseCreateShareFiles(custom_metadata)
                 })
                 .catch((error) => {
                     console.log(error);
                 })
             }
-
             this.params.loading = false
             this.readShareFiles(this.params.now_dir)
         },

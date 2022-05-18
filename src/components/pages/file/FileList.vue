@@ -103,6 +103,38 @@
             </tbody>
         </table>
 
+        <img src="" alt="">
+
+        <!-- ファイルプレビュー -->
+        <v-dialog
+            v-model="filePreview"
+        >
+            <v-card>
+                <v-toolbar
+                    dark
+                    color="primary"
+                    >
+                    <v-btn
+                        icon
+                        dark
+                        @click="filePreview = false"
+                    >
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>ファイル詳細</v-toolbar-title>
+                </v-toolbar>
+                <div class="pa-6">
+                    <img
+                        :src="previewer.download_path"
+                        style="max-width: 100%;"
+                    >
+                    <div>
+                        {{ previewer }}
+                    </div>
+                </div>
+            </v-card>
+        </v-dialog>
+
         <!-- アイテム追加エリア -->
         <FileAdd :params="params"/>
 
@@ -144,6 +176,9 @@ export default {
         ],
         deleteModal: false,
         delete_item: {},
+        filePreview: false,
+        previewer: {},
+        previewer_type: null,
         search_text: "",
         storage_value: 33,
     }),
@@ -196,10 +231,26 @@ export default {
             })
         },
         listClick(item) {
-            // TODO:ファイルの場合はプレビュー表示
-            if(item.type != 0) return;
-            this.readShareFiles(item.id)
-            this.pushBreadcrumbs(item.id)
+            if(item.type === 0) {
+                this.readShareFiles(item.id)
+                this.pushBreadcrumbs(item.id)    
+            } else {
+                this.previewer = item
+                const position = item.name.lastIndexOf('.')
+                const extension = item.name.slice(position + 1)
+                const permissionExtension = ['jpg', 'png', 'svg', 'gif', 'jpeg', 'pdf'];
+                if(permissionExtension.indexOf(extension) !== -1) {
+                    if(extension === "pdf") {
+                        this.previewer_type = "pdf"
+                    } else {
+                        this.previewer_type = "img"
+                    }
+                } else {
+                    this.params.error = "プレビュー未対応のファイル形式です"
+                    return;
+                }
+                this.filePreview = true
+            }
         },
         clickDir(select_dir_id) {
             if(this.params.now_dir == 0) return    
