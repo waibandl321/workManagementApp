@@ -124,13 +124,17 @@
                     <v-toolbar-title>ファイル詳細</v-toolbar-title>
                 </v-toolbar>
                 <div class="pa-6">
-                    <img
-                        :src="previewer.download_path"
-                        style="max-width: 100%;"
-                    >
-                    <div>
-                        {{ previewer }}
-                    </div>
+                    <template v-if="previewer_type !== 'pdf'">
+                        <img
+                            :src="previewer.download_path"
+                            style="max-width: 100%;"
+                        >
+                    </template>
+                    <template v-else>
+                        <pdf
+                            :src="pdf_previewer"
+                        ></pdf>
+                    </template>
                 </div>
             </v-card>
         </v-dialog>
@@ -154,19 +158,22 @@
 <script>
 import FileAdd from './FileAdd.vue'
 import ConfirmDeleteItem from '@/components/common/ConfirmDeleteItem.vue'
-
+// pdf.js参考 https://qiita.com/kenkubomi/items/b46e65b8aba0f87d4a69
+import pdf from 'vue-pdf'
 import myMixin from './file'
 
 export default {
     components: {
         FileAdd,
-        ConfirmDeleteItem
+        ConfirmDeleteItem, 
+        pdf
     },
     props: {
         params: Object,
     },
     mixins: [myMixin],
     data: () => ({
+        // パンくずリスト
         breadcrumbs: [
             {
                 href: "0",
@@ -174,18 +181,29 @@ export default {
                 disabled: true
             },
         ],
+
+        // 削除
         deleteModal: false,
         delete_item: {},
+
+        // プレビュー
+        img_loading: true,
         filePreview: false,
         previewer: {},
-        previewer_type: null,
+        previewer_type: null, 
+        pdf_previewer: {},
+        pdf_page_number: undefined,
+
+        // 検索
         search_text: "",
+
+        // 容量
         storage_value: 33,
     }),
     created() {
         this.readShareFiles()
     },
-    computed: {
+    mounted() {
         
     },
     methods: {
@@ -213,7 +231,7 @@ export default {
                     .map((key) => {
                         return [key, result[key]];
                     })
-                    .filter(r => r[1].id == select_dir_id)            
+                    .filter(r => r[1].id == select_dir_id)
             // TODO:配列構造をシンプルにしたい
             this.breadcrumbs.push(
                 {
@@ -231,18 +249,20 @@ export default {
             })
         },
         listClick(item) {
+            this.pdf_previewer = ""
             if(item.type === 0) {
                 this.readShareFiles(item.id)
-                this.pushBreadcrumbs(item.id)    
+                this.pushBreadcrumbs(item.id)
             } else {
-                this.previewer = item
                 const position = item.name.lastIndexOf('.')
                 const extension = item.name.slice(position + 1)
                 const permissionExtension = ['jpg', 'png', 'svg', 'gif', 'jpeg', 'pdf'];
                 if(permissionExtension.indexOf(extension) !== -1) {
                     if(extension === "pdf") {
+                        this.pdf_previewer = item.download_path
                         this.previewer_type = "pdf"
                     } else {
+                        this.previewer = item
                         this.previewer_type = "img"
                     }
                 } else {
