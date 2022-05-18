@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import VueHead from 'vue-head'
 import Route from './route/route.js'
-import storeAuth from '@/mixin/store/auth.js'
+import Utils from './utils'
+
 
 Vue.use(Router)
+Vue.use(VueHead)
 
 const router = new Router({
   mode: 'history',
@@ -21,10 +24,9 @@ const router = new Router({
 
 // ナビゲーションガード
 router.beforeEach((to, from, next) => {
-  console.log(storeAuth.methods.storeGetFirebaseUid());
   if(!to.path.includes('/auth/')) {
     // ログインチェック
-    if(!storeAuth.methods.storeGetFirebaseUid()) {
+    if(!Utils.isSignin()) {
         window.location = "/auth/signin"
     }
   } else {

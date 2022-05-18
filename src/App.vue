@@ -6,11 +6,20 @@
 
 <script>
 export default {
-  created() {
-      // console.log(this.$store.state.account.account)
+  methods: {
+    setMetaInfo (to) {
+        if(to.meta.title){
+            document.title = to.meta.title;
+        }
+        if(to.meta.desc){
+            document.querySelector("meta[name='description']").setAttribute('content', to.meta.desc)
+        }
+    }
   },
-  mounted() {
-      // console.log(this.$store.state.account.account)
-  },
+  watch: {
+    '$route': function (to) {
+      this.setMetaInfo(to)
+    }
+  }
 }
 </script>

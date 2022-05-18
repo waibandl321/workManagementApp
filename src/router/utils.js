@@ -1,6 +1,7 @@
+import storeAuth from '@/mixin/store/auth.js'
+
 export default {
-    // ログインチェック
-    methods: {
-       
+    isSignin() {
+        return storeAuth.methods.storeGetFirebaseUid()
     }
 }

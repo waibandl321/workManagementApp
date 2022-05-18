@@ -11,36 +11,44 @@ export default
     [
         {
           path: '/',
-          component: Dashboard
+          component: Dashboard,
+          name: 'dashboard',
+          meta: { title: 'ダッシュボード', desc: 'ダッシュボードの説明文が入ります' }
         },
         {
           path: '/task',
           name: 'task',
-          component: Task
+          component: Task,
+          meta: { title: 'タスク管理', desc: 'タスク管理の説明文が入ります' }
         },
         {
           path: '/file',
           name: 'file',
-          component: File
+          component: File,
+          meta: { title: 'ファイル管理', desc: 'ファイル管理の説明文が入ります' }
         },
         {
           path: '/auth/signup',
           name: 'signup',
-          component: Signup
+          component: Signup,
+          meta: { title: 'サインアップ'}
         },
         {
           path: '/auth/signin',
           name: 'signin',
-          component: Signin
+          component: Signin,
+          meta: { title: 'サインイン'}
         },
         {
           path: '/auth/signout',
           name: 'signout',
-          component: Signout
+          component: Signout,
+          meta: { title: 'サインアウト'}
         },
         {
           path: '/account',
           name: 'account_setting',
-          component: AccountIndex
+          component: AccountIndex,
+          meta: { title: 'アカウント情報'}
         }
     ]

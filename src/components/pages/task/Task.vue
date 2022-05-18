@@ -41,7 +41,7 @@ export default {
     },
     mixins: [myMixin],
     data: () => ({
-      viewer: [],
+      viewer: {},
       params: {
         task_list: [],
         task_status_list: {},
