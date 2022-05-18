@@ -56,9 +56,9 @@
                 >
                     <td>
                         <v-icon
-                            :color="item.type == 0 ? '#ebcb6a' : '#666'"
+                            :color="item.type === 0 ? '#ebcb6a' : '#666'"
                         >
-                            {{ item.type == 0 ? "mdi-folder" : 'mdi-file-outline' }}
+                            {{ item.type === 0 ? "mdi-folder" : 'mdi-file-outline' }}
                         </v-icon>
                         <span class="ml-2">{{ item.name }}</span>
                     </td>
@@ -87,7 +87,7 @@
                                         削除
                                     </v-btn>
                                 </v-list-item>
-                                <v-list-item>
+                                <v-list-item v-if="item.type !== 0">
                                     <v-btn 
                                         text
                                         color="primary"
@@ -229,19 +229,18 @@ export default {
             let result = this.params.file_data
             result = Object.keys(result)
                     .map((key) => {
-                        return [key, result[key]];
+                        return result[key];
                     })
-                    .filter(r => r[1].id == select_dir_id)
-            // TODO:配列構造をシンプルにしたい
+                    .filter(r => r.id == select_dir_id)
             this.breadcrumbs.push(
                 {
                     href: select_dir_id,
-                    text: result[0][1].name,
+                    text: result[0].name,
                 }
             )
             // 現在表示されているディレクトリをチェックし、disabled属性を設定する
             this.breadcrumbs.forEach(r => {
-                if(this.params.now_dir == r.href) {
+                if(this.params.now_dir === r.href) {
                     r.disabled = true
                 } else {
                     r.disabled = false

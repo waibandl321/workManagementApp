@@ -136,6 +136,7 @@ export default {
             const result = await this.firebaseCreateShareFiles(formdata)
             if(result) {
                 this.params.success    = `「フォルダ : ${this.folder_name}」を作成しました。`
+                this.folder_name = ""
                 this.createFolderModal = false
             }
             this.readShareFiles(this.params.now_dir)
