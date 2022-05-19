@@ -1,16 +1,17 @@
 <template>
     <div>
         <v-alert
-            type="success"
-            dismissible
             v-if="params.success"
+            dismissible
+            type="success"
         >
             {{ params.success }}
         </v-alert>
         <v-alert
-            type="error"
-            dismissible
             v-if="params.error"
+            dismissible            
+            :toggle="toggle"
+            type="error"
         >
             {{ params.error }}
         </v-alert>
@@ -24,6 +25,11 @@ export default {
     },
     data: () => ({
 
-    })
+    }),
+    methods: {
+        toggle() {
+            this.params.error = ""
+        }
+    }
 }
 </script>

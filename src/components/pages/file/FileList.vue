@@ -107,36 +107,12 @@
 
         <!-- ファイルプレビュー -->
         <v-dialog
-            v-model="filePreview"
+            v-model="file_preview"
         >
-            <v-card>
-                <v-toolbar
-                    dark
-                    color="primary"
-                    >
-                    <v-btn
-                        icon
-                        dark
-                        @click="filePreview = false"
-                    >
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                    <v-toolbar-title>ファイル詳細</v-toolbar-title>
-                </v-toolbar>
-                <div class="pa-6">
-                    <template v-if="previewer_type !== 'pdf'">
-                        <img
-                            :src="previewer.download_path"
-                            style="max-width: 100%;"
-                        >
-                    </template>
-                    <template v-else>
-                        <pdf
-                            :src="pdf_previewer"
-                        ></pdf>
-                    </template>
-                </div>
-            </v-card>
+            <FilePreviewer
+                :closeFilePreview="closeFilePreview"
+                :previewer="previewer"
+            />
         </v-dialog>
 
         <!-- アイテム追加エリア -->
@@ -157,23 +133,22 @@
 
 <script>
 import FileAdd from './FileAdd.vue'
+import FilePreviewer from './FilePreviewer.vue'
 import ConfirmDeleteItem from '@/components/common/ConfirmDeleteItem.vue'
-// pdf.js参考 https://qiita.com/kenkubomi/items/b46e65b8aba0f87d4a69
-import pdf from 'vue-pdf'
 import myMixin from './file'
 
 export default {
     components: {
         FileAdd,
+        FilePreviewer,
         ConfirmDeleteItem, 
-        pdf
     },
     props: {
         params: Object,
     },
     mixins: [myMixin],
     data: () => ({
-        // パンくずリスト
+        // パンくず
         breadcrumbs: [
             {
                 href: "0",
@@ -186,13 +161,15 @@ export default {
         deleteModal: false,
         delete_item: {},
 
-        // プレビュー
-        img_loading: true,
-        filePreview: false,
-        previewer: {},
-        previewer_type: null, 
-        pdf_previewer: {},
-        pdf_page_number: undefined,
+        // ファイルプレビュー
+        file_preview: false,
+        previewer: {
+            data: {},
+            type: null, 
+            page_current: 1,
+            page_end: null,
+            loading: false,
+        },
 
         // 検索
         search_text: "",
@@ -203,15 +180,20 @@ export default {
     created() {
         this.readShareFiles()
     },
-    mounted() {
-        
-    },
     methods: {
+        closeFilePreview() {
+            this.file_preview = false;
+            this.previewer.data = {};
+            this.type = null;
+            this.page_current = 1;
+            this.page_end = null;
+            this.previewer.loading = false;
+        },
         outputFilesize(item) {
             if(item.type === 0) {
-                return
+                return;
             } else {
-                return this.convertUnitSize(item.size)
+                return this.convertUnitSize(item.size);
             }
         },
         searchFileList() {
@@ -248,27 +230,42 @@ export default {
             })
         },
         listClick(item) {
-            this.pdf_previewer = ""
+            this.previewer.loading = true;
+
+            const position = item.name.lastIndexOf('.'),
+                  extension = _getFileExtention(item),
+                  permissionExtension = ['jpg', 'png', 'svg', 'gif', 'jpeg', 'pdf'];
+            
             if(item.type === 0) {
                 this.readShareFiles(item.id)
                 this.pushBreadcrumbs(item.id)
             } else {
-                const position = item.name.lastIndexOf('.')
-                const extension = item.name.slice(position + 1)
-                const permissionExtension = ['jpg', 'png', 'svg', 'gif', 'jpeg', 'pdf'];
-                if(permissionExtension.indexOf(extension) !== -1) {
-                    if(extension === "pdf") {
-                        this.pdf_previewer = item.download_path
-                        this.previewer_type = "pdf"
-                    } else {
-                        this.previewer = item
-                        this.previewer_type = "img"
-                    }
+                this.previewer.type = _checkFileExtention()
+                if(this.previewer.type) {
+                    this.previewer.data = item
+                    this.params.error = ""
+                    this.file_preview = true
                 } else {
-                    this.params.error = "プレビュー未対応のファイル形式です"
+                    this.file_preview = false
+                    this.params.error = "プレビュー未対応のファイルです"
                     return;
                 }
-                this.filePreview = true
+            }
+
+            function _getFileExtention(item) {
+                return item.name.slice(position + 1)
+            }
+            function _checkFileExtention() {
+                if(permissionExtension.indexOf(extension) === -1) {
+                    return undefined;
+                }
+
+                switch (extension) {
+                    case "pdf":
+                        return "pdf";
+                    default:
+                        return "img"
+                }
             }
         },
         clickDir(select_dir_id) {
@@ -276,11 +273,11 @@ export default {
             this.readShareFiles(select_dir_id)
 
             let breadcrumbs = this.breadcrumbs
-            const begin = matchIndex(select_dir_id)
+            const begin = _matchIndex(select_dir_id)
             breadcrumbs.splice(begin + 1)
 
             // クリックされたディレクトリ以降の要素を削除するために、マッチした配列のIndexを返す
-            function matchIndex(select_dir_id) {
+            function _matchIndex(select_dir_id) {
                 for (let i = 0; i < breadcrumbs.length; i++) {
                     if(breadcrumbs[i].href == select_dir_id) {
                         return i

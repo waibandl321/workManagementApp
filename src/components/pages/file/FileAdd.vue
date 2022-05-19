@@ -145,21 +145,27 @@ export default {
             this.params.dragging = false
             this.params.loading  = true
             const files = e.target.files || e.dataTransfer.files
-
-            for (let i = 0; i < files.length; i++) {
-                const custom_metadata = this.shareFileFormdata(files[i])
-                // 保存処理
-                await this.storageUploadShareFile(files[i])
-                .then((downloadPath) => {
-                    custom_metadata.download_path = downloadPath
-                    this.firebaseCreateShareFiles(custom_metadata)
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
+            try {
+                for (let i = 0; i < files.length; i++) {
+                    const custom_metadata = this.shareFileFormdata(files[i])
+                    // 保存処理
+                    await this.storageUploadShareFile(files[i])
+                    .then((downloadPath) => {
+                        custom_metadata.download_path = downloadPath
+                        this.firebaseCreateShareFiles(custom_metadata)
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+                }
+                this.params.loading = false
+                this.params.success = "ファイルをアップロードしました。"
+                this.readShareFiles(this.params.now_dir)
+            } catch (e) {
+                console.log(e);
+                this.params.error = "ファイルをアップロードに失敗しました。"
             }
-            this.params.loading = false
-            this.readShareFiles(this.params.now_dir)
+            
         },
     }
 }
