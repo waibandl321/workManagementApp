@@ -180,7 +180,7 @@ export default {
     },
     data: () => ({
         task_input: false,
-        task_list: [],
+        task_list: {},
         
         // 作成
         composing: false,
@@ -219,7 +219,12 @@ export default {
     methods: {
         // リストの初期読み込み
         async top_readTasklist() {
-            this.task_list = await this.apiGetTaskList()
+            let data = await this.apiGetTaskList()
+            data = Object.keys(data)
+            .map( (key) => {return data[key]})
+            .filter( v => v.task_status !== 5 )
+
+            this.task_list = data
         },
 
         // リストの絞り込み

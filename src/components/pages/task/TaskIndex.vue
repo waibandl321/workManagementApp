@@ -23,13 +23,9 @@ export default {
         }
     }),
     created() {
-        this.init()
+        this.parents.user_info = this.storeGetAccountInfo()
     },
-    methods: {
-        init() {
-            this.parents.user_info = this.storeGetAccountInfo()
-        }
-    }
+    methods: {}
 }
 </script>
 <style scoped>

@@ -77,10 +77,10 @@ export default {
     },
     methods: {
         prevPage() {
-            this.previewer.page_current = this.previewer.page_current - 1;
+            this.previewer.page_current -=  1;
         },
         nextPage() {
-            this.previewer.page_current = this.previewer.page_current + 1;
+            this.previewer.page_current += 1;
         },
     }
 }

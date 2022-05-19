@@ -8,6 +8,7 @@
             outlined
             label="ファイル名でディレクトリ内を検索"
         ></v-text-field>
+        
         <!-- ストレージ -->
         <v-progress-linear
             v-model="storage_value"
@@ -18,6 +19,7 @@
         >
             <strong>{{ Math.ceil(storage_value) }}%</strong>
         </v-progress-linear>
+
         <!-- パンくず -->
         <v-breadcrumbs
             :items="breadcrumbs"
@@ -102,8 +104,6 @@
                 </tr>
             </tbody>
         </table>
-
-        <img src="" alt="">
 
         <!-- ファイルプレビュー -->
         <v-dialog
