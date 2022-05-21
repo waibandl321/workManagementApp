@@ -294,7 +294,8 @@ export default {
                 if(this.apiTaskCreate(this.create_task_name)) {
                     this.create_task_name = ""
                     this.composing = false
-                    this.listRefresh("タスクを新規作成しました")
+                    this.params.success = "タスクを新規作成しました"
+                    this.listRefresh()
                 }
             }
         },
@@ -309,7 +310,8 @@ export default {
             this.deleteAllFile(this.params.files)
             this.task_delete_modal = false
             this.closeDetail()
-            this.listRefresh("タスクを削除しました。")
+            this.params.error = "タスクを削除しました"
+            this.listRefresh()
         },
         closeModal() {
             this.task_delete_modal = false

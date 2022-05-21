@@ -1,6 +1,7 @@
 <template>
     <v-row
         justify="center"
+        class="detail-component"
     >
         <v-dialog
             v-model="params.detail_mode"
@@ -242,12 +243,17 @@
                         </div>
                     </v-card-actions>
                     <v-divider />
-                    <div v-if="desc_editor">
-                        <Editor
+                    <div v-if="desc_editor" class="detail-editor">
+                        <!-- <Editor
                             ref="editor"
                             :api-key="edidor_settings.apikey"
                             :init="edidor_settings.init"
-                            v-model.trim="viewer.task_description"
+                            v-model="viewer.task_description"
+                        /> -->
+                        <quillEditor
+                            ref="myQuillEditor"
+                            v-model="viewer.task_description"
+                            :options="editorOption"
                         />
                     </div>
                     <div class="editor_body" v-else>
@@ -453,16 +459,23 @@
 <script>
 import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
 // エディタ
-import Editor from "@tinymce/tinymce-vue"
+// import Editor from "@tinymce/tinymce-vue"
 import tinymceSettings from "@/config/settings/tinymce.js"
+
+// VueQuill
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor } from 'vue-quill-editor'
 
 import myMixin from "./task.js"
 
 export default {
     mixins: [myMixin],
     components: {
-        Editor,
-        ConfirmDelete
+        // Editor,
+        ConfirmDelete,
+        quillEditor
     },
     props: {
         closeDetail: Function,
@@ -481,6 +494,29 @@ export default {
 
         // テキストエディタ
         edidor_settings: tinymceSettings.edidor_settings,
+        editorOption: {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+                    ['blockquote', 'code-block'],
+                    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+                    [{ 'direction': 'rtl' }],                         // text direction
+
+                    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+                    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+
+                    ['clean']                                         // remove formatting button
+                ],
+            }
+        },
 
         // ファイル
         delete_file_modal: false,
@@ -533,6 +569,7 @@ export default {
         async outputDownloadPath(filename) {
             return await this.storageDownloadPath( this.storeGetFirebaseUid() + '/' + filename )
         },
+
         // ファイル削除
         deleteFileSelected(file_data) {
             this.delete_file_modal = true
@@ -602,19 +639,21 @@ export default {
             this.deleteSubtaskHasTask(delete_item)
             this.execDeleteAllFile(this.params.files)
             this.task_delete_modal = false
-            this.close()
-            this.listRefresh("タスクを削除しました。")
+            this.closeDetail()
+            this.params.error = "タスクを削除しました"
+            this.listRefresh()
         },
         closeModal() {
             this.task_delete_modal = false
         },
-
-        // 詳細画面閉じる
-        close() {
-            this.closeDetail()
-        },
     }
 }
 </script>
+
 <style scoped src="../../../assets/css/original.css"></style>
 <style scoped src="./scoped.css"></style>
+<style>
+.ql-container.ql-snow {
+    min-height: 200px;
+}
+</style>

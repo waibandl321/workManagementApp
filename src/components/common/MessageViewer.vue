@@ -3,14 +3,16 @@
         <v-alert
             v-if="params.success"
             dismissible
+            :toggle="toggleSuccess"
             type="success"
         >
             {{ params.success }}
         </v-alert>
         <v-alert
             v-if="params.error"
-            dismissible            
-            :toggle="toggle"
+            dismissible
+            :toggle="toggleError"
+            outlined
             type="error"
         >
             {{ params.error }}
@@ -27,9 +29,12 @@ export default {
 
     }),
     methods: {
-        toggle() {
+        toggleError() {
             this.params.error = ""
-        }
+        },
+        toggleSuccess() {
+            this.params.success = ""
+        },
     }
 }
 </script>

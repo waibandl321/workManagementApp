@@ -1,15 +1,9 @@
 <template>
     <div class="inner">
         <div class="list">
-            <v-alert
-                dismissible
-                outlined
-                color="purple"
-                v-if="message"
-                dense
-            >
-                {{ message }}
-            </v-alert>
+            <MessageViewer
+                :params="params"
+            />
             <TaskList
                 :params="params"
                 :recordClick="recordClick"
@@ -26,23 +20,28 @@
                 :listRefresh="listRefresh"
             />
         </div>
-           
     </div>
 </template>
 <script>
 import TaskDetail from "@/components/pages/task/TaskDetail"
 import TaskList from "@/components/pages/task/TaskList"
+import MessageViewer from '@/components/common/MessageViewer.vue'
 import myMixin from "./task.js"
 
 export default {
     components: {
         TaskList,
         TaskDetail,
+        MessageViewer
     },
     mixins: [myMixin],
     data: () => ({
       viewer: {},
       params: {
+        loading: false,
+        error: "",
+        success: "",
+
         task_list: [],
         task_status_list: {},
         task_priorities: {},
@@ -52,8 +51,6 @@ export default {
         files: [],
         detail_mode: false,
       },
-
-      message: "",
     }),
 
     created() {
@@ -76,10 +73,8 @@ export default {
             this.params.detail_mode = false
         },
 
-        listRefresh(message) {
-            this.message = ""
+        listRefresh() {
             this.$refs.taskList.top_readTasklist()
-            this.message = message
         }
     }   
 }

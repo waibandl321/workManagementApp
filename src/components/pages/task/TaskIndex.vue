@@ -4,6 +4,7 @@
             :parents="parents"
         />
         <div class="main">
+            
             <Task />
         </div>
     </div>
@@ -12,6 +13,7 @@
 <script>
 import Header from '@/components/common/Header'
 import Task from './Task.vue'
+
 export default {
     components: {
         Header,
