@@ -101,12 +101,14 @@
                     <div class="ml-4 relative">
                         <v-btn
                             @click="term = !term" 
-                            color="primary"
-                            text
+                            color="red darken-3"
+                            fab
+                            class="mr-2 white--text"
+                            small
                         >
-                            <v-icon class="mr-2">mdi-calendar-check-outline</v-icon>
-                            <span class="ml-2">{{ viewer.task_deadline }}</span>
+                            <v-icon>mdi-calendar-check-outline</v-icon>
                         </v-btn>
+                        <span class="ml-2" style="color: #C62828; font-size: 14px;">{{ viewer.task_deadline }}</span>
                         <!-- date picker -->
                         <div class="date_picker" v-if="term">
                             <v-text-field
@@ -128,20 +130,35 @@
                                     text
                                     color="primary"
                                     @click="updateTaskTerm()"
-                                >保存</v-btn>
+                                >
+                                    保存
+                                </v-btn>
                                 <v-btn
                                     text
                                     @click="task_deadline = [], term = false"
-                                >キャンセル</v-btn>
+                                >
+                                    キャンセル
+                                </v-btn>
                                 <v-btn
                                     text
                                     color="red"
                                     @click="deleteTaskTerm()"
-                                >日付を消去</v-btn>
+                                >
+                                    日付を消去
+                                </v-btn>
                             </div>
                         </div>
                     </div>
                     <v-spacer />
+                    <div class="fs-sm">
+                        タスク作成日: {{ convertDatetimeFromUnixtime(viewer.created, "yyyy-mm-dd") }}
+                    </div>
+                    <div class="ml-4 fs-sm">
+                        タスク実施期間：{{ convertTaskPeriod(viewer.created, viewer.task_deadline) }}
+                    </div>
+                    <div class="ml-4 fs-sm">
+                        期日までの残り日数：{{ convertRemainingDays(viewer.task_deadline) }}
+                    </div>
                 </div>
                 <v-divider />
                 <!-- サブタスク一覧 -->
@@ -243,13 +260,10 @@
                         </div>
                     </v-card-actions>
                     <v-divider />
-                    <div v-if="desc_editor" class="detail-editor">
-                        <!-- <Editor
-                            ref="editor"
-                            :api-key="edidor_settings.apikey"
-                            :init="edidor_settings.init"
-                            v-model="viewer.task_description"
-                        /> -->
+                    <div
+                        v-if="desc_editor"
+                        class="detail-editor"
+                    >
                         <quillEditor
                             ref="myQuillEditor"
                             v-model="viewer.task_description"
@@ -459,10 +473,6 @@
 <script>
 import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
 // エディタ
-// import Editor from "@tinymce/tinymce-vue"
-import tinymceSettings from "@/config/settings/tinymce.js"
-
-// VueQuill
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
@@ -473,7 +483,6 @@ import myMixin from "./task.js"
 export default {
     mixins: [myMixin],
     components: {
-        // Editor,
         ConfirmDelete,
         quillEditor
     },
@@ -493,28 +502,11 @@ export default {
         task_deadline: null,
 
         // テキストエディタ
-        edidor_settings: tinymceSettings.edidor_settings,
         editorOption: {
             theme: 'snow',
+            placeholder: 'タスク詳細を入力してください',
             modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-                    ['blockquote', 'code-block'],
-                    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-                    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-                    [{ 'direction': 'rtl' }],                         // text direction
-
-                    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-                    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-                    [{ 'font': [] }],
-                    [{ 'align': [] }],
-
-                    ['clean']                                         // remove formatting button
-                ],
+                toolbar: [],
             }
         },
 
@@ -536,6 +528,9 @@ export default {
         // タスク削除確認
         task_delete_modal: false,
     }),
+    created() {
+        this.editorOption.modules.toolbar = this.getEditorOptions()
+    },
 
     methods: {
         // ファイルアップロード
@@ -586,27 +581,38 @@ export default {
         },
 
         // タスク情報の更新
-        tasknameUpdate() {
-            this.apiUpdateTaskname(this.viewer.task_id, this.viewer.task_name)
-            this.task_name_edit = false
-            this.listRefresh()
+        async tasknameUpdate() {
+            const result = await this.apiUpdateTaskname(this.viewer.task_id, this.viewer.task_name)
+            if(result) {
+                this.task_name_edit = false
+                this.listRefresh()
+            }
         },
-        updateTaskDescription() {
-            this.apiUpdateTaskDescription(this.viewer.task_id, this.viewer.task_description);
-            this.desc_editor = false
-
+        async updateTaskDescription() {
+            const result = await this.apiUpdateTaskDescription(this.viewer.task_id, this.viewer.task_description);
+            if(result) {
+                this.desc_editor = false
+            }
         },
-        updateTaskStatus() {
-            this.apiUpdateTaskStatus(this.viewer.task_id, this.viewer.task_status)
+        async updateTaskStatus() {
+            const result = await this.apiUpdateTaskStatus(this.viewer.task_id, this.viewer.task_status)
+            if(result) {
+                this.listRefresh()
+            }
         },
-        updateTaskPriority() {
-            this.apiUpdateTaskPriority(this.viewer.task_id, this.viewer.task_priority)
+        async updateTaskPriority() {
+            const result = await this.apiUpdateTaskPriority(this.viewer.task_id, this.viewer.task_priority)
+            if(result) {
+                this.listRefresh()
+            }
         },
-        updateTaskTerm() {
+        async updateTaskTerm() {
             this.term = false
-            this.apiUpdateTaskTerm(this.task_deadline, this.viewer.task_id)
-            this.viewer.task_deadline = this.task_deadline
-            this.listRefresh()
+            const result = await this.apiUpdateTaskTerm(this.task_deadline, this.viewer.task_id)
+            if(result) {
+                this.viewer.task_deadline = this.task_deadline
+                this.listRefresh()
+            }
         },
 
         // サブタスク
@@ -625,11 +631,10 @@ export default {
         },
         
         // タスク期間設定
-        
         deleteTaskTerm() {
             this.task_deadline = null
             this.term = false
-            this.apiDeleteTaskTerm(this.viewer.task_id)
+            this.apiUpdateTaskTerm(this.viewer.task_id)
             this.viewer.task_deadline = null
         },
         

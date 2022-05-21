@@ -18,6 +18,34 @@ export default {
                 this.params.files = []
             }
         },
+        // 戻り値：タスク期日 - タスク作成日
+        convertTaskPeriod(begin, end) {
+            if(!end) {
+                return "期日設定なし"
+            }
+            const _begin = new Date(this.convertDatetimeFromUnixtime(begin, "yyyy-mm-dd")),
+                _end = new Date(end);
+            return (_end - _begin) / 86400000 + " 日間"
+        },
+        convertRemainingDays(end) {
+            const days = this.judgeRemainingDays(end)
+            
+            switch (true) {
+                case days < 0:
+                    return "期限切れ";
+                case days === 0:
+                    return "本日期日";
+                case days > 0:
+                    return days + "日";
+                default:
+                    break;
+            }
+        },
+        judgeRemainingDays(end) {
+            const today = new Date(this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyy-mm-dd")),
+                  _end = new Date(end);
+             return (_end - today) / 86400000;
+        },
         // 全ての添付ファイルを削除
         deleteAllFile(files) {
             files.forEach(r => {

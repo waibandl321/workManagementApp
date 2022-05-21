@@ -28,13 +28,7 @@
 .relative {
     position: relative;
 }
-.alt_submit {
-    position: absolute;
-    right: 8px;
-    z-index: 2;
-    top: 35%;
-    transform: translateY(-35%);
-}
+
 
 /* 詳細 */
 .relative {
@@ -145,12 +139,6 @@
 }
 .task_link {
     right: 0;
-}
-.alt_submit {
-    position: absolute;
-    right: 8px;
-    top: 35%;
-    transform: translateY(-35%);
 }
 td {
     font-size: 14px;

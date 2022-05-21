@@ -8,57 +8,33 @@ import {
 } from "firebase/database";
 
 export default {
-
-    data: () => ({
-        task_status: [
-            { key: 0, text: "指定しない" },
-            { key: 1, text: "未着手" },
-            { key: 2, text: "処理中" },
-            { key: 3, text: "社内確認待ち" },
-            { key: 4, text: "先方連絡待ち" },
-            { key: 5, text: "完了" }
-        ],
-        sort_status_options: [
-            { text: "全てのタスク", value: 1 },
-            { text: "有効なタスク", value: 2 },
-            { text: "未着手のタスク", value: 3 },
-            { text: "処理中のタスク", value: 4 },
-            { text: "社内確認待ちタスク", value: 5 },
-            { text: "期限切れタスク", value: 6 },
-            { text: "完了したタスク", value: 7 },
-        ],
-        sort_date_options: [
-            { text: "期日が近い順", value: 1 },
-            { text: "作成日順", value: 2 },
-        ],
-        task_priorities: [
-            { key: 0, text: "指定しない" },
-            { key: 1, text: "最優先" },
-            { key: 2, text: "中" },
-            { key: 3, text: "低(後回しでOK)" },
-        ]
-    }),
-
     methods: {
         getSortStatusOptions() {
-            return this.sort_status_options
+            return SORT_STATUS_OPTION
         },
         getSortDateOptions() {
-            return this.sort_date_options
+            return SORT_DATE_OPTIONS
         },
         getTaskPriorities() {
-            return this.task_priorities
+            return TASK_PRIORITIES
         },        
         getTaskStatus() {
-            return this.task_status
+            return TASK_STATUS
+        },
+        getEditorOptions() {
+            return ERITOR_OPTIONS
         },
         // 取得
         async apiGetTaskList() {
-            return new Promise((resolve,) => {
+            return new Promise((resolve, reject) => {
                 const db = getDatabase()
                 const r = ref(db, '/tasks/' + this.storeGetFirebaseUid())
                 onValue(r, (snapshot) => {
-                    return resolve(snapshot.val())
+                    if(snapshot) {
+                        return resolve(snapshot.val())
+                    } else {
+                        reject()
+                    }
                 })
             })
             .catch((reason) => {
@@ -130,47 +106,75 @@ export default {
         },
 
         // 更新
-        apiDeleteTaskTerm(id) {
-            const db = getDatabase()
-            const userId = this.storeGetFirebaseUid()
-            const updates = {};
-            updates['/tasks/' + userId + '/' + id + '/task_deadline'] = null
-            update(ref(db), updates);
-        },
-        apiUpdateTaskStatus(id, status) {
+        async apiUpdateTaskStatus(id, status) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
             updates['/tasks/' + userId + '/' + id + '/task_status'] = status
-            update(ref(db), updates);
+            return await update(ref(db), updates)
+            .then(() => {
+                return true
+            })
+            .catch((error) => {
+                console.log(error);
+                return false
+            });
         },
-        apiUpdateTaskPriority(id, priority) {
+        async apiUpdateTaskPriority(id, priority) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
             updates['/tasks/' + userId + '/' + id + '/task_priority'] = priority
-            update(ref(db), updates);
+            return await update(ref(db), updates)
+            .then(() => {
+                return true
+            })
+            .catch((error) => {
+                console.log(error);
+                return false
+            })
         },
-        apiUpdateTaskname(id, taskname) {
+        async apiUpdateTaskname(id, taskname) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
             updates['/tasks/' + userId + '/' + id + '/task_name'] = taskname
-            update(ref(db), updates);
+            return await update(ref(db), updates)
+            .then(() => {
+                return true
+            })
+            .catch((error) => {
+                console.log(error);
+                return false
+            })
         },
-        apiUpdateTaskDescription(id, description) {
+        async apiUpdateTaskDescription(id, description) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
             updates['/tasks/' + userId + '/' + id + '/task_description'] = description
-            update(ref(db), updates);
+            return await update(ref(db), updates)
+            .then(() => {
+                return true
+            })
+            .catch((error) => {
+                console.log(error);
+                return false
+            })
         },
-        apiUpdateTaskTerm(task_deadline, task_id) {
+        async apiUpdateTaskTerm(task_deadline, task_id) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
             updates['/tasks/' + userId + '/' + task_id + '/task_deadline'] = task_deadline
-            update(ref(db), updates);
+            return await update(ref(db), updates)
+            .then(() => {
+                return true
+            })
+            .catch((error) => {
+                console.log(error);
+                return false
+            })
         },
         
         // 削除
@@ -198,3 +202,46 @@ export default {
         }
     }
 }
+
+const TASK_STATUS = [
+    { key: 0, text: "指定しない" },
+    { key: 1, text: "未着手" },
+    { key: 2, text: "処理中" },
+    { key: 3, text: "社内確認待ち" },
+    { key: 4, text: "先方連絡待ち" },
+    { key: 5, text: "完了" }
+];
+const SORT_STATUS_OPTION = [
+    { text: "全てのタスク", value: 1 },
+    { text: "有効なタスク", value: 2 },
+    { text: "未着手のタスク", value: 3 },
+    { text: "処理中のタスク", value: 4 },
+    { text: "社内確認待ちタスク", value: 5 },
+    { text: "期限切れタスク", value: 6 },
+    { text: "完了したタスク", value: 7 },
+];
+const SORT_DATE_OPTIONS = [
+    { text: "期日が近い順", value: 1 },
+    { text: "作成日順", value: 2 },
+];
+const TASK_PRIORITIES = [
+    { key: 0, text: "指定しない" },
+    { key: 1, text: "最優先" },
+    { key: 2, text: "中" },
+    { key: 3, text: "低(後回しでOK)" },
+];
+const ERITOR_OPTIONS = [
+    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+    ['blockquote', 'code-block'],
+    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    // [{ 'header': 1 }, { 'header': 2 }],            // custom button values
+    // [{ 'direction': 'rtl' }],                      // text direction
+    // [{ 'script': 'sub'}, { 'script': 'super' }],   // superscript/subscript
+    // [{ 'font': [] }],                              // font family
+    // [{ 'align': [] }],                             // text-align
+    // ['clean']                                      // remove formatting button
+];

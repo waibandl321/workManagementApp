@@ -1,3 +1,6 @@
+.fs-sm {
+    font-size: 12px;
+}
 .basic-list {
     border-collapse: collapse;
     table-layout: unset;

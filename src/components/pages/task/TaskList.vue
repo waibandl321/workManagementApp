@@ -2,17 +2,17 @@
     <div class="list_inner">
         <div class="list_head">
             <div class="filter">
-                <div>
-                    <v-text-field
-                        label="タスク名をテキスト検索"
-                        outlined
-                        dense
-                        color="primary"
-                        v-model.trim="filter_text"
-                        @change="filterList()"
-                    ></v-text-field>
-                </div>
                 <v-row class="my-0">
+                    <v-col class="filter-box">
+                        <v-text-field
+                            label="タスク名をテキスト検索"
+                            outlined
+                            dense
+                            color="primary"
+                            v-model.trim="filter_text"
+                            @change="filterList()"
+                        ></v-text-field>
+                    </v-col>
                     <v-col class="filter-box">
                         <v-select
                             label="ステータスで絞り込み"
@@ -63,8 +63,8 @@
                 </v-text-field>
                 <v-btn
                     depressed
-                    class="primary alt_submit"
-                    text
+                    class="alt_submit px-4"
+                    color="primary"
                     @click="createTask()"
                 >新規作成
                 </v-btn>
@@ -128,8 +128,8 @@
                         <td class="py-2">{{ extractTaskStatus(task.task_status) }}</td>
                         <td class="py-2">{{ extractTaskPriority(task.task_priority) }}</td>
                         <td class="py-2">{{ task.task_deadline }}</td>
-                        <td class="py-2">実施期間が入ります</td>
-                        <td class="py-2">{{ convertDatetimeFromUnixtime(task.created, "yyyy/mm/dd hh:mm") }}</td>
+                        <td class="py-2">{{ convertTaskPeriod(task.created, task.task_deadline) }}</td>
+                        <td class="py-2">{{ convertDatetimeFromUnixtime(task.created, "yyyy-mm-dd") }}</td>
                         <td class="options-td">
                             <v-btn
                                 text
@@ -279,14 +279,12 @@ export default {
         extractTaskStatus(status) {
             let result = this.params.task_status_list
             result = result.filter(v => v.key === status)
-            result = result[0].text
-            return result
+            return result[0]
         },
         extractTaskPriority(priority) {
             let result = this.params.task_priorities
             result = result.filter(v => v.key === priority)
-            result = result[0].text
-            return result
+            return result[0]
         },
         // 作成
         createTask() {
@@ -322,3 +320,10 @@ export default {
 </script>
 <style scoped src="../../../assets/css/original.css"></style>
 <style scoped src="./scoped.css"></style>
+<style scoped>
+.alt_submit {
+    position: absolute;
+    right: 0;
+    bottom: 12px;
+}
+</style>
