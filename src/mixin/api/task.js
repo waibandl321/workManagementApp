@@ -28,8 +28,8 @@ export default {
         async apiGetTaskList() {
             return new Promise((resolve, reject) => {
                 const db = getDatabase()
-                const r = ref(db, '/tasks/' + this.storeGetFirebaseUid())
-                onValue(r, (snapshot) => {
+                const starCountRef = ref(db, '/tasks/' + this.storeGetFirebaseUid())
+                onValue(starCountRef, (snapshot) => {
                     if(snapshot) {
                         return resolve(snapshot.val())
                     } else {
@@ -41,15 +41,23 @@ export default {
                 console.log(reason.messege);
             });
         },
-        apiGetSubtaskList() {
-            const db = getDatabase()
-            const userId = this.storeGetFirebaseUid()
-            const r = ref(db, 'subtasks/' + userId)
-            let d = ""
-            onValue(r, (snapshot) => {
-                d = snapshot.val()
+        async apiGetSubtaskList() {
+            return new Promise((resolve, reject) => {
+                const db = getDatabase()
+                const userId = this.storeGetFirebaseUid()
+                const starCountRef = ref(db, 'subtasks/' + userId)
+                onValue(starCountRef, (snapshot) => {
+                    if(snapshot) {
+                        return resolve(snapshot.val())
+                    } else {
+                        reject()
+                    }
+                })
             })
-            return d
+            .catch((error) => {
+                alert('エラーが発生しました')
+                console.log(error);
+            })
         },
         
         // 作成
@@ -79,12 +87,11 @@ export default {
                 return false
             }
         },
-        apiSubtaskCreate(subtask_name, task_id) {
+        async apiSubtaskCreate(subtask_name, task_id) {
             const db = getDatabase();
             const userId = this.storeGetFirebaseUid()
             const id = this.createRandomId()
-            const time = this.getCurrentUnixtime()
-            set(ref(db, '/subtasks/' + userId + '/' + id), {
+            return await set(ref(db, '/subtasks/' + userId + '/' + id), {
                 subtask_id: id,
                 task_id: task_id,
                 subtask_name: subtask_name,
@@ -99,10 +106,16 @@ export default {
                 subtask_start_date: "",
                 subtask_end_date: "",
                 create_account: userId,
-                created: time,
+                created: this.getCurrentUnixtime(),
                 updated: ""
-            });
-            return true
+            })
+            .then(() => {
+                return true
+            })
+            .catch((error) => {
+                console.log(error)
+                alert(error.message)
+            })
         },
 
         // 更新
@@ -185,11 +198,19 @@ export default {
 
             return update(ref(db), updates);
         },
-        apiDeleteSubtask(subtask) {
+        async apiDeleteSubtask(subtask) {
+            console.log(subtask);
             const db = getDatabase()
-            const userId = this.storeGetFirebaseUid()
-            const subtask_id = subtask.subtask_id
-            remove(ref(db, '/subtasks/' + userId + '/' + subtask_id));
+            const updates = {};
+            updates['/subtasks/' + this.storeGetFirebaseUid() + '/' + subtask.subtask_id] = null;
+            return await update(ref(db), updates)
+            .then(() => {
+                return true
+            })
+            .catch((error) => {
+                console.log(error);
+                return false
+            })
         },
         // 親タスク削除時にサブタスクがある場合
         apiDeleteSubtaskHasTask(subtasks) {

@@ -6,6 +6,7 @@
         <v-dialog
             v-model="params.detail_mode"
             persistent
+            fullscreen
             max-width="1024px"
         >
             <v-toolbar
@@ -16,7 +17,7 @@
                 <v-btn
                     icon
                     dark
-                    @click="params.detail_mode = false"
+                    @click="closeDetail()"
                 >
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
@@ -62,7 +63,11 @@
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
             </v-toolbar>
-            <v-card class="pa-6 detail">
+            <div class="pa-6 detail" style="background: #fff;">
+                <MessageViewer
+                    :params="params"
+                />
+                <!-- 期限切れアラート -->
                 <v-alert
                     dense
                     outlined
@@ -205,27 +210,6 @@
                         </tr>
                         </tbody>
                     </table>
-                    <v-alert
-                        v-model="success"
-                        close-text="Close Alert"
-                        color="success"
-                        class="mt-2"
-                        text
-                        dense
-                        dismissible
-                    >
-                        サブタスクを新規作成しました！
-                    </v-alert>
-                    <v-alert
-                        dense
-                        outlined
-                        class="mt-2"
-                        dismissible
-                        type="error"
-                        v-model="subtask_delete_alert"
-                    >
-                        サブタスクを削除しました。
-                    </v-alert>
                     <!-- subtask area -->
                     <div class="task-add-form mt-2" v-if="subtask_input">
                         <div class="relative">
@@ -247,7 +231,7 @@
                 <!-- 概要 -->
                 <div class="py-4">
                     <v-card-actions class="px-0">
-                        <div class="font-weight-bold">■ タスク概要</div>
+                        <div class="font-weight-bold">■ タスク概要説明</div>
                         <v-spacer />
                         <div v-if="!desc_editor">
                             <v-btn
@@ -475,13 +459,14 @@
                         />
                     </v-dialog>
                 </v-row>
-            </v-card>
+            </div>
         </v-dialog>
     </v-row>
 </template>
 
 <script>
 import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
+import MessageViewer from '@/components/common/MessageViewer.vue'
 // エディタ
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
@@ -494,6 +479,7 @@ export default {
     mixins: [myMixin],
     components: {
         ConfirmDelete,
+        MessageViewer,
         quillEditor
     },
     props: {
@@ -531,15 +517,15 @@ export default {
         //サブタスク
         subtask_input: false,
         subtask_name: "",
-        subtask_delete_alert: false,
         loading: false,
-        success: false,
 
         // タスク削除確認
         task_delete_modal: false,
     }),
     created() {
-        this.editorOption.modules.toolbar = this.getEditorOptions()
+        this.editorOption.modules.toolbar = this.getEditorOptions();
+        this.params.success = "";
+        this.params.error = "";
     },
 
     methods: {
@@ -595,25 +581,26 @@ export default {
             const result = await this.apiUpdateTaskname(this.viewer.task_id, this.viewer.task_name)
             if(result) {
                 this.task_name_edit = false
-                this.listRefresh()
+                this.params.success = "タスク名を更新しました。"
             }
         },
         async updateTaskDescription() {
             const result = await this.apiUpdateTaskDescription(this.viewer.task_id, this.viewer.task_description);
             if(result) {
                 this.desc_editor = false
+                this.params.success = "タスク概要説明を更新しました。"
             }
         },
         async updateTaskStatus() {
             const result = await this.apiUpdateTaskStatus(this.viewer.task_id, this.viewer.task_status)
             if(result) {
-                this.listRefresh()
+                this.params.success = "タスクのステータスを変更しました。"
             }
         },
         async updateTaskPriority() {
             const result = await this.apiUpdateTaskPriority(this.viewer.task_id, this.viewer.task_priority)
             if(result) {
-                this.listRefresh()
+                this.params.success = "タスクの優先度を変更しました。"
             }
         },
         async updateTaskTerm() {
@@ -621,23 +608,25 @@ export default {
             const result = await this.apiUpdateTaskTerm(this.task_deadline, this.viewer.task_id)
             if(result) {
                 this.viewer.task_deadline = this.task_deadline
-                this.listRefresh()
+                this.params.success = "タスク期日を変更しました"
             }
         },
 
         // サブタスク
-        createSubtask(task) {
-            const create = this.apiSubtaskCreate(this.subtask_name, task.task_id)
+        async createSubtask(task) {
+            const create = await this.apiSubtaskCreate(this.subtask_name, task.task_id)
             if(create) {
-                this.success = true
+                this.params.success = "サブタスクを新規作成しました！"
                 this.subtask_name = ""
             }
-            this.initSubtaskList(task)
+            this.getSubtaskList(task)
         },
-        deleteSubtask(subtask) {
-            this.apiDeleteSubtask(subtask)
-            this.subtask_delete_alert = true
-            this.initSubtaskList(this.viewer)
+        async deleteSubtask(subtask) {
+            const result = await this.apiDeleteSubtask(subtask)
+            if(result) {
+                this.params.error = "サブタスクを削除しました。"
+                this.getSubtaskList(this.viewer)
+            }
         },
         
         // タスク期間設定
@@ -670,5 +659,10 @@ export default {
 <style>
 .ql-container.ql-snow {
     min-height: 200px;
+}
+.alt_submit {
+    position: absolute;
+    bottom: 40%;
+    right: 0;
 }
 </style>

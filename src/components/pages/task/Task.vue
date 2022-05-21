@@ -62,14 +62,19 @@ export default {
     methods: {
         // 一覧レコードクリック
         recordClick(task) {
+            this.params.success = ""
+            this.params.error = ""
             this.params.detail_mode = true
-            this.initSubtaskList(task)
+            this.getSubtaskList(task)
             this.viewer = task
             this.getFileList()
         },
 
         // 詳細閉じる
         closeDetail() {
+            this.listRefresh()
+            this.params.success = ""
+            this.params.error = ""
             this.params.detail_mode = false
         },
 

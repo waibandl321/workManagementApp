@@ -53,21 +53,15 @@ export default {
             })
         },
         // サブタスク一覧
-        initSubtaskList(task) {
+        async getSubtaskList(task) {
             if(task.task_id) {
-                let subtasks = []
-                let obj = this.apiGetSubtaskList()
-                if(obj) {
-                    let arr = Object.entries(obj)
-                    arr.forEach(r => {
-                        if(r[1].task_id == task.task_id) {
-                            subtasks.push(r[1])
-                        }
-                    })
-                    this.params.subtask_list = subtasks
-                } else {
-                    this.params.subtask_list = {}
-                }
+                let result = await this.apiGetSubtaskList()
+                result = Object.keys(result)
+                        .map((key) => {
+                            return result[key];
+                        })
+                        .filter(v => v.task_id === task.task_id)
+                this.params.subtask_list = result 
             }
         },
         // リスト削除 => 詳細情報の削除
@@ -79,7 +73,7 @@ export default {
         },
         // サブタスクの削除
         deleteSubtaskHasTask(item) {
-            this.initSubtaskList(item)
+            this.getSubtaskList(item)
             if(this.params.subtask_list.length > 0) {
                 this.apiDeleteSubtaskHasTask(this.params.subtask_list)
             }
