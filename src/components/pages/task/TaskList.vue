@@ -162,7 +162,6 @@
 
 <script>
 import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
-
 import draggable from 'vuedraggable'
 import myMixin from "./task.js"
 

@@ -63,6 +63,16 @@
                 </v-btn>
             </v-toolbar>
             <v-card class="pa-6 detail">
+                <v-alert
+                    dense
+                    outlined
+                    type="error"
+                    v-if="judgeRemainingDays(viewer.task_deadline) <= 0"
+                >
+                    {{ judgeRemainingDays(viewer.task_deadline) === 0 ? 
+                    "本日期日のタスクです" : 
+                    "タスクが期日を過ぎています" }}
+                </v-alert>
                 <!-- ステータス・優先度設定 -->
                 <div class="d-flex">
                     <div class="pr-2" style="width: 50%">
