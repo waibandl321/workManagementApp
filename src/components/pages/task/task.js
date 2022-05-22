@@ -24,7 +24,7 @@ export default {
                 return "期日設定なし"
             }
             const _begin = new Date(this.convertDatetimeFromUnixtime(begin, "yyyy-mm-dd")),
-                _end = new Date(end);
+                _end = new Date(this.convertDatetimeFromUnixtime(end, "yyyy-mm-dd"));
             return (_end - _begin) / 86400000 + " 日間"
         },
         convertRemainingDays(end) {
@@ -42,8 +42,11 @@ export default {
             }
         },
         judgeRemainingDays(end) {
+            if(!end) {
+                return undefined
+            }
             const today = new Date(this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyy-mm-dd")),
-                  _end = new Date(end);
+                  _end = new Date(this.convertDatetimeFromUnixtime(end, "yyyy-mm-dd"));
              return (_end - today) / 86400000;
         },
         // 全ての添付ファイルを削除

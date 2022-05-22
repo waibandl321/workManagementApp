@@ -127,7 +127,7 @@
                         <td class="py-2">{{ task.task_name }}</td>
                         <td class="py-2">{{ extractTaskStatus(task.task_status) }}</td>
                         <td class="py-2">{{ extractTaskPriority(task.task_priority) }}</td>
-                        <td class="py-2">{{ task.task_deadline }}</td>
+                        <td class="py-2">{{ convertDatetimeFromUnixtime(task.task_deadline, "yyyy-mm-dd") }}</td>
                         <td class="py-2">{{ convertTaskPeriod(task.created, task.task_deadline) }}</td>
                         <td class="py-2">{{ convertDatetimeFromUnixtime(task.created, "yyyy-mm-dd") }}</td>
                         <td class="options-td">
@@ -278,12 +278,12 @@ export default {
         extractTaskStatus(status) {
             let result = this.params.task_status_list
             result = result.filter(v => v.key === status)
-            return result[0]
+            return result[0].text
         },
         extractTaskPriority(priority) {
             let result = this.params.task_priorities
             result = result.filter(v => v.key === priority)
-            return result[0]
+            return result[0].text
         },
         // 作成
         createTask() {

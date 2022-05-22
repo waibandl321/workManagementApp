@@ -10,6 +10,11 @@ export default {
             var b = Math.floor( a / 1000 );
             return b
         },
+        convertUnixtimeFromDate(value) {
+            const a = new Date(value).getTime();
+            var b = Math.floor( a / 1000 );
+            return b
+        },
         convertDatetimeFromUnixtime(value, format) {
             let date = new Date(value*1000)
             let fm = format

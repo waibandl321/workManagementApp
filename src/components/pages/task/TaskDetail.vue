@@ -69,14 +69,11 @@
                 />
                 <!-- 期限切れアラート -->
                 <v-alert
-                    dense
-                    outlined
-                    type="error"
                     v-if="judgeRemainingDays(viewer.task_deadline) <= 0"
+                    type="error"
+                    color="red darken-3"
                 >
-                    {{ judgeRemainingDays(viewer.task_deadline) === 0 ? 
-                    "本日期日のタスクです" : 
-                    "タスクが期日を過ぎています" }}
+                    {{ outputTaskAlert() }}
                 </v-alert>
                 <!-- ステータス・優先度設定 -->
                 <div class="d-flex">
@@ -115,7 +112,7 @@
                     <div class="font-weight-bold">■ タスク期日</div>
                     <div class="ml-4 relative">
                         <v-btn
-                            @click="term = !term" 
+                            @click="termSetting = !termSetting" 
                             color="red darken-3"
                             fab
                             class="mr-2 white--text"
@@ -123,9 +120,9 @@
                         >
                             <v-icon>mdi-calendar-check-outline</v-icon>
                         </v-btn>
-                        <span class="ml-2" style="color: #C62828; font-size: 14px;">{{ viewer.task_deadline }}</span>
+                        <span class="ml-2" style="color: #C62828; font-size: 14px;">{{ this.convertDatetimeFromUnixtime(viewer.task_deadline, "yyyy-mm-dd") }}</span>
                         <!-- date picker -->
-                        <div class="date_picker" v-if="term">
+                        <div class="date_picker" v-if="termSetting">
                             <v-text-field
                                 v-model="task_deadline"
                                 label="日付を選択"
@@ -150,7 +147,7 @@
                                 </v-btn>
                                 <v-btn
                                     text
-                                    @click="task_deadline = [], term = false"
+                                    @click="task_deadline = [], termSetting = false"
                                 >
                                     キャンセル
                                 </v-btn>
@@ -494,7 +491,7 @@ export default {
         priority: null,
         task_name_edit: false,
         desc_editor: false,
-        term: false,
+        termSetting: false,
         task_deadline: null,
 
         // テキストエディタ
@@ -529,7 +526,7 @@ export default {
     },
 
     methods: {
-        // ファイルアップロード
+        // ファイル
         async onFileChange(e) {
             this.file_loading = true
             this.file_select = false
@@ -560,8 +557,6 @@ export default {
         async outputDownloadPath(filename) {
             return await this.storageDownloadPath( this.storeGetFirebaseUid() + '/' + filename )
         },
-
-        // ファイル削除
         deleteFileSelected(file_data) {
             this.delete_file_modal = true
             this.delete_file = file_data
@@ -604,15 +599,21 @@ export default {
             }
         },
         async updateTaskTerm() {
-            this.term = false
-            const result = await this.apiUpdateTaskTerm(this.task_deadline, this.viewer.task_id)
+            const deadline = this.convertUnixtimeFromDate(this.task_deadline)
+            if(deadline === this.viewer.task_deadline){
+                this.termSetting = false
+                return
+            }
+
+            const result = await this.apiUpdateTaskTerm(deadline, this.viewer.task_id)
             if(result) {
-                this.viewer.task_deadline = this.task_deadline
+                this.viewer.task_deadline = deadline
                 this.params.success = "タスク期日を変更しました"
             }
+            this.task_deadline = null
+            this.termSetting = false
+            
         },
-
-        // サブタスク
         async createSubtask(task) {
             const create = await this.apiSubtaskCreate(this.subtask_name, task.task_id)
             if(create) {
@@ -632,9 +633,23 @@ export default {
         // タスク期間設定
         deleteTaskTerm() {
             this.task_deadline = null
-            this.term = false
-            this.apiUpdateTaskTerm(this.viewer.task_id)
+            this.termSetting = false
+            this.apiUpdateTaskTerm(this.task_deadline, this.viewer.task_id)
             this.viewer.task_deadline = null
+        },
+        outputTaskAlert() {
+            if(!this.viewer.task_deadline) {
+                return
+            }
+            const result = this.judgeRemainingDays(this.viewer.task_deadline)
+            switch (true) {
+                case result === 0:
+                    return "本日期日です";
+                case result < 0:
+                    return "タスクが期日を過ぎています";
+                default:
+                    break;
+            }
         },
         
         // タスク削除
