@@ -8,6 +8,9 @@ export default {
         },
         // アカウント情報登録
         storeSetAccountInfo(account_info) {
+            if(!account_info) {
+                return
+            }
             store.dispatch("setAccountData", account_info)
         },
         // アカウント情報更新

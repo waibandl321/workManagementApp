@@ -16,6 +16,9 @@ export default {
             return b
         },
         convertDatetimeFromUnixtime(value, format) {
+            if(!value) {
+                return "未設定"
+            }
             let date = new Date(value*1000)
             let fm = format
 

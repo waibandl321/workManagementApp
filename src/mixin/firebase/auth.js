@@ -2,10 +2,14 @@ import {
     getAuth,
     createUserWithEmailAndPassword,
     signOut,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    GoogleAuthProvider,
+    GithubAuthProvider,
+    signInWithPopup
 }
 from "firebase/auth";
 
+const provider = new GoogleAuthProvider();
 
 export default {
     methods: {
@@ -35,9 +39,9 @@ export default {
         },
 
         // サインイン
-        async firebaseSignin(email, password) {
-            let _uid = ''
+        async firebaseEmailSignin(email, password) {
             const auth = getAuth();
+            let _uid = ''
             await signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 this.loading = false
@@ -52,5 +56,40 @@ export default {
 
             return _uid
         },
+
+        async firebaseGoogleAuth() {
+            const auth = getAuth();
+            provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+            return await signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                console.log(credential.accessToken);
+                return result.user.uid
+            })
+            .catch((error) => {
+                const credential = GoogleAuthProvider.credentialFromError(error);
+                console.log(error);
+                console.log(credential);
+                return false
+            });
+        },
+        async firebaseGithubAuth() {
+            const auth = getAuth();
+            provider.addScope('repo');
+            return await signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = GithubAuthProvider.credentialFromResult(result);
+                console.log(credential.accessToken);
+                return result.user.uid
+            })
+            .catch((error) => {
+                const credential = GithubAuthProvider.credentialFromError(error);
+                console.log(error);
+                console.log(credential);
+                return false
+            });
+        }, 
     }
 }
+
+

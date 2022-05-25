@@ -21,7 +21,7 @@ export default {
         // 戻り値：タスク期日 - タスク作成日
         convertTaskPeriod(begin, end) {
             if(!end) {
-                return "期日設定なし"
+                return "未指定"
             }
             const _begin = new Date(this.convertDatetimeFromUnixtime(begin, "yyyy-mm-dd")),
                 _end = new Date(this.convertDatetimeFromUnixtime(end, "yyyy-mm-dd"));

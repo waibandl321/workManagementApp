@@ -28,6 +28,7 @@ router.beforeEach((to, from, next) => {
     // ログインチェック
     if(!Utils.isSignin()) {
         window.location = "/auth/signin"
+        next()
     }
   } else {
     next()

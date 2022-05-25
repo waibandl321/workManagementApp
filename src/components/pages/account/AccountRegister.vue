@@ -61,9 +61,9 @@ export default {
     props: {
         params: Object
     },
-    data: () => {
+    data: () => ({
 
-    },
+    }),
     methods: {
         async register() {
             this.params.account_info.status = true

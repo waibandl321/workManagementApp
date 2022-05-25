@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import AccountRegister from './AccountRegister.vue'
-import AccountUpdate from './AccountUpdate.vue'
+import AccountRegister from '@/components/pages/account/AccountRegister.vue'
+import AccountUpdate from '@/components/pages/account/AccountUpdate.vue'
 import myMixin from './account.js'
 
 export default {
