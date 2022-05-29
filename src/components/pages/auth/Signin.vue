@@ -199,30 +199,30 @@ export default {
             await this.firebaseGithubAuth()
             .then((uid) => {
                 console.log("ストアにUIDセット");
-                this.storeSetFirebaseUid(uid)
-                return uid
+                this.storeSetFirebaseUid(uid);
+                return uid;
             })
             .then((uid) => {
                 console.log("アカウント存在チェック");
-                return this.isExistAccount(uid)
+                return this.isExistAccount(uid);
             })
             .then((account) => {
                 if(account) {
                     console.log("ストアにアカウント情報セット");
-                    this.storeSetAccountInfo(account)
+                    this.storeSetAccountInfo(account);
                     console.log("ログイン後ページ遷移");
-                    this.pageMove('/')
-                    this.loading = false
+                    this.pageMove('/');
+                    this.loading = false;
                 } else {
                     this.storeSetAccountInfo(null)
                     console.log("アカウント情報が存在しないので、アカウント登録画面に遷移");
-                    this.pageMove('/account')
-                    this.loading = false
+                    this.pageMove('/account');
+                    this.loading = false;
                 }
             })
             .catch((error) => {
                 console.log(error);
-                this.error = "外部認証に失敗しました。"
+                this.error = "外部認証に失敗しました。";
             })
         },
 
@@ -233,7 +233,7 @@ export default {
             const account = this.isExistAccount(uid)
             if(account) {
                 console.log("ストアにアカウント情報セット");
-                this.storeSetAccountInfo(account)
+                this.storeSetAccountInfo(account);
                 console.log("ログイン後ページ遷移");
                 this.pageMove('/')
                 this.loading = false
