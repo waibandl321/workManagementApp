@@ -9,14 +9,6 @@ name: Deploy to Firebase Hosting on merge
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    env:
-      VUE_TASKAPP_FIREBASE_API_KEY: ${{ secrets.VUE_TASKAPP_FIREBASE_API_KEY }}
-      VUE_TASKAPP_FIREBASE_AUTH_DOMAIN: ${{ secrets.VUE_TASKAPP_FIREBASE_AUTH_DOMAIN }}
-      VUE_TASKAPP_FIREBASE_DATABASE_URL: ${{ secrets.VUE_TASKAPP_FIREBASE_DATABASE_URL }}
-      VUE_TASKAPP_FIREBASE_PROJECT_ID: ${{ secrets.VUE_TASKAPP_FIREBASE_PROJECT_ID }}
-      VUE_TASKAPP_FIREBASE_SENDER_ID: ${{ secrets.VUE_TASKAPP_FIREBASE_SENDER_ID }}
-      VUE_TASKAPP_FIREBASE_STORAGE_BUCKET: ${{ secrets.VUE_TASKAPP_FIREBASE_STORAGE_BUCKET }}
-      CI: false
     steps:
       - uses: actions/checkout@v2
       - run: npm ci && npm run build
