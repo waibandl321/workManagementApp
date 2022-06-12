@@ -4,6 +4,7 @@ import Task from '@/components/pages/task/TaskIndex'
 import File from '@/components/pages/file/FileIndex'
 import Signup from '@/components/pages/auth/Signup'
 import Signin from '@/components/pages/auth/Signin'
+import PasswordResetEmail from '@/components/pages/auth/PasswordResetEmail'
 import Signout from '@/components/pages/auth/Signout'
 import AccountIndex from '@/components/pages/account/AccountIndex'
 
@@ -38,6 +39,12 @@ export default
           name: 'signin',
           component: Signin,
           meta: { title: 'サインイン'}
+        },
+        {
+          path: '/auth/password_reset_email',
+          name: 'password_reset_email',
+          component: PasswordResetEmail,
+          meta: { title: 'パスワード再設定'}
         },
         {
           path: '/auth/signout',

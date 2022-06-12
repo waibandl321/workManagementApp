@@ -62,6 +62,16 @@
             <v-divider />
             <div class="pa-4">
                 <v-btn
+                    to="/auth/password_reset_email"
+                    outlined
+                    color="primary"
+                >
+                    パスワード再設定
+                </v-btn>
+            </div>
+            <v-divider />
+            <div class="pa-4">
+                <v-btn
                     @click="externalSigninByGoogle()"
                     fab
                     small
@@ -73,22 +83,14 @@
                     >
                     </v-img>
                 </v-btn>
-                <v-btn
-                    @click="externalSigninByGithub()"
-                    fab
-                    small
-                >
-                    <v-img
-                        src="./img/github-logo.png"
-                        max-width="32"
-                        min-width="32"
-                    >
-                    </v-img>
-                </v-btn>
             </div>
             <v-divider></v-divider>
             <div class="pa-4">
-                <v-btn outlined color="primary" to="/auth/signup">
+                <v-btn
+                    outlined
+                    color="primary"
+                    to="/auth/signup"
+                >
                     ユーザー登録はこちら
                 </v-btn>
             </div>
@@ -193,57 +195,6 @@ export default {
                 this.error = "外部認証に失敗しました。"
             })
         },
-
-        async externalSigninByGithub() {
-            this.loading = true
-            await this.firebaseGithubAuth()
-            .then((uid) => {
-                console.log("ストアにUIDセット");
-                this.storeSetFirebaseUid(uid)
-                return uid
-            })
-            .then((uid) => {
-                console.log("アカウント存在チェック");
-                return this.isExistAccount(uid)
-            })
-            .then((account) => {
-                if(account) {
-                    console.log("ストアにアカウント情報セット");
-                    this.storeSetAccountInfo(account)
-                    console.log("ログイン後ページ遷移");
-                    this.pageMove('/')
-                    this.loading = false
-                } else {
-                    this.storeSetAccountInfo(null)
-                    console.log("アカウント情報が存在しないので、アカウント登録画面に遷移");
-                    this.pageMove('/account')
-                    this.loading = false
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-                this.error = "外部認証に失敗しました。"
-            })
-        },
-
-        afterSignin(uid) {
-            console.log("ストアにUIDセット");
-            this.storeSetFirebaseUid(uid)
-            console.log("アカウント存在チェック");
-            const account = this.isExistAccount(uid)
-            if(account) {
-                console.log("ストアにアカウント情報セット");
-                this.storeSetAccountInfo(account)
-                console.log("ログイン後ページ遷移");
-                this.pageMove('/')
-                this.loading = false
-            } else {
-                console.log("アカウント情報が存在しないので、アカウント登録画面に遷移");
-                this.pageMove('/account')
-                this.loading = false
-            }
-        },
-
         async isExistAccount(uid) {
             return await this.apiGetAccount(uid)
         },
