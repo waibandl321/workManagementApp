@@ -5,7 +5,8 @@ import {
     signInWithEmailAndPassword,
     GoogleAuthProvider,
     GithubAuthProvider,
-    signInWithPopup
+    signInWithPopup,
+    sendPasswordResetEmail
 }
 from "firebase/auth";
 
@@ -88,7 +89,17 @@ export default {
                 console.log(credential);
                 return false
             });
-        }, 
+        },
+        async firebaseSendEmailByPasswordReset(email) {
+            const auth = getAuth();
+            return await sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    return true;
+                })
+                .catch((error) => {
+                    console.log(error);
+            });
+        }
     }
 }
 
