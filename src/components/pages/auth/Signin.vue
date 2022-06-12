@@ -3,7 +3,7 @@
        <div>
           <v-card class="card">
             <v-card-title>
-                ログイン
+                サインイン
             </v-card-title>
             <div class="px-4">
                 <div class="py-4" v-if="error">
@@ -56,7 +56,7 @@
                     class="submit"
                     @click="emailSignin()"
                 >
-                    ログイン
+                    サインイン
                 </v-btn>
             </div>
             <v-divider />
@@ -64,17 +64,19 @@
                 <v-btn
                     to="/auth/password_reset_email"
                     outlined
-                    color="primary"
                 >
                     パスワード再設定
                 </v-btn>
             </div>
             <v-divider />
-            <div class="pa-4">
+            <v-card-title>
+            外部サービスでサインイン
+            </v-card-title>
+            <div class="px-4 pb-4">
                 <v-btn
                     @click="externalSigninByGoogle()"
                     fab
-                    small
+                    depressed
                 >
                     <v-img
                         src="./img/icons-google.png"
@@ -128,7 +130,7 @@ export default {
         resetValidation () {
             this.$refs.form.resetValidation()
         },
-        // サインイン(ログイン)
+        // サインイン(サインイン)
         async emailSignin () {
             const valid = this.$refs.form.validate();
             if(valid) {
@@ -147,7 +149,7 @@ export default {
                     if(account) {
                         console.log("ストアにアカウント情報セット");
                         this.storeSetAccountInfo(account)
-                        console.log("ログイン後ページ遷移");
+                        console.log("サインイン後ページ遷移");
                         this.pageMove('/')
                         this.loading = false
                     } else {
@@ -180,7 +182,7 @@ export default {
                 if(account) {
                     console.log("ストアにアカウント情報セット");
                     this.storeSetAccountInfo(account)
-                    console.log("ログイン後ページ遷移");
+                    console.log("サインイン後ページ遷移");
                     this.pageMove('/')
                     this.loading = false
                 } else {
