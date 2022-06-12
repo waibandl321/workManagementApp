@@ -1,44 +1,62 @@
 <template>
-    <div class="auth">
+    <div class="body">
+        <Header
+            :parents="parents"
+        />
         <!-- 新規登録 -->
-        <AccountRegister
+        <div
+            class="auth"
             v-if="!params.account_info.status"
-            :params="params"
-        />
-        <!-- 更新 -->
-        <AccountUpdate
+        >
+            <AccountRegister
+                :params="params"
+            />
+        </div>
+        <div
+            class="pa-6"
             v-else
-            :params="params"
-        />
+        >
+            <!-- 更新 -->
+            <AccountUpdate
+                :params="params"
+            />
+        </div>
     </div>
 </template>
 
 <script>
+import Header from '@/components/common/Header'
 import AccountRegister from '@/components/pages/account/AccountRegister.vue'
 import AccountUpdate from '@/components/pages/account/AccountUpdate.vue'
 import myMixin from './account.js'
 
 export default {
     components: {
+        Header,
         AccountRegister,
         AccountUpdate,
     },
     mixins: [myMixin],
     data: () => ({
+        parents: {
+            user_info: {}
+        },
         params: {
             account_info: {},
-            success: null,
-            error: ""
+            success: "",
+            error: "",
+            loading: false,
         }
     }),
     created() {
-        this.accountRead()
+        this.accountRead();
     },
     methods: {
         async accountRead() {
-            this.params.success = null
+            this.params.success = ""
             this.params.error = ""
             this.params.account_info = this.storeGetAccountInfo()
+            this.parents.user_info = this.storeGetAccountInfo()
         },
     },
 }
@@ -46,3 +64,14 @@ export default {
 
 
 <style scoped src="./scoped.css"></style>
+<style scoped>
+.body {
+  width: 100%;
+}
+.header {
+  border-bottom: 1px solid #ccc;
+  height: 70px;
+  line-height: 70px;
+  padding: 0 16px;
+}
+</style>
