@@ -106,7 +106,7 @@ export default {
             const auth = getAuth();
             return await updateEmail(auth.currentUser, new_email)
             .then(() => {
-                this.firebaseSendEmailVerification()
+                return true
             })
             .catch((error) => {
                 console.log("更新処理でエラー");
@@ -118,7 +118,7 @@ export default {
         // 確認メール送信
         async firebaseSendEmailVerification() {
             const auth = getAuth();
-            await sendEmailVerification(auth.currentUser)
+            return await sendEmailVerification(auth.currentUser)
             .then(() => {
                 return true;
             })
