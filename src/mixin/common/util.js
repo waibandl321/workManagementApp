@@ -4,6 +4,9 @@ export default {
     }),
 
     methods: {
+        copyJson(value) {
+            return JSON.parse(JSON.stringify(value))
+        },
         // 日時取得と出力形式整形
         getCurrentUnixtime() {
             var a = new Date().getTime();

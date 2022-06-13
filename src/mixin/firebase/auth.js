@@ -6,7 +6,9 @@ import {
     GoogleAuthProvider,
     GithubAuthProvider,
     signInWithPopup,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    updateEmail,
+    sendEmailVerification
 }
 from "firebase/auth";
 
@@ -14,6 +16,11 @@ const provider = new GoogleAuthProvider();
 
 export default {
     methods: {
+        firebaseGetCurrentUser() {
+            const auth = getAuth();
+            return auth.currentUser;
+        },
+
         // サインアップ
         async firebaseSignup(email, password) {
             const auth = getAuth();
@@ -58,6 +65,7 @@ export default {
             return _uid
         },
 
+        // Googleログイン
         async firebaseGoogleAuth() {
             const auth = getAuth();
             provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
@@ -74,6 +82,8 @@ export default {
                 return false
             });
         },
+
+        // GitHubログイン
         async firebaseGithubAuth() {
             const auth = getAuth();
             provider.addScope('repo');
@@ -81,15 +91,45 @@ export default {
             .then((result) => {
                 const credential = GithubAuthProvider.credentialFromResult(result);
                 console.log(credential.accessToken);
-                return result.user.uid
+                return result.user.uid;
             })
             .catch((error) => {
                 const credential = GithubAuthProvider.credentialFromError(error);
                 console.log(error);
                 console.log(credential);
-                return false
+                return false;
             });
         },
+
+        // メールアドレス更新
+        async firebaseUpdateEmail(new_email) {
+            const auth = getAuth();
+            return await updateEmail(auth.currentUser, new_email)
+            .then(() => {
+                return true
+            })
+            .catch((error) => {
+                console.log("更新処理でエラー");
+                console.log(error);
+                return false;
+            });
+        },
+
+        // 確認メール送信
+        async firebaseSendEmailVerification() {
+            const auth = getAuth();
+            return await sendEmailVerification(auth.currentUser)
+            .then(() => {
+                return true;
+            })
+            .catch((error) => {
+                console.log("メール送信処理でエラー");
+                console.log(error.message);
+                return false;
+            })
+        },
+
+        // パスワード再設定
         async firebaseSendEmailByPasswordReset(email) {
             const auth = getAuth();
             return await sendPasswordResetEmail(auth, email)
@@ -98,8 +138,10 @@ export default {
                 })
                 .catch((error) => {
                     console.log(error);
+                    return false;
             });
         }
+
     }
 }
 
