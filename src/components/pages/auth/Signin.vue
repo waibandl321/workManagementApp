@@ -189,13 +189,13 @@ export default {
                     this.storeSetAccountInfo(null)
                     console.log("アカウント情報が存在しないので、アカウント登録画面に遷移");
                     this.pageMove('/account')
-                    this.loading = false
                 }
             })
             .catch((error) => {
                 console.log(error);
                 this.error = "外部認証に失敗しました。"
             })
+            this.loading = false
         },
         async isExistAccount(uid) {
             return await this.apiGetAccount(uid)
