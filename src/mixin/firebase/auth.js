@@ -8,7 +8,6 @@ import {
     signInWithPopup,
     sendPasswordResetEmail,
     updateEmail,
-    sendEmailVerification
 }
 from "firebase/auth";
 
@@ -109,24 +108,10 @@ export default {
                 return true
             })
             .catch((error) => {
-                console.log("更新処理でエラー");
+                console.log("メールアドレス更新処理でエラー");
                 console.log(error);
                 return false;
             });
-        },
-
-        // 確認メール送信
-        async firebaseSendEmailVerification() {
-            const auth = getAuth();
-            return await sendEmailVerification(auth.currentUser)
-            .then(() => {
-                return true;
-            })
-            .catch((error) => {
-                console.log("メール送信処理でエラー");
-                console.log(error.message);
-                return false;
-            })
         },
 
         // パスワード再設定

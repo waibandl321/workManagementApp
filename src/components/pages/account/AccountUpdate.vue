@@ -44,8 +44,9 @@
                             <v-btn
                                 outlined
                                 color="primary"
+                                @click="pageMove('/auth/signout')"
                             >
-                                パスワードを更新
+                                サインイン画面から再設定
                             </v-btn>
                         </div>
                     </v-col>
@@ -89,7 +90,7 @@
                             </div>
                             <v-form
                                 ref="form"
-                                v-model="valid"
+                                v-model="email_valid"
                                 lazy-validation
                             >
                                 <v-text-field
@@ -142,7 +143,7 @@ export default {
         auth_user: {},
         email_update_dialog: false,
 
-        valid: true,
+        email_valid: true,
         emailRules: [
             v => !!v || 'メールアドレスは入力必須です',
             v => /.+@.+\..+/.test(v) || 'メールアドレスの形式で入力してください',
@@ -160,24 +161,18 @@ export default {
         clickEmailUpdate() {
             this.email_update_dialog = true;
         },
+        clickPasswordUpdate() {
+            this.password_update_dialog = true;
+        },
         async execUpdateEmail() {
             this.params.loading = true;
             const result = await this.firebaseUpdateEmail(this.auth_user.email);
             if(result) {
-                // 確認メール送付
-                const success = await this.firebaseSendEmailVerification()
-                if(success) {
-                    this.params.success = 
-                    `メールアドレスを更新しました。\n
-                    新しいメールアドレスに確認メールを送付しましたので、ご確認ください。`;
-                } else {
-                    this.params.success = "メールアドレスを更新しました。";
-                }
+                this.params.success = "メールアドレスを更新しました。";
             } else {
-                this.params.error = "更新に失敗しました";
+                this.params.error = "メールアドレスの更新に失敗しました";
                 return;
             }
-            
             this.email_update_dialog = false;
             this.params.loading = false;
         },

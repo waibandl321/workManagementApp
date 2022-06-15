@@ -47,6 +47,11 @@ export default {
         pageMove(page) {
             this.$router.push(page, () => {})
         },
+
+        // サインインに遷移
+        redirectSignin() {
+            window.location = "/auth/signout";
+        },
         
         // 配列・オブジェクト変換
         convertObject(value) {
