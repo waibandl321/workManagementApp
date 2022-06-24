@@ -1,41 +1,52 @@
 <template>
-    <v-card>
-        <v-card-title>
-        <span class="text-h5">タスクを削除します</span>
-        </v-card-title>
-        <v-card-text>
-            本当によろしいですか？
-        </v-card-text>
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-                outlined
-                depressed
-                class="pa-4"
-                @click="closeModal()"
-            >
-                キャンセル
-            </v-btn>
-            <v-btn
-                depressed
-                class="pa-4"
-                color="red darken-4"
-                outlined
-                @click="execDeleteTask(item)"
-                
-            >
-                削除する
-            </v-btn>
-        </v-card-actions>
-    </v-card>
+    <v-dialog
+        persistent
+        max-width="600px"
+        v-model="dialog"
+    >
+        <v-card>
+            <v-card-title>
+            <span class="text-h5">{{ delete_title }} </span>
+            </v-card-title>
+            <v-card-text>
+                削除後は復元できません。本当によろしいですか？
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    v-for="(option, index) in menu_options"
+                    :key="index"
+                    outlined
+                    depressed
+                    @click="clickOption(option)"
+                    :color="option.function_cd === 'delete' ? 'red darken-3' : ''"                
+                    class="pa-4"
+                >
+                    {{ option.text }}
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 <script>
 
 export default {
     props: {
-        execDeleteTask: Function,
+        delete_title: String,
         closeModal: Function,
-        item: Object
+        delete_options: Array
     },
+    data: () => ({
+        dialog: true,
+        menu_options: null,
+    }),
+    created() {
+        this.menu_options = this.delete_options
+    },
+    methods: {
+        clickOption(option) {
+            option.callback()
+        }
+    }
 }
 </script>

@@ -67,7 +67,7 @@ export default {
         // ダウンロードpathを返す
         async storageDownloadPath(data) {
             const storage = getStorage()
-            return getDownloadURL( ref(storage, data) )
+            return await getDownloadURL( ref(storage, data) )
             .then((url) => {
                 return url
             })

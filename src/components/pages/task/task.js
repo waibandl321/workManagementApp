@@ -71,9 +71,9 @@ export default {
         },
         // 全ての添付ファイルを削除
         deleteAllFile(files) {
-            files.forEach(r => {
-                this.storageDeleteFile(r)
-            })
+            for(const file of files) {
+                this.storageDeleteFile(file)
+            }
         },
         // サブタスク一覧
         async getSubtaskList(task) {
@@ -170,6 +170,25 @@ export default {
             let result = this.params.task_priorities
             result = result.filter(v => v.key === priority)
             return result[0].text
+        },
+        // タスク期日アラート
+        outputTaskAlert() {
+            if(!this.params.viewer.task_deadline) {
+                return
+            }
+            const result = this.judgeRemainingDays(this.params.viewer.task_deadline)
+            switch (true) {
+                case result === 0:
+                    return "本日期日です";
+                case result < 0:
+                    return "タスクが期日を過ぎています";
+                default:
+                    break;
+            }
+        },
+        // ファイルのダウンロードパスを返す
+        async outputDownloadPath(filename) {
+            return await this.storageDownloadPath( this.storeGetFirebaseUid() + '/' + filename )
         },
     }
 }

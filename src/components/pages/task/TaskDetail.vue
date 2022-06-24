@@ -54,7 +54,7 @@
             <v-btn
                 dark
                 icon
-                @click="task_delete_modal = true"
+                @click="clickTaskDelete()"
             >
                 <v-icon>mdi-delete</v-icon>
             </v-btn>
@@ -316,142 +316,61 @@
                         <v-btn
                             text
                             color="error"
-                            @click="delete_all_file_modal = true"
+                            @click="clickAllFile()"
                         >
                             <v-icon>mdi-trash-can-outline</v-icon>
                             全ファイル削除
                         </v-btn>
                     </div>
                 </div>
-                
-                <div v-if="file_loading" class="text-center py-6">
-                    <v-progress-circular
-                        :size="50"
-                        color="primary"
-                        indeterminate
-                    ></v-progress-circular>
-                </div>
-                
-                <table class="file-table" v-else>
-                    <tr v-for="(file, i) in params.files" :key="i">
-                        <td>
-                            <img :src="outputDownloadPath(file.name)" width="40">
-                        </td>
-                        <td>{{ file.name }}</td>
-                        <td>{{ file.size }}</td>
-                        <td>{{ file.contentType }}</td>
-                        <td class="operation-td">
-                            <v-btn
-                                link
-                                text
-                                :href="file.download_url"
-                                target="_blank" rel="noopener noreferrer"
+                <!-- ローディング -->
+                <template v-if="file_loading">
+                    <div class="text-center py-6">
+                        <v-progress-circular
+                            :size="50"
+                            color="primary"
+                            indeterminate
+                        ></v-progress-circular>
+                    </div>
+                </template>
+                <template v-else>
+                <!-- ファイル一覧 -->
+                    <table class="file-table">
+                        <tr v-for="(file, i) in params.files" :key="i">
+                            <td>
+                                <img :src="outputDownloadPath(file.name)" width="40">
+                            </td>
+                            <td>{{ file.name }}</td>
+                            <td>{{ file.size }}</td>
+                            <td>{{ file.contentType }}</td>
+                            <td class="operation-td">
+                                <v-btn
+                                    link
+                                    text
+                                    :href="file.download_url"
+                                    target="_blank" rel="noopener noreferrer"
+                                    >
+                                        <v-icon>mdi-open-in-new</v-icon>
+                                </v-btn>
+                                <v-btn
+                                    @click="clickSingleDelete(file)"
+                                    text
+                                    class="ml-2"
                                 >
-                                    <v-icon>mdi-open-in-new</v-icon>
-                            </v-btn>
-                            <v-btn
-                                @click="deleteFileSelected(file)"
-                                text
-                                class="ml-2"
-                            >
-                                <v-icon>mdi-trash-can-outline</v-icon>
-                            </v-btn>
-                        </td>
-                    </tr>
-                </table>
+                                    <v-icon>mdi-trash-can-outline</v-icon>
+                                </v-btn>
+                            </td>
+                        </tr>
+                    </table>
+                </template>
             </div>
-            
-            
-            <!-- ファイル削除 -->
-            <v-row justify="center">
-                <v-dialog
-                v-model="delete_file_modal"
-                persistent
-                max-width="600px"
-                >
-                <v-card>
-                    <v-card-title>
-                    <span class="text-h5">選択肢したファイルを削除します</span>
-                    </v-card-title>
-                    <v-card-text>
-                        本当によろしいですか？
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            outlined
-                            depressed
-                            class="pa-4"
-                            @click="delete_file_modal = false"
-                        >
-                            キャンセル
-                        </v-btn>
-                        <v-btn
-                            depressed
-                            class="pa-4"
-                            color="red darken-4"
-                            outlined
-                            @click="execDeleteFile(file)"
-                            
-                        >
-                            削除する
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-                </v-dialog>
-            </v-row>
-            <!-- 全てのファイルを削除確認 -->
-            <v-row justify="center">
-                <v-dialog
-                v-model="delete_all_file_modal"
-                persistent
-                max-width="600px"
-                >
-                <v-card>
-                    <v-card-title>
-                    <span class="text-h5">このタスクにアップされている全てのファイルを削除します</span>
-                    </v-card-title>
-                    <v-card-text>
-                        本当によろしいですか？
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            outlined
-                            depressed
-                            class="pa-4"
-                            @click="delete_all_file_modal = false"
-                        >
-                            キャンセル
-                        </v-btn>
-                        <v-btn
-                            depressed
-                            class="pa-4"
-                            color="red darken-4"
-                            outlined
-                            @click="execDeleteAllFile(params.files)"
-                        >
-                            削除する
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-                </v-dialog>
-            </v-row>
 
-            <!-- タスク削除モーダル -->
-            <v-row justify="center">
-                <v-dialog
-                    persistent
-                    max-width="600px"
-                    v-model="task_delete_modal"
-                >
-                    <ConfirmDelete
-                        :closeModal="closeModal"
-                        :item="params.viewer"
-                        :execDeleteTask="execDeleteTask"
-                    />
-                </v-dialog>
-            </v-row>
+            <!-- 削除確認 -->
+            <ConfirmDelete
+                v-if="delete_modal"
+                :delete_title="delete_title"
+                :delete_options="delete_options"
+            />
         </div>
     </v-dialog>
 </template>
@@ -499,7 +418,6 @@ export default {
         },
 
         // ファイル
-        delete_file_modal: false,
         delete_all_file_modal: false,
         file_loading: false,
         file_upload_done: false,
@@ -512,7 +430,9 @@ export default {
         loading: false,
 
         // タスク削除確認
-        task_delete_modal: false,
+        delete_options: [],
+        delete_title: "",
+        delete_modal: false,
     }),
     created() {
         this.editorOption.modules.toolbar = this.getEditorOptions();
@@ -549,21 +469,33 @@ export default {
                 })
             }
         },
-        async outputDownloadPath(filename) {
-            return await this.storageDownloadPath( this.storeGetFirebaseUid() + '/' + filename )
-        },
-        deleteFileSelected(file_data) {
-            this.delete_file_modal = true
-            this.delete_file = file_data
+        clickSingleDelete(file) {
+            this.delete_title = `ファイル「${file.name}」を削除します。`;
+            this.delete_options.push(
+                { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
+                { function_cd: "delete", text: "削除する",   callback: this.execDeleteFile }
+            )
+            this.delete_file = file
+            this.delete_modal = true
         },
         execDeleteFile() {
             this.file_loading = true
             this.storageDeleteFile(this.delete_file)
+            this.delete_options = []
         },
-        execDeleteAllFile(files) {
+        clickAllFile() {
+            this.delete_title = `このタスクにアップされている全てのファイルを削除します`;
+            this.delete_options.push(
+                { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
+                { function_cd: "delete", text: "削除する",   callback: this.execDeleteAllFile }
+            )
+            this.delete_all_file_modal = true
+        },
+        execDeleteAllFile() {
             this.delete_all_file_modal = false
             this.file_loading = true
-            this.deleteAllFile(files)
+            this.deleteAllFile(this.params.files)
+            this.delete_options = []
         },
         
         // タスク期間設定
@@ -573,33 +505,30 @@ export default {
             this.apiUpdateTaskTerm(this.task_deadline, this.params.viewer.task_id)
             this.params.viewer.task_deadline = null
         },
-        outputTaskAlert() {
-            if(!this.params.viewer.task_deadline) {
-                return
-            }
-            const result = this.judgeRemainingDays(this.params.viewer.task_deadline)
-            switch (true) {
-                case result === 0:
-                    return "本日期日です";
-                case result < 0:
-                    return "タスクが期日を過ぎています";
-                default:
-                    break;
-            }
-        },
+        
         
         // タスク削除
-        execDeleteTask(delete_item) {
-            this.apiDeleteTask(delete_item)
-            this.deleteSubtaskHasTask(delete_item)
+        clickTaskDelete() {
+            this.delete_options.push(
+                { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
+                { function_cd: "delete", text: "削除する",   callback: this.execDeleteTask }
+            )
+            this.delete_title = `タスク「${this.params.viewer.task_name}」を削除します。`;
+            this.delete_modal = true;
+        },
+        execDeleteTask() {
+            this.apiDeleteTask(this.params.viewer)
+            this.deleteSubtaskHasTask(this.params.viewer)
             this.execDeleteAllFile(this.params.files)
-            this.task_delete_modal = false
+            this.delete_modal = false
+            this.delete_options = []
             this.closeDetail()
             this.params.error = "タスクを削除しました"
             this.listRefresh()
         },
         closeModal() {
-            this.task_delete_modal = false
+            this.delete_options = []
+            this.delete_modal = false
         },
     }
 }

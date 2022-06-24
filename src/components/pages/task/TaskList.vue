@@ -133,7 +133,7 @@
                         <td class="options-td">
                             <v-btn
                                 text
-                                @click.stop="deleteConfirm(task)"
+                                @click.stop="clickDelete(task)"
                                 color="primary"
                             >
                                 <v-icon>mdi-trash-can-outline</v-icon>
@@ -143,20 +143,12 @@
                 </tbody>
             </table>
         </div>
-        <!-- タスク削除確認モーダル -->
-        <v-row justify="center">
-            <v-dialog
-                v-model="task_delete_modal"
-                persistent
-                max-width="600px"
-            >
-                <ConfirmDelete
-                    :closeModal="closeModal"
-                    :item="delete_item"
-                    :execDeleteTask="execDeleteTask"
-                />
-            </v-dialog>
-        </v-row>
+        <!-- 削除確認モーダル -->
+        <ConfirmDelete
+            v-if="delete_modal" 
+            :delete_title="delete_title"
+            :delete_options="delete_options"
+        />
     </div>
 </template>
 
@@ -187,8 +179,9 @@ export default {
         loading: false,
         
         // 削除
-        delete_item: {},
-        task_delete_modal: false,
+        delete_options: [],
+        delete_title: "",
+        delete_modal: false,
         
         // 絞り込み
         filter_items: [],
@@ -265,21 +258,27 @@ export default {
         },
         
         // 削除
-        deleteConfirm(task) {
-            this.task_delete_modal = true
-            this.delete_item = task
+        clickDelete(task) {
+            this.delete_options.push(
+                { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
+                { function_cd: "delete", text: "削除する",   callback: this.execDeleteTask }
+            )
+            this.delete_title = `タスク「${task.task_name}」を削除します。`;
+            this.delete_item = task;
+            this.delete_modal = true;
         },
         execDeleteTask() {
             this.apiDeleteTask(this.delete_item)
             this.deleteSubtaskHasTask(this.delete_item)
             this.deleteAllFile(this.params.files)
-            this.task_delete_modal = false
+            this.delete_modal = false
             this.closeDetail()
+            this.delete_options = []
             this.params.error = "タスクを削除しました"
             this.listRefresh()
         },
         closeModal() {
-            this.task_delete_modal = false
+            this.delete_modal = false
         },
 
     }
