@@ -26,7 +26,7 @@
                 <v-row class="ma-0">
                     <v-col>
                         <div>メールアドレス</div>
-                        <div>{{ auth_user.email }}</div>
+                        <div v-if="auth_user.currentUser.email">{{ auth_user.currentUser.email }}</div>
                         <div class="mt-2">
                             <v-btn
                                 outlined
@@ -34,19 +34,6 @@
                                 @click="clickEmailUpdate()"
                             >
                                 メールアドレスを変更
-                            </v-btn>
-                        </div>
-                    </v-col>
-                    <v-col>
-                        <div>パスワード</div>
-                        <div>********************</div>
-                        <div class="mt-2">
-                            <v-btn
-                                outlined
-                                color="primary"
-                                @click="pageMove('/auth/signout')"
-                            >
-                                サインイン画面から再設定
                             </v-btn>
                         </div>
                     </v-col>
@@ -92,9 +79,10 @@
                                 ref="form"
                                 v-model="email_valid"
                                 lazy-validation
+                                v-if="auth_user.currentUser.email"
                             >
                                 <v-text-field
-                                    v-model="auth_user.email"
+                                    v-model="auth_user.currentUser.email"
                                     :rules="emailRules"
                                     label="E-mail"
                                     outlined
@@ -166,7 +154,7 @@ export default {
         },
         async execUpdateEmail() {
             this.params.loading = true;
-            const result = await this.firebaseUpdateEmail(this.auth_user.email);
+            const result = await this.firebaseUpdateEmail(this.auth_user.currentUser.email);
             if(result) {
                 this.params.success = "メールアドレスを更新しました。";
             } else {

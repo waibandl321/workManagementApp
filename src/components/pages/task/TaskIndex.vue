@@ -17,14 +17,12 @@
                         ref="taskList"
                     />
                 </div>
-                <div>
-                    <TaskDetail
-                        :params="params"
-                        :viewer="viewer"
-                        :closeDetail="closeDetail"
-                        :listRefresh="listRefresh"
-                    />
-                </div>
+                <TaskDetail
+                    :params="params"
+                    :viewer="viewer"
+                    :closeDetail="closeDetail"
+                    :listRefresh="listRefresh"
+                />
             </div>
         </div>
     </div>

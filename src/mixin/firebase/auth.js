@@ -16,8 +16,8 @@ const provider = new GoogleAuthProvider();
 export default {
     methods: {
         firebaseGetCurrentUser() {
-            const auth = getAuth();
-            return auth.currentUser;
+            const auth = getAuth();            
+            return auth;
         },
 
         // サインアップ

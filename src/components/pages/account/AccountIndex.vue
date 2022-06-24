@@ -28,7 +28,6 @@
 import Header from '@/components/common/Header'
 import AccountRegister from '@/components/pages/account/AccountRegister.vue'
 import AccountUpdate from '@/components/pages/account/AccountUpdate.vue'
-import myMixin from './account.js'
 
 export default {
     components: {
@@ -36,7 +35,6 @@ export default {
         AccountRegister,
         AccountUpdate,
     },
-    mixins: [myMixin],
     data: () => ({
         parents: {
             user_info: {}
