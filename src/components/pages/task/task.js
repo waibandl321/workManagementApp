@@ -29,7 +29,7 @@ export default {
                 const obj = Object.entries(files)
                 let arr = []
                 obj.forEach(r => {                    
-                    if(r[1].task_id == this.viewer.task_id) {
+                    if(r[1].task_id == this.params.viewer.task_id) {
                         arr.push(r[1])
                     }
                 })
@@ -104,41 +104,41 @@ export default {
         },
         // タスク情報の更新
         async tasknameUpdate() {
-            const result = await this.apiUpdateTaskname(this.viewer.task_id, this.viewer.task_name)
+            const result = await this.apiUpdateTaskname(this.params.viewer.task_id, this.params.viewer.task_name)
             if(result) {
                 this.task_name_edit = false
                 this.params.success = "タスク名を更新しました。"
             }
         },
         async updateTaskDescription() {
-            const result = await this.apiUpdateTaskDescription(this.viewer.task_id, this.viewer.task_description);
+            const result = await this.apiUpdateTaskDescription(this.params.viewer.task_id, this.params.viewer.task_description);
             if(result) {
                 this.desc_editor = false
                 this.params.success = "タスク概要説明を更新しました。"
             }
         },
         async updateTaskStatus() {
-            const result = await this.apiUpdateTaskStatus(this.viewer.task_id, this.viewer.task_status)
+            const result = await this.apiUpdateTaskStatus(this.params.viewer.task_id, this.params.viewer.task_status)
             if(result) {
                 this.params.success = "タスクのステータスを変更しました。"
             }
         },
         async updateTaskPriority() {
-            const result = await this.apiUpdateTaskPriority(this.viewer.task_id, this.viewer.task_priority)
+            const result = await this.apiUpdateTaskPriority(this.params.viewer.task_id, this.params.viewer.task_priority)
             if(result) {
                 this.params.success = "タスクの優先度を変更しました。"
             }
         },
         async updateTaskTerm() {
             const deadline = this.convertUnixtimeFromDate(this.task_deadline)
-            if(deadline === this.viewer.task_deadline){
+            if(deadline === this.params.viewer.task_deadline){
                 this.termSetting = false
                 return
             }
 
-            const result = await this.apiUpdateTaskTerm(deadline, this.viewer.task_id)
+            const result = await this.apiUpdateTaskTerm(deadline, this.params.viewer.task_id)
             if(result) {
-                this.viewer.task_deadline = deadline
+                this.params.viewer.task_deadline = deadline
                 this.params.success = "タスク期日を変更しました"
             }
             this.task_deadline = null

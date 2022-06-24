@@ -53,13 +53,11 @@ export default {
             success: "",
 
             viewer: {},
+            items: [],
 
-            task_list: [],
             task_status_list: {},
             task_priorities: {},
             subtask_list: {},
-            status: { text: "全てのタスク", value: 1 },
-            default_sort_item: { text: "作成日順", value: 2 },
             files: [],
             detail_mode: false,
         },

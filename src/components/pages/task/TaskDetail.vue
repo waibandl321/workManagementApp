@@ -215,7 +215,7 @@
                             depressed
                             class="primary alt_submit px-4"
                             text
-                            @click="createSubtask(viewer)"
+                            @click="createSubtask(params.viewer)"
                         >新規作成
                         </v-btn>
                     </div>
@@ -447,7 +447,7 @@
                 >
                     <ConfirmDelete
                         :closeModal="closeModal"
-                        :item="viewer"
+                        :item="params.viewer"
                         :execDeleteTask="execDeleteTask"
                     />
                 </v-dialog>
