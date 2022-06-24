@@ -200,7 +200,7 @@ export default {
     }),
 
     created() {
-        this.top_readTasklist()
+        this.readTaskList()
     },
 
     watch: {
@@ -216,16 +216,6 @@ export default {
     },
 
     methods: {
-        // リストの初期読み込み
-        async top_readTasklist() {
-            let data = await this.apiGetTaskList()
-            data = Object.keys(data)
-            .map( (key) => {return data[key]})
-            .filter( v => v.task_status !== 5 )
-
-            this.task_list = data
-        },
-
         // リストの絞り込み
         filterList() {
             let result = this.convertObject(this.task_list)
@@ -273,29 +263,7 @@ export default {
             result = this.convertArray(result);
             this.filter_items = result
         },
-
-        // 優先度・ステータス文字列変換
-        extractTaskStatus(status) {
-            let result = this.params.task_status_list
-            result = result.filter(v => v.key === status)
-            return result[0].text
-        },
-        extractTaskPriority(priority) {
-            let result = this.params.task_priorities
-            result = result.filter(v => v.key === priority)
-            return result[0].text
-        },
-        // 作成
-        createTask() {
-            if(!this.composing && this.create_task_name) {
-                if(this.apiTaskCreate(this.create_task_name)) {
-                    this.create_task_name = ""
-                    this.composing = false
-                    this.params.success = "タスクを新規作成しました"
-                    this.listRefresh()
-                }
-            }
-        },
+        
         // 削除
         deleteConfirm(task) {
             this.task_delete_modal = true

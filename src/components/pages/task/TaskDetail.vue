@@ -24,7 +24,7 @@
                     class="taskname_edit"
                 >
                     <input
-                        v-model="viewer.task_name"
+                        v-model="params.viewer.task_name"
                         type="text"
                         class="taskname_edit_input"
                     >
@@ -40,7 +40,7 @@
                     v-else
                     class="d-flex align-center"
                 >
-                    {{ viewer.task_name ? viewer.task_name : '' }}
+                    {{ params.viewer.task_name ? params.viewer.task_name : '' }}
                     <v-btn
                         icon
                         dark
@@ -65,7 +65,7 @@
             />
             <!-- 期限切れアラート -->
             <v-alert
-                v-if="judgeRemainingDays(viewer.task_deadline) <= 0"
+                v-if="judgeRemainingDays(params.viewer.task_deadline) <= 0"
                 type="error"
                 color="red darken-3"
             >
@@ -83,7 +83,7 @@
                         outlined
                         color="primary"
                         dense
-                        v-model="viewer.task_status"
+                        v-model="params.viewer.task_status"
                         @change="updateTaskStatus()"
                     ></v-select>
                 </div>
@@ -94,7 +94,7 @@
                         :items="params.task_priorities"
                         item-text="text"
                         item-value="key"
-                        v-model="viewer.task_priority"
+                        v-model="params.viewer.task_priority"
                         outlined
                         color="primary"
                         dense
@@ -116,7 +116,7 @@
                     >
                         <v-icon>mdi-calendar-check-outline</v-icon>
                     </v-btn>
-                    <span class="ml-2" style="color: #C62828; font-size: 14px;">{{ this.convertDatetimeFromUnixtime(viewer.task_deadline, "yyyy-mm-dd") }}</span>
+                    <span class="ml-2" style="color: #C62828; font-size: 14px;">{{ this.convertDatetimeFromUnixtime(params.viewer.task_deadline, "yyyy-mm-dd") }}</span>
                     <!-- date picker -->
                     <div class="date_picker" v-if="termSetting">
                         <v-text-field
@@ -159,13 +159,13 @@
                 </div>
                 <v-spacer />
                 <div class="fs-sm">
-                    タスク作成日: {{ convertDatetimeFromUnixtime(viewer.created, "yyyy-mm-dd") }}
+                    タスク作成日: {{ convertDatetimeFromUnixtime(params.viewer.created, "yyyy-mm-dd") }}
                 </div>
                 <div class="ml-4 fs-sm">
-                    タスク実施期間：{{ convertTaskPeriod(viewer.created, viewer.task_deadline) }}
+                    タスク実施期間：{{ convertTaskPeriod(params.viewer.created, params.viewer.task_deadline) }}
                 </div>
                 <div class="ml-4 fs-sm">
-                    期日までの残り日数：{{ convertRemainingDays(viewer.task_deadline) }}
+                    期日までの残り日数：{{ convertRemainingDays(params.viewer.task_deadline) }}
                 </div>
             </div>
             <v-divider />
@@ -253,13 +253,13 @@
                 >
                     <quillEditor
                         ref="myQuillEditor"
-                        v-model="viewer.task_description"
+                        v-model="params.viewer.task_description"
                         :options="editorOption"
                     />
                 </div>
                 <div class="editor_body" v-else>
-                    <div v-if="viewer.task_description">
-                        <div v-html="viewer.task_description"></div>
+                    <div v-if="params.viewer.task_description">
+                        <div v-html="params.viewer.task_description"></div>
                     </div>
                     <div v-else>
                         タスクの詳細がありません
@@ -535,7 +535,7 @@ export default {
                 
                 uploadPromise
                 .then(() => {
-                    return this.storageUploadFunctionFile(files[0], this.viewer.task_id)
+                    return this.storageUploadFunctionFile(files[0], this.params.viewer.task_id)
                 })
                 .then((res) => {
                     return this.firebaseSaveFile(res)
@@ -565,78 +565,19 @@ export default {
             this.file_loading = true
             this.deleteAllFile(files)
         },
-
-        // タスク情報の更新
-        async tasknameUpdate() {
-            const result = await this.apiUpdateTaskname(this.viewer.task_id, this.viewer.task_name)
-            if(result) {
-                this.task_name_edit = false
-                this.params.success = "タスク名を更新しました。"
-            }
-        },
-        async updateTaskDescription() {
-            const result = await this.apiUpdateTaskDescription(this.viewer.task_id, this.viewer.task_description);
-            if(result) {
-                this.desc_editor = false
-                this.params.success = "タスク概要説明を更新しました。"
-            }
-        },
-        async updateTaskStatus() {
-            const result = await this.apiUpdateTaskStatus(this.viewer.task_id, this.viewer.task_status)
-            if(result) {
-                this.params.success = "タスクのステータスを変更しました。"
-            }
-        },
-        async updateTaskPriority() {
-            const result = await this.apiUpdateTaskPriority(this.viewer.task_id, this.viewer.task_priority)
-            if(result) {
-                this.params.success = "タスクの優先度を変更しました。"
-            }
-        },
-        async updateTaskTerm() {
-            const deadline = this.convertUnixtimeFromDate(this.task_deadline)
-            if(deadline === this.viewer.task_deadline){
-                this.termSetting = false
-                return
-            }
-
-            const result = await this.apiUpdateTaskTerm(deadline, this.viewer.task_id)
-            if(result) {
-                this.viewer.task_deadline = deadline
-                this.params.success = "タスク期日を変更しました"
-            }
-            this.task_deadline = null
-            this.termSetting = false
-            
-        },
-        async createSubtask(task) {
-            const create = await this.apiSubtaskCreate(this.subtask_name, task.task_id)
-            if(create) {
-                this.params.success = "サブタスクを新規作成しました！"
-                this.subtask_name = ""
-            }
-            this.getSubtaskList(task)
-        },
-        async deleteSubtask(subtask) {
-            const result = await this.apiDeleteSubtask(subtask)
-            if(result) {
-                this.params.error = "サブタスクを削除しました。"
-                this.getSubtaskList(this.viewer)
-            }
-        },
         
         // タスク期間設定
         deleteTaskTerm() {
             this.task_deadline = null
             this.termSetting = false
-            this.apiUpdateTaskTerm(this.task_deadline, this.viewer.task_id)
-            this.viewer.task_deadline = null
+            this.apiUpdateTaskTerm(this.task_deadline, this.params.viewer.task_id)
+            this.params.viewer.task_deadline = null
         },
         outputTaskAlert() {
-            if(!this.viewer.task_deadline) {
+            if(!this.params.viewer.task_deadline) {
                 return
             }
-            const result = this.judgeRemainingDays(this.viewer.task_deadline)
+            const result = this.judgeRemainingDays(this.params.viewer.task_deadline)
             switch (true) {
                 case result === 0:
                     return "本日期日です";

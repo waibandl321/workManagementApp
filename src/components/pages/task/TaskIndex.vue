@@ -19,7 +19,6 @@
                 </div>
                 <TaskDetail
                     :params="params"
-                    :viewer="viewer"
                     :closeDetail="closeDetail"
                     :listRefresh="listRefresh"
                 />
@@ -47,11 +46,13 @@ export default {
         parents: {
             user_info: {}
         },
-        viewer: {},
+        
         params: {
             loading: false,
             error: "",
             success: "",
+
+            viewer: {},
 
             task_list: [],
             task_status_list: {},
@@ -76,7 +77,7 @@ export default {
             this.params.error = ""
             this.params.detail_mode = true
             this.getSubtaskList(task)
-            this.viewer = task
+            this.params.viewer = task
             this.getFileList()
         },
 
@@ -89,7 +90,7 @@ export default {
         },
 
         listRefresh() {
-            this.$refs.taskList.top_readTasklist()
+            this.$refs.taskList.readTaskList()
         }
     }
 }
