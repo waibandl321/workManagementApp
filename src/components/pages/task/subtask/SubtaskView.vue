@@ -54,8 +54,13 @@ export default {
         dialog: true,
     }),
     methods: {
+        // 編集遷移込み
         clickOption(option) {
-            option.callback()
+            let edit_flag = null;
+            if(option.function_cd === 'edit') {
+                edit_flag = 'subtask_edit'
+            }
+            option.callback(edit_flag)
         }
     }
 }

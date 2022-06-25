@@ -193,26 +193,29 @@
                     </v-btn> -->
                 </v-card-actions>
                 <v-divider />
-                <table class="basic-list underlayer-list">
-                    <tbody>
-                    <tr
+                <div class="mt-4">
+                    <v-card
                         v-for="subtask in params.subtask_list"
                         :key="subtask.id"
                         @click="clickSubtaskRecord(subtask)"
+                        class="mt-2 ml-10 subtask-card"
+                        hover
                     >
-                        <td class="py-2">{{ subtask.subtask_name ? subtask.subtask_name : '' }}</td>
-                        <td class="py-2">{{ subtask.subtask_status.value ? subtask.subtask_status.value : '' }}</td>
-                        <td class="options-td">
-                            <v-btn
-                                text
-                                @click.stop="deleteSubtask(subtask)"
-                            >
-                                <v-icon>mdi-trash-can-outline</v-icon>
-                            </v-btn>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                        <v-card-actions class="justify-space-between px-4">
+                            <span>{{ subtask.subtask_name ? subtask.subtask_name : '' }}</span>
+                            <span>
+                                <v-btn
+                                    text
+                                    @click.stop="deleteSubtask(subtask)"
+                                    fab
+                                    small
+                                >
+                                    <v-icon>mdi-trash-can-outline</v-icon>
+                                </v-btn>
+                            </span>
+                        </v-card-actions>
+                    </v-card>
+                </div>
                 <!-- subtask area -->
                 <div class="task-add-form mt-2" v-if="subtask_input">
                     <div class="relative">
@@ -530,6 +533,21 @@ export default {
         },
 
         // サブタスク
+        async createSubtask(task) {
+            const result = await this.apiSubtaskCreate(this.subtask_name, task.task_id)
+            if(result) {
+                this.params.success = "サブタスクを新規作成しました！"
+                this.subtask_name = ""
+            }
+            this.getSubtaskList(task)
+        },
+        async deleteSubtask(subtask) {
+            const result = await this.apiDeleteSubtask(subtask)
+            if(result) {
+                this.params.error = "サブタスクを削除しました。"
+                this.getSubtaskList(this.viewer)
+            }
+        },
         clickSubtaskEdit(is_new) {
             this.subtask_option.push(
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeSubtask },
@@ -546,11 +564,11 @@ export default {
             this.subtask_viewer = subtask;
             this.subtask_option.push(
                 { function_cd: "cancel", text: "閉じる", callback: this.closeSubtask },
-                { function_cd: "edit", text: "編集", callback: this.changeMode },
+                { function_cd: "edit", text: "編集", callback: this.changeSubtaskMode },
             )
             this.subtask_mode = "subtask_detail";
         },
-        changeMode(mode) {
+        changeSubtaskMode(mode) {
             this.subtask_mode = mode;
         },
         closeSubtask() {
@@ -607,5 +625,21 @@ export default {
     position: absolute;
     bottom: 40%;
     right: 0;
+}
+.subtask-card {
+    position: relative;
+    z-index: 1;
+}
+.subtask-card::after {
+    z-index: 2;
+    content: "";
+    position: absolute;
+    width: 32px;
+    height: 2px;
+    background: #333;
+}
+.subtask-card::after {
+    left: -40px;
+    top: 50%;
 }
 </style>

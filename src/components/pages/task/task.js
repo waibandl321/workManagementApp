@@ -145,21 +145,6 @@ export default {
             this.termSetting = false
             
         },
-        async createSubtask(task) {
-            const create = await this.apiSubtaskCreate(this.subtask_name, task.task_id)
-            if(create) {
-                this.params.success = "サブタスクを新規作成しました！"
-                this.subtask_name = ""
-            }
-            this.getSubtaskList(task)
-        },
-        async deleteSubtask(subtask) {
-            const result = await this.apiDeleteSubtask(subtask)
-            if(result) {
-                this.params.error = "サブタスクを削除しました。"
-                this.getSubtaskList(this.viewer)
-            }
-        },
         // 優先度・ステータス文字列変換
         extractTaskStatus(status) {
             let result = this.params.task_status_list
