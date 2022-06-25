@@ -5,38 +5,24 @@ export default {
     methods: {
         // タスク読み込み
         async readTaskList() {
-            let data = await this.apiGetTaskList()
-            data = Object.keys(data)
-            .map( (key) => {return data[key]})
+            let result = await this.apiGetTaskList()
+            result = Object.keys(result)
+            .map( (key) => {return result[key]})
             .filter( v => v.task_status !== 5 )
 
-            this.task_list = data
+            return result;
         },
-        // タスク作成
-        createTask() {
-            if(!this.composing && this.create_task_name) {
-                if(this.apiTaskCreate(this.create_task_name)) {
-                    this.create_task_name = ""
-                    this.composing = false
-                    this.params.success = "タスクを新規作成しました"
-                    this.listRefresh()
-                }
-            }
-        },
+        
+        // ファイル一覧取得
         getFileList() {
-            let files = this.firebaseReadFile()
-            if(files) {
-                const obj = Object.entries(files)
-                let arr = []
-                obj.forEach(r => {                    
-                    if(r[1].task_id == this.params.viewer.task_id) {
-                        arr.push(r[1])
-                    }
-                })
-                this.params.files = arr
+            let result = this.firebaseReadFile()
+            if(result) {
+                result = Object.entries(result)
+                result = result.filter((v) => v[1].task_id == this.params.viewer.task_id)
             } else {
-                this.params.files = []
+                result = []
             }
+            return result;
         },
         // 戻り値：タスク期日 - タスク作成日
         convertTaskPeriod(begin, end) {
@@ -76,15 +62,16 @@ export default {
             }
         },
         // サブタスク一覧
-        async getSubtaskList(task) {
-            if(task.task_id) {
+        async getSubtaskList(task_viewer) {
+            if(task_viewer.task_id) {
                 let result = await this.apiGetSubtaskList()
                 result = Object.keys(result)
                         .map((key) => {
                             return result[key];
                         })
-                        .filter(v => v.task_id === task.task_id)
-                this.params.subtask_list = result 
+                        .filter(v => v.task_id === task_viewer.task_id)
+                
+                return result;
             }
         },
         
@@ -96,8 +83,8 @@ export default {
             }
         },
         // サブタスクの削除
-        deleteSubtaskHasTask(item) {
-            this.getSubtaskList(item)
+        deleteSubtaskHasTask(task_viewer) {
+            this.params.subtask_list = this.getSubtaskList(task_viewer)
             if(this.params.subtask_list.length > 0) {
                 this.apiDeleteSubtaskHasTask(this.params.subtask_list)
             }

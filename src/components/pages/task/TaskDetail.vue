@@ -325,16 +325,16 @@
                     <table class="file-table">
                         <tr v-for="(file, i) in params.files" :key="i">
                             <td>
-                                <img :src="outputDownloadPath(file.name)" width="40">
+                                <img :src="outputDownloadPath(file[1].name)" width="40">
                             </td>
-                            <td>{{ file.name }}</td>
-                            <td>{{ file.size }}</td>
-                            <td>{{ file.contentType }}</td>
+                            <td>{{ file[1].name }}</td>
+                            <td>{{ file[1].size }}</td>
+                            <td>{{ file[1].contentType }}</td>
                             <td class="operation-td">
                                 <v-btn
                                     link
                                     text
-                                    :href="file.download_url"
+                                    :href="file[1].download_url"
                                     target="_blank" rel="noopener noreferrer"
                                     >
                                         <v-icon>mdi-open-in-new</v-icon>
@@ -467,7 +467,7 @@ export default {
                 })
                 .then(() => {
                     this.file_loading = false
-                    this.getFileList()
+                    this.params.files = this.getFileList()
                 })
                 .catch((error) => {
                     console.log(error);
@@ -512,13 +512,13 @@ export default {
                 this.subtask_mode = "task";
                 this.params.subtask_editor = {}
             }
-            this.getSubtaskList(this.params.viewer)
+            this.params.subtask_list = this.getSubtaskList(this.params.viewer)
         },
         async deleteSubtask(subtask) {
             const result = await this.apiDeleteSubtask(subtask)
             if(result) {
                 this.params.error = "サブタスクを削除しました。"
-                this.getSubtaskList(this.params.viewer)
+                this.params.subtask_list = this.getSubtaskList(this.params.viewer)
             }
         },
         clickSubtaskNew() {

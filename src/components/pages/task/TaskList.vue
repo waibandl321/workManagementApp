@@ -10,7 +10,7 @@
                             dense
                             color="primary"
                             v-model.trim="filter_text"
-                            @change="filterList()"
+                            @input="filterList()"
                         ></v-text-field>
                     </v-col>
                     <v-col class="filter-box">
@@ -46,16 +46,16 @@
                 <v-btn
                     color="primary"
                     text
-                    @click="task_input = !task_input"
+                    @click="task_create = !task_create"
                 >
                     <v-icon>mdi-plus</v-icon>
                     タスクを追加
                 </v-btn>
             </div>
-            <div class="mt-2 relative" v-show="task_input">
+            <div class="mt-2 relative" v-show="task_create">
                 <v-text-field
                     label="タスク名を入力"
-                    v-model="create_task_name"
+                    v-model="new_task_name"
                     @compositionstart="composing = true"
                     @compositionend="composing = false"
                     @keydown.prevent.enter.exact="createTask()"
@@ -68,12 +68,6 @@
                     @click="createTask()"
                 >新規作成
                 </v-btn>
-            </div>
-            <div v-if="loading">
-                <v-progress-linear
-                    indeterminate
-                    color="primary"
-                ></v-progress-linear>
             </div>
         </div>
         
@@ -164,19 +158,15 @@ export default {
     },
     mixins: [myMixin],
     props: {
-        recordClick: Function,
         listRefresh: Function,
         closeDetail: Function,
         params: Object,
     },
     data: () => ({
-        task_input: false,
-        task_list: {},
-        
         // 作成
+        task_create: false,
         composing: false,
-        create_task_name: "",
-        loading: false,
+        new_task_name: "",
         
         // 削除
         delete_options: [],
@@ -188,30 +178,33 @@ export default {
         filter_text: "",
         filter_status: null,
         filter_priority: null,
+
+        // ソート
         sort_by_deadline: false,
         sort_by_created: true,
     }),
 
     created() {
-        this.readTaskList()
-    },
-
-    watch: {
-        // タスク一覧データ変更監視
-        task_list: {
-            handler: function() {
-                this.filterList()
-                this.sortByCreated()
-            },
-            deep : true,
-            immediate: true
-        }
+        this.initItems()
     },
 
     methods: {
+        async initItems() {
+            this.params.items = await this.readTaskList()
+            this.filterList()
+        },
+        // 一覧クリック
+        async recordClick(task) {
+            this.params.success = ""
+            this.params.error = ""
+            this.params.subtask_list = await this.getSubtaskList(task)
+            this.params.viewer = task
+            this.params.files = this.getFileList()
+            this.params.detail_mode = true
+        },
         // リストの絞り込み
         filterList() {
-            let result = this.convertObject(this.task_list)
+            let result = this.convertObject(this.params.items)
             if(this.filter_text) {
                 result = result.filter(x => x[1].task_name.includes(this.filter_text))
             }
@@ -228,7 +221,7 @@ export default {
         },
         sortByDeadline() {
             this.sort_by_deadline = !this.sort_by_deadline
-            let result = this.convertObject(this.task_list)
+            let result = this.convertObject(this.params.items)
             if(this.sort_by_deadline) {
                 result = result.sort((a, b) => {
                     return (a[1].task_deadline > b[1].task_deadline) ? 1 : -1;
@@ -243,7 +236,7 @@ export default {
         },
         sortByCreated() {
             this.sort_by_created = !this.sort_by_created
-            let result = this.convertObject(this.task_list)
+            let result = this.convertObject(this.params.items)
             if(this.sort_by_created) {
                 result = result.sort((a, b) => {
                     return (a[1].created > b[1].created) ? 1 : -1;
@@ -255,6 +248,18 @@ export default {
             }
             result = this.convertArray(result);
             this.filter_items = result
+        },
+
+        // タスク作成
+        createTask() {
+            if(!this.composing && this.new_task_name) {
+                if(this.apiTaskCreate(this.new_task_name)) {
+                    this.new_task_name = ""
+                    this.composing = false
+                    this.params.success = "タスクを新規作成しました"
+                    this.listRefresh()
+                }
+            }
         },
         
         // 削除

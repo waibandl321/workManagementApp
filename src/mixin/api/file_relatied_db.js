@@ -26,11 +26,11 @@ export default {
         firebaseReadFile() {
             const db = getDatabase()
             const r = ref( db, '/files/' + this.storeGetFirebaseUid() )
-            let d = ""
+            let result = ""
             onValue(r, (snapshot) => {
-                d = snapshot.val()
+                result = snapshot.val()
             })
-            return d
+            return result
         },
         
         // データベースからファイルを削除
@@ -39,7 +39,7 @@ export default {
             const userId = this.storeGetFirebaseUid()
             remove(ref(db, '/files/' + userId + '/' + file.db_id))
             .then(() => {
-                this.getFileList()
+                this.params.files = this.getFileList()
                 this.delete_file_modal = false
                 this.file_loading = false
                 this.file_delete_done = true

@@ -11,7 +11,6 @@
                     />
                     <TaskList
                         :params="params"
-                        :recordClick="recordClick"
                         :listRefresh="listRefresh"
                         :closeDetail="closeDetail"
                         ref="taskList"
@@ -65,22 +64,15 @@ export default {
         },
     }),
     created() {
-        this.parents.user_info = this.storeGetAccountInfo()
-        this.params.task_status_list = this.getTaskStatus()
-        this.params.task_priorities = this.getTaskPriorities()
-        this.getFileList()
+        this.init()
     },
     methods: {
-        // 一覧レコードクリック
-        recordClick(task) {
-            this.params.success = ""
-            this.params.error = ""
-            this.params.detail_mode = true
-            this.getSubtaskList(task)
-            this.params.viewer = task
-            this.getFileList()
+        async init() {
+            this.parents.user_info = this.storeGetAccountInfo()
+            this.params.task_status_list = this.getTaskStatus()
+            this.params.task_priorities = this.getTaskPriorities()
+            this.params.files = this.getFileList()
         },
-
         // 詳細閉じる
         closeDetail() {
             this.listRefresh()
@@ -90,7 +82,7 @@ export default {
         },
 
         listRefresh() {
-            this.$refs.taskList.readTaskList()
+            this.$refs.taskList.initItems()
         }
     }
 }
