@@ -26,6 +26,7 @@ Vue.mixin(taskMixin)
 Vue.mixin(storageMixin)
 Vue.mixin(fileRelatedDatabaseMixin)
 
+
 // Firebase
 import firebaseSettings from "@/config/settings/firebase.js"
 import { initializeApp } from 'firebase/app';

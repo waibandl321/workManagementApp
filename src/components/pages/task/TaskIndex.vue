@@ -54,6 +54,10 @@ export default {
 
             viewer: {},
             items: [],
+            subtask: {
+                subtask_name: "",
+                subtask_description: "",
+            },
 
             task_status_list: {},
             task_priorities: {},

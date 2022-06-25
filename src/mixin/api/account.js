@@ -49,7 +49,7 @@ export default {
         // アカウント更新
         apiAccountUpdate(account_info) {
             const db = getDatabase()
-            const user = this.getAuthUser()
+            const auth = getAuth();
             const account = {
                 first_name: account_info.first_name,
                 last_name: account_info.last_name,
@@ -58,7 +58,7 @@ export default {
             }
 
             const updates = {};
-            updates['/users/' + user.uid] = account;
+            updates['/users/' + auth.currentUser.uid] = account;
             
             update(ref(db), updates);
         },

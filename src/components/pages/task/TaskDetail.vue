@@ -177,11 +177,20 @@
                         <v-btn
                         text
                         color="primary"
-                        @click="subtask_input = !subtask_input"
+                        @click="clickSubtaskEdit(true)"
                     >
                         <v-icon >mdi-plus</v-icon>
                         サブタスクを追加
                     </v-btn>
+                    <!-- <v-spacer />
+                        <v-btn
+                        text
+                        color="primary"
+                        @click="subtask_input = !subtask_input"
+                    >
+                        <v-icon >mdi-plus</v-icon>
+                        サブタスクを追加
+                    </v-btn> -->
                 </v-card-actions>
                 <v-divider />
                 <table class="basic-list underlayer-list">
@@ -189,6 +198,7 @@
                     <tr
                         v-for="subtask in params.subtask_list"
                         :key="subtask.id"
+                        @click="clickSubtaskRecord(subtask)"
                     >
                         <td class="py-2">{{ subtask.subtask_name ? subtask.subtask_name : '' }}</td>
                         <td class="py-2">{{ subtask.subtask_status.value ? subtask.subtask_status.value : '' }}</td>
@@ -371,6 +381,19 @@
                 :delete_title="delete_title"
                 :delete_options="delete_options"
             />
+
+            <SubtaskView 
+                :params="params"
+                :subtask_option="subtask_option"
+                :subtask_viewer="subtask_viewer"
+                v-if="subtask_mode == 'subtask_detail'"
+            />
+
+            <SubtaskEdit 
+                :params="params"
+                :subtask_option="subtask_option"
+                v-if="subtask_mode == 'subtask_edit'"
+            />
         </div>
     </v-dialog>
 </template>
@@ -378,6 +401,9 @@
 <script>
 import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
 import MessageViewer from '@/components/common/MessageViewer.vue'
+
+import SubtaskEdit from "./subtask/SubtaskEdit.vue"
+import SubtaskView from "./subtask/SubtaskView.vue"
 // エディタ
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
@@ -391,7 +417,9 @@ export default {
     components: {
         ConfirmDelete,
         MessageViewer,
-        quillEditor
+        quillEditor,
+        SubtaskEdit,
+        SubtaskView,
     },
     props: {
         closeDetail: Function,
@@ -400,6 +428,9 @@ export default {
         viewer: Object,
     },
     data: () => ({
+        subtask_mode: "task",
+        subtask_option: [],
+        subtask_viewer: {},
         //タスク情報
         status: null,
         priority: null,
@@ -497,7 +528,39 @@ export default {
             this.deleteAllFile(this.params.files)
             this.delete_options = []
         },
-        
+
+        // サブタスク
+        clickSubtaskEdit(is_new) {
+            this.subtask_option.push(
+                { function_cd: "cancel", text: "キャンセル", callback: this.closeSubtask },
+                { function_cd: "save", text: "保存", callback: this.saveSabtask },
+            )
+            if(is_new) {
+                console.log("新規作成");
+            } else {
+                console.log("編集");
+            }
+            this.subtask_mode = "subtask_edit";
+        },
+        clickSubtaskRecord(subtask) {
+            this.subtask_viewer = subtask;
+            this.subtask_option.push(
+                { function_cd: "cancel", text: "閉じる", callback: this.closeSubtask },
+                { function_cd: "edit", text: "編集", callback: this.changeMode },
+            )
+            this.subtask_mode = "subtask_detail";
+        },
+        changeMode(mode) {
+            this.subtask_mode = mode;
+        },
+        closeSubtask() {
+            this.subtask_option = []
+            this.subtask_mode = "task";
+        },
+        saveSabtask() {
+            this.subtask_option = []
+            this.subtask_mode = "task";
+        },
         // タスク期間設定
         deleteTaskTerm() {
             this.task_deadline = null
