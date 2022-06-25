@@ -22,22 +22,7 @@
                             v-model="params.account_info.first_name"
                         ></v-text-field>
                     </v-col>
-                </v-row>
-                <v-row class="ma-0">
-                    <v-col>
-                        <div>メールアドレス</div>
-                        <div v-if="auth_user.currentUser.email">{{ auth_user.currentUser.email }}</div>
-                        <div class="mt-2">
-                            <v-btn
-                                outlined
-                                color="primary"
-                                @click="clickEmailUpdate()"
-                            >
-                                メールアドレスを変更
-                            </v-btn>
-                        </div>
-                    </v-col>
-                </v-row>
+                </v-row>                
             </v-card-text>
             <v-divider />
             <v-card-actions>
@@ -55,63 +40,6 @@
                     閉じる
                 </v-btn>
             </v-card-actions>
-
-
-            <!-- email update modal -->
-            <template>
-                <v-dialog
-                    v-model="email_update_dialog"
-                    width="500"
-                >
-                    <v-card>
-                        <v-card-title class="text-h5 grey lighten-2">
-                            メールアドレス変更
-                        </v-card-title>
-
-                        <div class="pa-4">
-                            <div class="py-4" v-if="params.loading">
-                                <v-progress-linear
-                                    indeterminate
-                                    color="primary"
-                                ></v-progress-linear>
-                            </div>
-                            <v-form
-                                ref="form"
-                                v-model="email_valid"
-                                lazy-validation
-                                v-if="auth_user.currentUser.email"
-                            >
-                                <v-text-field
-                                    v-model="auth_user.currentUser.email"
-                                    :rules="emailRules"
-                                    label="E-mail"
-                                    outlined
-                                    dense
-                                    required
-                                ></v-text-field>
-                            </v-form>
-                        </div>
-                        <v-divider></v-divider>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                @click="email_update_dialog = false"
-                                depressed
-                                outlined
-                            >
-                                キャンセル
-                            </v-btn>
-                            <v-btn
-                                color="primary"
-                                @click="execUpdateEmail()"
-                                depressed
-                            >
-                                更新
-                            </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-            </template><!-- / email update modal -->
         </v-card>
     </div>
 </template>
@@ -128,41 +56,17 @@ export default {
         params: Object
     },
     data: () => ({
-        auth_user: {},
-        email_update_dialog: false,
-
-        email_valid: true,
-        emailRules: [
-            v => !!v || 'メールアドレスは入力必須です',
-            v => /.+@.+\..+/.test(v) || 'メールアドレスの形式で入力してください',
-        ],
+        
+        
     }),
     created() {
-        this.auth_user = this.firebaseGetCurrentUser();
+        
     },
     methods: {
         accountUpdate() {
             this.apiAccountUpdate(this.params.account_info);
             this.storeUpdateAccountInfo(this.copyJson(this.params.account_info));
             this.params.success = "アカウント情報を更新しました。「閉じる」ボタンからアプリケーションにお戻りください。";
-        },
-        clickEmailUpdate() {
-            this.email_update_dialog = true;
-        },
-        clickPasswordUpdate() {
-            this.password_update_dialog = true;
-        },
-        async execUpdateEmail() {
-            this.params.loading = true;
-            const result = await this.firebaseUpdateEmail(this.auth_user.currentUser.email);
-            if(result) {
-                this.params.success = "メールアドレスを更新しました。";
-            } else {
-                this.params.error = "メールアドレスの更新に失敗しました";
-                return;
-            }
-            this.email_update_dialog = false;
-            this.params.loading = false;
         },
     }
 }
