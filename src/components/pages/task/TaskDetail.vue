@@ -273,27 +273,6 @@
                     </v-btn>
                 </v-card-actions>
                 <v-divider />
-                <div>
-                    <v-alert
-                        v-model="file_upload_done"
-                        close-text="Close Alert"
-                        color="success"
-                        text
-                        dense
-                        dismissible
-                    >
-                        ファイルをアップロードしました。
-                    </v-alert>
-                    <v-alert
-                        dense
-                        outlined
-                        dismissible
-                        type="error"
-                        v-model="file_delete_done"
-                    >
-                        ファイルを削除しました。
-                    </v-alert>
-                </div>
                 
                 <div class="pt-4">
                     <div v-if="!params.files.length > 0">添付ファイルはありません。</div>
@@ -340,7 +319,7 @@
                                         <v-icon>mdi-open-in-new</v-icon>
                                 </v-btn>
                                 <v-btn
-                                    @click="clickSingleDelete(file)"
+                                    @click="clickFileDeleteSingle(file[1])"
                                     text
                                     class="ml-2"
                                 >
@@ -426,8 +405,6 @@ export default {
         // ファイル
         delete_all_file_modal: false,
         file_loading: false,
-        file_upload_done: false,
-        file_delete_done: false,
         delete_file: {},
 
         //サブタスク
@@ -446,7 +423,7 @@ export default {
     },
 
     methods: {
-        // ファイル
+        // ファイルアップロード
         async onFileChange(e) {
             this.file_loading = true
             this.file_select = false
@@ -468,39 +445,68 @@ export default {
                 .then(() => {
                     this.file_loading = false
                     this.params.files = this.getFileList()
+                    this.params.success = "ファイルをアップロードしました。";
                 })
                 .catch((error) => {
+                    this.params.error = "ファイルアップロードに失敗しました。";
                     console.log(error);
                 })
             }
         },
-        clickSingleDelete(file) {
+        // 単ーファイル削除
+        clickFileDeleteSingle(file) {
             this.delete_title = `ファイル「${file.name}」を削除します。`;
             this.delete_options.push(
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
                 { function_cd: "delete", text: "削除する",   callback: this.execDeleteFile }
             )
-            this.delete_file = file
-            this.delete_modal = true
+            this.delete_file = file;
+            this.delete_modal = true;
         },
-        execDeleteFile() {
-            this.file_loading = true
-            this.storageDeleteFile(this.delete_file)
+        // 物理削除
+        async execDeleteFile() {
+            this.file_loading = true;
+            const storage_result = await this.storageDeleteFile(this.delete_file)
+            if(storage_result) {
+                await this.firebaseDeleteFile(this.delete_file)
+                this.params.success = `ファイル${this.delete_file.name}を削除しました。`
+            } else {
+                this.params.success = `ファイル${this.delete_file.name}の削除に失敗しました。`
+            }
+            this.params.files = this.getFileList()
+            this.delete_file = {}
             this.delete_options = []
+            this.delete_modal = false;
+            this.file_loading = false;
         },
+        // 全てのファイルを削除
         clickAllFile() {
             this.delete_title = `このタスクにアップされている全てのファイルを削除します`;
             this.delete_options.push(
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
                 { function_cd: "delete", text: "削除する",   callback: this.execDeleteAllFile }
             )
-            this.delete_all_file_modal = true
+            this.delete_modal = true;
         },
-        execDeleteAllFile() {
-            this.delete_all_file_modal = false
-            this.file_loading = true
-            this.deleteAllFile(this.params.files)
-            this.delete_options = []
+        // 物理削除（全てのファイル）
+        async execDeleteAllFile() {
+            this.file_loading = true;
+            try {
+                for(const file of this.params.files) {
+                    const result = await this.storageDeleteFile(file)
+                    if(result) {
+                        await this.firebaseDeleteFile(this.delete_file)
+                    }
+                }
+                this.params.files = this.getFileList()
+                this.params.success = "全てのファイルを削除しました。";
+            } catch (error) {
+                console.log(error);
+                this.params.error = "ファイル削除中にエラーが発生しました。時間をおいてもう一度やり直してください。"
+            }
+            this.file_loading = false;
+            this.delete_options = [];
+            this.delete_modal = false;
         },
 
         // サブタスク

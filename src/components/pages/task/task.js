@@ -55,12 +55,6 @@ export default {
                   _end = new Date(this.convertDatetimeFromUnixtime(end, "yyyy-mm-dd"));
              return (_end - today) / 86400000;
         },
-        // 全ての添付ファイルを削除
-        deleteAllFile(files) {
-            for(const file of files) {
-                this.storageDeleteFile(file)
-            }
-        },
         // サブタスク一覧
         async getSubtaskList(task_viewer) {
             if(task_viewer.task_id) {

@@ -34,18 +34,16 @@ export default {
         },
         
         // データベースからファイルを削除
-        firebaseDeleteFile(file) {
+        async firebaseDeleteFile(file) {
             const db = getDatabase();
             const userId = this.storeGetFirebaseUid()
-            remove(ref(db, '/files/' + userId + '/' + file.db_id))
+            return await remove(ref(db, '/files/' + userId + '/' + file.db_id))
             .then(() => {
-                this.params.files = this.getFileList()
-                this.delete_file_modal = false
-                this.file_loading = false
-                this.file_delete_done = true
+                return true;
             })
             .catch((error) => {
                 console.log(error);
+                return false;
             });
         },
     }

@@ -77,16 +77,17 @@ export default {
         },
 
         // 削除
-        storageDeleteFile(file) {
+        async storageDeleteFile(file) {
             const desertRef = ref( getStorage(), this.storeGetFirebaseUid() + '/' + file.name );
-            deleteObject(desertRef)
+            return await deleteObject(desertRef)
             .then(() => {
-                this.firebaseDeleteFile(file)
+                return true;
             })
             .catch((error) => {
                 console.log(error);
+                return false;
             });
-            return true
+            
         },
         async storageDeleteShareFile(file) {
             const desertRef = ref( getStorage(), this.storeGetFirebaseUid() + '/' + file.name );
