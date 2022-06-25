@@ -175,28 +175,19 @@
                     <p class="font-weight-bold my-0">■ サブタスク</p>
                     <v-spacer />
                         <v-btn
-                        text
-                        color="primary"
-                        @click="clickSubtaskEdit(true)"
-                    >
-                        <v-icon >mdi-plus</v-icon>
-                        サブタスクを追加
+                            text
+                            color="primary"
+                            @click="clickSubtaskNew()"
+                        >
+                            <v-icon >mdi-plus</v-icon>
+                            サブタスクを追加
                     </v-btn>
-                    <!-- <v-spacer />
-                        <v-btn
-                        text
-                        color="primary"
-                        @click="subtask_input = !subtask_input"
-                    >
-                        <v-icon >mdi-plus</v-icon>
-                        サブタスクを追加
-                    </v-btn> -->
                 </v-card-actions>
                 <v-divider />
                 <div class="mt-4">
                     <v-card
-                        v-for="subtask in params.subtask_list"
-                        :key="subtask.id"
+                        v-for="(subtask, index) in params.subtask_list"
+                        :key="index"
                         @click="clickSubtaskRecord(subtask)"
                         class="mt-2 ml-10 subtask-card"
                         hover
@@ -215,23 +206,6 @@
                             </span>
                         </v-card-actions>
                     </v-card>
-                </div>
-                <!-- subtask area -->
-                <div class="task-add-form mt-2" v-if="subtask_input">
-                    <div class="relative">
-                        <v-text-field
-                            label="サブタスク名を入力"
-                            v-model="subtask_name"
-                        >
-                        </v-text-field>
-                        <v-btn
-                            depressed
-                            class="primary alt_submit px-4"
-                            text
-                            @click="createSubtask(params.viewer)"
-                        >新規作成
-                        </v-btn>
-                    </div>
                 </div>
             </div>
             <!-- 概要 -->
@@ -388,7 +362,6 @@
             <SubtaskView 
                 :params="params"
                 :subtask_option="subtask_option"
-                :subtask_viewer="subtask_viewer"
                 v-if="subtask_mode == 'subtask_detail'"
             />
 
@@ -433,7 +406,6 @@ export default {
     data: () => ({
         subtask_mode: "task",
         subtask_option: [],
-        subtask_viewer: {},
         //タスク情報
         status: null,
         priority: null,
@@ -460,7 +432,6 @@ export default {
 
         //サブタスク
         subtask_input: false,
-        subtask_name: "",
         loading: false,
 
         // タスク削除確認
@@ -533,35 +504,32 @@ export default {
         },
 
         // サブタスク
-        async createSubtask(task) {
-            const result = await this.apiSubtaskCreate(this.subtask_name, task.task_id)
+        async createSubtask(new_subtask) {
+            const result = await this.apiSubtaskCreate(new_subtask, this.params.viewer.task_id)
             if(result) {
                 this.params.success = "サブタスクを新規作成しました！"
-                this.subtask_name = ""
+                this.subtask_option = []
+                this.subtask_mode = "task";
+                this.params.subtask_editor = {}
             }
-            this.getSubtaskList(task)
+            this.getSubtaskList(this.params.viewer)
         },
         async deleteSubtask(subtask) {
             const result = await this.apiDeleteSubtask(subtask)
             if(result) {
                 this.params.error = "サブタスクを削除しました。"
-                this.getSubtaskList(this.viewer)
+                this.getSubtaskList(this.params.viewer)
             }
         },
-        clickSubtaskEdit(is_new) {
+        clickSubtaskNew() {
             this.subtask_option.push(
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeSubtask },
-                { function_cd: "save", text: "保存", callback: this.saveSabtask },
+                { function_cd: "save", text: "保存", callback: this.createSubtask },
             )
-            if(is_new) {
-                console.log("新規作成");
-            } else {
-                console.log("編集");
-            }
             this.subtask_mode = "subtask_edit";
         },
         clickSubtaskRecord(subtask) {
-            this.subtask_viewer = subtask;
+            this.params.subtask_viewer = subtask;
             this.subtask_option.push(
                 { function_cd: "cancel", text: "閉じる", callback: this.closeSubtask },
                 { function_cd: "edit", text: "編集", callback: this.changeSubtaskMode },
@@ -569,13 +537,18 @@ export default {
             this.subtask_mode = "subtask_detail";
         },
         changeSubtaskMode(mode) {
+            this.subtask_option = [
+                { function_cd: "cancel", text: "キャンセル", callback: this.closeSubtask },
+                { function_cd: "save", text: "保存", callback: this.updateSubtask },
+            ]
             this.subtask_mode = mode;
         },
-        closeSubtask() {
+        updateSubtask() {
+            console.log("サブタスク更新");
             this.subtask_option = []
             this.subtask_mode = "task";
         },
-        saveSabtask() {
+        closeSubtask() {
             this.subtask_option = []
             this.subtask_mode = "task";
         },

@@ -87,6 +87,7 @@ export default {
                 this.params.subtask_list = result 
             }
         },
+        
         // リスト削除 => 詳細情報の削除
         deleteTaskDetail(delete_item) {
             if(delete_item.task_id == this.task_detail.task_id) {

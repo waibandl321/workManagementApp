@@ -7,13 +7,16 @@
             <v-card-title class="text-h5 grey lighten-2">
                 サブタスク詳細
             </v-card-title>
-            
-            {{ subtask_viewer }}
             <v-card-text class="py-6">
-                <span class="font-weight-bold">サブタスク名</span>：{{ subtask_viewer.subtask_name }}
+                <div class="font-weight-bold">■ サブタスク名</div>
+                <div class="mt-3">{{ params.subtask_viewer.subtask_name }}</div>
             </v-card-text>
             <v-card-text class="py-6">
-                <span class="font-weight-bold">サブタスク詳細</span>：{{ subtask_viewer.subtask_description }}
+                <div class="font-weight-bold">■ サブタスク詳細</div>
+                <div
+                    v-html="params.subtask_viewer.subtask_description"
+                    class="mt-3"
+                ></div>
             </v-card-text> 
 
             <v-divider></v-divider>
@@ -25,7 +28,7 @@
                     :key="index"
                     :color="option.function_cd === 'edit' ? 'primary' : ''"
                     outlined
-                    @click="clickOption(option)"
+                    @click="clickOption(option, params.subtask_viewer)"
                 >
                     {{ option.text }}
                 </v-btn>
@@ -39,7 +42,6 @@ export default {
     props: {
         params: Object,
         subtask_option: Array,
-        subtask_viewer: Object,
     },
     components: {
         
@@ -55,12 +57,13 @@ export default {
     }),
     methods: {
         // 編集遷移込み
-        clickOption(option) {
-            let edit_flag = null;
-            if(option.function_cd === 'edit') {
-                edit_flag = 'subtask_edit'
+        clickOption(option, subtask) {
+            if(option.function_cd === 'edit' && subtask) {
+                this.params.subtask_editor = subtask;
+                option.callback("subtask_edit");
+                return
             }
-            option.callback(edit_flag)
+            option.callback();
         }
     }
 }

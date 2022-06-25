@@ -87,24 +87,15 @@ export default {
                 return false
             }
         },
-        async apiSubtaskCreate(subtask_name, task_id) {
+        async apiSubtaskCreate(new_subtask, task_id) {
             const db = getDatabase();
             const userId = this.storeGetFirebaseUid()
             const id = this.createRandomId()
             return await set(ref(db, '/subtasks/' + userId + '/' + id), {
                 subtask_id: id,
                 task_id: task_id,
-                subtask_name: subtask_name,
-                subtask_description: "",
-                subtask_message_content: "",
-                subtask_message_post_account: "",
-                subtask_status: {
-                    key: 0,
-                    text: "指定しない",
-                },
-                subtask_manager: "",
-                subtask_start_date: "",
-                subtask_end_date: "",
+                subtask_name: new_subtask.subtask_name,
+                subtask_description: new_subtask.subtask_description ? new_subtask.subtask_description : "",
                 create_account: userId,
                 created: this.getCurrentUnixtime(),
                 updated: ""
