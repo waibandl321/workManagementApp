@@ -8,17 +8,6 @@
             outlined
             label="ファイル名でディレクトリ内を検索"
         ></v-text-field>
-        
-        <!-- ストレージ -->
-        <v-progress-linear
-            v-model="storage_value"
-            color="primary"
-            background-color="#eee"
-            rounded
-            height="20"
-        >
-            <strong>{{ Math.ceil(storage_value) }}%</strong>
-        </v-progress-linear>
 
         <!-- パンくず -->
         <v-breadcrumbs
@@ -174,8 +163,6 @@ export default {
         // 検索
         search_text: "",
 
-        // 容量
-        storage_value: 33,
     }),
     created() {
         this.readShareFiles()

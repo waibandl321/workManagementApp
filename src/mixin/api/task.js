@@ -10,19 +10,19 @@ import {
 export default {
     methods: {
         getSortStatusOptions() {
-            return SORT_STATUS_OPTION
+            return SORT_STATUS_OPTION;
         },
         getSortDateOptions() {
-            return SORT_DATE_OPTIONS
+            return SORT_DATE_OPTIONS;
         },
         getTaskPriorities() {
-            return TASK_PRIORITIES
+            return TASK_PRIORITIES;
         },        
         getTaskStatus() {
-            return TASK_STATUS
+            return TASK_STATUS;
         },
         getEditorOptions() {
-            return ERITOR_OPTIONS
+            return ERITOR_OPTIONS;
         },
         // 取得
         async apiGetTaskList() {
@@ -31,9 +31,9 @@ export default {
                 const starCountRef = ref(db, '/tasks/' + this.storeGetFirebaseUid())
                 onValue(starCountRef, (snapshot) => {
                     if(snapshot) {
-                        return resolve(snapshot.val())
+                        return resolve(snapshot.val());
                     } else {
-                        reject()
+                        reject();
                     }
                 })
             })
@@ -43,14 +43,14 @@ export default {
         },
         async apiGetSubtaskList() {
             return new Promise((resolve, reject) => {
-                const db = getDatabase()
+                const db = getDatabase();
                 const userId = this.storeGetFirebaseUid()
                 const starCountRef = ref(db, 'subtasks/' + userId)
                 onValue(starCountRef, (snapshot) => {
                     if(snapshot) {
-                        return resolve(snapshot.val())
+                        return resolve(snapshot.val());
                     } else {
-                        reject()
+                        reject();
                     }
                 })
             })
@@ -80,11 +80,11 @@ export default {
             }
             try {
                 const db = getDatabase();
-                set(ref(db, '/tasks/' + this.storeGetFirebaseUid() + '/' + id), data_obj)
-                return true
+                set(ref(db, '/tasks/' + this.storeGetFirebaseUid() + '/' + id), data_obj);
+                return true;
             } catch (error) {
                 console.log(error);
-                return false
+                return false;
             }
         },
         async apiSubtaskCreate(new_subtask, task_id) {
@@ -101,11 +101,11 @@ export default {
                 updated: ""
             })
             .then(() => {
-                return true
+                return true;
             })
             .catch((error) => {
-                console.log(error)
-                alert(error.message)
+                console.log(error);
+                alert(error.message);
             })
         },
 
@@ -113,14 +113,14 @@ export default {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
-            updates['/subtasks/' + userId + '/' + subtask.subtask_id] = subtask
+            updates['/subtasks/' + userId + '/' + subtask.subtask_id] = subtask;
             return await update(ref(db), updates)
             .then(() => {
-                return true
+                return true;
             })
             .catch((error) => {
                 console.log(error);
-                return false
+                return false;
             });
         },
 
@@ -132,11 +132,11 @@ export default {
             updates['/tasks/' + userId + '/' + id + '/task_status'] = status
             return await update(ref(db), updates)
             .then(() => {
-                return true
+                return true;
             })
             .catch((error) => {
                 console.log(error);
-                return false
+                return false;
             });
         },
         async apiUpdateTaskPriority(id, priority) {
@@ -146,11 +146,11 @@ export default {
             updates['/tasks/' + userId + '/' + id + '/task_priority'] = priority
             return await update(ref(db), updates)
             .then(() => {
-                return true
+                return true;
             })
             .catch((error) => {
                 console.log(error);
-                return false
+                return false;
             })
         },
         async apiUpdateTaskname(id, taskname) {
@@ -160,11 +160,11 @@ export default {
             updates['/tasks/' + userId + '/' + id + '/task_name'] = taskname
             return await update(ref(db), updates)
             .then(() => {
-                return true
+                return true;
             })
             .catch((error) => {
                 console.log(error);
-                return false
+                return false;
             })
         },
         async apiUpdateTaskDescription(id, description) {
@@ -174,11 +174,11 @@ export default {
             updates['/tasks/' + userId + '/' + id + '/task_description'] = description
             return await update(ref(db), updates)
             .then(() => {
-                return true
+                return true;
             })
             .catch((error) => {
                 console.log(error);
-                return false
+                return false;
             })
         },
         async apiUpdateTaskTerm(task_deadline, task_id) {
@@ -188,11 +188,11 @@ export default {
             updates['/tasks/' + userId + '/' + task_id + '/task_deadline'] = task_deadline
             return await update(ref(db), updates)
             .then(() => {
-                return true
+                return true;
             })
             .catch((error) => {
                 console.log(error);
-                return false
+                return false;
             })
         },
         
@@ -210,11 +210,11 @@ export default {
             updates['/subtasks/' + this.storeGetFirebaseUid() + '/' + subtask.subtask_id] = null;
             return await update(ref(db), updates)
             .then(() => {
-                return true
+                return true;
             })
             .catch((error) => {
                 console.log(error);
-                return false
+                return false;
             })
         },
         // 親タスク削除時にサブタスクがある場合
@@ -222,7 +222,7 @@ export default {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             subtasks.forEach(r => {
-                const subtask_id = r.subtask_id
+                const subtask_id = r.subtask_id;
                 remove(ref(db, '/subtasks/' + userId + '/' + subtask_id));
             })
         }
