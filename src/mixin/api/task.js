@@ -109,6 +109,21 @@ export default {
             })
         },
 
+        async apiUpdateSubtask(subtask) {
+            const db = getDatabase()
+            const userId = this.storeGetFirebaseUid()
+            const updates = {};
+            updates['/subtasks/' + userId + '/' + subtask.subtask_id] = subtask
+            return await update(ref(db), updates)
+            .then(() => {
+                return true
+            })
+            .catch((error) => {
+                console.log(error);
+                return false
+            });
+        },
+
         // 更新
         async apiUpdateTaskStatus(id, status) {
             const db = getDatabase()
@@ -190,7 +205,6 @@ export default {
             return update(ref(db), updates);
         },
         async apiDeleteSubtask(subtask) {
-            console.log(subtask);
             const db = getDatabase()
             const updates = {};
             updates['/subtasks/' + this.storeGetFirebaseUid() + '/' + subtask.subtask_id] = null;

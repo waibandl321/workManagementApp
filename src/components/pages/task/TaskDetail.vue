@@ -185,27 +185,34 @@
                 </v-card-actions>
                 <v-divider />
                 <div class="mt-4">
-                    <v-card
+                    <div
                         v-for="(subtask, index) in params.subtask_list"
                         :key="index"
-                        @click="clickSubtaskRecord(subtask)"
-                        class="mt-2 ml-10 subtask-card"
-                        hover
+                        class="subtask-card__wrap"
                     >
-                        <v-card-actions class="justify-space-between px-4">
-                            <span>{{ subtask.subtask_name ? subtask.subtask_name : '' }}</span>
-                            <span>
-                                <v-btn
-                                    text
-                                    @click.stop="deleteSubtask(subtask)"
-                                    fab
-                                    small
-                                >
-                                    <v-icon>mdi-trash-can-outline</v-icon>
-                                </v-btn>
-                            </span>
-                        </v-card-actions>
-                    </v-card>
+                        <div class="subtask-card__icon">
+                            <v-icon large>mdi-subdirectory-arrow-right</v-icon>
+                        </div>
+                        <v-card
+                            @click="clickSubtaskRecord(subtask)"
+                            class="subtask-card__body"
+                            hove                            
+                        >
+                            <v-card-actions class="justify-space-between px-4">
+                                <span>{{ subtask.subtask_name ? subtask.subtask_name : '' }}</span>
+                                <span>
+                                    <v-btn
+                                        text
+                                        @click.stop="deleteSubtask(subtask)"
+                                        fab
+                                        small
+                                    >
+                                        <v-icon>mdi-trash-can-outline</v-icon>
+                                    </v-btn>
+                                </span>
+                            </v-card-actions>
+                        </v-card>
+                    </div>
                 </div>
             </div>
             <!-- 概要 -->
@@ -383,12 +390,11 @@ export default {
         viewer: Object,
     },
     data: () => ({
-        subtask_mode: "task",
-        subtask_option: [],
+
         //タスク情報
+        task_name_edit: false,
         status: null,
         priority: null,
-        task_name_edit: false,
         desc_editor: false,
         termSetting: false,
         task_deadline: null,
@@ -408,8 +414,8 @@ export default {
         delete_file: {},
 
         //サブタスク
-        subtask_input: false,
-        loading: false,
+        subtask_mode: "task",
+        subtask_option: [],
 
         // タスク削除確認
         delete_options: [],
@@ -510,23 +516,6 @@ export default {
         },
 
         // サブタスク
-        async createSubtask(new_subtask) {
-            const result = await this.apiSubtaskCreate(new_subtask, this.params.viewer.task_id)
-            if(result) {
-                this.params.success = "サブタスクを新規作成しました！"
-                this.subtask_option = []
-                this.subtask_mode = "task";
-                this.params.subtask_editor = {}
-            }
-            this.params.subtask_list = this.getSubtaskList(this.params.viewer)
-        },
-        async deleteSubtask(subtask) {
-            const result = await this.apiDeleteSubtask(subtask)
-            if(result) {
-                this.params.error = "サブタスクを削除しました。"
-                this.params.subtask_list = this.getSubtaskList(this.params.viewer)
-            }
-        },
         clickSubtaskNew() {
             this.subtask_option.push(
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeSubtask },
@@ -549,13 +538,41 @@ export default {
             ]
             this.subtask_mode = mode;
         },
-        updateSubtask() {
-            console.log("サブタスク更新");
+        closeSubtask() {
             this.subtask_option = []
             this.subtask_mode = "task";
         },
-        closeSubtask() {
+        async createSubtask(new_subtask) {
+            const result = await this.apiSubtaskCreate(new_subtask, this.params.viewer.task_id)
+            if(result) {
+                this.params.success = "サブタスクを新規作成しました。";
+            } else {
+                this.params.error = "サブタスク作成中にエラーが発生しました。";
+            }
+            this.subtask_option = [];    
+            this.params.subtask_editor = {};
+            this.params.subtask_list = await this.getSubtaskList(this.params.viewer)
+            this.subtask_mode = "task";
+        },
+        async deleteSubtask(subtask) {
+            const result = await this.apiDeleteSubtask(subtask);
+            if(result) {
+                this.params.success = "サブタスクを削除しました。"
+            } else {
+                this.params.error = "サブタスクの削除に失敗しました。"
+            }
+            this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
+        },
+        async updateSubtask(subtask) {
+            const result = await this.apiUpdateSubtask(subtask)
+            if(result) {
+                this.params.success = "サブタスクを更新しました。"
+            } else {
+                this.params.error = "サブタスクの更新に失敗しました。"
+            }
+            this.params.subtask_editor = {};
             this.subtask_option = []
+            this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
             this.subtask_mode = "task";
         },
         // タスク期間設定
@@ -605,20 +622,16 @@ export default {
     bottom: 40%;
     right: 0;
 }
-.subtask-card {
-    position: relative;
-    z-index: 1;
+.subtask-card__wrap {
+    display: flex;
+    align-items: center;
 }
-.subtask-card::after {
-    z-index: 2;
-    content: "";
-    position: absolute;
-    width: 32px;
-    height: 2px;
-    background: #333;
+.subtask-card__icon {
+    width: 40px;
+    text-align: center;
 }
-.subtask-card::after {
-    left: -40px;
-    top: 50%;
+.subtask-card__body {
+    width: calc(100% - 40px);
+    margin-top: 8px;
 }
 </style>

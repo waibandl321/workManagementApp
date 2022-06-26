@@ -59,6 +59,7 @@ export default {
         async getSubtaskList(task_viewer) {
             if(task_viewer.task_id) {
                 let result = await this.apiGetSubtaskList()
+                        
                 result = Object.keys(result)
                         .map((key) => {
                             return result[key];
