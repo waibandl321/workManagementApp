@@ -499,9 +499,9 @@ export default {
             this.file_loading = true;
             try {
                 for(const file of this.params.files) {
-                    const result = await this.storageDeleteFile(file)
+                    const result = await this.storageDeleteFile(file[1])
                     if(result) {
-                        await this.firebaseDeleteFile(this.delete_file)
+                        await this.firebaseDeleteFile(file[1])
                     }
                 }
                 this.params.files = this.getFileList()
@@ -575,6 +575,7 @@ export default {
             this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
             this.subtask_mode = "task";
         },
+        
         // タスク期間設定
         deleteTaskTerm() {
             this.task_deadline = null
