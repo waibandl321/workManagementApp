@@ -75,19 +75,38 @@
                 <v-col>
                     <v-card>
                         <v-card-title class="pa-2">期限切れのタスク（週間、月間）</v-card-title>
+                        <v-card-text
+                            v-for="(item, index) in params.is_expired_tasks"
+                            :key="index"
+                        >
+                            {{ item.task_deadline }} : {{ item.task_name }}
+                        </v-card-text>
                     </v-card>
                 </v-col>
                 <v-col>
                     <v-card>
-                        <v-card-title class="pa-2">最近更新されたタスク（１週間以内）</v-card-title>
+                        <v-card-title class="pa-2">本日期限のタスク（１週間以内）</v-card-title>
+                        <v-card-text
+                            v-for="(item, index) in params.today_deadline_tasks"
+                            :key="index"
+                        >
+                            {{ item.task_id }} : {{ item.task_name }}
+                        </v-card-text>
                     </v-card>
                 </v-col>
                 <v-col>
                     <v-card>
                         <v-card-title class="pa-2">完了したタスク（週間、月間）</v-card-title>
+                        <v-card-text
+                            v-for="(item, index) in params.is_completed_tasks"
+                            :key="index"
+                        >
+                            {{ item.task_id }} : {{ item.task_name }}
+                        </v-card-text>
                     </v-card>
                 </v-col>
             </v-row>
+            {{ params.all_tasks }}
         </div>
     </div>
 </template>
@@ -95,11 +114,12 @@
 <script>
 import Header from '@/components/common/Header'
 import myMixin from './dashbord.js'
+import taskMixin from '@/mixin/api/task.js'
 export default {
     components: {
         Header,
     },
-    mixins: [myMixin],
+    mixins: [myMixin, taskMixin],
     data: () => ({
         parents: {
             user_info: {}
@@ -110,18 +130,23 @@ export default {
             is_expired_tasks: [],
             is_active_tasks: [],
             is_updated_tasks: [],
-            is_near_deadline_tasks: []
+            near_deadline_tasks: [],
+            today_deadline_tasks: [],
 
-
+            task_status_list: []
         }
     }),
     created() {
         this.parents.user_info = this.storeGetAccountInfo()
         this.initTaskList()
+        this.task_status_list = this.getTaskStatus();
     },
     methods: {
         async initTaskList() {
-            this.all_tasks = await this.getTaskList()
+            this.params.all_tasks = await this.getAllDashboardTask()
+            this.params.is_completed_tasks = this.getCompletedTasks()
+            this.params.today_deadline_tasks = this.getExpiredTasksToday();
+            this.params.is_expired_tasks = this.getExpiredTasks();
         }
     }
 }
