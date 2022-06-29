@@ -69,7 +69,7 @@
             <v-row>
                 <v-col>
                     <v-card>
-                        <v-card-title class="pa-2">期限が近いタスク（１週間以内）</v-card-title>
+                        <v-card-title class="pa-2">期限が１週間のタスク</v-card-title>
                         <v-card-text
                             v-for="(item, index) in params.near_deadline_tasks"
                             :key="index"
@@ -80,7 +80,7 @@
                 </v-col>
                 <v-col>
                     <v-card>
-                        <v-card-title class="pa-2">期限切れのタスク（週間、月間）</v-card-title>
+                        <v-card-title class="pa-2">期限超過のタスク（週間、月間）</v-card-title>
                         <v-card-text
                             v-for="(item, index) in params.is_expired_tasks"
                             :key="index"
@@ -112,7 +112,6 @@
                     </v-card>
                 </v-col>
             </v-row>
-            {{ params.all_tasks }}
         </div>
     </div>
 </template>
@@ -158,15 +157,10 @@ export default {
     }
 }
 </script>
+<style src="../../../assets/css/original.css"></style>
 <style scoped>
 .body {
   width: 100%;
-}
-.header {
-  border-bottom: 1px solid #ccc;
-  height: 70px;
-  line-height: 70px;
-  padding: 0 16px;
 }
 .dashbord >>> .v-card__title {
     font-size: 16px;

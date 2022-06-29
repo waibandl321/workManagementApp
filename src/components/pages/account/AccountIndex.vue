@@ -62,14 +62,9 @@ export default {
 
 
 <style scoped src="./scoped.css"></style>
+<style src="../../../assets/css/original.css"></style>
 <style scoped>
 .body {
   width: 100%;
-}
-.header {
-  border-bottom: 1px solid #ccc;
-  height: 70px;
-  line-height: 70px;
-  padding: 0 16px;
 }
 </style>
