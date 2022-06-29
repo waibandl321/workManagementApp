@@ -5,7 +5,7 @@ export default {
         items: [],
     }),
     async created() {
-        this.today = this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyy/mm/dd");
+        this.today = this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyymmdd");
         this.items = await this.getAllDashboardTask()
     },
     methods: {
@@ -76,17 +76,21 @@ export default {
         getCompletedTasksLengthByOneMonth() {
 
         },
-
         // 期日設定がされている＋期限が直近7日間以内のタスク（土・日・祝日を含む）
         getNearDeadlineTasksByOneWeek() {
-
+            let result = this.getActivateTasks();
+            result = result.filter((v) => 
+                v.task_deadline
+                && this.judgeDeadlineAfterToday(v)
+                && this.judgeDeadlineRangeSevenDays(v)
+            )
+            return result;
         },
         // 期限切れのタスク(＋期日設定がされている) 
         getExpiredTasks() {
             let result = this.getActivateTasks();
             result = result.filter((v) => 
-                this.convertDatetimeFromUnixtime(v.task_deadline, "yyyymmdd")
-                < this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyymmdd")
+                this.judgeDeadlineBeforeToday(v)
             )
             return result;
         },
@@ -94,9 +98,25 @@ export default {
         getExpiredTasksToday() {
             let result = this.getActivateTasks();
             result = result.filter((v) => 
-                this.convertDatetimeFromUnixtime(v.task_deadline, "yyyy/mm/dd") == this.today
+                this.judgeDeadlineJustToday(v)
             )
             return result;
+        },
+        // 期日チェック
+        judgeDeadlineJustToday(task) {
+            return this.convertDatetimeFromUnixtime(task.task_deadline, "yyyymmdd") == this.today
+        },
+        judgeDeadlineBeforeToday(task) {
+            return this.convertDatetimeFromUnixtime(task.task_deadline, "yyyymmdd")
+                    < this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyymmdd")
+        },
+        judgeDeadlineAfterToday(task) {
+            return this.convertDatetimeFromUnixtime(task.task_deadline, "yyyymmdd") 
+                    > this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyymmdd")
+        },
+        judgeDeadlineRangeSevenDays(task) {
+            return this.convertDatetimeFromUnixtime(task.task_deadline, "yyyymmdd") 
+                    < this.getUnixtimeAfter7Days()
         },
         // アクティブタスク
         getActivateTasks() {

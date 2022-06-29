@@ -37,7 +37,16 @@ export default {
                     .replace("hh", time)
                     .replace("mm", minutes)
         },
-
+        // 現在から7日後の日付を取得
+        getUnixtimeAfter7Days() {
+            let date_obj = new Date();
+            date_obj.setDate(date_obj.getDate() + 7)
+            return date_obj.getFullYear() 
+                    + ""
+                    + ("0" + (date_obj.getMonth() + 1)).slice(-2)
+                    + ""
+                    + ("0" + date_obj.getDate()).slice(-2);
+        },
         // ランダムIDのセット
         createRandomId() {
             return Math.random().toString(32).substring(2)

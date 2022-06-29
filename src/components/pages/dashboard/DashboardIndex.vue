@@ -70,6 +70,12 @@
                 <v-col>
                     <v-card>
                         <v-card-title class="pa-2">期限が近いタスク（１週間以内）</v-card-title>
+                        <v-card-text
+                            v-for="(item, index) in params.near_deadline_tasks"
+                            :key="index"
+                        >
+                            {{ convertDatetimeFromUnixtime(item.task_deadline, "yyyy/mm/dd") }} : {{ item.task_name }}
+                        </v-card-text>
                     </v-card>
                 </v-col>
                 <v-col>
@@ -147,6 +153,7 @@ export default {
             this.params.is_completed_tasks = this.getCompletedTasks()
             this.params.today_deadline_tasks = this.getExpiredTasksToday();
             this.params.is_expired_tasks = this.getExpiredTasks();
+            this.params.near_deadline_tasks = this.getNearDeadlineTasksByOneWeek()
         }
     }
 }
