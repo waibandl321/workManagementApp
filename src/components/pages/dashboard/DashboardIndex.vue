@@ -5,110 +5,151 @@
             <v-row>
                 <v-col>
                     <v-card>
-                        <v-card-actions class="pa-2">
-                            <v-card-title class="pa-2">タスク完了率（週間・月間）</v-card-title>
-                            <v-spacer></v-spacer>
-                            <div>
-                                <v-btn outlined class="ml-2">週間</v-btn>
-                                <v-btn outlined class="ml-2">月間</v-btn>
-                            </div>
-                        </v-card-actions>
+                        <v-card-title class="pa-2">タスク完了率（週間・月間）</v-card-title>
+                        <v-row class="mx-0">
+                            <v-col>
+                                <v-card>
+                                    <v-card-title>週間</v-card-title>
+                                </v-card>
+                            </v-col>
+                            <v-col>
+                                <v-card>
+                                    <v-card-title>月間</v-card-title>
+                                </v-card>
+                            </v-col>
+                        </v-row>
                     </v-card>
                 </v-col>
                 <v-col>
                     <v-card>
-                        <v-card-actions class="pa-2">
-                            <v-card-title class="pa-2">期限切れ率（週間・月間）</v-card-title>
-                            <v-spacer></v-spacer>
-                            <div>
-                                <v-btn outlined class="ml-2">週間</v-btn>
-                                <v-btn outlined class="ml-2">月間</v-btn>
-                            </div>
-                        </v-card-actions>
-                    </v-card>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col>
-                    <v-card>
-                        <v-card-actions class="pa-2">
-                            <v-card-title class="pa-2">アクティブタスク数（週間、月間）</v-card-title>
-                            <v-spacer></v-spacer>
-                            <div>
-                                <v-btn outlined class="ml-2">週間</v-btn>
-                                <v-btn outlined class="ml-2">月間</v-btn>
-                            </div>
-                        </v-card-actions>
-                    </v-card>
-                </v-col>
-                <v-col>
-                    <v-card>
-                        <v-card-actions class="pa-2">
-                            <v-card-title class="pa-2">期限切れタスク数</v-card-title>
-                            <v-spacer></v-spacer>
-                            <div>
-                                <v-btn outlined class="ml-2">週間</v-btn>
-                                <v-btn outlined class="ml-2">月間</v-btn>
-                            </div>
-                        </v-card-actions>
-                    </v-card>
-                </v-col>
-                <v-col>
-                    <v-card>
-                        <v-card-actions class="pa-2">
-                            <v-card-title class="pa-2">完了タスク数</v-card-title>
-                            <v-spacer></v-spacer>
-                            <div>
-                                <v-btn outlined class="ml-2">週間</v-btn>
-                                <v-btn outlined class="ml-2">月間</v-btn>
-                            </div>
-                        </v-card-actions>
+                        <v-card-title class="pa-2">期限切れ率（週間・月間）</v-card-title>
+                        <v-row class="mx-0">
+                            <v-col>
+                                <v-card>
+                                    <v-card-title>週間</v-card-title>
+                                </v-card>
+                            </v-col>
+                            <v-col>
+                                <v-card>
+                                    <v-card-title>月間</v-card-title>
+                                </v-card>
+                            </v-col>
+                        </v-row>
                     </v-card>
                 </v-col>
             </v-row>
             <v-row>
                 <v-col>
                     <v-card>
-                        <v-card-title class="pa-2">期限が１週間のタスク</v-card-title>
-                        <v-card-text
+                        <v-card-title class="pa-2">アクティブタスク数（週間、月間）</v-card-title>
+                        <v-row class="mx-0">
+                            <v-col>
+                                <v-card>
+                                    <v-card-title>週間</v-card-title>
+                                </v-card>
+                            </v-col>
+                            <v-col>
+                                <v-card>
+                                    <v-card-title>月間</v-card-title>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+                    </v-card>
+                </v-col>
+                <v-col>
+                    <v-card>
+                        <v-card-title class="pa-2">期限切れタスク数</v-card-title>
+                        <v-row class="mx-0">
+                            <v-col>
+                                <v-card>
+                                    <v-card-title>週間</v-card-title>
+                                </v-card>
+                            </v-col>
+                            <v-col>
+                                <v-card>
+                                    <v-card-title>月間</v-card-title>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+                    </v-card>
+                </v-col>
+                <v-col>
+                    <v-card>
+                        <v-card-title class="pa-2">完了タスク数</v-card-title>
+                        <v-row class="mx-0">
+                            <v-col>
+                                <v-card>
+                                    <v-card-title>週間</v-card-title>
+                                </v-card>
+                            </v-col>
+                            <v-col>
+                                <v-card>
+                                    <v-card-title>月間</v-card-title>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+                    </v-card>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-card class="pa-4 pb-10">
+                        <v-card-title class="pa-2">期限が１週間以内のタスク</v-card-title>
+                        <v-card
                             v-for="(item, index) in params.near_deadline_tasks"
                             :key="index"
+                            class="mb-4 mt-2"
+                            hover
                         >
-                            {{ convertDatetimeFromUnixtime(item.task_deadline, "yyyy/mm/dd") }} : {{ item.task_name }}
-                        </v-card-text>
+                            <v-card-text>
+                                {{ convertDatetimeFromUnixtime(item.task_deadline, "yyyy/mm/dd") }} : {{ item.task_name }}
+                            </v-card-text>
+                        </v-card>
                     </v-card>
                 </v-col>
                 <v-col>
-                    <v-card>
+                    <v-card class="pa-4 pb-10">
                         <v-card-title class="pa-2">期限超過のタスク（週間、月間）</v-card-title>
-                        <v-card-text
-                            v-for="(item, index) in params.is_expired_tasks"
+                        <v-card
+                             v-for="(item, index) in params.is_expired_tasks"
                             :key="index"
+                            class="mb-4 mt-2"
+                            hover
                         >
-                            {{ item.task_deadline }} : {{ item.task_name }}
-                        </v-card-text>
+                            <v-card-text>
+                                {{ item.task_deadline }} : {{ item.task_name }}
+                            </v-card-text>
+                        </v-card>
                     </v-card>
                 </v-col>
                 <v-col>
-                    <v-card>
+                    <v-card class="pa-4 pb-10">
                         <v-card-title class="pa-2">本日期限のタスク（１週間以内）</v-card-title>
-                        <v-card-text
+                        <v-card
                             v-for="(item, index) in params.today_deadline_tasks"
                             :key="index"
+                            class="mb-4 mt-2"
+                            hover
                         >
-                            {{ item.task_id }} : {{ item.task_name }}
-                        </v-card-text>
+                            <v-card-text>
+                                {{ item.task_id }} : {{ item.task_name }}
+                            </v-card-text>
+                        </v-card>
                     </v-card>
                 </v-col>
                 <v-col>
-                    <v-card>
+                    <v-card class="pa-4 pb-10">
                         <v-card-title class="pa-2">完了したタスク（週間、月間）</v-card-title>
-                        <v-card-text
+                        <v-card
                             v-for="(item, index) in params.is_completed_tasks"
                             :key="index"
+                            class="mb-4 mt-2"
+                            hover
                         >
-                            {{ item.task_id }} : {{ item.task_name }}
-                        </v-card-text>
+                            <v-card-text>
+                                {{ item.task_id }} : {{ item.task_name }}
+                            </v-card-text>
+                        </v-card>
                     </v-card>
                 </v-col>
             </v-row>
