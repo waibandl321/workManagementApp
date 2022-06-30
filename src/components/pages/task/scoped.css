@@ -14,6 +14,7 @@
 }
 .detail {
     padding-bottom: 120px!important;
+    height: 100%;
 }
 /* 一覧 */
 .list_inner >>> .v-text-field__details {

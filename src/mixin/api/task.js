@@ -76,7 +76,8 @@ export default {
                 task_deadline: null,
                 create_account: this.storeGetFirebaseUid(),
                 created: this.getCurrentUnixtime(),
-                updated: ""
+                updated: "",
+                finished_at: ""
             }
             try {
                 const db = getDatabase();
@@ -125,11 +126,17 @@ export default {
         },
 
         // 更新
-        async apiUpdateTaskStatus(id, status) {
+        async apiUpdateTaskStatus(task) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
-            updates['/tasks/' + userId + '/' + id + '/task_status'] = status
+
+            if(task.task_status == 5) {
+                updates['/tasks/' + userId + '/' + task.task_id + '/task_status'] = task.task_status
+                updates['/tasks/' + userId + '/' + task.task_id + '/finished_at'] = this.getCurrentUnixtime()
+            } else {
+                updates['/tasks/' + userId + '/' + task.task_id + '/task_status'] = task.task_status
+            }
             return await update(ref(db), updates)
             .then(() => {
                 return true;

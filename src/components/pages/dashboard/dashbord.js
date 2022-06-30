@@ -68,14 +68,6 @@ export default {
         getNearDeadlineTasksLengthByOneMonth() {
 
         },
-        // 完了タスク数（直近7日間）
-        getCompletedTasksLengthByOneWeek() {
-            
-        },
-        // 完了タスク数（直近30日）
-        getCompletedTasksLengthByOneMonth() {
-
-        },
         // 期日設定がされている＋期限が直近7日間以内のタスク（土・日・祝日を含む）
         getNearDeadlineTasksByOneWeek() {
             let result = this.getActivateTasks();
@@ -130,9 +122,5 @@ export default {
             result = result.filter((v) => v.task_status === 5)
             return result;
         },
-        getCompletedTasksByOneWeek() {
-            
-        },
-
     }
 }

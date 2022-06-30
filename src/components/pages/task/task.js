@@ -101,7 +101,7 @@ export default {
             }
         },
         async updateTaskStatus() {
-            const result = await this.apiUpdateTaskStatus(this.params.viewer.task_id, this.params.viewer.task_status)
+            const result = await this.apiUpdateTaskStatus(this.params.viewer)
             if(result) {
                 this.params.success = "タスクのステータスを変更しました。"
             }
