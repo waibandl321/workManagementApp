@@ -7,15 +7,8 @@ import {
 }
 from "firebase/database";
 
-import { getAuth } from "firebase/auth";
-
 export default {
     methods: {
-        getAuthUser() {
-            const auth = getAuth();
-            const current = auth.currentUser
-            return current
-        },
 
         // アカウント情報取得
         async apiGetAccount(uid) {
@@ -29,10 +22,6 @@ export default {
             .catch((reason) => {
                 console.log(reason.messege);
             });
-        },
-
-        dataLog(data) {
-            console.log(data);
         },
 
         // アカウント登録
@@ -49,7 +38,7 @@ export default {
         // アカウント更新
         apiAccountUpdate(account_info) {
             const db = getDatabase()
-            const auth = getAuth();
+            const userId = this.storeGetFirebaseUid()
             const account = {
                 first_name: account_info.first_name,
                 last_name: account_info.last_name,
@@ -58,7 +47,7 @@ export default {
             }
 
             const updates = {};
-            updates['/users/' + auth.currentUser.uid] = account;
+            updates['/users/' + userId] = account;
             
             update(ref(db), updates);
         },

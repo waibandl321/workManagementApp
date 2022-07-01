@@ -17,7 +17,7 @@ export default
           meta: { title: 'ダッシュボード', desc: 'ダッシュボードの説明文が入ります' }
         },
         {
-          path: '/task',
+          path: '/task/',
           name: 'task',
           component: Task,
           meta: { title: 'タスク管理', desc: 'タスク管理の説明文が入ります' }
