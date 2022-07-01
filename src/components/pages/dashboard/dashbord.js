@@ -7,7 +7,7 @@ export default {
     async created() {
         this.today = this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyymmdd");
         this.items = await this.getAllDashboardTask()
-        this.getDashboardTasksByOneWeek()
+        this.getDashboardTasksByCreatedOneWeek()
     },
     methods: {
         async getAllDashboardTask() {
@@ -19,24 +19,9 @@ export default {
             this.items = result
             return result;
         },
-        // 現在日付から7日前の日付
-        getDateSevenDaysAgoFromCurrent() {
-            
-        },
-        // 現在日付から30日前の日付
-        getDateThirtyDaysAgoFromCurrent() {
 
-        },
-
-        // 直近1ヶ月(30日)以内に作成されたタスク
-        geDashboardTasksByOneMonth() {},
-        
-        // 直近一ヶ月以内に作成されたタスク
-        geCompletedDashboardTasksByOneMonth() {
-
-        },
         // 直近7日間で作成されたタスク
-        getDashboardTasksByOneWeek() {
+        getDashboardTasksByCreatedOneWeek() {
             let result = this.items;
             result = result.filter((v) => 
                 // 本日以前に作成
@@ -59,7 +44,7 @@ export default {
         // 直近7日間で完了したタスク：7日以内の完了タスク / 直近7日間で作成されたタスク * 100
         calcCompletedTaskRateBySevenDays() {
             const r = this.getDashboardCompletedTasksByOneWeek()
-            const s = this.getDashboardTasksByOneWeek();
+            const s = this.getDashboardTasksByCreatedOneWeek();
             return r.length / s.length * 100
         },
         // 直近1ヶ月で作成されたタスク
@@ -91,27 +76,40 @@ export default {
         },
         
 
-        // 期限切れ率（直近7日間）
+        // 期限切れタスク（直近7日間）
+        getExpiredTasksRateByOneWeek() {
+            let result = this.getDashboardCompletedTasksByOneWeek();
+            result = result.filter((v) =>
+                v.task_deadline &&
+                v.finished_at &&
+                this.judgeExpired(v.task_deadline, v.finished_at)
+            )
+            return result;
+        },
+        // 期限切れタスク（直近30日間）
+        getExpiredTasksRateByOneMonth() {
+            let result = this.getDashboardTasksByCreatedOneMonth()
+            result = result.filter((v) =>
+                v.task_deadline &&
+                v.finished_at &&
+                this.judgeExpired(v.task_deadline, v.finished_at)
+            )
+            return result;
+        },
+
+        // 直近7日間のタスク期限切れ率：期限切れタスク数 / 7日間のタスク作成数 * 100
         calcExpiredTasksRateByOneWeek() {
-
+            const r = this.getExpiredTasksRateByOneWeek()
+            const s = this.getDashboardTasksByCreatedOneWeek();
+            return r.length / s.length * 100
         },
-        // 期限切れ率（直近30日間）
+        // 一ヶ月間のタスク期限切れ率：期限切れタスク数 / 一ヶ月のタスク作成数 * 100
         calcExpiredTasksRateByOneMonth() {
-
+            const r = this.getExpiredTasksRateByOneMonth()
+            const s = this.getDashboardTasksByCreatedOneMonth();
+            return r.length / s.length * 100
         },
 
-        // 有効なタスク数
-        getActiveTasksLength() {
-
-        },
-        // 期限切れのタスク数（直近7日間）
-        getNearDeadlineTasksLengthByOneWeek() {
-
-        },
-        // 期限切れのタスク数（直近30日）
-        getNearDeadlineTasksLengthByOneMonth() {
-
-        },
         // 期日設定がされている＋期限が直近7日間以内のタスク（土・日・祝日を含む）
         getNearDeadlineTasksByOneWeek() {
             let result = this.getActivateTasks();
@@ -171,6 +169,10 @@ export default {
         judgeDateRangeBeforeOneMonth(target_date) {
             return this.convertDatetimeFromUnixtime(target_date, "yyyymmdd") 
                     > this.getUnixtimeBeforeOneMonth()
+        },
+        // 期日 < 終了日チェック
+        judgeExpired(task_deadline, finished_at) {
+            return this.convertDatetimeFromUnixtime(task_deadline, "yyyymmdd") < this.convertDatetimeFromUnixtime(finished_at, "yyyymmdd")
         },
         // アクティブタスク
         getActivateTasks() {

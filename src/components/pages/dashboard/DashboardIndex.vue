@@ -15,14 +15,14 @@
                                     <div>
                                         完了したタスク：{{ getDashboardCompletedTasksByOneWeek().length }}
                                     </div>
-                                    <div v-for="item in getDashboardCompletedTasksByOneWeek()" :key="item.task_id" style="font-size: 10px;">
+                                    <div v-for="item in getDashboardCompletedTasksByOneWeek()" :key="item.task_id + 'aaaa'" style="font-size: 10px;">
                                         {{ convertDatetimeFromUnixtime(item.created, "yyyy/mm/dd") }} | {{ item.task_name }}
                                     </div>
                                     <v-divider></v-divider>
                                     <div>
-                                        タスク数：{{ getDashboardTasksByOneWeek().length }}
+                                        タスク数：{{ getDashboardTasksByCreatedOneWeek().length }}
                                     </div>
-                                    <div v-for="item in getDashboardTasksByOneWeek()" :key="item.task_id" style="font-size: 10px;">
+                                    <div v-for="item in getDashboardTasksByCreatedOneWeek()" :key="item.task_id + 'bbbb'" style="font-size: 10px;">
                                         {{ convertDatetimeFromUnixtime(item.created, "yyyy/mm/dd") }} | {{ item.task_name }}
                                     </div>
                                 </v-card>
@@ -34,14 +34,14 @@
                                     <div>
                                         完了したタスク：{{ getDashboardCompletedTasksByOneMonth().length }}
                                     </div>
-                                    <div style="font-size: 12px;" v-for="item in getDashboardCompletedTasksByOneMonth()" :key="item.task_id">
+                                    <div style="font-size: 12px;" v-for="item in getDashboardCompletedTasksByOneMonth()" :key="item.task_id + 'cccc'">
                                         {{ convertDatetimeFromUnixtime(item.created, "yyyy/mm/dd") }} | {{ item.task_name }}
                                     </div>
                                     <v-divider></v-divider>
                                     <div>
                                         タスク数：{{ getDashboardTasksByCreatedOneMonth().length }}
                                     </div>
-                                    <div style="font-size: 10px;" v-for="item in getDashboardTasksByCreatedOneMonth()" :key="item.task_id">
+                                    <div style="font-size: 10px;" v-for="item in getDashboardTasksByCreatedOneMonth()" :key="item.task_id + 'dddd'">
                                         {{ convertDatetimeFromUnixtime(item.created, "yyyy/mm/dd") }} | {{ item.task_name }}
                                     </div>
                                 </v-card>
@@ -57,11 +57,33 @@
                             <v-col>
                                 <v-card>
                                     <v-card-subtitle>直近１週間に作成されたタスクの未完了率</v-card-subtitle>
+                                    <v-card-subtitle>{{ calcExpiredTasksRateByOneWeek() }} %</v-card-subtitle>
+                                    <div>
+                                        期限切れタスク: {{ getExpiredTasksRateByOneWeek().length }}
+                                        <div v-for="item in getExpiredTasksRateByOneWeek()" :key="item.task_id + 'eeee'" style="font-size: 10px;">
+                                            {{ item.task_id }} | {{ item.task_name }}
+                                        </div>
+                                        タスク数：{{ getDashboardTasksByCreatedOneWeek().length }}
+                                        <div v-for="item in getDashboardTasksByCreatedOneWeek()" :key="item.task_id + 'gggg'" style="font-size: 10px;">
+                                            {{ item.task_id }} | {{ item.task_name }}
+                                        </div>
+                                    </div>
                                 </v-card>
                             </v-col>
                             <v-col>
                                 <v-card>
                                     <v-card-subtitle>直近1ヶ月間に作成されたタスクの未完了率</v-card-subtitle>
+                                    <v-card-subtitle>{{ calcExpiredTasksRateByOneMonth() }} %</v-card-subtitle>
+                                    <div>
+                                        期限切れタスク: {{ getExpiredTasksRateByOneMonth().length }}
+                                        <div v-for="item in getExpiredTasksRateByOneMonth()" :key="item.task_id + 'ffff'" style="font-size: 10px;">
+                                            {{ item.task_id }} | {{ item.task_name }}
+                                        </div>
+                                        タスク数：{{ getDashboardTasksByCreatedOneMonth().length }}
+                                        <div v-for="item in getDashboardTasksByCreatedOneMonth()" :key="item.task_id + 'hhhh'" style="font-size: 10px;">
+                                            {{ item.task_id }} | {{ item.task_name }}
+                                        </div>
+                                    </div>
                                 </v-card>
                             </v-col>
                         </v-row>
@@ -210,7 +232,7 @@ export default {
             this.params.is_expired_tasks = this.getExpiredTasks();
             this.params.near_deadline_tasks = this.getNearDeadlineTasksByOneWeek();
 
-            this.params.is_created_tasks_week = this.getDashboardTasksByOneWeek()
+            this.params.is_created_tasks_week = this.getDashboardTasksByCreatedOneWeek()
         }
     }
 }
