@@ -37,10 +37,40 @@ export default {
                     .replace("hh", time)
                     .replace("mm", minutes)
         },
-        // 現在から7日後の日付を取得
+        // 現在から7日後の日付を取得（本日を含むので実質8日計算）
         getUnixtimeAfter7Days() {
             let date_obj = new Date();
-            date_obj.setDate(date_obj.getDate() + 7)
+            date_obj.setDate(date_obj.getDate() + 8)
+            return date_obj.getFullYear() 
+                    + ""
+                    + ("0" + (date_obj.getMonth() + 1)).slice(-2)
+                    + ""
+                    + ("0" + date_obj.getDate()).slice(-2);
+        },
+        // 現在から7日前の日付を取得（本日を含むので実質8日計算）
+        getUnixtimeBefore7Days() {
+            let date_obj = new Date();
+            date_obj.setDate(date_obj.getDate() - 8)
+            return date_obj.getFullYear() 
+                    + ""
+                    + ("0" + (date_obj.getMonth() + 1)).slice(-2)
+                    + ""
+                    + ("0" + date_obj.getDate()).slice(-2);
+        },
+        // 現在から1ヶ月後の日付を取得
+        getUnixtimeAfterOneMonth() {
+            let date_obj = new Date();
+            date_obj.setMonth(date_obj.getMonth() + 1);
+            return date_obj.getFullYear() 
+                    + ""
+                    + ("0" + (date_obj.getMonth() + 1)).slice(-2)
+                    + ""
+                    + ("0" + date_obj.getDate()).slice(-2);
+        },
+        // 現在から1ヶ月前の日付を取得
+        getUnixtimeBeforeOneMonth() {
+            let date_obj = new Date();
+            date_obj.setMonth(date_obj.getMonth() - 1);
             return date_obj.getFullYear() 
                     + ""
                     + ("0" + (date_obj.getMonth() + 1)).slice(-2)

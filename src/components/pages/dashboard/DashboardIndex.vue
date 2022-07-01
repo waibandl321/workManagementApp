@@ -10,12 +10,40 @@
                         <v-row class="mx-0">
                             <v-col>
                                 <v-card>
-                                    <v-card-subtitle>直近7日間に作成されたタスクの完了率</v-card-subtitle>
+                                    <v-card-subtitle>直近１週間に作成されたタスクの完了率</v-card-subtitle>
+                                    {{ calcCompletedTaskRateBySevenDays() }} %
+                                    <div>
+                                        完了したタスク：{{ getDashboardCompletedTasksByOneWeek().length }}
+                                    </div>
+                                    <div v-for="item in getDashboardCompletedTasksByOneWeek()" :key="item.task_id" style="font-size: 10px;">
+                                        {{ convertDatetimeFromUnixtime(item.created, "yyyy/mm/dd") }} | {{ item.task_name }}
+                                    </div>
+                                    <v-divider></v-divider>
+                                    <div>
+                                        タスク数：{{ getDashboardTasksByOneWeek().length }}
+                                    </div>
+                                    <div v-for="item in getDashboardTasksByOneWeek()" :key="item.task_id" style="font-size: 10px;">
+                                        {{ convertDatetimeFromUnixtime(item.created, "yyyy/mm/dd") }} | {{ item.task_name }}
+                                    </div>
                                 </v-card>
                             </v-col>
                             <v-col>
                                 <v-card>
-                                    <v-card-subtitle>直近30日間に作成されたタスクの完了率</v-card-subtitle>
+                                    <v-card-subtitle>直近1ヶ月間に作成されたタスクの完了率</v-card-subtitle>
+                                     {{ calcCompletedTaskRateByOneMonth() }} %
+                                    <div>
+                                        完了したタスク：{{ getDashboardCompletedTasksByOneMonth().length }}
+                                    </div>
+                                    <div style="font-size: 12px;" v-for="item in getDashboardCompletedTasksByOneMonth()" :key="item.task_id">
+                                        {{ convertDatetimeFromUnixtime(item.created, "yyyy/mm/dd") }} | {{ item.task_name }}
+                                    </div>
+                                    <v-divider></v-divider>
+                                    <div>
+                                        タスク数：{{ getDashboardTasksByCreatedOneMonth().length }}
+                                    </div>
+                                    <div style="font-size: 10px;" v-for="item in getDashboardTasksByCreatedOneMonth()" :key="item.task_id">
+                                        {{ convertDatetimeFromUnixtime(item.created, "yyyy/mm/dd") }} | {{ item.task_name }}
+                                    </div>
                                 </v-card>
                             </v-col>
                         </v-row>
@@ -28,12 +56,12 @@
                         <v-row class="mx-0">
                             <v-col>
                                 <v-card>
-                                    <v-card-subtitle>直近7日間に作成されたタスクの未完了率</v-card-subtitle>
+                                    <v-card-subtitle>直近１週間に作成されたタスクの未完了率</v-card-subtitle>
                                 </v-card>
                             </v-col>
                             <v-col>
                                 <v-card>
-                                    <v-card-subtitle>直近30日間に作成されたタスクの未完了率</v-card-subtitle>
+                                    <v-card-subtitle>直近1ヶ月間に作成されたタスクの未完了率</v-card-subtitle>
                                 </v-card>
                             </v-col>
                         </v-row>
@@ -83,8 +111,8 @@
                     <v-card class="px-4 pb-10">
                         <v-card-title class="pt-4 pb-0 px-0">期限が１週間以内のタスク</v-card-title>
                         <v-card
-                            v-for="(item, index) in params.near_deadline_tasks"
-                            :key="index"
+                            v-for="item in params.near_deadline_tasks"
+                            :key="item.task_id"
                             class="mb-4 mt-2"
                             hover
                         >
@@ -98,8 +126,8 @@
                     <v-card class="px-4 pb-10">
                         <v-card-title class="pt-4 pb-0 px-0">期限超過のタスク</v-card-title>
                         <v-card
-                             v-for="(item, index) in params.is_expired_tasks"
-                            :key="index"
+                             v-for="item in params.is_expired_tasks"
+                            :key="item.task_id"
                             class="mb-4 mt-2"
                             hover
                         >
@@ -113,8 +141,8 @@
                     <v-card class="px-4 pb-10">
                         <v-card-title class="pt-4 pb-0 px-0">本日期限のタスク</v-card-title>
                         <v-card
-                            v-for="(item, index) in params.today_deadline_tasks"
-                            :key="index"
+                            v-for="item in params.today_deadline_tasks"
+                            :key="item.task_id"
                             class="mb-4 mt-2"
                             hover
                         >
@@ -128,8 +156,8 @@
                     <v-card class="px-4 pb-10">
                         <v-card-title class="pt-4 pb-0 px-0">完了したタスク</v-card-title>
                         <v-card
-                            v-for="(item, index) in params.is_completed_tasks"
-                            :key="index"
+                            v-for="item in params.is_completed_tasks"
+                            :key="item.task_id"
                             class="mb-4 mt-2"
                             hover
                         >
@@ -176,11 +204,13 @@ export default {
     },
     methods: {
         async initTaskList() {
-            this.params.all_tasks = await this.getAllDashboardTask()
-            this.params.is_completed_tasks = this.getCompletedTasks()
+            this.params.all_tasks = await this.getAllDashboardTask();
+            this.params.is_completed_tasks = this.getCompletedTasks();
             this.params.today_deadline_tasks = this.getExpiredTasksToday();
             this.params.is_expired_tasks = this.getExpiredTasks();
-            this.params.near_deadline_tasks = this.getNearDeadlineTasksByOneWeek()
+            this.params.near_deadline_tasks = this.getNearDeadlineTasksByOneWeek();
+
+            this.params.is_created_tasks_week = this.getDashboardTasksByOneWeek()
         }
     }
 }
