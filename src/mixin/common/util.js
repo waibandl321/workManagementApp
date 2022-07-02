@@ -7,17 +7,19 @@ export default {
         copyJson(value) {
             return JSON.parse(JSON.stringify(value))
         },
-        // 日時取得と出力形式整形
+        // 日時取得(Unixtime形式)
         getCurrentUnixtime() {
             var a = new Date().getTime();
             var b = Math.floor( a / 1000 );
             return b
         },
+        // 日付をUnixtimeに変換
         convertUnixtimeFromDate(value) {
             const a = new Date(value).getTime();
             var b = Math.floor( a / 1000 );
             return b
         },
+        // Unixtimeをformat(ex. yyyy/mm/dd)に変換
         convertDatetimeFromUnixtime(value, format) {
             if(!value) {
                 return "未設定"

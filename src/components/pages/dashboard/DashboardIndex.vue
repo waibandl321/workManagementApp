@@ -3,204 +3,31 @@
         <Header :parents="parents" />
         <div class="pa-4 dashbord">
             <v-row>
-                <v-col>
-                    <v-card>
-                        <v-card-title class="pa-2">タスク完了率（週間・月間）</v-card-title>
-                        <v-card-subtitle class="pa-2">完了タスク数 / 作成タスク数 * 100</v-card-subtitle>
-                        <v-row class="mx-0">
-                            <v-col>
-                                <v-card>
-                                    <v-card-subtitle>直近１週間に作成されたタスクの完了率</v-card-subtitle>
-                                    {{ calcCompletedTaskRateBySevenDays() }} %
-                                    <div>
-                                        完了したタスク：{{ getDashboardCompletedTasksByOneWeek().length }}
-                                    </div>
-                                    <div v-for="item in getDashboardCompletedTasksByOneWeek()" :key="item.task_id + 'aaaa'" style="font-size: 10px;">
-                                        {{ convertDatetimeFromUnixtime(item.created, "yyyy/mm/dd") }} | {{ item.task_name }}
-                                    </div>
-                                    <v-divider></v-divider>
-                                    <div>
-                                        タスク数：{{ getDashboardTasksByCreatedOneWeek().length }}
-                                    </div>
-                                    <div v-for="item in getDashboardTasksByCreatedOneWeek()" :key="item.task_id + 'bbbb'" style="font-size: 10px;">
-                                        {{ convertDatetimeFromUnixtime(item.created, "yyyy/mm/dd") }} | {{ item.task_name }}
-                                    </div>
-                                </v-card>
-                            </v-col>
-                            <v-col>
-                                <v-card>
-                                    <v-card-subtitle>直近1ヶ月間に作成されたタスクの完了率</v-card-subtitle>
-                                     {{ calcCompletedTaskRateByOneMonth() }} %
-                                    <div>
-                                        完了したタスク：{{ getDashboardCompletedTasksByOneMonth().length }}
-                                    </div>
-                                    <div style="font-size: 12px;" v-for="item in getDashboardCompletedTasksByOneMonth()" :key="item.task_id + 'cccc'">
-                                        {{ convertDatetimeFromUnixtime(item.created, "yyyy/mm/dd") }} | {{ item.task_name }}
-                                    </div>
-                                    <v-divider></v-divider>
-                                    <div>
-                                        タスク数：{{ getDashboardTasksByCreatedOneMonth().length }}
-                                    </div>
-                                    <div style="font-size: 10px;" v-for="item in getDashboardTasksByCreatedOneMonth()" :key="item.task_id + 'dddd'">
-                                        {{ convertDatetimeFromUnixtime(item.created, "yyyy/mm/dd") }} | {{ item.task_name }}
-                                    </div>
-                                </v-card>
-                            </v-col>
-                        </v-row>
-                    </v-card>
-                </v-col>
-                <v-col>
-                    <v-card>
-                        <v-card-title class="pa-2">期限切れ率（週間・月間）</v-card-title>
-                        <v-card-subtitle class="pa-2">完了時の期限切れタスク数 / 作成タスク数 * 100</v-card-subtitle>
-                        <v-row class="mx-0">
-                            <v-col>
-                                <v-card>
-                                    <v-card-subtitle>直近１週間に作成されたタスクの未完了率</v-card-subtitle>
-                                    <v-card-subtitle>{{ calcExpiredTasksRateByOneWeek() }} %</v-card-subtitle>
-                                    <div>
-                                        期限切れタスク: {{ getExpiredTasksRateByOneWeek().length }}
-                                        <div v-for="item in getExpiredTasksRateByOneWeek()" :key="item.task_id + 'eeee'" style="font-size: 10px;">
-                                            {{ item.task_id }} | {{ item.task_name }}
-                                        </div>
-                                        タスク数：{{ getDashboardTasksByCreatedOneWeek().length }}
-                                        <div v-for="item in getDashboardTasksByCreatedOneWeek()" :key="item.task_id + 'gggg'" style="font-size: 10px;">
-                                            {{ item.task_id }} | {{ item.task_name }}
-                                        </div>
-                                    </div>
-                                </v-card>
-                            </v-col>
-                            <v-col>
-                                <v-card>
-                                    <v-card-subtitle>直近1ヶ月間に作成されたタスクの未完了率</v-card-subtitle>
-                                    <v-card-subtitle>{{ calcExpiredTasksRateByOneMonth() }} %</v-card-subtitle>
-                                    <div>
-                                        期限切れタスク: {{ getExpiredTasksRateByOneMonth().length }}
-                                        <div v-for="item in getExpiredTasksRateByOneMonth()" :key="item.task_id + 'ffff'" style="font-size: 10px;">
-                                            {{ item.task_id }} | {{ item.task_name }}
-                                        </div>
-                                        タスク数：{{ getDashboardTasksByCreatedOneMonth().length }}
-                                        <div v-for="item in getDashboardTasksByCreatedOneMonth()" :key="item.task_id + 'hhhh'" style="font-size: 10px;">
-                                            {{ item.task_id }} | {{ item.task_name }}
-                                        </div>
-                                    </div>
-                                </v-card>
-                            </v-col>
-                        </v-row>
-                    </v-card>
-                </v-col>
+                <CompletedTaskRate :params="params" />    
+                <ExpiredTaskRate :params="params" />
             </v-row>
-            <v-row>
-                <v-col>
-                    <v-card>
-                        <v-card-title class="pa-2">アクティブタスク数</v-card-title>
-                        <div class="px-4 pb-4">
-                            <v-card>
-                                <v-card-title class="justify-center task-number">
-                                    {{ params.all_tasks.length - params.is_completed_tasks.length }}
-                                </v-card-title>
-                            </v-card>
-                        </div>
-                    </v-card>
-                </v-col>
-                <v-col>
-                    <v-card>
-                        <v-card-title class="pa-2">期限切れタスク数</v-card-title>
-                        <div class="px-4 pb-4">
-                            <v-card>
-                                <v-card-title class="justify-center task-number">
-                                    {{ params.is_expired_tasks.length }}
-                                </v-card-title>
-                            </v-card>
-                        </div>
-                    </v-card>
-                </v-col>
-                <v-col>
-                    <v-card>
-                        <v-card-title class="pa-2">完了タスク数</v-card-title>
-                        <div class="px-4 pb-4">
-                            <v-card>
-                                <v-card-title class="justify-center task-number">
-                                    {{ params.is_completed_tasks.length }}
-                                </v-card-title>
-                            </v-card>
-                        </div>
-                    </v-card>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col>
-                    <v-card class="px-4 pb-10">
-                        <v-card-title class="pt-4 pb-0 px-0">期限が１週間以内のタスク</v-card-title>
-                        <v-card
-                            v-for="item in params.near_deadline_tasks"
-                            :key="item.task_id"
-                            class="mb-4 mt-2"
-                            hover
-                        >
-                            <v-card-text>
-                                {{ item.task_name }}
-                            </v-card-text>
-                        </v-card>
-                    </v-card>
-                </v-col>
-                <v-col>
-                    <v-card class="px-4 pb-10">
-                        <v-card-title class="pt-4 pb-0 px-0">期限超過のタスク</v-card-title>
-                        <v-card
-                             v-for="item in params.is_expired_tasks"
-                            :key="item.task_id"
-                            class="mb-4 mt-2"
-                            hover
-                        >
-                            <v-card-text>
-                                {{ convertDatetimeFromUnixtime(item.task_deadline, "yyyy/mm/dd") }} : {{ item.task_name }}
-                            </v-card-text>
-                        </v-card>
-                    </v-card>
-                </v-col>
-                <v-col>
-                    <v-card class="px-4 pb-10">
-                        <v-card-title class="pt-4 pb-0 px-0">本日期限のタスク</v-card-title>
-                        <v-card
-                            v-for="item in params.today_deadline_tasks"
-                            :key="item.task_id"
-                            class="mb-4 mt-2"
-                            hover
-                        >
-                            <v-card-text>
-                                {{ convertDatetimeFromUnixtime(item.task_deadline, "yyyy/mm/dd") }} : {{ item.task_name }}
-                            </v-card-text>
-                        </v-card>
-                    </v-card>
-                </v-col>
-                <v-col>
-                    <v-card class="px-4 pb-10">
-                        <v-card-title class="pt-4 pb-0 px-0">完了したタスク</v-card-title>
-                        <v-card
-                            v-for="item in params.is_completed_tasks"
-                            :key="item.task_id"
-                            class="mb-4 mt-2"
-                            hover
-                        >
-                            <v-card-text>
-                                {{ item.task_id }} : {{ item.task_name }}
-                            </v-card-text>
-                        </v-card>
-                    </v-card>
-                </v-col>
-            </v-row>
+            <TaskLength :params="params" />
+            <TaskList :params="params" />
         </div>
     </div>
 </template>
 
 <script>
 import Header from '@/components/common/Header'
+import CompletedTaskRate from './parts/CompletedTaskRate.vue'
+import ExpiredTaskRate from './parts/ExpiredTaskRate.vue'
+import TaskLength from './parts/TaskLength.vue'
+import TaskList from './parts/TaskList.vue'
 import dashboardMixin from './dashbord.js'
 import taskMixin from '@/mixin/api/task.js'
+
 export default {
     components: {
         Header,
+        CompletedTaskRate,
+        ExpiredTaskRate,
+        TaskLength,
+        TaskList,
     },
     mixins: [dashboardMixin, taskMixin],
     data: () => ({
@@ -245,7 +72,5 @@ export default {
 .dashbord >>> .v-card__title {
     font-size: 16px;
 }
-.dashbord .task-number.v-card__title {
-    font-size: 32px;
-}
+
 </style>

@@ -45,7 +45,7 @@ export default {
         calcCompletedTaskRateBySevenDays() {
             const r = this.getDashboardCompletedTasksByOneWeek()
             const s = this.getDashboardTasksByCreatedOneWeek();
-            return r.length / s.length * 100
+            return Math.round(r.length / s.length * 100)
         },
         // 直近1ヶ月で作成されたタスク
         getDashboardTasksByCreatedOneMonth() {
@@ -72,7 +72,7 @@ export default {
         calcCompletedTaskRateByOneMonth() {
             const r = this.getDashboardCompletedTasksByOneMonth()
             const s = this.getDashboardTasksByCreatedOneMonth();
-            return r.length / s.length * 100
+            return Math.round(r.length / s.length * 100)
         },
         
 
@@ -101,13 +101,13 @@ export default {
         calcExpiredTasksRateByOneWeek() {
             const r = this.getExpiredTasksRateByOneWeek()
             const s = this.getDashboardTasksByCreatedOneWeek();
-            return r.length / s.length * 100
+            return Math.round(r.length / s.length * 100)
         },
         // 一ヶ月間のタスク期限切れ率：期限切れタスク数 / 一ヶ月のタスク作成数 * 100
         calcExpiredTasksRateByOneMonth() {
             const r = this.getExpiredTasksRateByOneMonth()
             const s = this.getDashboardTasksByCreatedOneMonth();
-            return r.length / s.length * 100
+            return Math.round(r.length / s.length * 100)
         },
 
         // 期日設定がされている＋期限が直近7日間以内のタスク（土・日・祝日を含む）
