@@ -1,7 +1,10 @@
 <template>
     <div class="body">
-        <Header :parents="parents" />
-        <div class="pa-4 dashbord">
+        <Header :parents="parents" /> 
+        <div
+            class="pa-4 dashbord"
+            v-if="!params.loading"
+        >
             <v-row>
                 <CompletedTaskRate :params="params" />    
                 <ExpiredTaskRate :params="params" />
@@ -11,11 +14,11 @@
                 :params="params" 
                 :clickTaskList="clickTaskList"
             />
+            <DashboardTaskDetail
+                :params="params"
+                :closeDetail="closeDetail"
+            />
         </div>
-        <DashboardTaskDetail
-            :params="params"
-            :closeDetail="closeDetail"
-        />
     </div>
 </template>
 
@@ -39,7 +42,7 @@ export default {
         ExpiredTaskRate,
         TaskLength,
         DashboardTaskList,
-        DashboardTaskDetail
+        DashboardTaskDetail,
     },
     mixins: [dashboardMixin, taskGlobalMixin, taskLocalMixin],
     data: () => ({
@@ -47,11 +50,17 @@ export default {
             user_info: {}
         },
         params: {
+            loading: false,
+            success: "",
+            error: "",
+            // 詳細情報
             detail_mode: false,
             viewer: {},
             subtask_list: [],
             files: [],
-
+            task_status_list: {},
+            task_priorities: {},
+            // ダッシュボード用タスクデータ
             all_tasks: [],
             is_completed_tasks: [],
             is_expired_tasks: [],
@@ -59,7 +68,6 @@ export default {
             is_updated_tasks: [],
             near_deadline_tasks: [],
             today_deadline_tasks: [],
-
             is_created_tasks_week: [],
             is_created_tasks_month: [],
         },
@@ -70,13 +78,19 @@ export default {
     },
     methods: {
         async initTaskList() {
-            this.params.all_tasks = await this.getAllDashboardTask();
-            this.params.is_completed_tasks = this.getCompletedTasks();
-            this.params.today_deadline_tasks = this.getExpiredTasksToday();
-            this.params.is_expired_tasks = this.getExpiredTasks();
-            this.params.near_deadline_tasks = this.getNearDeadlineTasksByOneWeek();
-
-            this.params.is_created_tasks_week = this.getDashboardTasksByCreatedOneWeek()
+            this.params.loading = true;
+            try {
+                this.params.all_tasks = await this.getAllDashboardTask();
+                this.params.is_completed_tasks = this.getCompletedTasks();
+                this.params.today_deadline_tasks = this.getExpiredTasksToday();
+                this.params.is_expired_tasks = this.getExpiredTasks();
+                this.params.near_deadline_tasks = this.getNearDeadlineTasksByOneWeek();
+                this.params.is_created_tasks_week = this.getDashboardTasksByCreatedOneWeek();
+                this.params.loading = false;
+            } catch (error) {
+                console.log(error);
+                this.params.loading = false;
+            }
         },
         async clickTaskList(task) {
             this.params.viewer = task;
@@ -85,7 +99,10 @@ export default {
             this.params.detail_mode = true;
         },
         closeDetail() {
-            this.params.detail_mode = false
+            this.initTaskList();
+            this.params.error = "";
+            this.params.success = "";
+            this.params.detail_mode = false;
         },
     }
 }
