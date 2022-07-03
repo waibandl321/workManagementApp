@@ -2,7 +2,6 @@
     <v-dialog
         v-model="params.detail_mode"
         persistent
-        fullscreen
         max-width="1024px"
     >
         <v-toolbar

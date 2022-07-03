@@ -7,8 +7,15 @@
                 <ExpiredTaskRate :params="params" />
             </v-row>
             <TaskLength :params="params" />
-            <TaskList :params="params" />
+            <DashboardTaskList
+                :params="params" 
+                :clickTaskList="clickTaskList"
+            />
         </div>
+        <DashboardTaskDetail
+            :params="params"
+            :closeDetail="closeDetail"
+        />
     </div>
 </template>
 
@@ -18,9 +25,12 @@ import Header from '@/components/common/Header'
 import CompletedTaskRate from './parts/CompletedTaskRate.vue'
 import ExpiredTaskRate from './parts/ExpiredTaskRate.vue'
 import TaskLength from './parts/TaskLength.vue'
-import TaskList from './parts/TaskList.vue'
+import DashboardTaskList from './parts/DashboardTaskList.vue'
+import DashboardTaskDetail from '@/components/pages/task/TaskDetail.vue'
+
 import dashboardMixin from './dashbord.js'
-import taskMixin from '@/mixin/api/task.js'
+import taskGlobalMixin from '@/mixin/api/task.js'
+import taskLocalMixin from '@/components/pages/task/task.js'
 
 export default {
     components: {
@@ -28,14 +38,20 @@ export default {
         CompletedTaskRate,
         ExpiredTaskRate,
         TaskLength,
-        TaskList,
+        DashboardTaskList,
+        DashboardTaskDetail
     },
-    mixins: [dashboardMixin, taskMixin],
+    mixins: [dashboardMixin, taskGlobalMixin, taskLocalMixin],
     data: () => ({
         parents: {
             user_info: {}
         },
         params: {
+            detail_mode: false,
+            viewer: {},
+            subtask_list: [],
+            files: [],
+
             all_tasks: [],
             is_completed_tasks: [],
             is_expired_tasks: [],
@@ -46,7 +62,7 @@ export default {
 
             is_created_tasks_week: [],
             is_created_tasks_month: [],
-        }
+        },
     }),
     created() {
         this.parents.user_info = this.storeGetAccountInfo()
@@ -61,7 +77,16 @@ export default {
             this.params.near_deadline_tasks = this.getNearDeadlineTasksByOneWeek();
 
             this.params.is_created_tasks_week = this.getDashboardTasksByCreatedOneWeek()
-        }
+        },
+        async clickTaskList(task) {
+            this.params.viewer = task;
+            this.params.subtask_list = await this.getSubtaskList(task)
+            this.params.files = this.getFileList()
+            this.params.detail_mode = true;
+        },
+        closeDetail() {
+            this.params.detail_mode = false
+        },
     }
 }
 </script>
