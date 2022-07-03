@@ -1,9 +1,14 @@
 <template>
     <div class="body">
-        <Header :parents="parents" /> 
+        <Header :parents="parents" />
+        <v-progress-linear
+            v-if="params.loading"
+            indeterminate
+            color="primary"
+        ></v-progress-linear>
         <div
             class="pa-4 dashbord"
-            v-if="!params.loading"
+            v-else
         >
             <v-row>
                 <CompletedTaskRate :params="params" />    
@@ -27,10 +32,8 @@ import Header from '@/components/common/Header'
 import CompletedTaskRate from './parts/DashboardCompletedTaskRate.vue'
 import ExpiredTaskRate from './parts/DashboardExpiredTaskRate.vue'
 import TaskLength from './parts/DashboardTaskLength.vue'
-
 import DashboardTaskList from './parts/DashboardTaskList.vue'
 import DashboardTaskDetail from '@/components/pages/task/TaskDetail.vue'
-
 import dashboardMixin from './dashbord.js'
 import taskGlobalMixin from '@/mixin/api/task.js'
 import taskLocalMixin from '@/components/pages/task/task.js'
