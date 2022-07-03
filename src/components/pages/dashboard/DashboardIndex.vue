@@ -23,11 +23,11 @@
 </template>
 
 <script>
-
 import Header from '@/components/common/Header'
-import CompletedTaskRate from './parts/CompletedTaskRate.vue'
-import ExpiredTaskRate from './parts/ExpiredTaskRate.vue'
-import TaskLength from './parts/TaskLength.vue'
+import CompletedTaskRate from './parts/DashboardCompletedTaskRate.vue'
+import ExpiredTaskRate from './parts/DashboardExpiredTaskRate.vue'
+import TaskLength from './parts/DashboardTaskLength.vue'
+
 import DashboardTaskList from './parts/DashboardTaskList.vue'
 import DashboardTaskDetail from '@/components/pages/task/TaskDetail.vue'
 
