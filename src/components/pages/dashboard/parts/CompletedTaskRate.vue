@@ -1,10 +1,10 @@
 <template>
     <v-col>
-        <v-card class="pb-6 px-2 pt-2">
-            <v-card-title class="pa-2">タスク完了率（週間・月間）</v-card-title>
-            <v-card-subtitle class="pa-2">完了タスク数 / 作成タスク数 * 100</v-card-subtitle>
-            <v-row class="mx-0">
-                <v-col col="6">
+        <v-card class="pa-4">
+            <v-card-title class="dashboard-card-title">タスク完了率（週間・月間）</v-card-title>
+            <v-card-subtitle class="px-0 mt-2">完了タスク数 / 作成タスク数 * 100</v-card-subtitle>
+            <v-row>
+                <v-col>
                     <v-card>
                         <apexchart
                             width="300"
@@ -22,7 +22,7 @@
                         </div>
                     </v-card>
                 </v-col>
-                <v-col col="6">
+                <v-col>
                     <v-card>
                         <apexchart
                             width="300"
@@ -58,6 +58,7 @@ export default {
     mixins: [dashboardMixin],
     data: () => ({
         graph_options: {
+            colors: ["#31A85C"],
             chart: {
                 height: 350,
                 type: 'radialBar',
@@ -68,17 +69,20 @@ export default {
                     speed: 600,
                     animateGradually: {
                         enabled: true,
-                        delay: 150
+                        delay: 200
                     },
                     dynamicAnimation: {
                         enabled: true,
-                        speed: 250
+                        speed: 350
                     }
                 },
             },
             labels: ['完了率'],
         },
     }),
+    created() {
+        this.init()
+    },
     methods: {
         setGraphDataByCompletedTasksByOneWeek() {
             let result =  this.calcCompletedTaskRateBySevenDays()
@@ -87,14 +91,23 @@ export default {
         setGraphDataByCompletedTasksByMonth() {
             let result =  this.calcCompletedTaskRateByOneMonth()
             return [result]
+        },
+        init() {
+            console.log(this.calcCompletedTaskRateBySevenDays());
         }
     }
 }
 </script>
 
-<style>
+<style scoped>
 .apexcharts-text.apexcharts-datalabel-value {
     font-size: 18px;
     font-weight: bold;
+}
+.dashboard-card-title {
+    padding-left: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-left: 4px solid #31A85C;
 }
 </style>

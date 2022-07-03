@@ -73,8 +73,4 @@ export default {
 .dashbord {
     background-color: #f8f5f5;
 }
-.dashbord >>> .v-card__title {
-    font-size: 16px;
-}
-
 </style>

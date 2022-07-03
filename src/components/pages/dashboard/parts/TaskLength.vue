@@ -1,11 +1,11 @@
 <template>
     <v-row>
         <v-col>
-            <v-card>
-                <v-card-title class="pa-2">アクティブタスク数</v-card-title>
-                <div class="px-4 pb-4">
-                    <v-card>
-                        <v-card-title class="justify-center task-number">
+            <v-card class="pa-4">
+                <v-card-title class="pt-0 px-0">アクティブタスク数</v-card-title>
+                <div>
+                    <v-card color="#359EFA" dark>
+                        <v-card-title class="justify-center" style="font-size: 32px;">
                             {{ params.all_tasks.length - params.is_completed_tasks.length }}
                         </v-card-title>
                     </v-card>
@@ -13,11 +13,11 @@
             </v-card>
         </v-col>
         <v-col>
-            <v-card>
-                <v-card-title class="pa-2">期限切れタスク数</v-card-title>
-                <div class="px-4 pb-4">
-                    <v-card>
-                        <v-card-title class="justify-center task-number">
+            <v-card class="pa-4">
+                <v-card-title class="pt-0 px-0">期限切れタスク数</v-card-title>
+                <div>
+                    <v-card color="#EB3E79" dark>
+                        <v-card-title class="justify-center" style="font-size: 32px;">
                             {{ params.is_expired_tasks.length }}
                         </v-card-title>
                     </v-card>
@@ -25,11 +25,11 @@
             </v-card>
         </v-col>
         <v-col>
-            <v-card>
-                <v-card-title class="pa-2">完了タスク数</v-card-title>
-                <div class="px-4 pb-4">
-                    <v-card>
-                        <v-card-title class="justify-center task-number">
+            <v-card class="pa-4">
+                <v-card-title class="pt-0 px-0">完了タスク数</v-card-title>
+                <div>
+                    <v-card color="#31A85C" dark>
+                        <v-card-title class="justify-center" style="font-size: 32px;">
                             {{ params.is_completed_tasks.length }}
                         </v-card-title>
                     </v-card>
@@ -46,8 +46,6 @@ export default {
 }
 </script>
 
-<style>
-.dashbord .task-number.v-card__title {
-    font-size: 32px;
-}
+<style scoped>
+
 </style>

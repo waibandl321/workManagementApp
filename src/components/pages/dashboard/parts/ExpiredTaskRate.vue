@@ -1,9 +1,9 @@
 <template>
     <v-col>
-        <v-card class="pb-6 px-2 pt-2">
-            <v-card-title class="pa-2">期限切れ率（週間・月間）</v-card-title>
-            <v-card-subtitle class="pa-2">完了時の期限切れタスク数 / 作成タスク数 * 100</v-card-subtitle>
-            <v-row class="mx-0">
+        <v-card class="pa-4">
+            <v-card-title class="dashboard-card-title">期限切れ率（週間・月間）</v-card-title>
+            <v-card-subtitle class="px-0 mt-2">完了時の期限切れタスク数 / 作成タスク数 * 100</v-card-subtitle>
+            <v-row>
                 <v-col>
                     <v-card>
                         <apexchart
@@ -91,9 +91,15 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
 .apexcharts-text.apexcharts-datalabel-value {
     font-size: 18px;
     font-weight: bold;
+}
+.dashboard-card-title {
+    padding-left: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-left: 4px solid rgba(233, 30, 99, 0.85);;
 }
 </style>
