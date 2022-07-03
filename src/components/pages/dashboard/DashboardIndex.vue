@@ -2,6 +2,7 @@
     <div class="body">
         <Header :parents="parents" />
         <div class="pa-4 dashbord">
+            <apexchart width="380" type="donut" :options="options" :series="series"></apexchart>
             <v-row>
                 <CompletedTaskRate :params="params" />    
                 <ExpiredTaskRate :params="params" />
@@ -13,6 +14,11 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import VueApexCharts from 'vue-apexcharts'
+Vue.use(VueApexCharts)
+Vue.component('apexchart', VueApexCharts)
+
 import Header from '@/components/common/Header'
 import CompletedTaskRate from './parts/CompletedTaskRate.vue'
 import ExpiredTaskRate from './parts/ExpiredTaskRate.vue'
@@ -31,6 +37,8 @@ export default {
     },
     mixins: [dashboardMixin, taskMixin],
     data: () => ({
+        options: {},
+        series: [44, 55, 41, 17, 15],
         parents: {
             user_info: {}
         },
