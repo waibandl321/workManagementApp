@@ -433,29 +433,16 @@ export default {
             this.file_loading = true
             this.file_select = false
             const files = e.target.files || e.dataTransfer.files
-
-            if(files.length > 0) {
-                const uploadPromise = new Promise((resolve, reject) => {
-                    resolve();
-                    reject()
-                });
-                
-                uploadPromise
-                .then(() => {
-                    return this.storageUploadFunctionFile(files[0], this.params.viewer.task_id)
-                })
-                .then((res) => {
-                    return this.firebaseSaveFile(res)
-                })
-                .then(() => {
-                    this.file_loading = false
-                    this.params.files = this.getFileList()
-                    this.params.success = "ファイルをアップロードしました。";
-                })
-                .catch((error) => {
-                    this.params.error = "ファイルアップロードに失敗しました。";
-                    console.log(error);
-                })
+            
+            try {
+                const result = await this.storageUploadFunctionFile(files[0], this.params.viewer.task_id)
+                await this.firebaseSaveFile(result)
+                this.file_loading = false
+                this.params.files = this.getFileList()
+                this.params.success = "ファイルをアップロードしました。";    
+            } catch (error) {
+                this.params.error = "ファイルアップロードに失敗しました。";
+                console.log(error);
             }
         },
         // 単ーファイル削除
