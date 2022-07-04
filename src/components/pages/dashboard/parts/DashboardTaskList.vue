@@ -63,7 +63,10 @@
                 >
                     本日期限のタスクはありません。
                 </div>
-                <div class="dashboard-list-wrap">
+                <div
+                    v-else
+                    class="dashboard-list-wrap"
+                >
                     <v-card
                         v-for="item in params.today_deadline_tasks"
                         :key="item.task_id"

@@ -81,20 +81,23 @@ export default {
         },
     }),
     created() {
-        this.init()
+        
     },
     methods: {
         setGraphDataByCompletedTasksByOneWeek() {
             let result =  this.calcCompletedTaskRateBySevenDays()
+            if(!result) {
+                return [0]    
+            }
             return [result]
         },
         setGraphDataByCompletedTasksByMonth() {
             let result =  this.calcCompletedTaskRateByOneMonth()
+            if(!result) {
+                return [0]    
+            }
             return [result]
         },
-        init() {
-            console.log(this.calcCompletedTaskRateBySevenDays());
-        }
     }
 }
 </script>

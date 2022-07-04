@@ -158,5 +158,25 @@ export default {
         async outputDownloadPath(filename) {
             return await this.storageDownloadPath( this.storeGetFirebaseUid() + '/' + filename )
         },
+        // 物理削除（全てのファイル）
+        async execDeleteAllFile() {
+            this.file_loading = true;
+            try {
+                for(const file of this.params.files) {
+                    const result = await this.storageDeleteFile(file[1])
+                    if(result) {
+                        await this.firebaseDeleteFile(file[1])
+                    }
+                }
+                this.params.files = this.getFileList()
+                this.params.success = "全てのファイルを削除しました。";
+            } catch (error) {
+                console.log(error);
+                this.params.error = "ファイル削除中にエラーが発生しました。時間をおいてもう一度やり直してください。"
+            }
+            this.file_loading = false;
+            this.delete_options = [];
+            this.delete_modal = false;
+        },
     }
 }

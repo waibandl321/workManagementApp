@@ -143,17 +143,23 @@
             :delete_title="delete_title"
             :delete_options="delete_options"
         />
+        <!-- ローディング -->
+        <ExecLoading
+            v-if="params.loading"
+        />
     </div>
 </template>
 
 <script>
 import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
+import ExecLoading from "@/components/common/ExecLoading.vue"
 import draggable from 'vuedraggable'
 import myMixin from "./task.js"
 
 export default {
     components: {
         draggable,
+        ExecLoading,
         ConfirmDelete
     },
     mixins: [myMixin],
@@ -190,8 +196,10 @@ export default {
 
     methods: {
         async initItems() {
+            this.params.loading = true;
             this.params.items = await this.readTaskList()
-            this.filterList()
+            this.filterList();
+            this.params.loading = false;
         },
         // 一覧クリック
         async recordClick(task) {
@@ -275,7 +283,7 @@ export default {
         execDeleteTask() {
             this.apiDeleteTask(this.delete_item)
             this.deleteSubtaskHasTask(this.delete_item)
-            this.deleteAllFile(this.params.files)
+            this.execDeleteAllFile()
             this.delete_modal = false
             this.closeDetail()
             this.delete_options = []
@@ -296,5 +304,17 @@ export default {
     position: absolute;
     right: 0;
     bottom: 12px;
+}
+.loading-overlay {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,.5);
 }
 </style>

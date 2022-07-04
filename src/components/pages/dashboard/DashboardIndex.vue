@@ -117,5 +117,7 @@ export default {
 }
 .dashbord {
     background-color: #f8f5f5;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
 }
 </style>

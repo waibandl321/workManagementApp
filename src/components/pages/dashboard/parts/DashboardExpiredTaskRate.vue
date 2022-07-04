@@ -82,10 +82,16 @@ export default {
     methods: {
         setGraphExpiredValueByOneWeek() {
             let result =  this.calcExpiredTasksRateByOneWeek()
+            if(!result) {
+                return [0]
+            }
             return [result]
         },
         setGraphExpiredValueDataByMonth() {
             let result =  this.calcExpiredTasksRateByOneMonth()
+            if(!result) {
+                return [0]
+            }
             return [result]
         }
     }
