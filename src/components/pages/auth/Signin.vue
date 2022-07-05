@@ -135,67 +135,44 @@ export default {
             const valid = this.$refs.form.validate();
             if(valid) {
                 this.loading = true
-                await this.firebaseEmailSignin(this.email, this.password)
-                .then((uid) => {
-                    console.log("ストアにUIDセット");
-                    this.storeSetFirebaseUid(uid)
-                    return uid
-                })
-                .then((uid) => {
-                    console.log("アカウント存在チェック");
-                    return this.isExistAccount(uid)
-                })
-                .then((account) => {
+                try {
+                    const uid = await this.firebaseEmailSignin(this.email, this.password);
+                    this.storeSetFirebaseUid(uid);
+                    const account = await this.isExistAccount(uid);
                     if(account) {
-                        console.log("ストアにアカウント情報セット");
-                        this.storeSetAccountInfo(account)
-                        console.log("サインイン後ページ遷移");
-                        this.pageMove('/')
-                        this.loading = false
+                        this.storeSetAccountInfo(account);
+                        this.pageMove('/');
                     } else {
                         this.storeSetAccountInfo(null)
-                        console.log("アカウント情報が存在しないので、アカウント登録画面に遷移");
                         this.pageMove('/account')
-                        this.loading = false
                     }
-                })
-                .catch((error) => {
+                    this.loading = false;
+                } catch (error) {
                     console.log(error);
-                    this.loading = false
+                    this.loading = false;
                     this.error = "認証に失敗しました。もう一度やり直してください。"
-                })
+                }
             }
         },
         async externalSigninByGoogle() {
             this.loading = true
-            await this.firebaseGoogleAuth()
-            .then((uid) => {
-                console.log("ストアにUIDセット");
+            try {
+                const uid = await this.firebaseGoogleAuth();
                 this.storeSetFirebaseUid(uid)
-                return uid
-            })
-            .then((uid) => {
-                console.log("アカウント存在チェック");
-                return this.isExistAccount(uid)
-            })
-            .then((account) => {
+                const account = await this.isExistAccount(uid)
                 if(account) {
-                    console.log("ストアにアカウント情報セット");
                     this.storeSetAccountInfo(account)
-                    console.log("サインイン後ページ遷移");
                     this.pageMove('/')
-                    this.loading = false
                 } else {
                     this.storeSetAccountInfo(null)
-                    console.log("アカウント情報が存在しないので、アカウント登録画面に遷移");
                     this.pageMove('/account')
                 }
-            })
-            .catch((error) => {
+                this.loading = false
+            } catch (error) {
                 console.log(error);
                 this.error = "外部認証に失敗しました。"
-            })
-            this.loading = false
+                this.loading = false
+            }
         },
         async isExistAccount(uid) {
             return await this.apiGetAccount(uid)

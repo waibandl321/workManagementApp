@@ -435,9 +435,9 @@ export default {
             
             try {
                 const result = await this.storageUploadTaskFile(...files, this.params.viewer.task_id)
-                await this.firebaseSaveFile(result)
-                this.params.success = "ファイルをアップロードしました。";
+                await this.firebaseSaveFile(result);
                 this.params.files = this.getFileList();
+                this.params.success = "ファイルをアップロードしました。";
                 this.file_loading = false;
             } catch (error) {
                 this.params.error = "ファイルアップロードに失敗しました。";
