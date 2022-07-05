@@ -19,7 +19,7 @@ export default {
         },
 
         // 成功した場合、アップロードしたファイルのメタデータを返す
-        async storageUploadFunctionFile(file, id) {
+        async storageUploadTaskFile(file, id) {
             const db_id = this.createRandomId()
             const storageRef = ref( getStorage(), this.initStorageFilePath(file.name) );
             

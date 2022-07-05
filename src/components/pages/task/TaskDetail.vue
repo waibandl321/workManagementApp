@@ -313,13 +313,13 @@
                                 <img :src="file[1].download_path" width="40">
                             </td>
                             <td>{{ file[1].name }}</td>
-                            <td>{{ file[1].size }}</td>
+                            <td>{{ convertUnitSize(file[1].size) }}</td>
                             <td>{{ file[1].contentType }}</td>
                             <td class="operation-td">
                                 <v-btn
                                     link
                                     text
-                                    :href="file[1].download_url"
+                                    :href="file[1].download_path"
                                     target="_blank" rel="noopener noreferrer"
                                     >
                                         <v-icon>mdi-open-in-new</v-icon>
@@ -431,15 +431,14 @@ export default {
         // ファイルアップロード
         async onFileChange(e) {
             this.file_loading = true
-            this.file_select = false
             const files = e.target.files || e.dataTransfer.files
             
             try {
-                const result = await this.storageUploadFunctionFile(files[0], this.params.viewer.task_id)
+                const result = await this.storageUploadTaskFile(...files, this.params.viewer.task_id)
                 await this.firebaseSaveFile(result)
-                this.file_loading = false
-                this.params.files = this.getFileList()
                 this.params.success = "ファイルをアップロードしました。";
+                this.params.files = this.getFileList();
+                this.file_loading = false;
             } catch (error) {
                 this.params.error = "ファイルアップロードに失敗しました。";
                 this.file_loading = false;
@@ -456,7 +455,7 @@ export default {
             this.delete_file = file;
             this.delete_modal = true;
         },
-        // 物理削除
+        // ファイル物理削除
         async execDeleteFile() {
             this.file_loading = true;
             const storage_result = await this.storageDeleteFile(this.delete_file)

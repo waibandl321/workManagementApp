@@ -154,10 +154,6 @@ export default {
                     break;
             }
         },
-        // ファイルのダウンロードパスを返す
-        async outputDownloadPath(filename) {
-            return await this.storageDownloadPath( this.storeGetFirebaseUid() + '/' + filename )
-        },
         // 物理削除（全てのファイル）
         async execDeleteAllFile() {
             this.file_loading = true;
