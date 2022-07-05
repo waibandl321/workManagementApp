@@ -305,12 +305,12 @@
                         ></v-progress-circular>
                     </div>
                 </template>
-                <template v-else>
                 <!-- ファイル一覧 -->
+                <template v-else>
                     <table class="file-table">
                         <tr v-for="(file, i) in params.files" :key="i">
                             <td>
-                                <img :src="outputDownloadPath(file[1].name)" width="40">
+                                <img :src="file[1].download_path" width="40">
                             </td>
                             <td>{{ file[1].name }}</td>
                             <td>{{ file[1].size }}</td>
@@ -439,9 +439,10 @@ export default {
                 await this.firebaseSaveFile(result)
                 this.file_loading = false
                 this.params.files = this.getFileList()
-                this.params.success = "ファイルをアップロードしました。";    
+                this.params.success = "ファイルをアップロードしました。";
             } catch (error) {
                 this.params.error = "ファイルアップロードに失敗しました。";
+                this.file_loading = false;
                 console.log(error);
             }
         },

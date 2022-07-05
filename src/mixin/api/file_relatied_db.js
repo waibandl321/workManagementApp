@@ -15,6 +15,7 @@ export default {
                     name: data.name,
                     size: data.size,
                     contentType: data.contentType,
+                    download_path: data.download_path,
                     task_id: data.customMetadata.task_id,
                 }
             

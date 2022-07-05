@@ -20,13 +20,14 @@ export default {
 
         // 成功した場合、アップロードしたファイルのメタデータを返す
         async storageUploadFunctionFile(file, id) {
-            console.log(file);
             const db_id = this.createRandomId()
             const storageRef = ref( getStorage(), this.initStorageFilePath(file.name) );
             
             return await uploadBytes(storageRef, file, customMetadata(db_id, id))
-                .then((snapshot) => {
-                    return this.storageFileMetadata(snapshot.ref)
+                .then( async (snapshot) => {
+                    // ダウンロードパスを取得
+                    const download_path = await this.storageDownloadPath(snapshot.ref);
+                    return this.storageFileMetadata(snapshot.ref, download_path)
                 })
                 .catch((error) => {
                     console.log(error);
@@ -53,10 +54,11 @@ export default {
                 })
         },
 
-        async storageFileMetadata(data) {
+        async storageFileMetadata(data, download_path) {
             const forestRef = ref( getStorage(), data.fullPath );
             return await getMetadata(forestRef)
             .then((metadata) => {
+                metadata.download_path = download_path
                 return metadata
             })
             .catch((error) => {
