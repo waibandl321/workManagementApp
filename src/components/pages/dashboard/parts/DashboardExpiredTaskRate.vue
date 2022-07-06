@@ -68,11 +68,11 @@ export default {
                     speed: 600,
                     animateGradually: {
                         enabled: true,
-                        delay: 150
+                        delay: 200
                     },
                     dynamicAnimation: {
                         enabled: true,
-                        speed: 250
+                        speed: 350
                     }
                 },
             },

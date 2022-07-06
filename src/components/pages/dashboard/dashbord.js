@@ -48,14 +48,12 @@ export default {
         },
         // 直近7日間で完了したタスク：7日以内の完了タスク / 直近7日間で作成されたタスク * 100
         calcCompletedTaskRateBySevenDays() {
-            console.log("calcCompletedTaskRateBySevenDays");
             const r = this.getDashboardCompletedTasksByOneWeek()
             const s = this.getDashboardTasksByCreatedOneWeek();
             return Math.round(r.length / s.length * 100)
         },
         // 直近1ヶ月で作成されたタスク
         getDashboardTasksByCreatedOneMonth() {
-            console.log("getDashboardTasksByCreatedOneMonth");
             let result = this.items;
             result = result.filter((v) => 
                 // 本日以前に作成

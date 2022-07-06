@@ -1,6 +1,7 @@
 <template>
-    <div>
+    <div class="pa-6 account-edit">
         <MessageViewer
+            v-if="params.success | params.error"
             :params="params"
             class="mb-6"
         />
@@ -25,17 +26,20 @@
                 </v-row>                
             </v-card-text>
             <v-divider />
-            <v-card-actions>
+            <v-card-actions class="pa-4">
                 <v-spacer />
                 <v-btn
-                color="primary"
-                @click="accountUpdate()"
+                    color="primary"
+                    @click="accountUpdate()"
+                    large
                 >
                     更新
                 </v-btn>
                 <v-btn
                     outlined
                     @click="cancel()"
+                    large
+                    class="ml-4"
                 >
                     閉じる
                 </v-btn>
@@ -55,13 +59,8 @@ export default {
     props: {
         params: Object
     },
-    data: () => ({
-        
-        
-    }),
-    created() {
-        
-    },
+    data: () => ({}),
+    created() {},
     methods: {
         accountUpdate() {
             this.apiAccountUpdate(this.params.account_info);
@@ -71,3 +70,4 @@ export default {
     }
 }
 </script>
+<style scoped src="./scoped.css"></style>

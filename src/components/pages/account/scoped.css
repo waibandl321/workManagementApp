@@ -16,3 +16,8 @@
 .card .v-sheet.v-card {
     box-shadow: none;
 }
+.account-edit {
+    background-color: #f8f5f5;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+}

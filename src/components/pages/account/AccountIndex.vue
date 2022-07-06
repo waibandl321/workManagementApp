@@ -12,15 +12,11 @@
                 :params="params"
             />
         </div>
-        <div
-            class="pa-6"
+        <!-- 更新 -->
+        <AccountUpdate
             v-else
-        >
-            <!-- 更新 -->
-            <AccountUpdate
-                :params="params"
-            />
-        </div>
+            :params="params"
+        />
     </div>
 </template>
 
