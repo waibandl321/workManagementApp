@@ -1,7 +1,6 @@
 export default {
     data: () => ({
         today: null,
-        // mixin内で使用するタスク一覧
         items: [],
         
     }),
@@ -15,6 +14,9 @@ export default {
     methods: {
         async getAllDashboardTask() {
             let result = await this.apiGetTaskList()
+            if(!result) {
+                return []
+            }
             result = Object.keys(result)
             .map((key) => {
                 return result[key]
@@ -46,12 +48,14 @@ export default {
         },
         // 直近7日間で完了したタスク：7日以内の完了タスク / 直近7日間で作成されたタスク * 100
         calcCompletedTaskRateBySevenDays() {
+            console.log("calcCompletedTaskRateBySevenDays");
             const r = this.getDashboardCompletedTasksByOneWeek()
             const s = this.getDashboardTasksByCreatedOneWeek();
             return Math.round(r.length / s.length * 100)
         },
         // 直近1ヶ月で作成されたタスク
         getDashboardTasksByCreatedOneMonth() {
+            console.log("getDashboardTasksByCreatedOneMonth");
             let result = this.items;
             result = result.filter((v) => 
                 // 本日以前に作成
@@ -139,6 +143,18 @@ export default {
             )
             return result;
         },
+        // アクティブタスク
+        getActivateTasks() {
+            let result = this.items;
+            result = result.filter((v) => v.task_status !== 5)
+            return result;
+        },
+        // 完了タスク
+        getCompletedTasks() {
+            let result = this.items;
+            result = result.filter((v) => v.task_status === 5)
+            return result;
+        },
         // 本日チェック
         judgeDateJustToday(target_date) {
             return this.convertDatetimeFromUnixtime(target_date, "yyyymmdd") == this.today
@@ -176,18 +192,6 @@ export default {
         // 期日 < 終了日チェック
         judgeExpired(task_deadline, finished_at) {
             return this.convertDatetimeFromUnixtime(task_deadline, "yyyymmdd") < this.convertDatetimeFromUnixtime(finished_at, "yyyymmdd")
-        },
-        // アクティブタスク
-        getActivateTasks() {
-            let result = this.items;
-            result = result.filter((v) => v.task_status !== 5)
-            return result;
-        },
-        // 完了タスク
-        getCompletedTasks() {
-            let result = this.items;
-            result = result.filter((v) => v.task_status === 5)
-            return result;
         },
     }
 }
