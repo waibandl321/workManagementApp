@@ -44,8 +44,9 @@ export default {
             loading: false,
             mode: 'list',
             filter_items: [],
+            now_dir: "0",
         },
-        now_dir: "0",
+        
     }),
     created() {
         this.parents.user_info = this.storeGetAccountInfo()

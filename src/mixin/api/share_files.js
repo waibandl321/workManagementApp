@@ -9,13 +9,7 @@ export default {
         async firebaseCreateShareFiles(formdata) {
             // データベースに保存
             const db = getDatabase();
-            return await set(ref(db, '/share_files/' + this.storeGetFirebaseUid() + '/' + formdata.id), formdata)
-            .then(() => {
-                return true
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+            await set(ref(db, '/share_files/' + formdata.uid + '/' + formdata.id), formdata)
         },
         
         firebaseReadShareFiles() {

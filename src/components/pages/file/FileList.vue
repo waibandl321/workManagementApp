@@ -282,21 +282,24 @@ export default {
             this.deleteModal = true
         },
         async executeDelete(delete_item) {
-            this.deleteModal = false
-            this.params.loading = true
-            const result = await this.firebaseDeleteShareFiles(delete_item)
-            if(result && delete_item.type == 1) {
-                await this.storageDeleteShareFile(delete_item)
-                .then(() => {
-                    console.log("削除成功");
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
+            let items = this.params.filter_items
+            this.deleteModal = false;
+            this.params.loading = true;
+            try {
+                const result = await this.firebaseDeleteShareFiles(delete_item)
+                if(result && delete_item.type == 1) {
+                    await this.storageDeleteShareFile(delete_item)
+                } 
+                this.params.success = `アイテム：${delete_item.name}を削除しました。`
+                items = items.filter((v) => v.id !== delete_item.id)
+                this.params.filter_items = items
+                this.readShareFiles(this.params.now_dir);
+                this.params.loading = false;
+            } catch (error) {
+                this.params.error = `アイテム：${delete_item.name}の削除中にエラーが発生しました。`
+                this.params.loading = false;
+                console.log(error);
             }
-            this.params.success = `アイテム：${delete_item.name}を削除しました`
-            this.params.loading = false
-            this.readShareFiles(this.params.now_dir)
         },
     }
 }

@@ -132,14 +132,18 @@ export default {
         },
         async executeCreateFolder() {
             const formdata = this.shareFolderFormdata()
-            //保存処理
-            const result = await this.firebaseCreateShareFiles(formdata)
-            if(result) {
+            try {
+                await this.firebaseCreateShareFiles(formdata)
                 this.params.success    = `「フォルダ : ${this.folder_name}」を作成しました。`
-                this.folder_name = ""
+                this.folder_name = "";
+                this.createFolderModal = false;
+                this.readShareFiles(this.params.now_dir);
+            } catch (error) {
+                this.params.error = "作成中にエラーが発生しました"
                 this.createFolderModal = false
+                console.log(error);
             }
-            this.readShareFiles(this.params.now_dir)
+            
         },
         async uploadChange(e) {
             this.params.dragging = false
