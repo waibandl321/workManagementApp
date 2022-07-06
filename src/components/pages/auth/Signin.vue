@@ -1,6 +1,7 @@
 <template>
     <div class="auth">
-       <div>
+        <ExecLoading v-if="loading" />
+        <div>
           <v-card class="card">
             <v-card-title>
                 サインイン
@@ -14,12 +15,6 @@
                     >
                         {{ error }}
                     </v-alert>
-                </div>
-                <div class="py-4" v-if="loading">
-                    <v-progress-linear
-                        indeterminate
-                        color="primary"
-                    ></v-progress-linear>
                 </div>
                 <v-form
                     ref="form"
@@ -103,7 +98,11 @@
 
 
 <script>
+import ExecLoading from "@/components/common/ExecLoading.vue"
 export default {
+    components: {
+        ExecLoading
+    },
     data: () => ({
         auth: false,
 
@@ -138,7 +137,7 @@ export default {
                 try {
                     const uid = await this.firebaseEmailSignin(this.email, this.password);
                     this.storeSetFirebaseUid(uid);
-                    const account = await this.isExistAccount(uid);
+                    const account = await this.isExistAuthAccount(uid);
                     if(account) {
                         this.storeSetAccountInfo(account);
                         this.pageMove('/');
@@ -159,7 +158,7 @@ export default {
             try {
                 const uid = await this.firebaseGoogleAuth();
                 this.storeSetFirebaseUid(uid)
-                const account = await this.isExistAccount(uid)
+                const account = await this.isExistAuthAccount(uid)
                 if(account) {
                     this.storeSetAccountInfo(account)
                     this.pageMove('/')
@@ -174,7 +173,7 @@ export default {
                 this.loading = false
             }
         },
-        async isExistAccount(uid) {
+        async isExistAuthAccount(uid) {
             return await this.apiGetAccount(uid)
         },
     },

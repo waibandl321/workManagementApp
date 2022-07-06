@@ -4,7 +4,6 @@ import {
     signOut,
     signInWithEmailAndPassword,
     GoogleAuthProvider,
-    GithubAuthProvider,
     signInWithPopup,
     sendPasswordResetEmail,
     updateEmail,
@@ -79,24 +78,6 @@ export default {
                 console.log(error);
                 console.log(credential);
                 return false
-            });
-        },
-
-        // GitHubログイン
-        async firebaseGithubAuth() {
-            const auth = getAuth();
-            provider.addScope('repo');
-            return await signInWithPopup(auth, provider)
-            .then((result) => {
-                const credential = GithubAuthProvider.credentialFromResult(result);
-                console.log(credential.accessToken);
-                return result.user.uid;
-            })
-            .catch((error) => {
-                const credential = GithubAuthProvider.credentialFromError(error);
-                console.log(error);
-                console.log(credential);
-                return false;
             });
         },
 
