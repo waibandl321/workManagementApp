@@ -65,7 +65,7 @@
             </div>
             <v-divider />
             <v-card-title>
-            外部サービスでサインイン
+                外部サービスでサインイン
             </v-card-title>
             <div class="px-4 pb-4">
                 <v-btn
@@ -79,6 +79,11 @@
                         min-width="32"
                     >
                     </v-img>
+                </v-btn>
+                <v-btn
+                    @click="externalSigninByYahoo()"
+                >
+                   Yahoo! JAPAN
                 </v-btn>
             </div>
             <v-divider></v-divider>
@@ -157,6 +162,26 @@ export default {
             this.loading = true
             try {
                 const uid = await this.firebaseGoogleAuth();
+                this.storeSetFirebaseUid(uid)
+                const account = await this.isExistAuthAccount(uid)
+                if(account) {
+                    this.storeSetAccountInfo(account)
+                    this.pageMove('/')
+                } else {
+                    this.storeSetAccountInfo(null)
+                    this.pageMove('/account')
+                }
+                this.loading = false
+            } catch (error) {
+                console.log(error);
+                this.error = "外部認証に失敗しました。"
+                this.loading = false
+            }
+        },
+        async externalSigninByYahoo() {
+            this.loading = true
+            try {
+                const uid = await this.firebaseYahooAuth();
                 this.storeSetFirebaseUid(uid)
                 const account = await this.isExistAuthAccount(uid)
                 if(account) {

@@ -7,10 +7,9 @@ import {
     signInWithPopup,
     sendPasswordResetEmail,
     updateEmail,
+    OAuthProvider
 }
 from "firebase/auth";
-
-const provider = new GoogleAuthProvider();
 
 export default {
     methods: {
@@ -65,6 +64,7 @@ export default {
 
         // Googleログイン
         async firebaseGoogleAuth() {
+            const provider = new GoogleAuthProvider();
             const auth = getAuth();
             provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
             return await signInWithPopup(auth, provider)
@@ -79,6 +79,23 @@ export default {
                 console.log(credential);
                 return false
             });
+        },
+
+        async firebaseYahooAuth() {
+            const auth = getAuth();
+            const provider = new OAuthProvider('yahoo.com');
+            return await signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = OAuthProvider.credentialFromResult(result);
+                console.log("access_token: " + credential.accessToken);
+                console.log("id_token" + credential.idToken);
+                return result.user.uid
+            })
+            .catch((error) => {
+                console.log(error);
+                return false;
+            });
+
         },
 
         // メールアドレス更新
