@@ -4,30 +4,31 @@ export default {
     },
     methods: {
         async readShareFiles(select_dir_id) {
+            let result = []
             try {
                 const files = await this.firebaseReadShareFiles()
-                console.log(files);
+                if(!files) return []
                 this.params.file_data = files
-                let result = []
                 this.params.now_dir = "0"
                 if(select_dir_id) {
                     this.params.now_dir = select_dir_id
-                    Object.keys(files).forEach((key) =>  {
-                        if(files[key].parent_dir_id == select_dir_id) {
-                            result.push(files[key])
-                        }
-                    });
+                    _matchParentDirectory(files, select_dir_id)
                 } else {
-                    Object.keys(files).forEach((key) =>  {
-                        if(files[key].parent_dir_id == "0") {
-                            result.push(files[key])
-                        }
-                    });
+                    _matchParentDirectory(files, "0")
                 }
                 this.params.filter_items = result
                 
             } catch (error) {
                 console.log(error);
+            }
+
+            // 親ディレクトリに一致するファイルデータを返す
+            function _matchParentDirectory(files, dir_id) {
+                Object.keys(files).forEach((key) =>  {
+                    if(files[key].parent_dir_id == dir_id) {
+                        result.push(files[key])
+                    }
+                });
             }
         },
     }
