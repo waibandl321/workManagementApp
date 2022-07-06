@@ -4,19 +4,12 @@ export default {
     },
     methods: {
         async readShareFiles(select_dir_id) {
-            const promise = new Promise((resolve) => {
-                resolve();
-            });
-            
-            promise
-            .then( async () => {
-                return await this.firebaseReadShareFiles()
-            })
-            .then((files) => {
+            try {
+                const files = await this.firebaseReadShareFiles()
+                console.log(files);
                 this.params.file_data = files
                 let result = []
                 this.params.now_dir = "0"
-
                 if(select_dir_id) {
                     this.params.now_dir = select_dir_id
                     Object.keys(files).forEach((key) =>  {
@@ -32,10 +25,10 @@ export default {
                     });
                 }
                 this.params.filter_items = result
-            })
-            .catch((error) => {
+                
+            } catch (error) {
                 console.log(error);
-            })
+            }
         },
     }
 }
