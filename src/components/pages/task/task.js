@@ -37,11 +37,11 @@ export default {
                 try {
                     await this.apiTaskCreate(task)
                     this.params.success = "タスクを新規作成しました"
-                    this.listRefresh()  
                 } catch (error) {
                     this.params.error = "タスク作成に失敗しました。"
                     console.log(error);
                 }
+                this.listRefresh()
                 this.new_task_name = ""
                 this.composing = false
             }

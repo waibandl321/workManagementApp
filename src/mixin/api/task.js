@@ -15,16 +15,11 @@ export default {
                 const db = getDatabase()
                 const starCountRef = ref(db, '/tasks/' + this.storeGetFirebaseUid())
                 onValue(starCountRef, (snapshot) => {
-                    if(snapshot) {
-                        return resolve(snapshot.val());
-                    } else {
-                        reject();
-                    }
+                    resolve(snapshot.val());
+                }, (err) => {
+                    reject(err);
                 })
             })
-            .catch((reason) => {
-                console.log(reason.messege);
-            });
         },
         // サブタスク一覧取得
         async apiGetSubtaskList() {
@@ -33,16 +28,10 @@ export default {
                 const userId = this.storeGetFirebaseUid()
                 const starCountRef = ref(db, 'subtasks/' + userId)
                 onValue(starCountRef, (snapshot) => {
-                    if(snapshot) {
-                        return resolve(snapshot.val());
-                    } else {
-                        reject();
-                    }
+                    resolve(snapshot.val());
+                }, (err) => {
+                    reject(err);
                 })
-            })
-            .catch((error) => {
-                alert('エラーが発生しました')
-                console.log(error);
             })
         },
         
@@ -240,8 +229,9 @@ const SORT_DATE_OPTIONS = [
 const TASK_PRIORITIES = [
     { key: 0, text: "指定しない" },
     { key: 1, text: "最優先" },
+    { key: 4, text: "高" },
     { key: 2, text: "中" },
-    { key: 3, text: "低(後回しでOK)" },
+    { key: 3, text: "低" },
 ];
 const ERITOR_OPTIONS = [
     ['bold', 'italic', 'underline', 'strike'],        // toggled buttons

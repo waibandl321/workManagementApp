@@ -46,13 +46,13 @@
                 <v-btn
                     color="primary"
                     text
-                    @click="task_create = !task_create"
+                    @click="new_task = !new_task"
                 >
                     <v-icon>mdi-plus</v-icon>
                     タスクを追加
                 </v-btn>
             </div>
-            <div class="mt-2 relative" v-show="task_create">
+            <div class="mt-2 relative" v-show="new_task">
                 <v-text-field
                     label="タスク名を入力"
                     v-model="new_task_name"
@@ -170,9 +170,9 @@ export default {
     },
     data: () => ({
         // 作成
-        task_create: false,
-        composing: false,
+        new_task: false,
         new_task_name: "",
+        composing: false,
         
         // 削除
         delete_options: [],
@@ -197,8 +197,12 @@ export default {
     methods: {
         async initItems() {
             this.params.loading = true;
-            this.params.items = await this.readTaskList()
-            this.filterList();
+            try {
+                this.params.items = await this.readTaskList()
+                this.filterList();
+            } catch (error) {
+                this.params.error = "タスクデータの読み込みに失敗しました。"
+            }
             this.params.loading = false;
         },
         // 一覧クリック
