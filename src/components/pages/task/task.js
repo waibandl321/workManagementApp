@@ -19,7 +19,7 @@ export default {
         async getSubtaskList(task_viewer) {
             if(task_viewer.task_id) {
                 let result = await this.apiGetSubtaskList()
-                        
+                if(!result) return {}
                 result = Object.keys(result)
                         .map((key) => {
                             return result[key];
@@ -103,11 +103,18 @@ export default {
                 subtask_description: new_subtask.subtask_description ? new_subtask.subtask_description : "",
                 create_account: this.storeGetFirebaseUid(),
                 created: this.getCurrentUnixtime(),
-                updated: ""
+                finished_at: ""
             }
         },
         // サブタスク更新
-        async updateSubtask(subtask) {
+        async updateSubtask(subtask, is_finished_flag) {
+            if(is_finished_flag) {
+                if(!subtask.finished_at) {
+                    subtask.finished_at = this.getCurrentUnixtime()
+                } else {
+                    return; //MEMO: finishedの場合は何もしない
+                }
+            }
             const result = await this.apiUpdateSubtask(subtask)
             if(result) {
                 this.params.success = "サブタスクを更新しました。"

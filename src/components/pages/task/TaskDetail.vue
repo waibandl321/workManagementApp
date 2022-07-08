@@ -200,8 +200,16 @@
                             <v-card-actions class="justify-space-between px-4">
                                 <span>{{ subtask.subtask_name ? subtask.subtask_name : '' }}</span>
                                 <span>
+                                    <v-btn 
+                                        fab
+                                        small
+                                        class="mr-2"
+                                        @click.stop="updateSubtask(subtask, true)"
+                                        :color="subtask.finished_at ? 'primary' : null"
+                                    >
+                                        <v-icon>mdi-check-bold</v-icon>
+                                    </v-btn>
                                     <v-btn
-                                        text
                                         @click.stop="deleteSubtask(subtask)"
                                         fab
                                         small
