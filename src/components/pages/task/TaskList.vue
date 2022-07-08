@@ -258,17 +258,6 @@ export default {
             this.filter_items = result
         },
 
-        // タスク作成
-        createTask() {
-            if(!this.composing && this.new_task_name) {
-                if(this.apiTaskCreate(this.new_task_name)) {
-                    this.new_task_name = ""
-                    this.composing = false
-                    this.params.success = "タスクを新規作成しました"
-                    this.listRefresh()
-                }
-            }
-        },
         
         // 削除
         clickDelete(task) {

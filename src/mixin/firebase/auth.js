@@ -69,14 +69,10 @@ export default {
             provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
             return await signInWithPopup(auth, provider)
             .then((result) => {
-                const credential = GoogleAuthProvider.credentialFromResult(result);
-                console.log(credential.accessToken);
                 return result.user.uid
             })
             .catch((error) => {
-                const credential = GoogleAuthProvider.credentialFromError(error);
                 console.log(error);
-                console.log(credential);
                 return false
             });
         },
@@ -86,9 +82,6 @@ export default {
             const provider = new OAuthProvider('yahoo.com');
             return await signInWithPopup(auth, provider)
             .then((result) => {
-                const credential = OAuthProvider.credentialFromResult(result);
-                console.log("access_token: " + credential.accessToken);
-                console.log("id_token" + credential.idToken);
                 return result.user.uid
             })
             .catch((error) => {

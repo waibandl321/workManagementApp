@@ -24,7 +24,7 @@ export default {
         getEditorOptions() {
             return ERITOR_OPTIONS;
         },
-        // 取得
+        // タスク一覧取得
         async apiGetTaskList() {
             return new Promise((resolve, reject) => {
                 const db = getDatabase()
@@ -41,6 +41,7 @@ export default {
                 console.log(reason.messege);
             });
         },
+        // サブタスク一覧取得
         async apiGetSubtaskList() {
             return new Promise((resolve, reject) => {
                 const db = getDatabase();
@@ -61,32 +62,16 @@ export default {
         },
         
         // 作成
-        apiTaskCreate(new_task) {
-            const id = Math.random().toString(32).substring(2)
-            const data_obj = {
-                task_id: id,
-                project_id: "",
-                task_name: new_task,
-                task_description: "",
-                task_message_content: "",
-                task_message_post_account: "",
-                task_status: 0,
-                task_priority: 0,
-                task_manager: "",
-                task_deadline: null,
-                create_account: this.storeGetFirebaseUid(),
-                created: this.getCurrentUnixtime(),
-                updated: "",
-                finished_at: ""
-            }
-            try {
-                const db = getDatabase();
-                set(ref(db, '/tasks/' + this.storeGetFirebaseUid() + '/' + id), data_obj);
+        async apiTaskCreate(task) {
+            const db = getDatabase();
+            return await set(ref(db, '/tasks/' + this.storeGetFirebaseUid() + '/' + task.task_id), task)
+            .then(() => {
                 return true;
-            } catch (error) {
+            })
+            .catch((error) => {
                 console.log(error);
                 return false;
-            }
+            })
         },
         async apiSubtaskCreate(new_subtask, task_id) {
             const db = getDatabase();

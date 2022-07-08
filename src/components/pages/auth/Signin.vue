@@ -146,11 +146,12 @@ export default {
                     if(account) {
                         this.storeSetAccountInfo(account);
                         this.pageMove('/');
+                        this.loading = false;
                     } else {
                         this.storeSetAccountInfo(null)
                         this.pageMove('/account')
+                        this.loading = false;
                     }
-                    this.loading = false;
                 } catch (error) {
                     console.log(error);
                     this.loading = false;
@@ -167,11 +168,12 @@ export default {
                 if(account) {
                     this.storeSetAccountInfo(account)
                     this.pageMove('/')
+                    this.loading = false
                 } else {
                     this.storeSetAccountInfo(null)
                     this.pageMove('/account')
+                    this.loading = false
                 }
-                this.loading = false
             } catch (error) {
                 console.log(error);
                 this.error = "外部認証に失敗しました。"
@@ -187,11 +189,12 @@ export default {
                 if(account) {
                     this.storeSetAccountInfo(account)
                     this.pageMove('/')
+                    this.loading = false
                 } else {
                     this.storeSetAccountInfo(null)
                     this.pageMove('/account')
+                    this.loading = false
                 }
-                this.loading = false
             } catch (error) {
                 console.log(error);
                 this.error = "外部認証に失敗しました。"

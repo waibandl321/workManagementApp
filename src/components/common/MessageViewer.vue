@@ -12,7 +12,6 @@
             v-if="params.error"
             dismissible
             :toggle="toggleError"
-            outlined
             type="error"
         >
             {{ params.error }}
