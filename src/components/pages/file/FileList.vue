@@ -3,7 +3,7 @@
         <!-- 検索 -->
         <v-text-field
             v-model.trim="search_text"
-            @change="searchFileList()"
+            @change="search()"
             dense
             outlined
             label="ファイル名でディレクトリ内を検索"
@@ -105,14 +105,14 @@
         </v-dialog>
 
         <!-- アイテム追加エリア -->
-        <FileAdd :params="params"/>
+        
 
         <!-- アイテム削除 -->
         <v-dialog
-            v-model="deleteModal"
+            v-model="delete_modal"
             width="600"
         >
-            <ConfirmDeleteItem
+            <ConfirmDeleteFile
                 :executeDelete="executeDelete"
                 :delete_item="delete_item"
             />
@@ -121,16 +121,14 @@
 </template>
 
 <script>
-import FileAdd from './FileAdd.vue'
 import FilePreviewer from './FilePreviewer.vue'
-import ConfirmDeleteItem from '@/components/common/ConfirmDeleteItem.vue'
+import ConfirmDeleteFile from '@/components/common/ConfirmDeleteItem.vue'
 import myMixin from './file'
 
 export default {
     components: {
-        FileAdd,
         FilePreviewer,
-        ConfirmDeleteItem, 
+        ConfirmDeleteFile, 
     },
     props: {
         params: Object,
@@ -147,7 +145,7 @@ export default {
         ],
 
         // 削除
-        deleteModal: false,
+        delete_modal: false,
         delete_item: {},
 
         // ファイルプレビュー
@@ -183,7 +181,7 @@ export default {
                 return this.convertUnitSize(item.size);
             }
         },
-        searchFileList() {
+        search() {
             let result = this.params.filter_items
             if(this.search_text) {
                 result = result.filter(v => v.name.includes(this.search_text))
@@ -279,11 +277,11 @@ export default {
         deleteItem(item) {
             this.delete_item = item
             this.params.success = ""
-            this.deleteModal = true
+            this.delete_modal = true
         },
         async executeDelete(delete_item) {
             let items = this.params.filter_items
-            this.deleteModal = false;
+            this.delete_modal = false;
             this.params.loading = true;
             try {
                 const result = await this.firebaseDeleteShareFiles(delete_item)

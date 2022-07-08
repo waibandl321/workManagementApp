@@ -10,10 +10,7 @@
                     :params="params"
                     v-if="params.mode == 'list'"
                 />
-                <FileTrashboxList
-                    :params="params"
-                    v-if="params.mode == 'trashbox'"
-                />
+                <FileAdd :params="params"/>                
             </div>
         </div>
     </div>
@@ -22,7 +19,7 @@
 <script>
 import Header from '@/components/common/Header'
 import FileList from '@/components/pages/file/FileList.vue'
-import FileTrashboxList from '@/components/pages/file/FileTrashboxList.vue'
+import FileAdd from './FileAdd.vue'
 import MessageViewer from '@/components/common/MessageViewer.vue'
 import myMixin from './file'
 
@@ -30,8 +27,8 @@ export default {
     components: {
         Header,
         FileList,
-        FileTrashboxList,
-        MessageViewer
+        MessageViewer,
+        FileAdd
     },
     mixins: [myMixin],
     data: () => ({
@@ -68,7 +65,7 @@ export default {
     padding: 0 16px;
 }
 .file-contents {
-    min-height: calc(100vh - 70px);
+    height: calc(100vh - 160px);
     padding: 24px;
     box-sizing: border-box;
     position: relative;
