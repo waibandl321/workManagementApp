@@ -257,7 +257,6 @@ export default {
             result = this.convertArray(result);
             this.filter_items = result
         },
-
         
         // 削除
         clickDelete(task) {
@@ -266,18 +265,8 @@ export default {
                 { function_cd: "delete", text: "削除する",   callback: this.execDeleteTask }
             )
             this.delete_title = `タスク「${task.task_name}」を削除します。`;
-            this.delete_item = task;
+            this.params.delete_item = task;
             this.delete_modal = true;
-        },
-        execDeleteTask() {
-            this.apiDeleteTask(this.delete_item)
-            this.deleteSubtaskHasTask(this.delete_item)
-            this.execDeleteAllFile()
-            this.delete_modal = false
-            this.closeDetail()
-            this.delete_options = []
-            this.params.error = "タスクを削除しました"
-            this.listRefresh()
         },
         closeModal() {
             this.delete_modal = false

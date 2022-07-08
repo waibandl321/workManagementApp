@@ -3,7 +3,7 @@ export default {
         
     }),
     methods: {
-        // タスク読み込み
+        // タスク一覧取得
         async readTaskList() {
             let result = await this.apiGetTaskList()
             if(!result) return {}
@@ -13,6 +13,21 @@ export default {
             .filter( v => v.task_status !== 5 )
 
             return result;
+        },
+
+        // サブタスク一覧取得
+        async getSubtaskList(task_viewer) {
+            if(task_viewer.task_id) {
+                let result = await this.apiGetSubtaskList()
+                        
+                result = Object.keys(result)
+                        .map((key) => {
+                            return result[key];
+                        })
+                        .filter(v => v.task_id === task_viewer.task_id)
+                
+                return result;
+            }
         },
 
         // タスク作成
@@ -49,6 +64,70 @@ export default {
                 updated: "",
                 finished_at: ""
             }
+        },
+        // タスク削除(詳細からの操作)
+        async execDeleteTask() {
+            try {
+                await this.apiDeleteTask(this.params.delete_item)
+                this.deleteSubtaskHasTask(this.params.delete_item)
+                this.execDeleteAllFile(this.params.files)
+                this.closeDetail();
+                this.listRefresh()
+                this.params.success = "タスクを削除しました。"
+            } catch (error) {
+                this.params.error = "タスク削除に失敗しました。"
+            }
+            this.params.delete_item = {}
+            this.delete_options = []
+            this.delete_modal = false
+        },
+        // サブタスク作成
+        async createSubtask(new_subtask) {
+            const subtask = this.generateSubtaskObject(new_subtask)
+            try {
+                await this.apiSubtaskCreate(subtask)
+                this.params.success = "サブタスクを新規作成しました。";
+                this.subtask_option = [];
+                this.params.subtask_editor = {};
+                this.params.subtask_list = await this.getSubtaskList(this.params.viewer)
+            } catch (error) {
+                this.params.error = "サブタスク作成中にエラーが発生しました。";
+            }
+            this.subtask_mode = "task";
+        },
+        generateSubtaskObject(new_subtask) {
+            return {
+                subtask_id: this.createRandomId(),
+                task_id: this.params.viewer.task_id,
+                subtask_name: new_subtask.subtask_name,
+                subtask_description: new_subtask.subtask_description ? new_subtask.subtask_description : "",
+                create_account: this.storeGetFirebaseUid(),
+                created: this.getCurrentUnixtime(),
+                updated: ""
+            }
+        },
+        // サブタスク更新
+        async updateSubtask(subtask) {
+            const result = await this.apiUpdateSubtask(subtask)
+            if(result) {
+                this.params.success = "サブタスクを更新しました。"
+            } else {
+                this.params.error = "サブタスクの更新に失敗しました。"
+            }
+            this.params.subtask_editor = {};
+            this.subtask_option = []
+            this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
+            this.subtask_mode = "task";
+        },
+        // サブタスク削除
+        async deleteSubtask(subtask) {
+            const result = await this.apiDeleteSubtask(subtask);
+            if(result) {
+                this.params.success = "サブタスクを削除しました。"
+            } else {
+                this.params.error = "サブタスクの削除に失敗しました。"
+            }
+            this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
         },
         
         // ファイル一覧取得
@@ -93,20 +172,7 @@ export default {
                   _end = new Date(this.convertDatetimeFromUnixtime(end, "yyyy-mm-dd"));
              return (_end - today) / 86400000;
         },
-        // サブタスク一覧
-        async getSubtaskList(task_viewer) {
-            if(task_viewer.task_id) {
-                let result = await this.apiGetSubtaskList()
-                        
-                result = Object.keys(result)
-                        .map((key) => {
-                            return result[key];
-                        })
-                        .filter(v => v.task_id === task_viewer.task_id)
-                
-                return result;
-            }
-        },
+        
         
         // リスト削除 => 詳細情報の削除
         deleteTaskDetail(delete_item) {
@@ -157,7 +223,7 @@ export default {
                 return
             }
 
-            const result = await this.apiUpdateTaskTerm(deadline, this.params.viewer.task_id)
+            const result = await this.apiUpdateTaskDeadline(deadline, this.params.viewer.task_id)
             if(result) {
                 this.params.viewer.task_deadline = deadline
                 this.params.success = "タスク期日を変更しました"
@@ -192,7 +258,39 @@ export default {
                     break;
             }
         },
-        // 物理削除（全てのファイル）
+        // ファイルアップロード
+        async onFileChange(e) {
+            this.file_loading = true
+            const files = e.target.files || e.dataTransfer.files
+            try {
+                const result = await this.storageUploadTaskFile(...files, this.params.viewer.task_id)
+                await this.firebaseSaveFile(result);
+                this.params.files = this.getFileList();
+                this.params.success = "ファイルをアップロードしました。";
+                this.file_loading = false;
+            } catch (error) {
+                this.params.error = "ファイルアップロードに失敗しました。";
+                this.file_loading = false;
+                console.log(error);
+            }
+        },
+         // ファイル物理削除
+         async execDeleteFile() {
+            this.file_loading = true;
+            const storage_result = await this.storageDeleteFile(this.delete_file)
+            if(storage_result) {
+                await this.firebaseDeleteFile(this.delete_file)
+                this.params.success = `ファイル${this.delete_file.name}を削除しました。`
+            } else {
+                this.params.success = `ファイル${this.delete_file.name}の削除に失敗しました。`
+            }
+            this.params.files = this.getFileList()
+            this.delete_file = {}
+            this.delete_options = []
+            this.delete_modal = false;
+            this.file_loading = false;
+        },
+        // 全てのファイル物理削除
         async execDeleteAllFile() {
             this.file_loading = true;
             try {

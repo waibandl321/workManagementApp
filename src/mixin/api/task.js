@@ -9,21 +9,6 @@ import {
 
 export default {
     methods: {
-        getSortStatusOptions() {
-            return SORT_STATUS_OPTION;
-        },
-        getSortDateOptions() {
-            return SORT_DATE_OPTIONS;
-        },
-        getTaskPriorities() {
-            return TASK_PRIORITIES;
-        },        
-        getTaskStatus() {
-            return TASK_STATUS;
-        },
-        getEditorOptions() {
-            return ERITOR_OPTIONS;
-        },
         // タスク一覧取得
         async apiGetTaskList() {
             return new Promise((resolve, reject) => {
@@ -61,7 +46,7 @@ export default {
             })
         },
         
-        // 作成
+        // タスク作成
         async apiTaskCreate(task) {
             const db = getDatabase();
             return await set(ref(db, '/tasks/' + this.storeGetFirebaseUid() + '/' + task.task_id), task)
@@ -73,28 +58,20 @@ export default {
                 return false;
             })
         },
-        async apiSubtaskCreate(new_subtask, task_id) {
+        // サブタスク作成
+        async apiSubtaskCreate(subtask) {
             const db = getDatabase();
             const userId = this.storeGetFirebaseUid()
-            const id = this.createRandomId()
-            return await set(ref(db, '/subtasks/' + userId + '/' + id), {
-                subtask_id: id,
-                task_id: task_id,
-                subtask_name: new_subtask.subtask_name,
-                subtask_description: new_subtask.subtask_description ? new_subtask.subtask_description : "",
-                create_account: userId,
-                created: this.getCurrentUnixtime(),
-                updated: ""
-            })
+            return await set(ref(db, '/subtasks/' + userId + '/' + subtask.subtask_id), subtask)
             .then(() => {
                 return true;
             })
             .catch((error) => {
                 console.log(error);
-                alert(error.message);
+                return false;
             })
         },
-
+        // サブタスク更新
         async apiUpdateSubtask(subtask) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
@@ -110,7 +87,7 @@ export default {
             });
         },
 
-        // 更新
+        // タスクステータス更新
         async apiUpdateTaskStatus(task) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
@@ -131,6 +108,7 @@ export default {
                 return false;
             });
         },
+        // タスク優先度更新
         async apiUpdateTaskPriority(id, priority) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
@@ -145,6 +123,7 @@ export default {
                 return false;
             })
         },
+        // タスク名更新
         async apiUpdateTaskname(id, taskname) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
@@ -159,6 +138,7 @@ export default {
                 return false;
             })
         },
+        // タスク詳細更新
         async apiUpdateTaskDescription(id, description) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
@@ -173,7 +153,8 @@ export default {
                 return false;
             })
         },
-        async apiUpdateTaskTerm(task_deadline, task_id) {
+        // タスク期日更新
+        async apiUpdateTaskDeadline(task_deadline, task_id) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
@@ -189,12 +170,11 @@ export default {
         },
         
         // 削除
-        apiDeleteTask(task) {
+        async apiDeleteTask(task) {
             const db = getDatabase()
             const updates = {};
             updates['/tasks/' + this.storeGetFirebaseUid() + '/' + task.task_id] = null;
-
-            return update(ref(db), updates);
+            return await update(ref(db), updates);
         },
         async apiDeleteSubtask(subtask) {
             const db = getDatabase()
@@ -217,7 +197,22 @@ export default {
                 const subtask_id = r.subtask_id;
                 remove(ref(db, '/subtasks/' + userId + '/' + subtask_id));
             })
-        }
+        },
+        getSortStatusOptions() {
+            return SORT_STATUS_OPTION;
+        },
+        getSortDateOptions() {
+            return SORT_DATE_OPTIONS;
+        },
+        getTaskPriorities() {
+            return TASK_PRIORITIES;
+        },        
+        getTaskStatus() {
+            return TASK_STATUS;
+        },
+        getEditorOptions() {
+            return ERITOR_OPTIONS;
+        },
     }
 }
 

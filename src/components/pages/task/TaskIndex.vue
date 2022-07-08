@@ -55,6 +55,7 @@ export default {
             items: [],
             subtask_viewer: {},
             subtask_editor: {},
+            delete_item: {},
 
             task_status_list: {},
             task_priorities: {},

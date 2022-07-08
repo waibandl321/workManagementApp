@@ -428,23 +428,6 @@ export default {
     },
 
     methods: {
-        // ファイルアップロード
-        async onFileChange(e) {
-            this.file_loading = true
-            const files = e.target.files || e.dataTransfer.files
-            
-            try {
-                const result = await this.storageUploadTaskFile(...files, this.params.viewer.task_id)
-                await this.firebaseSaveFile(result);
-                this.params.files = this.getFileList();
-                this.params.success = "ファイルをアップロードしました。";
-                this.file_loading = false;
-            } catch (error) {
-                this.params.error = "ファイルアップロードに失敗しました。";
-                this.file_loading = false;
-                console.log(error);
-            }
-        },
         // 単ーファイル削除
         clickFileDeleteSingle(file) {
             this.delete_title = `ファイル「${file.name}」を削除します。`;
@@ -455,22 +438,6 @@ export default {
             this.delete_file = file;
             this.delete_modal = true;
         },
-        // ファイル物理削除
-        async execDeleteFile() {
-            this.file_loading = true;
-            const storage_result = await this.storageDeleteFile(this.delete_file)
-            if(storage_result) {
-                await this.firebaseDeleteFile(this.delete_file)
-                this.params.success = `ファイル${this.delete_file.name}を削除しました。`
-            } else {
-                this.params.success = `ファイル${this.delete_file.name}の削除に失敗しました。`
-            }
-            this.params.files = this.getFileList()
-            this.delete_file = {}
-            this.delete_options = []
-            this.delete_modal = false;
-            this.file_loading = false;
-        },
         // 全てのファイルを削除
         clickAllFile() {
             this.delete_title = `このタスクにアップされている全てのファイルを削除します`;
@@ -480,8 +447,7 @@ export default {
             )
             this.delete_modal = true;
         },
-
-        // サブタスク
+        // サブタスク作成
         clickSubtaskNew() {
             this.subtask_option.push(
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeSubtask },
@@ -489,6 +455,7 @@ export default {
             )
             this.subtask_mode = "subtask_edit";
         },
+        // サブタスク詳細
         clickSubtaskRecord(subtask) {
             this.params.subtask_viewer = subtask;
             this.subtask_option.push(
@@ -508,49 +475,13 @@ export default {
             this.subtask_option = []
             this.subtask_mode = "task";
         },
-        async createSubtask(new_subtask) {
-            const result = await this.apiSubtaskCreate(new_subtask, this.params.viewer.task_id)
-            if(result) {
-                this.params.success = "サブタスクを新規作成しました。";
-            } else {
-                this.params.error = "サブタスク作成中にエラーが発生しました。";
-            }
-            this.subtask_option = [];    
-            this.params.subtask_editor = {};
-            this.params.subtask_list = await this.getSubtaskList(this.params.viewer)
-            this.subtask_mode = "task";
-        },
-        async deleteSubtask(subtask) {
-            const result = await this.apiDeleteSubtask(subtask);
-            if(result) {
-                this.params.success = "サブタスクを削除しました。"
-            } else {
-                this.params.error = "サブタスクの削除に失敗しました。"
-            }
-            this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
-        },
-        async updateSubtask(subtask) {
-            const result = await this.apiUpdateSubtask(subtask)
-            if(result) {
-                this.params.success = "サブタスクを更新しました。"
-            } else {
-                this.params.error = "サブタスクの更新に失敗しました。"
-            }
-            this.params.subtask_editor = {};
-            this.subtask_option = []
-            this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
-            this.subtask_mode = "task";
-        },
-        
-        // タスク期間設定
+        // タスク期間設定消去
         deleteTaskTerm() {
             this.task_deadline = null
             this.termSetting = false
-            this.apiUpdateTaskTerm(this.task_deadline, this.params.viewer.task_id)
+            this.apiUpdateTaskDeadline(this.task_deadline, this.params.viewer.task_id)
             this.params.viewer.task_deadline = null
         },
-        
-        
         // タスク削除
         clickTaskDelete() {
             this.delete_options.push(
@@ -558,17 +489,8 @@ export default {
                 { function_cd: "delete", text: "削除する",   callback: this.execDeleteTask }
             )
             this.delete_title = `タスク「${this.params.viewer.task_name}」を削除します。`;
+            this.params.delete_item = this.params.viewer;
             this.delete_modal = true;
-        },
-        execDeleteTask() {
-            this.apiDeleteTask(this.params.viewer)
-            this.deleteSubtaskHasTask(this.params.viewer)
-            this.execDeleteAllFile(this.params.files)
-            this.delete_modal = false
-            this.delete_options = []
-            this.closeDetail()
-            this.params.error = "タスクを削除しました"
-            this.listRefresh()
         },
         closeModal() {
             this.delete_options = []
