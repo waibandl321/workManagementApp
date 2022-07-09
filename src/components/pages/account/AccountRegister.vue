@@ -59,7 +59,8 @@ import myMixin from './account'
 export default {
     mixins: [myMixin],
     props: {
-        params: Object
+        params: Object,
+        parents: Object
     },
     data: () => ({
         last_name: "",

@@ -21,14 +21,14 @@ export default {
         // サインアップ
         async firebaseSignup(email, password) {
             const auth = getAuth();
-            await createUserWithEmailAndPassword(auth, email, password)
-            .then(() => {
-                this.loading = false
+            return await createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                return userCredential.user.uid
             })
             .catch((error) => {
                 const errorMessage = error.message;
                 console.log(errorMessage);
-                this.error = "入力されたメールアドレスの形式が間違っているか、すでに登録されている可能性があります。"
+                return "";
             });
         },
 

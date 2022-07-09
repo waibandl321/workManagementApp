@@ -94,12 +94,20 @@ export default {
     methods: {
         // サインアップ
         async signup () {
+            this.loading = true
             const valid = this.$refs.form.validate();
             if(valid) {
-                this.loading = true
-                await this.firebaseSignup(this.email, this.password)
-                this.pageMove('/account')
+                    const uid = await this.firebaseSignup(this.email, this.password)
+                    if(uid) {
+                        this.storeSetFirebaseUid(uid);
+                        this.pageMove('/account')
+                        return;
+                    } else {
+                        this.error = "入力されたメールアドレスの形式が間違っているか、すでに登録されている可能性があります。"
+                        return;
+                    }
             }
+            this.loading = false;
         },
         reset () {
             this.$refs.form.reset()
