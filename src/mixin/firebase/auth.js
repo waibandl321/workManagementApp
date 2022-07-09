@@ -13,11 +13,6 @@ from "firebase/auth";
 
 export default {
     methods: {
-        firebaseGetCurrentUser() {
-            const auth = getAuth();            
-            return auth;
-        },
-
         // サインアップ
         async firebaseSignup(email, password) {
             const auth = getAuth();
@@ -28,38 +23,33 @@ export default {
             .catch((error) => {
                 const errorMessage = error.message;
                 console.log(errorMessage);
-                return "";
+                return null;
             });
         },
 
         // サインアウト
-        firebaseSignout() {
+        async firebaseSignout() {
             const auth = getAuth();
-            signOut(auth)
-            .then((res) => {
-                console.log(res);
+            return await signOut(auth)
+            .then(() => {
+                return true
             }).catch((error) => {
                 console.log(error.message);
+                return false
             });
         },
 
-        // サインイン
+        // Emailサインイン
         async firebaseEmailSignin(email, password) {
             const auth = getAuth();
-            let _uid = ''
-            await signInWithEmailAndPassword(auth, email, password)
+            return await signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                this.loading = false
-                _uid = userCredential.user.uid
+                return userCredential.user.uid
             })
             .catch((error) => {
-                this.loading = false
-                const errorMessage = error.message;
-                this.error = '入力されたメールアドレスもしくは、パスワードが間違っています。'
-                console.log('error message' + errorMessage);
+                console.log(error.message);
+                return null;
             });
-
-            return _uid
         },
 
         // Googleログイン
@@ -109,15 +99,14 @@ export default {
         async firebaseSendEmailByPasswordReset(email) {
             const auth = getAuth();
             return await sendPasswordResetEmail(auth, email)
-                .then(() => {
-                    return true;
-                })
-                .catch((error) => {
-                    console.log(error);
-                    return false;
+            .then(() => {
+                return true;
+            })
+            .catch((error) => {
+                console.log(error);
+                return false;
             });
         }
-
     }
 }
 

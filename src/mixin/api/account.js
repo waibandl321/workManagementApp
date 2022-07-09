@@ -9,7 +9,6 @@ from "firebase/database";
 
 export default {
     methods: {
-
         // アカウント情報取得
         async apiGetAccount(uid) {
             return new Promise((resolve, reject) => {
@@ -21,13 +20,11 @@ export default {
                 });
             })
         },
-
         // アカウント登録
         async apiAccountCreate(account) {
             const db = getDatabase();
             await set(ref(db, '/users/' + this.storeGetFirebaseUid()), account);
         },
-
         // アカウント更新
         async apiAccountUpdate(account) {
             const db = getDatabase()

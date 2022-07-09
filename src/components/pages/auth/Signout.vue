@@ -1,29 +1,25 @@
 <template>
-    <v-dialog
-        v-model="loading"
-        persistent
-        width="400"
-    >
-        <LoadingOverlay />
-    </v-dialog>
+    <ExecLoading v-if="loading" />
 </template>
 
 
 <script>
-import LoadingOverlay from '@/components/common/LoadingOverlay.vue'
+import ExecLoading from '@/components/common/ExecLoading.vue'
 export default {
     components: {
-        LoadingOverlay,
+        ExecLoading,
     },
     data: () => ({
         loading: true,
     }),
-    created() {
-        this.firebaseSignout()
-        this.storeDeleteAccountInfo()
-        this.storeDestroyFirebaseUid()
-        this.pageMove('/auth/signin')
-        this.loading = false
+    async created() {
+        const result = await this.firebaseSignout();
+        if(result) {
+            this.storeDeleteAccountInfo()
+            this.storeDestroyFirebaseUid()
+            this.pageMove('/auth/signin')
+            this.loading = false
+        }
     },
     methods: {
         

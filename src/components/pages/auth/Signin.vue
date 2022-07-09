@@ -36,6 +36,7 @@
                         <v-text-field
                             label="パスワード"
                             :rules="passwordRules"
+                            type="password"
                             required
                             outlined
                             dense
@@ -136,28 +137,27 @@ export default {
         },
         // サインイン(サインイン)
         async emailSignin () {
+            this.loading = true;
             const valid = this.$refs.form.validate();
             if(valid) {
-                this.loading = true
-                try {
-                    const uid = await this.firebaseEmailSignin(this.email, this.password);
+                const uid = await this.firebaseEmailSignin(this.email, this.password);
+                if(uid) {
                     this.storeSetFirebaseUid(uid);
                     const account = await this.isExistAuthAccount(uid);
                     if(account) {
                         this.storeSetAccountInfo(account);
                         this.pageMove('/');
-                        this.loading = false;
                     } else {
                         this.storeSetAccountInfo(null)
                         this.pageMove('/account')
-                        this.loading = false;
                     }
-                } catch (error) {
-                    console.log(error);
-                    this.loading = false;
+                } else {
                     this.error = "認証に失敗しました。もう一度やり直してください。"
                 }
+            } else {
+                this.error = '入力されたメールアドレスもしくは、パスワードが間違っています。'
             }
+            this.loading = false;
         },
         async externalSigninByGoogle() {
             this.loading = true

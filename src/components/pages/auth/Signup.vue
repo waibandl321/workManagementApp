@@ -97,15 +97,13 @@ export default {
             this.loading = true
             const valid = this.$refs.form.validate();
             if(valid) {
-                    const uid = await this.firebaseSignup(this.email, this.password)
-                    if(uid) {
-                        this.storeSetFirebaseUid(uid);
-                        this.pageMove('/account')
-                        return;
-                    } else {
-                        this.error = "入力されたメールアドレスの形式が間違っているか、すでに登録されている可能性があります。"
-                        return;
-                    }
+                const uid = await this.firebaseSignup(this.email, this.password)
+                if(uid) {
+                    this.storeSetFirebaseUid(uid);
+                    this.pageMove('/account')
+                } else {
+                    this.error = "入力されたメールアドレスの形式が間違っているか、すでに登録されている可能性があります。"
+                }
             }
             this.loading = false;
         },
