@@ -145,14 +145,6 @@ export default {
         await this.readShareFiles()
     },
     methods: {
-        closeFilePreview() {
-            this.file_preview = false;
-            this.previewer.data = {};
-            this.type = null;
-            this.page_current = 1;
-            this.page_end = null;
-            this.previewer.loading = false;
-        },
         outputFilesize(item) {
             if(item.type === 0) {
                 return;
@@ -208,29 +200,33 @@ export default {
             alert(item);
         },
         deleteItem(item) {
-            this.delete_item = item
-            this.params.success = ""
-            this.delete_modal = true
+            this.delete_item = item;
+            this.params.success = "";
+            this.delete_modal = true;
         },
-        async executeDelete(delete_item) {
-            let items = this.params.files
+        async executeDelete() {
             this.delete_modal = false;
             this.params.loading = true;
             try {
-                const result = await this.firebaseDeleteShareFiles(delete_item)
-                if(result && delete_item.type == 1) {
-                    await this.storageDeleteShareFile(delete_item)
+                const result = await this.firebaseDeleteShareFiles(this.delete_item)
+                if(result && this.delete_item.type === 1) {
+                    await this.storageDeleteShareFile(this.delete_item)
                 } 
-                this.params.success = `アイテム：${delete_item.name}を削除しました。`
-                items = items.filter((v) => v.id !== delete_item.id)
-                this.params.files = items
-                this.readShareFiles(this.params.now_dir);
-                this.params.loading = false;
+                this.params.success = `アイテム：${this.delete_item.name}を削除しました。`
             } catch (error) {
-                this.params.error = `アイテム：${delete_item.name}の削除中にエラーが発生しました。`
-                this.params.loading = false;
+                this.params.error = `アイテム：${this.delete_item.name}の削除中にエラーが発生しました。`
                 console.log(error);
             }
+            this.readShareFiles(this.params.now_dir);
+            this.params.loading = false;
+        },
+        closeFilePreview() {
+            this.file_preview = false;
+            this.previewer.data = {};
+            this.type = null;
+            this.page_current = 1;
+            this.page_end = null;
+            this.previewer.loading = false;
         },
     }
 }

@@ -81,24 +81,14 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog
-            v-model="params.loading"
-            persistent
-            width="400"
-        >
-            <LoadingOverlay />
-        </v-dialog>
     </div>
 </template>
 
 <script>
-import LoadingOverlay from '@/components/common/LoadingOverlay.vue'
+
 import myMixin from './file'
 
 export default {
-    components: {
-        LoadingOverlay
-    },
     props: {
         params: Object
     },
@@ -109,12 +99,12 @@ export default {
     }),
     methods: {
         async executeCreateFolder() {
-            const formdata = this.generateFolderObject()
+            const formdata = this.generateFolderObject();
             try {
-                await this.firebaseCreateShareFiles(formdata)
-                this.params.success = `「フォルダ : ${this.folder_name}」を作成しました。`
+                await this.firebaseCreateShareFiles(formdata);
+                this.params.success = `「フォルダ : ${this.folder_name}」を作成しました。`;
             } catch (err) {
-                this.params.error = "作成中にエラーが発生しました"
+                this.params.error = "作成中にエラーが発生しました";
                 console.log(err);
             }
             this.folder_name = "";
@@ -122,28 +112,28 @@ export default {
             this.createFolderModal = false;
         },
         async uploadChange(event) {
-            this.params.dragging = false
-            this.params.loading  = true
-            const files = event.target.files || event.dataTransfer.files
+            this.params.dragging = false;
+            this.params.loading  = true;
+            const files = event.target.files || event.dataTransfer.files;
             try {
                 for (let i = 0; i < files.length; i++) {
                     const custom_metadata = this.generateFileObject(files[i])
                     // 保存処理
                     await this.storageUploadShareFile(files[i])
                     .then((downloadPath) => {
-                        custom_metadata.download_path = downloadPath
-                        this.firebaseCreateShareFiles(custom_metadata)
+                        custom_metadata.download_path = downloadPath;
+                        this.firebaseCreateShareFiles(custom_metadata);
                     })
                     .catch((error) => {
                         console.log(error);
                     })
                 }
-                this.params.loading = false
-                this.params.success = "ファイルをアップロードしました。"
-                this.readShareFiles(this.params.now_dir)
+                this.params.loading = false;
+                this.params.success = "ファイルをアップロードしました。";
+                this.readShareFiles(this.params.now_dir);
             } catch (err) {
                 console.log(err);
-                this.params.error = "ファイルをアップロードに失敗しました。"
+                this.params.error = "ファイルをアップロードに失敗しました。";
             }
         },
     }

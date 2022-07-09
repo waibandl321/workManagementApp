@@ -33,12 +33,9 @@ export default {
         executeDelete: Function,
         delete_item: Object
     },
-    data: () => ({
-
-    }),
     methods: {
         deleteDecision() {
-            this.executeDelete(this.delete_item)
+            this.executeDelete()
         }
     }
 }

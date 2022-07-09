@@ -9,6 +9,7 @@
             />
             <FileAdd :params="params"/>
         </div>
+        <ExecLoading v-if="params.loading" />
     </div>
 </template>
 
@@ -17,6 +18,7 @@ import Header from '@/components/common/Header'
 import FileList from '@/components/pages/file/FileList.vue'
 import FileAdd from './FileAdd.vue'
 import MessageViewer from '@/components/common/MessageViewer.vue'
+import ExecLoading from '@/components/common/ExecLoading.vue'
 import myMixin from './file'
 
 export default {
@@ -25,6 +27,7 @@ export default {
         FileList,
         FileAdd,
         MessageViewer,
+        ExecLoading,
     },
     mixins: [myMixin],
     data: () => ({
@@ -39,7 +42,6 @@ export default {
             files: [],
             now_dir: "0",
         },
-        
     }),
     created() {
         this.parents.user_info = this.storeGetAccountInfo()
@@ -65,5 +67,17 @@ export default {
     padding: 24px;
     box-sizing: border-box;
     position: relative;
+}
+.loading-overlay {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,.5);
 }
 </style>
