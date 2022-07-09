@@ -3,7 +3,7 @@
         <!-- 検索 -->
         <v-text-field
             v-model.trim="search_text"
-            @change="search()"
+            @input="search()"
             dense
             outlined
             label="ファイル名でディレクトリ内を検索"
@@ -17,7 +17,7 @@
             <template v-slot:item="{ item }">
                 <v-breadcrumbs-item
                     :href="item.href"
-                    :disabled="item.disabled"
+                    :disabled="isActiveBreadcrumb(item)"
                     @click.prevent="clickDir(item.href)"
                 >
                     {{ item.text }}
@@ -41,7 +41,7 @@
             </thead>
             <tbody>
                 <tr
-                    v-for="(item, i) in params.filter_items"
+                    v-for="(item, i) in params.files"
                     :key="i"
                     @click="listClick(item)"
                 >
@@ -57,44 +57,34 @@
                     <td>{{ convertDatetimeFromUnixtime(item.upload_at, "yyyy/mm/dd") }}</td>
                     <td>{{ outputFilesize(item) }}</td>
                     <td>
-                        <v-menu offset-y>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    color="primary"
-                                    text
-                                    v-bind="attrs"
-                                    v-on="on"
-                                >
-                                    <v-icon>mdi-dots-horizontal</v-icon>
-                                </v-btn>
-                            </template>
-                            <v-list>
-                                <v-list-item>
-                                    <v-btn
-                                        text
-                                        color="primary"
-                                        @click="deleteItem(item)"
-                                    >
-                                        削除
-                                    </v-btn>
-                                </v-list-item>
-                                <v-list-item v-if="item.type !== 0">
-                                    <v-btn 
-                                        text
-                                        color="primary"
-                                        @click="downloadFile(item)"
-                                    >
-                                        ダウンロード
-                                    </v-btn>
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
+                        <div class="d-flex align-center justify-end">
+                            <v-btn
+                                v-show="item.type !== 0"
+                                @click.stop="downloadFile(item)"
+                                color="primary"
+                                text
+                                fab
+                                small
+                            >
+                                <v-icon>mdi-cloud-download-outline</v-icon>
+                            </v-btn>
+                            <v-btn
+                                text
+                                color="primary"
+                                @click.stop="deleteItem(item)"
+                                fab
+                                small
+                            >
+                                <v-icon>mdi-delete</v-icon>
+                            </v-btn>
+                            
+                        </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <!-- ファイルプレビュー -->
+        <!-- プレビュー -->
         <v-dialog
             v-model="file_preview"
         >
@@ -104,15 +94,12 @@
             />
         </v-dialog>
 
-        <!-- アイテム追加エリア -->
-        
-
-        <!-- アイテム削除 -->
+        <!-- 削除確認 -->
         <v-dialog
             v-model="delete_modal"
             width="600"
         >
-            <ConfirmDeleteFile
+            <FileDeleteModal
                 :executeDelete="executeDelete"
                 :delete_item="delete_item"
             />
@@ -122,20 +109,20 @@
 
 <script>
 import FilePreviewer from './FilePreviewer.vue'
-import ConfirmDeleteFile from '@/components/common/ConfirmDeleteItem.vue'
+import FileDeleteModal from './FileDeleteModal.vue'
 import myMixin from './file'
 
 export default {
     components: {
         FilePreviewer,
-        ConfirmDeleteFile, 
+        FileDeleteModal, 
     },
     props: {
         params: Object,
     },
     mixins: [myMixin],
     data: () => ({
-        // パンくず
+        search_text: "",
         breadcrumbs: [
             {
                 href: "0",
@@ -143,12 +130,8 @@ export default {
                 disabled: true
             },
         ],
-
-        // 削除
         delete_modal: false,
         delete_item: {},
-
-        // ファイルプレビュー
         file_preview: false,
         previewer: {
             data: {},
@@ -157,13 +140,9 @@ export default {
             page_end: null,
             loading: false,
         },
-
-        // 検索
-        search_text: "",
-
     }),
-    created() {
-        this.readShareFiles()
+    async created() {
+        await this.readShareFiles()
     },
     methods: {
         closeFilePreview() {
@@ -182,93 +161,47 @@ export default {
             }
         },
         search() {
-            let result = this.params.filter_items
+            let result = this.params.files
             if(this.search_text) {
                 result = result.filter(v => v.name.includes(this.search_text))
-                this.params.filter_items = result
+                this.params.files = result
             } else {
                 this.readShareFiles(this.params.now_dir)
             }
         },
-        pushBreadcrumbs(select_dir_id) {
-            this.params.now_dir = select_dir_id
-            
-            let result = this.params.file_data
-            result = Object.keys(result)
-                    .map((key) => {
-                        return result[key];
-                    })
-                    .filter(r => r.id == select_dir_id)
+        async listClick(item) {
+            this.previewer.loading = true;
+            // directory
+            if(item.type === 0) {
+                await this.readShareFiles(item.id)
+                this.pushBreadcrumbs(item)
+            // file
+            } else {
+                this.previewer.data = item;
+                this.params.error = "";
+                this.file_preview = true;
+            }
+        },
+        
+        // パンくず
+        async clickDir(select_dir_id) {
+            if(this.params.now_dir == 0) return
+            const begin = this.breadcrumbs.findIndex((v) => v.href === select_dir_id)
+            // 先頭以降の配列削除
+            this.breadcrumbs.splice(begin + 1)
+            await this.readShareFiles(select_dir_id)
+        },
+        pushBreadcrumbs(item) {
+            this.params.now_dir = item.id
             this.breadcrumbs.push(
                 {
-                    href: select_dir_id,
-                    text: result[0].name,
+                    href: item.id,
+                    text: item.name,
                 }
             )
-            // 現在表示されているディレクトリをチェックし、disabled属性を設定する
-            this.breadcrumbs.forEach(r => {
-                if(this.params.now_dir === r.href) {
-                    r.disabled = true
-                } else {
-                    r.disabled = false
-                }
-            })
         },
-        listClick(item) {
-            this.previewer.loading = true;
-
-            const position = item.name.lastIndexOf('.'),
-                  extension = _getFileExtention(item),
-                  permissionExtension = ['jpg', 'png', 'svg', 'gif', 'jpeg', 'pdf'];
-            
-            if(item.type === 0) {
-                this.readShareFiles(item.id)
-                this.pushBreadcrumbs(item.id)
-            } else {
-                this.previewer.type = _checkFileExtention()
-                if(this.previewer.type) {
-                    this.previewer.data = item
-                    this.params.error = ""
-                    this.file_preview = true
-                } else {
-                    this.file_preview = false
-                    this.params.error = "プレビュー未対応のファイルです"
-                    return;
-                }
-            }
-
-            function _getFileExtention(item) {
-                return item.name.slice(position + 1)
-            }
-            function _checkFileExtention() {
-                if(permissionExtension.indexOf(extension) === -1) {
-                    return undefined;
-                }
-
-                switch (extension) {
-                    case "pdf":
-                        return "pdf";
-                    default:
-                        return "img"
-                }
-            }
-        },
-        clickDir(select_dir_id) {
-            if(this.params.now_dir == 0) return    
-            this.readShareFiles(select_dir_id)
-
-            let breadcrumbs = this.breadcrumbs
-            const begin = _matchIndex(select_dir_id)
-            breadcrumbs.splice(begin + 1)
-
-            // クリックされたディレクトリ以降の要素を削除するために、マッチした配列のIndexを返す
-            function _matchIndex(select_dir_id) {
-                for (let i = 0; i < breadcrumbs.length; i++) {
-                    if(breadcrumbs[i].href == select_dir_id) {
-                        return i
-                    }
-                }
-            }
+        isActiveBreadcrumb(item) {
+            return item.href === this.params.now_dir
         },
         
         downloadFile(item) {
@@ -280,7 +213,7 @@ export default {
             this.delete_modal = true
         },
         async executeDelete(delete_item) {
-            let items = this.params.filter_items
+            let items = this.params.files
             this.delete_modal = false;
             this.params.loading = true;
             try {
@@ -290,7 +223,7 @@ export default {
                 } 
                 this.params.success = `アイテム：${delete_item.name}を削除しました。`
                 items = items.filter((v) => v.id !== delete_item.id)
-                this.params.filter_items = items
+                this.params.files = items
                 this.readShareFiles(this.params.now_dir);
                 this.params.loading = false;
             } catch (error) {

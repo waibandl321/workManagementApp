@@ -102,6 +102,10 @@ export default {
             return Object.fromEntries(value)
         },
 
+        // 拡張子
+        getPermissionExtension() {
+            return PermissionExtension;
+        },
         // ファイルサイズ変換
         convertUnitSize(byte) {
             let target = null
@@ -136,3 +140,5 @@ export default {
         }
     }
 }
+
+const PermissionExtension = ['jpg', 'png', 'svg', 'gif', 'jpeg', 'pdf'];

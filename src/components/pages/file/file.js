@@ -1,7 +1,4 @@
 export default {
-    created() {
-
-    },
     methods: {
         async readShareFiles(select_dir_id) {
             let result = []
@@ -16,11 +13,10 @@ export default {
                 } else {
                     _matchParentDirectory(files, "0")
                 }
-                this.params.filter_items = result
-                
             } catch (error) {
                 console.log(error);
             }
+            this.params.files = result
 
             // 親ディレクトリに一致するファイルデータを返す
             function _matchParentDirectory(files, dir_id) {
@@ -29,6 +25,30 @@ export default {
                         result.push(files[key])
                     }
                 });
+            }
+        },
+        generateFolderObject() {
+            return {
+                "id"           : this.createRandomId(),
+                "uid"          : this.storeGetFirebaseUid(),
+                "type"         : 0,
+                "name"         : this.folder_name,
+                "size"         : "",
+                "upload_at"    : this.getCurrentUnixtime(),
+                "delete"       : 0,
+                "parent_dir_id": this.params.now_dir,
+            }
+        },
+        generateFileObject(file) {
+            return {
+                    "id"           : this.createRandomId(),
+                    "uid"          : this.storeGetFirebaseUid(),
+                    "type"         : 1,
+                    "name"         : file.name,
+                    "size"         : file.size,
+                    "upload_at"    : this.getCurrentUnixtime(),
+                    "delete"       : 0,
+                    "parent_dir_id": this.params.now_dir,
             }
         },
     }

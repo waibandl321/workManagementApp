@@ -1,17 +1,13 @@
 <template>
     <div class="body">
         <Header :parents="parents"/>
-        <div class="main">
-            <div
-                class="file-contents"
-            >
-                <MessageViewer :params="params" />
-                <FileList
-                    :params="params"
-                    v-if="params.mode == 'list'"
-                />
-                <FileAdd :params="params"/>                
-            </div>
+        <div class="main file-contents">
+            <MessageViewer :params="params" />
+            <FileList
+                :params="params"
+                v-if="params.mode == 'list'"
+            />
+            <FileAdd :params="params"/>
         </div>
     </div>
 </template>
@@ -27,8 +23,8 @@ export default {
     components: {
         Header,
         FileList,
+        FileAdd,
         MessageViewer,
-        FileAdd
     },
     mixins: [myMixin],
     data: () => ({
@@ -40,7 +36,7 @@ export default {
             error: "",
             loading: false,
             mode: 'list',
-            filter_items: [],
+            files: [],
             now_dir: "0",
         },
         
@@ -70,25 +66,4 @@ export default {
     box-sizing: border-box;
     position: relative;
 }
-.file-contents.dragging::before {
-    content: "";
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 10;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-.dragging-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    text-align: center;
-    pointer-events: none;
-    z-index: 10;
-}
-
 </style>

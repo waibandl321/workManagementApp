@@ -107,28 +107,24 @@ export default {
         createFolderModal: false,
         folder_name: "",
     }),
-    mounted() {
-        
-    },
     methods: {
         async executeCreateFolder() {
             const formdata = this.generateFolderObject()
             try {
                 await this.firebaseCreateShareFiles(formdata)
-                this.folder_name = "";
-                this.readShareFiles(this.params.now_dir);
                 this.params.success = `「フォルダ : ${this.folder_name}」を作成しました。`
-                this.createFolderModal = false;
-            } catch (error) {
+            } catch (err) {
                 this.params.error = "作成中にエラーが発生しました"
-                this.createFolderModal = false
-                console.log(error);
+                console.log(err);
             }
+            this.folder_name = "";
+            this.readShareFiles(this.params.now_dir);
+            this.createFolderModal = false;
         },
-        async uploadChange(e) {
+        async uploadChange(event) {
             this.params.dragging = false
             this.params.loading  = true
-            const files = e.target.files || e.dataTransfer.files
+            const files = event.target.files || event.dataTransfer.files
             try {
                 for (let i = 0; i < files.length; i++) {
                     const custom_metadata = this.generateFileObject(files[i])
@@ -148,30 +144,6 @@ export default {
             } catch (err) {
                 console.log(err);
                 this.params.error = "ファイルをアップロードに失敗しました。"
-            }
-        },
-        generateFolderObject() {
-            return {
-                "id"           : this.createRandomId(),
-                "uid"          : this.storeGetFirebaseUid(),
-                "type"         : 0,
-                "name"         : this.folder_name,
-                "size"         : "",
-                "upload_at"    : this.getCurrentUnixtime(),
-                "delete"       : 0,
-                "parent_dir_id": this.params.now_dir,
-            }
-        },
-        generateFileObject(file) {
-            return {
-                    "id"           : this.createRandomId(),
-                    "uid"          : this.storeGetFirebaseUid(),
-                    "type"         : 1,
-                    "name"         : file.name,
-                    "size"         : file.size,
-                    "upload_at"    : this.getCurrentUnixtime(),
-                    "delete"       : 0,
-                    "parent_dir_id": this.params.now_dir,
             }
         },
     }

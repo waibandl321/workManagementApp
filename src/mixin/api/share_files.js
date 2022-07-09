@@ -12,16 +12,15 @@ export default {
             await set(ref(db, '/share_files/' + formdata.uid + '/' + formdata.id), formdata)
         },
         
-        firebaseReadShareFiles() {
-            return new Promise((resolve) => {
+        async firebaseReadShareFiles() {
+            return new Promise((resolve, reject) => {
                 const db = getDatabase();
                 const starCountRef = ref(db, '/share_files/' + this.storeGetFirebaseUid());
                 onValue(starCountRef, (snapshot) => {
-                    return resolve(snapshot.val())
+                    resolve(snapshot.val())
+                }, (err) => {
+                    reject(err)
                 });
-            })
-            .catch((error) => {
-                console.log(error);
             })
         },
         async firebaseDeleteShareFiles(delete_item) {
