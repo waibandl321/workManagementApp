@@ -233,29 +233,32 @@ export default {
         },
         sortByDeadline() {
             this.sort_by_deadline = !this.sort_by_deadline
-            let result = this.convertObject(this.params.items)
+            let result = this.params.items
             if(this.sort_by_deadline) {
-                result = result.sort((a, b) => {
-                    return (a[1].task_deadline > b[1].task_deadline) ? 1 : -1;
+                result.sort((a, b) => {
+                    if(!a.task_deadline) return 1
+                    if(!b.task_deadline) return -1
+                    return a.task_deadline - b.task_deadline;
                 })
             } else {
-                result = result.sort((a, b) => {
-                    return (a[1].task_deadline < b[1].task_deadline) ? 1 : -1;
+                result.sort((a, b) => {
+                    if(!a.task_deadline) return 1
+                    if(!b.task_deadline) return -1
+                    return b.task_deadline - a.task_deadline
                 })
             }
-            result = this.convertArray(result);
             this.filter_items = result
         },
         sortByCreated() {
             this.sort_by_created = !this.sort_by_created
             let result = this.params.items
             if(this.sort_by_created) {
-                result = result.sort((a, b) => {
-                    return a.created - b.created
+                result.sort((a, b) => {
+                    return (a.created - b.created)
                 })
             } else {
-                result = result.sort((a, b) => {
-                    return b.created - a.created
+                result.sort((a, b) => {
+                    return (b.created - a.created)
                 })
             }
             this.filter_items = result
