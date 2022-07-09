@@ -160,7 +160,7 @@ export default {
             this.loading = false;
         },
         async externalSigninByGoogle() {
-            this.loading = true
+            this.loading = true;
             try {
                 const uid = await this.firebaseGoogleAuth();
                 this.storeSetFirebaseUid(uid)
@@ -168,17 +168,15 @@ export default {
                 if(account) {
                     this.storeSetAccountInfo(account)
                     this.pageMove('/')
-                    this.loading = false
                 } else {
                     this.storeSetAccountInfo(null)
                     this.pageMove('/account')
-                    this.loading = false
                 }
             } catch (error) {
                 console.log(error);
                 this.error = "外部認証に失敗しました。"
-                this.loading = false
             }
+            this.loading = false;
         },
         async externalSigninByYahoo() {
             this.loading = true
@@ -189,17 +187,15 @@ export default {
                 if(account) {
                     this.storeSetAccountInfo(account)
                     this.pageMove('/')
-                    this.loading = false
                 } else {
                     this.storeSetAccountInfo(null)
                     this.pageMove('/account')
-                    this.loading = false
                 }
             } catch (error) {
                 console.log(error);
                 this.error = "外部認証に失敗しました。"
-                this.loading = false
             }
+            this.loading = false
         },
         async isExistAuthAccount(uid) {
             return await this.apiGetAccount(uid)

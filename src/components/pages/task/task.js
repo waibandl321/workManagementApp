@@ -11,6 +11,7 @@ export default {
             result = Object.keys(result)
                     .map( (key) => {return result[key]})
                     .filter( v => v.task_status !== 5 )
+                    .sort((a, b) => a.created - b.created)
 
             return result;
         },

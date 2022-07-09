@@ -98,7 +98,7 @@
                         <td>
                             <v-btn
                                 text
-                                @click="sortByCreated"
+                                @click="sortByCreated()"
                             >
                                 作成日時
                                 <v-icon small>
@@ -248,17 +248,16 @@ export default {
         },
         sortByCreated() {
             this.sort_by_created = !this.sort_by_created
-            let result = this.convertObject(this.params.items)
+            let result = this.params.items
             if(this.sort_by_created) {
                 result = result.sort((a, b) => {
-                    return (a[1].created > b[1].created) ? 1 : -1;
+                    return a.created - b.created
                 })
             } else {
                 result = result.sort((a, b) => {
-                    return (a[1].created < b[1].created) ? 1 : -1;
+                    return b.created - a.created
                 })
             }
-            result = this.convertArray(result);
             this.filter_items = result
         },
         
