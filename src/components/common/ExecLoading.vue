@@ -1,8 +1,6 @@
 <template>
     <!-- ローディング -->
-    <div
-        class="loading-overlay"
-    >
+    <div class="loading-overlay">
         <v-progress-circular
             indeterminate
             color="white"

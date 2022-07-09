@@ -26,7 +26,7 @@
                     <v-list-item>
                         <v-btn
                             text
-                            @click="createFolderModal = true"
+                            @click="create_folder_modal = true"
                         >
                             フォルダを作成
                         </v-btn>
@@ -43,7 +43,7 @@
         
         <!-- フォルダ作成モーダル -->
         <v-dialog
-            v-model="createFolderModal"
+            v-model="create_folder_modal"
             width="600"
         >
             <v-card>
@@ -66,7 +66,7 @@
                         color="gray"
                         outlined
                         large
-                        @click="createFolderModal = false"
+                        @click="create_folder_modal = false"
                     >
                         キャンセル
                     </v-btn>
@@ -85,20 +85,20 @@
 </template>
 
 <script>
-
 import myMixin from './file'
-
 export default {
     props: {
         params: Object
     },
     mixins: [myMixin],
     data: () => ({
-        createFolderModal: false,
+        create_folder_modal: false,
         folder_name: "",
     }),
     methods: {
         async executeCreateFolder() {
+            this.params.success = "";
+            this.params.error = "";
             const formdata = this.generateFolderObject();
             try {
                 await this.firebaseCreateShareFiles(formdata);
@@ -109,32 +109,68 @@ export default {
             }
             this.folder_name = "";
             this.readShareFiles(this.params.now_dir);
-            this.createFolderModal = false;
+            this.create_folder_modal = false;
         },
+        
         async uploadChange(event) {
-            this.params.dragging = false;
-            this.params.loading  = true;
-            const files = event.target.files || event.dataTransfer.files;
-            try {
-                for (let i = 0; i < files.length; i++) {
-                    const custom_metadata = this.generateFileObject(files[i])
-                    // 保存処理
-                    await this.storageUploadShareFile(files[i])
+            this.params.loading = true;
+            this.params.success = "";
+            this.params.error = "";
+            const _file = event.target.files || event.dataTransfer.files;
+            if(await this.judgeBinaryFileType(_file)) {
+                try {
+                    const custom_metadata = this.generateFileObject(..._file)
+                    // ストレージ保存処理
+                    await this.storageUploadShareFile(..._file)
                     .then((downloadPath) => {
                         custom_metadata.download_path = downloadPath;
+                        // DBに保存
                         this.firebaseCreateShareFiles(custom_metadata);
+                        this.params.success = "ファイルをアップロードしました。";
                     })
-                    .catch((error) => {
-                        console.log(error);
-                    })
+                } catch (err) {
+                    console.log(err);
+                    this.params.error = "ファイルをアップロードに失敗しました。";
                 }
                 this.params.loading = false;
-                this.params.success = "ファイルをアップロードしました。";
                 this.readShareFiles(this.params.now_dir);
-            } catch (err) {
-                console.log(err);
-                this.params.error = "ファイルをアップロードに失敗しました。";
+            } else {
+                this.params.error = `許可されていないファイル形式または、ファイルの元データが改ざんされています。\n アップロード可能なファイル形式はjpg, png, gif, pdfです`;
+                this.params.loading  = false;
             }
+        },
+        // 厳密な拡張子チェック(ファイルデータ改ざん対応) 
+        async judgeBinaryFileType(files) {
+            let result = null;
+            const file_reader = new FileReader();
+            file_reader.readAsArrayBuffer(...files);
+            return new Promise((resolve, reject) => {
+                file_reader.onload = function(event) {
+                    let headerStr = "";
+                    let headerHex = "";
+                    const unit_8_array = new Uint8Array(event.target.result);
+                    for (let i = 0; i < 10; i++) {
+                        headerHex += unit_8_array[i].toString(16);
+                        headerStr += String.fromCharCode(unit_8_array[i]);
+                    }
+
+                    if (headerHex.indexOf("ffd8") !== -1) { // jpg, jpeg
+                        result = true;
+                    } else if (headerStr.indexOf("PNG") != -1) { // png
+                        result = true;
+                    } else if (headerStr.indexOf("GIF") != -1) { // gif
+                        result = true;
+                    } else if (headerStr.indexOf("PDF") != -1) { // pdf
+                        result = true;
+                    } else {
+                        result = false;
+                    }
+                    console.log("result=" + result + " headerStr=" + headerStr + " headerHex=" + headerHex);
+                    resolve(result);
+                }, function(err) {
+                    reject(err)
+                }
+            })
         },
     }
 }
