@@ -83,7 +83,7 @@ export default {
         },
 
         listRefresh() {
-            this.$refs.taskList.initItems()
+            this.$refs.taskList.initTaskListComponent()
         }
     }
 }

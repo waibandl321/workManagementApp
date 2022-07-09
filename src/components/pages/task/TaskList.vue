@@ -191,14 +191,16 @@ export default {
     }),
 
     created() {
-        this.initItems()
+        this.initTaskListComponent()
     },
 
     methods: {
-        async initItems() {
+        async initTaskListComponent() {
             this.params.loading = true;
             try {
-                this.params.items = await this.readTaskList()
+                let result = await this.readTaskList()
+                result = result.filter(v => v.task_status !== 5)
+                this.params.items = result
                 this.filterList();
             } catch (error) {
                 this.params.error = "タスクデータの読み込みに失敗しました。"
@@ -215,20 +217,23 @@ export default {
             this.params.detail_mode = true
         },
         // リストの絞り込み
-        filterList() {
-            let result = this.convertObject(this.params.items)
-            if(this.filter_text) {
-                result = result.filter(x => x[1].task_name.includes(this.filter_text))
-            }
+        async filterList() {
+            let result = this.params.items
             if(this.filter_status) {
-                result = result.filter(x => x[1].task_status === this.filter_status)
+                // 完了の場合は全タスク取得してからフィルタ
+                if(this.filter_status === 5) {
+                    result = await this.readTaskList()
+                    result = result.filter(v => v.task_status === 5)
+                } else {
+                    result = result.filter(v => v.task_status === this.filter_status)
+                }
             }
             if(this.filter_priority) {
-                result = result.filter(
-                    x => x[1].task_priority === this.filter_priority
-                )
+                result = result.filter(v => v.task_priority === this.filter_priority)
             }
-            result = this.convertArray(result);
+            if(this.filter_text) {
+                result = result.filter(v => v.task_name.includes(this.filter_text))
+            }
             this.filter_items = result
         },
         sortByDeadline() {
