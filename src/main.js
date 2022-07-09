@@ -10,7 +10,6 @@ import authMixin from "./mixin/firebase/auth.js"
 import authStore from "./mixin/store/auth.js"
 import accountMixin from "./mixin/api/account.js"
 import accountStore from "./mixin/store/account.js"
-import dashboardMixin from "@/mixin/api/dashboard.js"
 import shareFilesMixin from "./mixin/api/share_files.js"
 import taskMixin from "@/mixin/api/task.js"
 import storageMixin from "@/mixin/api/storage.js"
@@ -20,7 +19,6 @@ Vue.mixin(authMixin)
 Vue.mixin(authStore)
 Vue.mixin(accountMixin)
 Vue.mixin(accountStore)
-Vue.mixin(dashboardMixin)
 Vue.mixin(shareFilesMixin)
 Vue.mixin(taskMixin)
 Vue.mixin(storageMixin)

@@ -25,13 +25,13 @@
                 <v-col>
                     <v-text-field
                         label="性(必須)"
-                        v-model="params.account_info.last_name"
+                        v-model="last_name"
                     ></v-text-field>
                 </v-col>
                 <v-col>
                     <v-text-field
                         label="名(必須)"
-                        v-model="params.account_info.first_name"
+                        v-model="first_name"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -62,16 +62,31 @@ export default {
         params: Object
     },
     data: () => ({
-
+        last_name: "",
+        first_name: ""
     }),
     methods: {
         async register() {
-            this.params.account_info.status = true
-            this.params.account_info.color = this.setAccountAvatarColor()
-            await this.apiAccountCreate(this.params.account_info, this.storeGetFirebaseUid())
-            this.storeSetAccountInfo(this.params.account_info)
-            this.params.success = true
+            const account = this.generateNewAccountObject()
+            try {
+                await this.apiAccountCreate(account)
+                this.storeSetAccountInfo(account)
+                this.parents.user_info = this.copyJson(account);
+                this.params.success = "アカウント情報を登録しました。"
+            } catch (error) {
+                console.log(error);
+                this.params.success = "アカウント情報に失敗しました。"
+            }
+            
         },
+        generateNewAccountObject() {
+            return {
+                first_name: this.first_name,
+                last_name: this.last_name,
+                status: true,
+                color: this.setAccountAvatarColor()
+            }
+        }
     }
 }
 </script>

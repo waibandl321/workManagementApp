@@ -12,44 +12,36 @@ export default {
 
         // アカウント情報取得
         async apiGetAccount(uid) {
-            return new Promise((resolve) => {
-                console.log(uid);
+            return new Promise((resolve, reject) => {
                 const db = getDatabase();
                 onValue(ref(db, '/users/' + uid), (snapshot) => {
-                    return resolve(snapshot.val());
+                    resolve(snapshot.val());
+                }, (err) => {
+                    reject(err)
                 });
             })
-            .catch((reason) => {
-                console.log(reason.messege);
-            });
         },
 
         // アカウント登録
-        async apiAccountCreate(account_info, uid) {
+        async apiAccountCreate(account) {
             const db = getDatabase();
-            await set(ref(db, '/users/' + uid), {
-                first_name: account_info.first_name,
-                last_name: account_info.last_name,
-                status: account_info.status,
-                color: account_info.color
-            });
+            await set(ref(db, '/users/' + this.storeGetFirebaseUid()), account);
         },
 
         // アカウント更新
-        apiAccountUpdate(account_info) {
+        async apiAccountUpdate(account) {
             const db = getDatabase()
-            const userId = this.storeGetFirebaseUid()
-            const account = {
-                first_name: account_info.first_name,
-                last_name: account_info.last_name,
-                status: account_info.status,
-                color: account_info.color
-            }
-
             const updates = {};
-            updates['/users/' + userId] = account;
+            updates['/users/' + this.storeGetFirebaseUid()] = account;
             
-            update(ref(db), updates);
+            return await update(ref(db), updates)
+            .then(() => {
+                return true;
+            })
+            .catch((err) => {
+                console.log(err);
+                return false;
+            })
         },
     }
 }

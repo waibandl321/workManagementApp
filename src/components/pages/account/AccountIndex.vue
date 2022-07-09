@@ -10,12 +10,14 @@
         >
             <AccountRegister
                 :params="params"
+                :parents="parents"
             />
         </div>
         <!-- 更新 -->
         <AccountUpdate
             v-else
             :params="params"
+            :parents="parents"
         />
     </div>
 </template>
