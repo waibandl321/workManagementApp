@@ -137,7 +137,40 @@ export default {
                 }
                 return size
             }
-        }
+        },
+        // 厳密な拡張子チェック(ファイルデータ改ざん対応) 
+        async judgeBinaryFileType(file) {
+            let result = null;
+            const file_reader = new FileReader();
+            file_reader.readAsArrayBuffer(...file);
+            return new Promise((resolve, reject) => {
+                file_reader.onload = function(event) {
+                    let headerStr = "";
+                    let headerHex = "";
+                    const unit_8_array = new Uint8Array(event.target.result);
+                    for (let i = 0; i < 10; i++) {
+                        headerHex += unit_8_array[i].toString(16);
+                        headerStr += String.fromCharCode(unit_8_array[i]);
+                    }
+
+                    if (headerHex.indexOf("ffd8") !== -1) { // jpg, jpeg
+                        result = true;
+                    } else if (headerStr.indexOf("PNG") != -1) { // png
+                        result = true;
+                    } else if (headerStr.indexOf("GIF") != -1) { // gif
+                        result = true;
+                    } else if (headerStr.indexOf("PDF") != -1) { // pdf
+                        result = true;
+                    } else {
+                        result = false;
+                    }
+                    console.log("file upload result=" + result + " binary headerStr=" + headerStr + " binary headerHex=" + headerHex);
+                    resolve(result);
+                }, function(err) {
+                    reject(err)
+                }
+            })
+        },
     }
 }
 

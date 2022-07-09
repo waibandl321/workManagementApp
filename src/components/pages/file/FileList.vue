@@ -60,7 +60,7 @@
                         <div class="d-flex align-center justify-end">
                             <v-btn
                                 v-show="item.type !== 0"
-                                @click.stop="downloadFile(item)"
+                                @click.stop.prevent="downloadFile(item)"
                                 color="primary"
                                 text
                                 fab
@@ -195,9 +195,18 @@ export default {
         isActiveBreadcrumb(item) {
             return item.href === this.params.now_dir
         },
-        
+        // ファイルダウンロード
         downloadFile(item) {
-            alert(item);
+            fetch(item.download_path)
+            .then((response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', item.name);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
         },
         deleteItem(item) {
             this.delete_item = item;

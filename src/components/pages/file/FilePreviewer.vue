@@ -15,48 +15,50 @@
         </v-toolbar>
         <div class="pa-6">
             <Loading v-if="previewer.loading" />
-            <template v-if="previewer.type !== 'pdf'">
-                <img
-                    :src="previewer.data.download_path"
-                    @load="previewer.loading = false"
-                    style="max-width: 100%;"
-                >
-            </template>
-            <template v-else>
-                <div
-                    v-if="previewer.page_end > 1"
-                    class="mb-3"
-                >
-                    <div class="d-flex align-center justify-center">
-                        <v-btn
-                            outlined
-                            @click="prevPage"
-                            :disabled="previewer.page_current <= 1"
-                        >
-                            戻る
-                        </v-btn>
-                        <div class="mx-6">
-                            {{ previewer.page_current }} / {{ previewer.page_end }}
-                        </div>
-                        <v-btn
-                            outlined
-                            @click="nextPage"
-                            :disabled="previewer.page_current === previewer.page_end"
-                        >
-                            次へ
-                        </v-btn>
-                    </div>
-                </div>
-                <div>
-                    <pdf
+            <div>
+                <template v-if="previewer.type !== 'pdf'">
+                    <img
                         :src="previewer.data.download_path"
-                        @loaded="previewer.loading = false"
-                        @num-pages="previewer.page_end = $event"
-                        :page="previewer.page_current"
-                        
-                    ></pdf>
-                </div>
-            </template>
+                        @load="previewer.loading = false"
+                        style="max-width: 100%;"
+                    >
+                </template>
+                <template v-else>
+                    <div
+                        v-if="previewer.page_end > 1"
+                        class="mb-3"
+                    >
+                        <div class="d-flex align-center justify-center">
+                            <v-btn
+                                outlined
+                                @click="prevPage"
+                                :disabled="previewer.page_current <= 1"
+                            >
+                                戻る
+                            </v-btn>
+                            <div class="mx-6">
+                                {{ previewer.page_current }} / {{ previewer.page_end }}
+                            </div>
+                            <v-btn
+                                outlined
+                                @click="nextPage"
+                                :disabled="previewer.page_current === previewer.page_end"
+                            >
+                                次へ
+                            </v-btn>
+                        </div>
+                    </div>
+                    <div>
+                        <pdf
+                            :src="previewer.data.download_path"
+                            @loaded="previewer.loading = false"
+                            @num-pages="previewer.page_end = $event"
+                            :page="previewer.page_current"
+                            
+                        ></pdf>
+                    </div>
+                </template>
+            </div>
         </div>
     </v-card>
 </template>
