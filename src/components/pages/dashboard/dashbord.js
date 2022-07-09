@@ -6,10 +6,11 @@ export default {
     }),
     async created() {
         this.today = this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyymmdd");
-        this.items = await this.getAllDashboardTask()
-        this.getDashboardTasksByCreatedOneWeek()
         this.params.task_status_list = this.getTaskStatus()
         this.params.task_priorities = this.getTaskPriorities()
+        this.items = await this.getAllDashboardTask()
+        this.getDashboardTasksByCreatedOneWeek()
+        
     },
     methods: {
         async getAllDashboardTask() {

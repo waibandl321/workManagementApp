@@ -9,18 +9,9 @@ import {
 export default {
     methods: {
         // ファイルデータをDBに保存
-        firebaseSaveFile(data) {
-            const obj = {
-                    db_id: data.customMetadata.db_id,
-                    name: data.name,
-                    size: data.size,
-                    contentType: data.contentType,
-                    download_path: data.download_path,
-                    task_id: data.customMetadata.task_id,
-                }
-            
+        firebaseSaveFile(task_file_obj) {
             const db = getDatabase();
-            set(ref(db, '/files/' + this.storeGetFirebaseUid() + '/' + data.customMetadata.db_id), obj);
+            set(ref(db, '/files/' + this.storeGetFirebaseUid() + '/' + task_file_obj.db_id), task_file_obj);
         },
 
         // ファイルの一覧取得

@@ -102,10 +102,6 @@ export default {
             return Object.fromEntries(value)
         },
 
-        // 拡張子
-        getPermissionExtension() {
-            return PermissionExtension;
-        },
         // ファイルサイズ変換
         convertUnitSize(byte) {
             let target = null
@@ -137,6 +133,10 @@ export default {
                 }
                 return size
             }
+        },
+        // アップロードを許可する拡張子
+        getPermissionExtension() {
+            return PermissionExtension;
         },
         // 厳密な拡張子チェック(ファイルデータ改ざん対応) 
         async judgeBinaryFileType(file) {

@@ -270,8 +270,11 @@ export default {
             this.file_loading = true
             const files = e.target.files || e.dataTransfer.files
             try {
-                const result = await this.storageUploadTaskFile(...files, this.params.viewer.task_id)
-                await this.firebaseSaveFile(result);
+                await this.storageUploadTaskFile(...files, this.params.viewer.task_id)
+                .then((result) => {
+                    const task_file_obj = this.generateTaskFileObject(result)
+                    this.firebaseSaveFile(task_file_obj);
+                })
                 this.params.files = this.getFileList();
                 this.params.success = "ファイルをアップロードしました。";
                 this.file_loading = false;
@@ -279,6 +282,16 @@ export default {
                 this.params.error = "ファイルアップロードに失敗しました。";
                 this.file_loading = false;
                 console.log(error);
+            }
+        },
+        generateTaskFileObject(result) {
+            return {
+                db_id: result.customMetadata.db_id,
+                name: result.name,
+                size: result.size,
+                contentType: result.contentType,
+                download_path: result.download_path,
+                task_id: result.customMetadata.task_id,
             }
         },
          // ファイル物理削除
