@@ -72,7 +72,6 @@ export default {
             this.parents.user_info = this.storeGetAccountInfo()
             this.params.task_status_list = this.getTaskStatus()
             this.params.task_priorities = this.getTaskPriorities()
-            this.params.files = this.getFileList()
         },
         // 詳細閉じる
         closeDetail() {

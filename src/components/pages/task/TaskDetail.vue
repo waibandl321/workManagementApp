@@ -321,22 +321,22 @@
                     <table class="file-table">
                         <tr v-for="(file, i) in params.files" :key="i">
                             <td>
-                                <img :src="file[1].download_path" width="40">
+                                <img :src="file.download_path" width="40">
                             </td>
-                            <td>{{ file[1].name }}</td>
-                            <td>{{ convertUnitSize(file[1].size) }}</td>
-                            <td>{{ file[1].contentType }}</td>
+                            <td>{{ file.name }}</td>
+                            <td>{{ convertUnitSize(file.size) }}</td>
+                            <td>{{ file.contentType }}</td>
                             <td class="operation-td">
                                 <v-btn
                                     link
                                     text
-                                    :href="file[1].download_path"
+                                    :href="file.download_path"
                                     target="_blank" rel="noopener noreferrer"
                                     >
                                         <v-icon>mdi-open-in-new</v-icon>
                                 </v-btn>
                                 <v-btn
-                                    @click="clickFileDeleteSingle(file[1])"
+                                    @click="clickFileDeleteSingle(file)"
                                     text
                                     class="ml-2"
                                 >

@@ -17,7 +17,6 @@ export default {
                 console.log(error);
             }
             this.params.files = result
-
             // 親ディレクトリに一致するファイルデータを返す
             function _matchParentDirectory(files, dir_id) {
                 Object.keys(files).forEach((key) =>  {

@@ -211,9 +211,9 @@ export default {
         async recordClick(task) {
             this.params.success = ""
             this.params.error = ""
-            this.params.subtask_list = await this.getSubtaskList(task)
             this.params.viewer = task
-            this.params.files = this.getFileList()
+            this.params.subtask_list = await this.getSubtaskList(task)
+            this.params.files = this.getFileList();
             this.params.detail_mode = true
         },
         // リストの絞り込み

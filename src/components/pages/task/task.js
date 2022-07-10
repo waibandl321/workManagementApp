@@ -137,18 +137,6 @@ export default {
             }
             this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
         },
-        
-        // ファイル一覧取得
-        getFileList() {
-            let result = this.firebaseReadFile()
-            if(result) {
-                result = Object.entries(result)
-                result = result.filter((v) => v[1].task_id == this.params.viewer.task_id)
-            } else {
-                result = []
-            }
-            return result;
-        },
         // 戻り値：タスク期日 - タスク作成日
         convertTaskPeriod(begin, end) {
             if(!end) {
@@ -266,25 +254,34 @@ export default {
                     break;
             }
         },
+        // ファイル一覧取得
+        getFileList() {
+            let result = this.firebaseReadFile()
+            result = Object.keys(result)
+                    .map((key) => {
+                        return result[key]
+                    })
+            return result;
+        },
         // ファイルアップロード
         async onFileChange(e) {
             this.file_loading = true
             const files = e.target.files || e.dataTransfer.files
             if(await this.judgeBinaryFileType(files)) {
                 try {
+                    await this.judgeSameTaskFile(...files)
                     await this.storageUploadTaskFile(...files, this.params.viewer.task_id)
                     .then((result) => {
                         const task_file_obj = this.generateTaskFileObject(result)
                         this.firebaseSaveFile(task_file_obj);
                     })
-                    this.params.files = this.getFileList();
                     this.params.success = "ファイルをアップロードしました。";
-                    this.file_loading = false;
                 } catch (error) {
                     this.params.error = "ファイルアップロードに失敗しました。";
-                    this.file_loading = false;
                     console.log(error);
                 }
+                this.params.files = this.getFileList();
+                this.file_loading = false;
             } else {
                 scrollTo(0,0)
                 this.params.error = `
@@ -304,6 +301,24 @@ export default {
                 task_id: result.customMetadata.task_id,
             }
         },
+        async judgeSameTaskFile(upload_file) {
+            let result = this.params.files;
+            result = result.filter((v) => v.name === upload_file.name)
+            if(result.length === 0) return;
+            console.log("same file name: " + result[0].name);
+            return await this._executeDeleteSameTaskFile(...result)
+        },
+        async _executeDeleteSameTaskFile(file) {
+            try {
+                const result = await this.firebaseDeleteFile(file)
+                if(result) {
+                    await this.storageDeleteFile(file)
+                }
+            } catch (error) {
+                console.log(error);
+            }
+            return;
+        },
          // ファイル物理削除
          async execDeleteFile() {
             this.file_loading = true;
@@ -314,6 +329,7 @@ export default {
             } else {
                 this.params.success = `ファイル${this.delete_file.name}の削除に失敗しました。`
             }
+            scrollTo(0,0)
             this.params.files = this.getFileList()
             this.delete_file = {}
             this.delete_options = []
@@ -325,20 +341,20 @@ export default {
             this.file_loading = true;
             try {
                 for(const file of this.params.files) {
-                    const result = await this.storageDeleteFile(file[1])
+                    const result = await this.storageDeleteFile(file)
                     if(result) {
-                        await this.firebaseDeleteFile(file[1])
+                        await this.firebaseDeleteFile(file)
                     }
                 }
-                this.params.files = this.getFileList()
                 this.params.success = "全てのファイルを削除しました。";
             } catch (error) {
                 console.log(error);
                 this.params.error = "ファイル削除中にエラーが発生しました。時間をおいてもう一度やり直してください。"
             }
-            this.file_loading = false;
+            this.params.files = this.getFileList()
             this.delete_options = [];
             this.delete_modal = false;
+            this.file_loading = false;
         },
     }
 }
