@@ -81,11 +81,6 @@
                     >
                     </v-img>
                 </v-btn>
-                <v-btn
-                    @click="externalSigninByYahoo()"
-                >
-                   Yahoo! JAPAN
-                </v-btn>
             </div>
             <v-divider></v-divider>
             <div class="pa-4">
@@ -177,25 +172,6 @@ export default {
                 this.error = "外部認証に失敗しました。"
             }
             this.loading = false;
-        },
-        async externalSigninByYahoo() {
-            this.loading = true
-            try {
-                const uid = await this.firebaseYahooAuth();
-                this.storeSetFirebaseUid(uid)
-                const account = await this.isExistAuthAccount(uid)
-                if(account) {
-                    this.storeSetAccountInfo(account)
-                    this.pageMove('/')
-                } else {
-                    this.storeSetAccountInfo(null)
-                    this.pageMove('/account')
-                }
-            } catch (error) {
-                console.log(error);
-                this.error = "外部認証に失敗しました。"
-            }
-            this.loading = false
         },
         async isExistAuthAccount(uid) {
             return await this.apiGetAccount(uid)

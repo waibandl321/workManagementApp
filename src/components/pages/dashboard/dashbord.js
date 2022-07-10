@@ -130,7 +130,7 @@ export default {
         getExpiredTasks() {
             let result = this.getActivateTasks();
             result = result.filter((v) => 
-                this.judgeDateBeforeToday(v.task_deadline)
+                this.judgeDateBeforeYesterday(v.task_deadline)
             )
             return result;
         },
@@ -162,6 +162,11 @@ export default {
         judgeDateBeforeToday(target_date) {
             return this.convertDatetimeFromUnixtime(target_date, "yyyymmdd")
                     <= this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyymmdd")
+        },
+        // 本日含まないver
+        judgeDateBeforeYesterday(target_date) {
+            return this.convertDatetimeFromUnixtime(target_date, "yyyymmdd")
+                    < this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyymmdd")
         },
         // 本日以降チェック
         judgeDateAfterToday(target_date) {

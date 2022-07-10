@@ -290,7 +290,10 @@
                 
                 <div class="pt-4">
                     <div v-if="!params.files.length > 0">添付ファイルはありません。</div>
-                    <div class="d-flex align-center" v-else>
+                    <div
+                        v-else
+                        class="d-flex align-center"
+                    >
                         <div>{{ params.files.length }} Files</div>
                         <v-spacer />
                         <v-btn

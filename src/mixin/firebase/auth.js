@@ -7,7 +7,6 @@ import {
     signInWithPopup,
     sendPasswordResetEmail,
     updateEmail,
-    OAuthProvider
 }
 from "firebase/auth";
 
@@ -65,20 +64,6 @@ export default {
                 console.log(error);
                 return false
             });
-        },
-
-        async firebaseYahooAuth() {
-            const auth = getAuth();
-            const provider = new OAuthProvider('yahoo.com');
-            return await signInWithPopup(auth, provider)
-            .then((result) => {
-                return result.user.uid
-            })
-            .catch((error) => {
-                console.log(error);
-                return false;
-            });
-
         },
 
         // メールアドレス更新
