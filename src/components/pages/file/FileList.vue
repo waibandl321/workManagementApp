@@ -217,10 +217,14 @@ export default {
             this.delete_modal = false;
             this.params.loading = true;
             try {
+                // ディレクトリ配下の子アイテムを削除
+                if(this.delete_item.type === 0) {
+                    await this.executeDeleteChildFiles()
+                }
                 const result = await this.firebaseDeleteShareFiles(this.delete_item)
                 if(result && this.delete_item.type === 1) {
                     await this.storageDeleteShareFile(this.delete_item)
-                } 
+                }
                 this.params.success = `アイテム：${this.delete_item.name}を削除しました。`
             } catch (error) {
                 this.params.error = `アイテム：${this.delete_item.name}の削除中にエラーが発生しました。`
@@ -228,6 +232,23 @@ export default {
             }
             this.readShareFiles(this.params.now_dir);
             this.params.loading = false;
+        },
+        async executeDeleteChildFiles() {
+            try {
+                let result = await this._readAllShareFiles()
+                result = Object.keys(result)
+                        .map((key) => { return result[key] })
+                        .filter((v) => v.parent_dir_id === this.delete_item.id)
+                if(result.length === 0) return;
+                for(const item of result) {
+                    const child_result = await this.firebaseDeleteShareFiles(item)
+                    if(child_result && item.type === 1) {
+                        await this.storageDeleteShareFile(item)
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
         },
         closeFilePreview() {
             this.file_preview = false;

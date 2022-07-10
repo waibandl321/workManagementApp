@@ -1,5 +1,12 @@
 export default {
     methods: {
+        async _readAllShareFiles() {
+            try {
+                return await this.firebaseReadShareFiles()
+            } catch (error) {
+                console.log(error);
+            }
+        },
         async readShareFiles(select_dir_id) {
             let result = []
             try {
