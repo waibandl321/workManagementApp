@@ -261,6 +261,8 @@ export default {
                     .map((key) => {
                         return result[key]
                     })
+                    .filter((v) => v.task_id == this.params.viewer.task_id)
+            
             return result;
         },
         // ファイルアップロード
