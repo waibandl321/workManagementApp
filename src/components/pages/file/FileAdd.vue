@@ -95,6 +95,9 @@ export default {
         create_folder_modal: false,
         folder_name: "",
     }),
+    created() {
+        
+    },
     methods: {
         async executeCreateFolder() {
             this.params.success = "";
@@ -116,15 +119,17 @@ export default {
             this.params.loading = true;
             this.params.success = "";
             this.params.error = "";
-            const _file = event.target.files || event.dataTransfer.files;
-            if(await this.judgeBinaryFileType(_file)) {
+            const upload_file = event.target.files || event.dataTransfer.files;
+            // バイナリレベルの拡張子チェック
+            if(await this.judgeBinaryFileType(upload_file)) {
                 try {
-                    const custom_metadata = this.generateFileObject(..._file)
-                    // ストレージ保存処理
-                    await this.storageUploadShareFile(..._file)
+                    // 同じファイルが存在する場合は一度該当ファイルを削除（ストレージ・DB）
+                    await this.judgeSameFile(...upload_file)
+                    const custom_metadata = this.generateFileObject(...upload_file)
+                    // 保存処理
+                    await this.storageUploadShareFile(...upload_file)
                     .then((downloadPath) => {
                         custom_metadata.download_path = downloadPath;
-                        // DBに保存
                         this.firebaseCreateShareFiles(custom_metadata);
                         this.params.success = "ファイルをアップロードしました。";
                     })
@@ -135,8 +140,32 @@ export default {
                 this.params.loading = false;
                 this.readShareFiles(this.params.now_dir);
             } else {
-                this.params.error = `許可されていないファイル形式または、ファイルの元データが改ざんされています。\n アップロード可能なファイル形式はjpg, png, gif, pdfです`;
+                this.params.error = `
+                    許可されていないファイル形式または、ファイルの元データが改ざんされています。\n
+                    アップロード可能なファイル形式はjpg, png, gif, pdfです
+                `;
                 this.params.loading  = false;
+            }
+        },
+
+        async judgeSameFile(upload_file) {
+            let result = this.params.files;
+            result = result.filter((v) => v.name === upload_file.name)
+            if(result.length === 0) return;
+
+            console.log("same file name: " + result[0].name);
+            await this._executeDelete(...result)
+        },
+        async _executeDelete(file) {
+            try {
+                const result = await this.firebaseDeleteShareFiles(file)
+                if(result && file.type === 1) {
+                    await this.storageDeleteShareFile(file)
+                    return;
+                }
+            } catch (error) {
+                console.log(error);
+                return;
             }
         },
     }

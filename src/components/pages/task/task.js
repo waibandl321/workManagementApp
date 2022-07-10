@@ -270,19 +270,28 @@ export default {
         async onFileChange(e) {
             this.file_loading = true
             const files = e.target.files || e.dataTransfer.files
-            try {
-                await this.storageUploadTaskFile(...files, this.params.viewer.task_id)
-                .then((result) => {
-                    const task_file_obj = this.generateTaskFileObject(result)
-                    this.firebaseSaveFile(task_file_obj);
-                })
-                this.params.files = this.getFileList();
-                this.params.success = "ファイルをアップロードしました。";
-                this.file_loading = false;
-            } catch (error) {
-                this.params.error = "ファイルアップロードに失敗しました。";
-                this.file_loading = false;
-                console.log(error);
+            if(await this.judgeBinaryFileType(files)) {
+                try {
+                    await this.storageUploadTaskFile(...files, this.params.viewer.task_id)
+                    .then((result) => {
+                        const task_file_obj = this.generateTaskFileObject(result)
+                        this.firebaseSaveFile(task_file_obj);
+                    })
+                    this.params.files = this.getFileList();
+                    this.params.success = "ファイルをアップロードしました。";
+                    this.file_loading = false;
+                } catch (error) {
+                    this.params.error = "ファイルアップロードに失敗しました。";
+                    this.file_loading = false;
+                    console.log(error);
+                }
+            } else {
+                scrollTo(0,0)
+                this.params.error = `
+                    許可されていないファイル形式または、ファイルの元データが改ざんされています。\n
+                    アップロード可能なファイル形式はjpg, png, gif, pdfです
+                `;
+                this.file_loading  = false;
             }
         },
         generateTaskFileObject(result) {

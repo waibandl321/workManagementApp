@@ -95,10 +95,11 @@ export default {
             const desertRef = ref( getStorage(), this.storeGetFirebaseUid() + '/' + file.name );
             return await deleteObject(desertRef)
             .then(() => {
-                return true
+                return true;
             })
             .catch((error) => {
                 console.log(error);
+                return false;
             });
         },
     },
