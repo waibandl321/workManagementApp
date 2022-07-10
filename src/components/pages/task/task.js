@@ -255,8 +255,9 @@ export default {
             }
         },
         // ファイル一覧取得
-        getFileList() {
-            let result = this.firebaseReadFile()
+        async getFileList() {
+            let result = await this.firebaseReadFile()
+            if(!result) return []
             result = Object.keys(result)
                     .map((key) => {
                         return result[key]
@@ -266,9 +267,9 @@ export default {
             return result;
         },
         // ファイルアップロード
-        async onFileChange(e) {
+        async onFileChange(event) {
             this.file_loading = true
-            const files = e.target.files || e.dataTransfer.files
+            const files = event.target.files || event.dataTransfer.files
             if(await this.judgeBinaryFileType(files)) {
                 try {
                     await this.judgeSameTaskFile(...files)
@@ -282,16 +283,15 @@ export default {
                     this.params.error = "ファイルアップロードに失敗しました。";
                     console.log(error);
                 }
-                this.params.files = this.getFileList();
-                this.file_loading = false;
+                this.params.files = await this.getFileList();
             } else {
-                scrollTo(0,0)
                 this.params.error = `
                     許可されていないファイル形式または、ファイルの元データが改ざんされています。\n
                     アップロード可能なファイル形式はjpg, png, gif, pdfです
                 `;
-                this.file_loading  = false;
             }
+            scrollTo(0,0)
+            this.file_loading = false;
         },
         generateTaskFileObject(result) {
             return {
@@ -324,6 +324,7 @@ export default {
          // ファイル物理削除
          async execDeleteFile() {
             this.file_loading = true;
+            this.delete_modal = false;
             const storage_result = await this.storageDeleteFile(this.delete_file)
             if(storage_result) {
                 await this.firebaseDeleteFile(this.delete_file)
@@ -332,14 +333,14 @@ export default {
                 this.params.success = `ファイル${this.delete_file.name}の削除に失敗しました。`
             }
             scrollTo(0,0)
-            this.params.files = this.getFileList()
+            this.params.files = await this.getFileList()
             this.delete_file = {}
             this.delete_options = []
-            this.delete_modal = false;
             this.file_loading = false;
         },
         // 全てのファイル物理削除
         async execDeleteAllFile() {
+            this.delete_modal = false;
             this.file_loading = true;
             try {
                 for(const file of this.params.files) {
@@ -349,13 +350,15 @@ export default {
                     }
                 }
                 this.params.success = "全てのファイルを削除しました。";
+                this.params.files = await this.getFileList()
             } catch (error) {
                 console.log(error);
-                this.params.error = "ファイル削除中にエラーが発生しました。時間をおいてもう一度やり直してください。"
+                this.params.error = `
+                ファイル削除中にエラーが発生しました。
+                時間をおいてもう一度やり直してください。`
             }
-            this.params.files = this.getFileList()
+            scrollTo(0,0)
             this.delete_options = [];
-            this.delete_modal = false;
             this.file_loading = false;
         },
     }

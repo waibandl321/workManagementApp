@@ -272,16 +272,10 @@
                 <v-card-actions class="relative px-0">
                     <p class="font-weight-bold mb-0">■ 添付ファイル</p>
                     <v-spacer />
-                    <input
-                        style="display: none"
-                        ref="file"
-                        type="file"
-                        @change="onFileChange"
-                    >
                     <v-btn
                         text
                         color="primary"
-                        @click="$refs.file.click()"
+                        @click="clickUploadButton()"
                     >
                         <v-icon>mdi-paperclip</v-icon>ファイルを添付する
                     </v-btn>
@@ -345,6 +339,12 @@
                             </td>
                         </tr>
                     </table>
+                    <input
+                        style="display: none"
+                        ref="fileUploadButton"
+                        type="file"
+                        @change="onFileChange"
+                    >
                 </template>
             </div>
 
@@ -439,6 +439,11 @@ export default {
     },
 
     methods: {
+        clickUploadButton() {
+            this.params.success = "";
+            this.params.error = "";
+            this.$refs.fileUploadButton.click()
+        },
         // 単ーファイル削除
         clickFileDeleteSingle(file) {
             this.delete_title = `ファイル「${file.name}」を削除します。`;
@@ -505,7 +510,8 @@ export default {
         },
         closeModal() {
             this.delete_options = []
-            this.delete_modal = false
+            this.delete_modal = false;
+            this.file_loading = false;
         },
     }
 }

@@ -15,14 +15,16 @@ export default {
         },
 
         // ファイルの一覧取得
-        firebaseReadFile() {
+        async firebaseReadFile() {
             const db = getDatabase()
             const r = ref( db, '/files/' + this.storeGetFirebaseUid() )
-            let result = ""
-            onValue(r, (snapshot) => {
-                result = snapshot.val()
+            return new Promise((resolve, reject) => {
+                onValue(r, (snapshot) => {
+                    resolve(snapshot.val())
+                }, (err) => {
+                    reject(err)
+                })
             })
-            return result
         },
         
         // データベースからファイルを削除

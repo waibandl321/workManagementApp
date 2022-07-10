@@ -210,11 +210,18 @@ export default {
         // 一覧クリック
         async recordClick(task) {
             this.params.success = ""
-            this.params.error = ""
+            this.params.error = "";
             this.params.viewer = task
-            this.params.subtask_list = await this.getSubtaskList(task)
-            this.params.files = this.getFileList();
-            this.params.detail_mode = true
+            try {
+                this.params.subtask_list = await this.getSubtaskList(task)
+                this.params.files = await this.getFileList();
+                this.params.detail_mode = true
+            } catch (error) {
+                this.params.error = `
+                データの読み込みに失敗しました。ブラウザを再読み込みしていただくか、
+                しばらく時間を置いてから操作してください。`;
+                this.params.viewer = {}
+            }
         },
         // リストの絞り込み
         async filterList() {
