@@ -16,7 +16,7 @@
     padding-bottom: 120px!important;
     height: 100%;
 }
-/* 一覧 */
+/* 一覧 style */
 .list_inner >>> .v-text-field__details {
     display: none;
 }
@@ -29,9 +29,12 @@
 .relative {
     position: relative;
 }
-
-
-/* 詳細 */
+.alt_submit {
+    position: absolute;
+    right: 0;
+    bottom: 12px;
+}
+/* 詳細 style */
 .relative {
     position: relative;
 }
@@ -123,10 +126,10 @@
 .taskname_edit_input {
     background-color: #fff;
     padding: 8px 72px 8px 12px;
-    min-width: 400px;
     border: none;
     outline: none;
     font-size: 16px;
+    width: 100%;
 }
 .taskname_edit_input:focus {
     border: none;
@@ -172,41 +175,18 @@ td {
     background-color: #f5f5f8;
     font-size: 14px;
 }
-.editor_body >>> h2:first-child {
-    margin-top: 0;
-}
-.editor_body >>> h2 {
-    margin-top: 40px;
-    margin-bottom: 12px;
-}
-.editor_body >>> h3 {
-    margin-top: 24px;
-    margin-bottom: 12px;
-}
-.editor_body >>> pre {
-    padding: 16px;
-    background-color: #222;
-    color: #fff;
-    font-size: 12px;
-}
-.editor_body {
-    color: #222;
-}
-
-.alt_submit {
-    position: absolute;
-    right: 0;
-    bottom: 12px;
-}
-.loading-overlay {
-    position: fixed;
-    z-index: 999;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+.subtask-card__wrap {
     display: flex;
     align-items: center;
-    justify-content: center;
-    background-color: rgba(0,0,0,.5);
+}
+.subtask-card__icon {
+    width: 40px;
+    text-align: center;
+}
+.subtask-card__body {
+    width: calc(100% - 40px);
+    margin-top: 8px;
+}
+.toolbar-title {
+    width: 100%;
 }

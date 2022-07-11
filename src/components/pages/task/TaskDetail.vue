@@ -4,11 +4,7 @@
         persistent
         max-width="1024px"
     >
-        <v-toolbar
-            flat
-            dark
-            color="primary"
-        >
+        <v-toolbar flat dark color="primary">
             <v-btn
                 icon
                 dark
@@ -17,7 +13,7 @@
                 <v-icon>mdi-close</v-icon>
             </v-btn>
             <!-- タスク名・削除 -->
-            <v-toolbar-title>
+            <v-toolbar-title class="toolbar-title">
                 <div
                     v-if="task_name_edit"
                     class="taskname_edit"
@@ -373,7 +369,6 @@
 <script>
 import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
 import MessageViewer from '@/components/common/MessageViewer.vue'
-
 import SubtaskEdit from "./subtask/SubtaskEdit.vue"
 import SubtaskView from "./subtask/SubtaskView.vue"
 // エディタ
@@ -439,6 +434,7 @@ export default {
     },
 
     methods: {
+        // finder explore起動
         clickUploadButton() {
             this.params.success = "";
             this.params.error = "";
@@ -522,22 +518,5 @@ export default {
 <style>
 .ql-container.ql-snow {
     min-height: 200px;
-}
-.alt_submit {
-    position: absolute;
-    bottom: 40%;
-    right: 0;
-}
-.subtask-card__wrap {
-    display: flex;
-    align-items: center;
-}
-.subtask-card__icon {
-    width: 40px;
-    text-align: center;
-}
-.subtask-card__body {
-    width: calc(100% - 40px);
-    margin-top: 8px;
 }
 </style>

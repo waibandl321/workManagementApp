@@ -218,7 +218,6 @@ export default {
                 this.termSetting = false
                 return
             }
-
             const result = await this.apiUpdateTaskDeadline(deadline, this.params.viewer.task_id)
             if(result) {
                 this.params.viewer.task_deadline = deadline
@@ -303,6 +302,7 @@ export default {
                 task_id: result.customMetadata.task_id,
             }
         },
+        // 同名ファイルの上書き
         async judgeSameTaskFile(upload_file) {
             let result = this.params.files;
             result = result.filter((v) => v.name === upload_file.name)
