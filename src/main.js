@@ -6,6 +6,7 @@ import vuetify from './plugins/vuetify'
 
 // mixins
 import utilMixin from "@/mixin/common/util.js"
+import commonValidate from "@/mixin/common/validate.js"
 import authMixin from "./mixin/firebase/auth.js"
 import authStore from "./mixin/store/auth.js"
 import accountMixin from "./mixin/api/account.js"
@@ -15,6 +16,7 @@ import taskMixin from "@/mixin/api/task.js"
 import storageMixin from "@/mixin/api/storage.js"
 import fileRelatedDatabaseMixin from "@/mixin/api/file_relatied_db.js"
 Vue.mixin(utilMixin)
+Vue.mixin(commonValidate)
 Vue.mixin(authMixin)
 Vue.mixin(authStore)
 Vue.mixin(accountMixin)

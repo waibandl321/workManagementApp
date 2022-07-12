@@ -16,44 +16,52 @@
                         {{ error }}
                     </v-alert>
                 </div>
-                <v-form
-                    ref="form"
-                    v-model="valid"
-                    lazy-validation
-                >
-                    <div>
+                <validation-observer v-slot="{ invalid }" ref="observer">
+                    <validation-provider
+                        name="メールアドレス"
+                        rules="email|required"
+                        v-slot="{ errors }"
+                        tag="div"
+                    >
                         <v-text-field
                             v-model="email"
-                            :rules="emailRules"
-                            label="E-mail"
+                            label="メールアドレス"
+                            hide-details
                             outlined
                             dense
                             required
                         ></v-text-field>
-                    </div>
-                
-                    <div>
+                        <div class="input-error-messsage">{{ errors[0] }}</div>
+                    </validation-provider>
+                    <validation-provider
+                        name="パスワード"
+                        rules="required"
+                        v-slot="{ errors }"
+                        tag="div"
+                        class="mt-6"
+                    >
                         <v-text-field
                             label="パスワード"
-                            :rules="passwordRules"
+                            hide-details
                             type="password"
                             required
                             outlined
                             dense
                             v-model="password"
                         ></v-text-field>
+                        <div class="input-error-messsage">{{ errors[0] }}</div>
+                    </validation-provider>
+                    <div class="my-4">
+                        <v-btn
+                            :disabled="invalid"
+                            color="primary"
+                            class="submit"
+                            @click="emailSignin()"
+                        >
+                            サインイン
+                        </v-btn>
                     </div>
-                </v-form>
-            </div>
-            <div class="pa-4">
-               <v-btn
-                    :disabled="!valid"
-                    color="primary"
-                    class="submit"
-                    @click="emailSignin()"
-                >
-                    サインイン
-                </v-btn>
+                </validation-observer>
             </div>
             <v-divider />
             <div class="pa-4">
@@ -105,36 +113,17 @@ export default {
         ExecLoading
     },
     data: () => ({
-        auth: false,
-
-        // 入力バリデーション
-        valid: true,
         email: '',
-        emailRules: [
-        v => !!v || 'メールアドレスは入力必須です',
-        v => /.+@.+\..+/.test(v) || 'メールアドレスの形式で入力してください',
-        ],
-        passwordRules: [
-            v => !!v || 'パスワードは入力必須です',
-        ],
         password: '',
-
         loading: false,
         error: ''
     }),
 
     methods: {
-        reset () {
-            this.$refs.form.reset()
-        },
-        resetValidation () {
-            this.$refs.form.resetValidation()
-        },
         // サインイン(サインイン)
         async emailSignin () {
             this.loading = true;
-            const valid = this.$refs.form.validate();
-            if(valid) {
+            try {
                 const uid = await this.firebaseEmailSignin(this.email, this.password);
                 if(uid) {
                     this.storeSetFirebaseUid(uid);
@@ -147,11 +136,12 @@ export default {
                         this.pageMove('/account')
                     }
                 } else {
-                    this.error = "認証に失敗しました。もう一度やり直してください。"
+                    throw new Error();
                 }
-            } else {
-                this.error = '入力されたメールアドレスもしくは、パスワードが間違っています。'
+            } catch (error) {
+                this.error = "認証に失敗しました。正しいメールアドレス、パスワードを入力してください。"
             }
+            
             this.loading = false;
         },
         async externalSigninByGoogle() {
