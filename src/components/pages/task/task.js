@@ -30,53 +30,19 @@ export default {
             }
         },
 
-        // タスク作成
-        async createTask() {
-            if(!this.composing && this.new_task_name) {
-                const task = this.generateTaskObject(this.new_task_name)
-                try {
-                    await this.apiTaskCreate(task)
-                    this.params.success = "タスクを新規作成しました"
-                } catch (error) {
-                    this.params.error = "タスク作成に失敗しました。"
-                    console.log(error);
-                }
-                this.listRefresh()
-                this.new_task_name = ""
-                this.composing = false
-            }
-        },
-        generateTaskObject(new_task_name) {
-            const id = this.createRandomId();
-            return {
-                task_id: id,
-                project_id: "",
-                task_name: new_task_name,
-                task_description: "",
-                task_message_content: "",
-                task_message_post_account: "",
-                task_status: 0,
-                task_priority: 0,
-                task_manager: "",
-                task_deadline: null,
-                create_account: this.storeGetFirebaseUid(),
-                created: this.getCurrentUnixtime(),
-                updated: "",
-                finished_at: ""
-            }
-        },
-        // タスク削除(詳細からの操作)
+        
+        // タスク削除
         async execDeleteTask() {
             try {
                 await this.apiDeleteTask(this.params.delete_item)
                 this.deleteSubtaskHasTask(this.params.delete_item)
                 this.execDeleteAllFile(this.params.files)
                 this.closeDetail();
-                this.listRefresh()
                 this.params.success = "タスクを削除しました。"
             } catch (error) {
                 this.params.error = "タスク削除に失敗しました。"
             }
+            this.listRefresh()
             this.params.delete_item = {}
             this.delete_options = []
             this.delete_modal = false

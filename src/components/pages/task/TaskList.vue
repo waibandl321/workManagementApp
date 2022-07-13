@@ -75,6 +75,7 @@
         <div class="list_body">
             <table
                 class="basic-list mt-4"
+                v-if="filter_items.length > 0"
             >
                 <thead>
                     <tr>
@@ -137,6 +138,7 @@
                     </tr>
                 </tbody>
             </table>
+            <div v-else class="mt-4">タスクが登録されていません。</div>
         </div>
         <!-- 削除確認モーダル -->
         <ConfirmDelete
@@ -201,7 +203,9 @@ export default {
             try {
                 let result = await this.readTaskList()
                 if(result.length === 0) {
+                    this.params.items = []
                     this.params.loading = false;
+                    this.filterList();
                     return;
                 }
                 result = result.filter(v => v.task_status !== 5)
@@ -248,6 +252,7 @@ export default {
             }
             this.filter_items = result
         },
+        // ソート
         sortByDeadline() {
             this.sort_by_deadline = !this.sort_by_deadline
             let result = this.params.items
@@ -279,6 +284,42 @@ export default {
                 })
             }
             this.filter_items = result
+        },
+
+        // タスク作成
+        async createTask() {
+            if(!this.composing && this.new_task_name) {
+                const task = this.generateTaskObject(this.new_task_name)
+                try {
+                    await this.apiTaskCreate(task)
+                    this.params.success = "タスクを新規作成しました"
+                } catch (error) {
+                    this.params.error = "タスク作成に失敗しました。"
+                    console.log(error);
+                }
+                this.listRefresh()
+                this.new_task_name = ""
+                this.composing = false
+            }
+        },
+        generateTaskObject(new_task_name) {
+            const id = this.createRandomId();
+            return {
+                task_id: id,
+                project_id: "",
+                task_name: new_task_name,
+                task_description: "",
+                task_message_content: "",
+                task_message_post_account: "",
+                task_status: 0,
+                task_priority: 0,
+                task_manager: "",
+                task_deadline: null,
+                create_account: this.storeGetFirebaseUid(),
+                created: this.getCurrentUnixtime(),
+                updated: "",
+                finished_at: ""
+            }
         },
         
         // 削除
