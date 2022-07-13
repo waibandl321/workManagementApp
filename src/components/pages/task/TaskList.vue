@@ -86,10 +86,7 @@
         </div>
         
         <div class="list_body">
-            <table
-                class="basic-list mt-4"
-                v-if="filter_items.length > 0"
-            >
+            <table class="basic-list mt-4">
                 <thead>
                     <tr>
                         <td class="drag-icon-td">
@@ -151,7 +148,6 @@
                     </tr>
                 </tbody>
             </table>
-            <div v-else class="mt-4">タスクが登録されていません。</div>
         </div>
         <!-- 削除確認モーダル -->
         <ConfirmDelete

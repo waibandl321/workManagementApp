@@ -2,10 +2,10 @@
     <v-col>
         <v-card class="pa-4">
             <v-card-title class="dashboard-card-title">期限切れ率（週間・月間）</v-card-title>
-            <v-card-subtitle class="px-0 mt-2">完了時の期限切れタスク数 / 作成タスク数 * 100</v-card-subtitle>
-            <v-row>
+            <v-row class="mt-2">
                 <v-col>
                     <v-card>
+                        <v-card-title class="justify-center">過去7日間</v-card-title>
                         <apexchart
                             width="300"
                             type="radialBar"
@@ -24,6 +24,7 @@
                 </v-col>
                 <v-col>
                     <v-card>
+                        <v-card-title class="justify-center">1ヶ月間</v-card-title>
                         <apexchart
                             width="300"
                             type="radialBar"
