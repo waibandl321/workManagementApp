@@ -1,5 +1,6 @@
 <template>
     <div class="auth">
+        <ExecLoading v-if="loading" />
        <div>
           <v-card class="card">
             <v-card-title>
@@ -19,38 +20,37 @@
                         {{ error }}
                     </v-alert>
                 </div>
-                 <div class="py-4" v-if="loading">
-                    <v-progress-linear
-                        indeterminate
-                        color="primary"
-                    ></v-progress-linear>
-                </div>
-                <v-form
-                    ref="form"
-                    v-model="valid"
-                    lazy-validation
-                >
-                    <div>
+                <validation-observer v-slot="{ invalid }" ref="observer">
+                    <validation-provider
+                        name="メールアドレス"
+                        :rules="{
+                            email: {},
+                            required: {}
+                        }"
+                        v-slot="{ errors }"
+                        tag="div"
+                    >
                         <v-text-field
                             v-model="email"
-                            :rules="emailRules"
                             label="E-mail"
                             outlined
+                            hide-details
                             dense
                             required
                         ></v-text-field>
+                        <div class="input-error-messsage">{{ errors[0] }}</div>
+                    </validation-provider>
+                    <div class="my-4">
+                        <v-btn
+                            :disabled="invalid"
+                            color="primary"
+                            class="submit"
+                            @click="sendPasswordResetEmail()"
+                        >
+                            送信
+                        </v-btn>
                     </div>
-                </v-form>
-            </div>
-            <div class="pa-4">
-               <v-btn
-                    :disabled="!valid"
-                    color="primary"
-                    class="submit"
-                    @click="sendPasswordResetEmail()"
-                >
-                    送信
-                </v-btn>
+                </validation-observer>
             </div>
             <v-divider></v-divider>
             <div class="pa-4">
@@ -66,28 +66,33 @@
 </template>
 
 <script>
+import ExecLoading from "@/components/common/ExecLoading.vue"
 export default {
+    components: {
+        ExecLoading
+    },
     props: {
         params: Object
     },
     data: () => ({
         loading: false,
-        valid: true,
         email: '',
-        emailRules: [
-            v => !!v || 'メールアドレスは入力必須です',
-            v => /.+@.+\..+/.test(v) || 'メールアドレスの形式で入力してください',
-        ],
         error: ''
     }),
     methods: {
         async sendPasswordResetEmail() {
-            this.loading = true
-            const result = await this.firebaseSendEmailByPasswordReset(this.email);
-            if(result) {
-                this.params.mode = "confirm"
-                this.loading = false
+            this.loading = true;
+            try {
+                const result = await this.firebaseSendEmailByPasswordReset(this.email);
+                if(result) {
+                    this.params.mode = "confirm";
+                } else {
+                    throw new Error()
+                }
+            } catch (error) {
+                this.error = "メール送信中にエラーが発生しました。再度時間をおいて設定してください。";
             }
+            this.loading = false
         }
     }
 }
