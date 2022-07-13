@@ -55,6 +55,7 @@
             <div class="mt-2 relative" v-show="new_task">
                 <v-text-field
                     label="タスク名を入力"
+                    autofocus
                     v-model="new_task_name"
                     @compositionstart="composing = true"
                     @compositionend="composing = false"

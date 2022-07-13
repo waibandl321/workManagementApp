@@ -26,6 +26,7 @@
                         <v-text-field
                             v-model="email"
                             label="メールアドレス"
+                            autofocus
                             hide-details
                             outlined
                             dense

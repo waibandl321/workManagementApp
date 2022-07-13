@@ -35,6 +35,7 @@
                             label="E-mail"
                             outlined
                             hide-details
+                            autofocus
                             dense
                             required
                         ></v-text-field>

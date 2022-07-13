@@ -31,6 +31,7 @@
                                 label="メールアドレス"
                                 hide-details
                                 outlined
+                                autofocus
                                 dense
                             ></v-text-field>
                             <div class="input-error-messsage">{{ errors[0] }}</div>

@@ -9,11 +9,10 @@
                     サブタスク作成
                 </v-card-title>
                 <v-card-text class="py-6">
-                    
                         <v-text-field
                             label="サブタスク名"
                             outlined
-                            ref="focusThis"
+                            autofocus
                             v-model="subtask_editor.subtask_name"
                             :rules="subtask_name_valid_rule"
                             required
@@ -79,10 +78,6 @@ export default {
         if(this.params.subtask_editor) {
             this.subtask_editor = this.params.subtask_editor
         }
-    },
-    mounted() {
-        // 自動フォーカス
-        this.$refs.focusThis.focus();
     },
     methods: {
         clickOption(option) {
