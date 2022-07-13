@@ -4,24 +4,33 @@
         width="800"
     >
         <v-card>
-            <v-form v-model="valid">
+            <validation-observer v-slot="{ invalid }" ref="observer">
                 <v-card-title class="text-h5 grey lighten-2">
                     サブタスク作成
                 </v-card-title>
                 <v-card-text class="py-6">
+                    <validation-provider
+                        name="サブタスク名"
+                        rules="required"
+                        v-slot="{ errors }"
+                        tag="div"
+                        class="mb-6"
+                    >
                         <v-text-field
                             label="サブタスク名"
                             outlined
                             autofocus
                             v-model="subtask_editor.subtask_name"
-                            :rules="subtask_name_valid_rule"
+                            hide-details
                             required
                         ></v-text-field>
-                        <quillEditor
-                            ref="myQuillEditor"
-                            :options="editorOption"
-                            v-model="subtask_editor.subtask_description"
-                        />
+                        <div class="input-error-messsage">{{ errors[0] }}</div>
+                    </validation-provider>
+                    <quillEditor
+                        ref="myQuillEditor"
+                        :options="editorOption"
+                        v-model.trim="subtask_editor.subtask_description"
+                    />
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
@@ -30,14 +39,14 @@
                         v-for="(option, index) in subtask_option"
                         :key="index"
                         :color="option.function_cd === 'save' ? 'primary' : ''"
-                        :disabled="disabledSave(option)"
+                        :disabled="invalid"
                         outlined
                         @click="clickOption(option, subtask_editor)"
                     >
                         {{ option.text }}
                     </v-btn>
                 </v-card-actions>
-            </v-form>
+            </validation-observer>
         </v-card>
     </v-dialog>
 </template>
@@ -58,10 +67,6 @@ export default {
     },
     data: () => ({
         dialog: true,
-        valid: false,
-        subtask_name_valid_rule: [
-            v => !!v || 'サブタスク名は必須です',
-        ],
         // テキストエディタ
         editorOption: {
             theme: 'snow',
@@ -80,26 +85,21 @@ export default {
         }
     },
     methods: {
-        clickOption(option) {
+        clickOption(option, subtask) {
             if(option.function_cd === 'save') {
-                option.callback(this.subtask_editor)
+                option.callback(subtask)
                 return;
             }
             option.callback()
         },
-        // タスク名の値無ければ保存ボタン非活性
-        disabledSave(option) {
-            if(option.function_cd !== 'save') return false;
-            if(!this.subtask_editor.subtask_name) {
-                return true;
-            } else {
-                return false;
-            }
-        }
     }
 }
 </script>
 
 <style scoped>
-
+.input-error-messsage {
+    font-size: 14px;
+    color: #ff5252;
+    margin-top: 4px;
+}
 </style>

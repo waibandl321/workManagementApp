@@ -43,15 +43,6 @@ export default {
         params: Object,
         subtask_option: Array,
     },
-    components: {
-        
-    },
-    created() {
-        
-    },
-    mounted() {
-        
-    },
     data: () => ({
         dialog: true,
     }),

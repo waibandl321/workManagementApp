@@ -431,6 +431,7 @@ export default {
         delete_file: {},
 
         //サブタスク
+        subtask_list: [],
         subtask_mode: "task",
         subtask_option: [],
 
@@ -495,7 +496,8 @@ export default {
             ]
             this.subtask_mode = mode;
         },
-        closeSubtask() {
+        async closeSubtask() {
+            this.params.subtask_list = await this.getSubtaskList(this.params.viewer)
             this.subtask_option = []
             this.subtask_mode = "task";
         },
