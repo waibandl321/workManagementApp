@@ -47,38 +47,49 @@
             width="600"
         >
             <v-card>
-                <div class="font-weight-bold pa-4">
-                    フォルダ作成
-                </div>
-                <v-divider></v-divider>
-                <v-text-field
-                    v-model.trim="folder_name"
-                    dense
-                    outlined
-                    autofocus
-                    label="フォルダ名"
-                    class="mt-4 px-4"
-                ></v-text-field>
-                <v-divider></v-divider>
-                <v-card-actions class="pa-4">
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        color="gray"
-                        outlined
-                        large
-                        @click="create_folder_modal = false"
+                <validation-observer v-slot="{ invalid }" ref="observer">
+                    <div class="font-weight-bold pa-4 grey lighten-2">
+                        フォルダ作成
+                    </div>
+                    <v-divider></v-divider>
+                    <validation-provider
+                        name="フォルダ名"
+                        rules="required"
+                        v-slot="{ errors }"
+                        tag="div"
+                        class="pa-4"
                     >
-                        キャンセル
-                    </v-btn>
-                    <v-btn
-                        :disabled="!folder_name"
-                        large
-                        color="primary"
-                        @click="executeCreateFolder()"
-                    >
-                        保存
-                    </v-btn>
-                </v-card-actions>
+                        <v-text-field
+                            v-model.trim="folder_name"
+                            dense
+                            outlined
+                            autofocus
+                            hide-details
+                            label="フォルダ名"
+                        ></v-text-field>
+                        <div class="input-error-messsage">{{ errors[0] }}</div>
+                    </validation-provider>
+                    <v-divider></v-divider>
+                    <v-card-actions class="pa-4">
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="gray"
+                            outlined
+                            large
+                            @click="create_folder_modal = false"
+                        >
+                            キャンセル
+                        </v-btn>
+                        <v-btn
+                            :disabled="invalid"
+                            large
+                            color="primary"
+                            @click="executeCreateFolder()"
+                        >
+                            保存
+                        </v-btn>
+                    </v-card-actions>
+                </validation-observer>
             </v-card>
         </v-dialog>
     </div>
@@ -95,9 +106,6 @@ export default {
         create_folder_modal: false,
         folder_name: "",
     }),
-    created() {
-        
-    },
     methods: {
         async executeCreateFolder() {
             this.params.success = "";
@@ -125,8 +133,8 @@ export default {
                 try {
                     // 同じファイルが存在する場合は一度該当ファイルを削除（ストレージ・DB）
                     await this.judgeSameFile(...upload_file)
-                    const custom_metadata = this.generateFileObject(...upload_file)
                     // 保存処理
+                    const custom_metadata = this.generateFileObject(...upload_file)
                     await this.storageUploadShareFile(...upload_file)
                     .then((downloadPath) => {
                         custom_metadata.download_path = downloadPath;
@@ -177,5 +185,10 @@ export default {
     position: fixed;
     bottom: 24px;
     right: 24px;
+}
+.input-error-messsage {
+    font-size: 14px;
+    color: #ff5252;
+    margin-top: 4px;
 }
 </style>
