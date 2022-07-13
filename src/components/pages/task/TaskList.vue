@@ -60,7 +60,6 @@
                     <validation-provider
                         name="新規タスク"
                         rules="required"
-                        tag="div"
                         class="mt-6"
                     >
                         <v-text-field

@@ -18,18 +18,30 @@
                     v-if="task_name_edit"
                     class="taskname_edit"
                 >
-                    <input
-                        v-model="params.viewer.task_name"
-                        type="text"
-                        class="taskname_edit_input"
+                <validation-observer v-slot="{ invalid }" ref="observer">
+                    <validation-provider
+                        name="タスク名"
+                        rules="required"
+                        class="mt-6"
                     >
+                        <v-text-field
+                            autofocus
+                            hide-details
+                            v-model="params.viewer.task_name"
+                            outlined
+                            dense
+                        ></v-text-field>
+                    </validation-provider>
                     <v-btn
-                        color="primary"
                         @click="tasknameUpdate()"
                         class="taskname_edit_save px-2"
+                        :disabled="invalid"
+                        color="white"
+                        text
                     >
                         保存
                     </v-btn>
+                </validation-observer>
                 </div>
                 <div
                     v-else
