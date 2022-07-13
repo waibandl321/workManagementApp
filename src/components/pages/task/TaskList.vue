@@ -200,6 +200,10 @@ export default {
             this.params.loading = true;
             try {
                 let result = await this.readTaskList()
+                if(result.length === 0) {
+                    this.params.loading = false;
+                    return;
+                }
                 result = result.filter(v => v.task_status !== 5)
                 this.params.items = result
                 this.filterList();

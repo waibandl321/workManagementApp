@@ -6,8 +6,7 @@ export default {
         // タスク一覧取得
         async readTaskList() {
             let result = await this.apiGetTaskList()
-            if(!result) return {}
-
+            if(!result) return []
             result = Object.keys(result)
                     .map( (key) => {return result[key]})
                     // .filter( v => v.task_status !== 5 )
