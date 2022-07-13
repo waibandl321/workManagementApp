@@ -52,23 +52,37 @@
                     タスクを追加
                 </v-btn>
             </div>
-            <div class="mt-2 relative" v-show="new_task">
-                <v-text-field
-                    label="タスク名を入力"
-                    autofocus
-                    v-model="new_task_name"
-                    @compositionstart="composing = true"
-                    @compositionend="composing = false"
-                    @keydown.prevent.enter.exact="createTask()"
-                >
-                </v-text-field>
-                <v-btn
-                    depressed
-                    class="alt_submit px-4"
-                    color="primary"
-                    @click="createTask()"
-                >新規作成
-                </v-btn>
+            <div
+                v-show="new_task"
+                class="mt-2 relative"
+            >
+                <validation-observer v-slot="{ invalid }" ref="observer">
+                    <validation-provider
+                        name="新規タスク"
+                        rules="required"
+                        tag="div"
+                        class="mt-6"
+                    >
+                        <v-text-field
+                            label="タスク名を入力"
+                            autofocus
+                            hide-details
+                            v-model="new_task_name"
+                            @compositionstart="composing = true"
+                            @compositionend="composing = false"
+                            @keydown.prevent.enter.exact="createTask()"
+                        ></v-text-field>
+                    </validation-provider>
+                    <v-btn
+                        depressed
+                        class="alt_submit px-4"
+                        color="primary"
+                        :disabled="invalid"
+                        @click="createTask()"
+                    >
+                        新規作成
+                    </v-btn>
+                </validation-observer>
             </div>
         </div>
         

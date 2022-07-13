@@ -29,8 +29,6 @@ export default {
                 return result;
             }
         },
-
-        
         // タスク削除
         async execDeleteTask() {
             try {

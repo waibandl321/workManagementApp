@@ -32,8 +32,8 @@ localize('ja', {
         "numeric": "{_field_}は数字のみ使用できます",
         "oneOf": "{_field_}は有効な値ではありません",
         "regex": "{_field_}のフォーマットが正しくありません",
-        "required": "{_field_}は必須項目です",
-        "required_if": "{_field_}は必須項目です",
+        "required": "{_field_}は必須です",
+        "required_if": "{_field_}は必須です",
         "size": "{_field_}は{size}KB以内でなければなりません",
         "double": "{_field_}フィールドは有効な10進数である必要があります"
     } 
