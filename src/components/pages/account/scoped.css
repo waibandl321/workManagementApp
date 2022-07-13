@@ -21,3 +21,8 @@
     height: calc(100vh - 70px);
     overflow-y: auto;
 }
+.input-error-messsage {
+    font-size: 14px;
+    color: #ff5252;
+    margin-top: 4px;
+}

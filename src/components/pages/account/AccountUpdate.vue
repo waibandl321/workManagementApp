@@ -9,41 +9,60 @@
             <v-card-title>
                 アカウント情報更新
             </v-card-title>
-            <v-card-text>
+            <validation-observer v-slot="{ invalid }">
                 <v-row class="ma-0">
-                    <v-col>
+                    <validation-provider
+                        name="性"
+                        rules="required"
+                        v-slot="{ errors }"
+                        tag="div"
+                        class="col"
+                    >
                         <v-text-field
                             label="性(必須)"
                             v-model="last_name"
+                            hide-details
+                            outlined
                         ></v-text-field>
-                    </v-col>
-                    <v-col>
+                        <div class="input-error-messsage">{{ errors[0] }}</div>
+                    </validation-provider>
+                    <validation-provider
+                        name="名"
+                        rules="required"
+                        v-slot="{ errors }"
+                        tag="div"
+                        class="col"
+                    >
                         <v-text-field
                             label="名(必須)"
                             v-model="first_name"
+                            hide-details
+                            outlined
                         ></v-text-field>
-                    </v-col>
-                </v-row>                
-            </v-card-text>
-            <v-divider />
-            <v-card-actions class="pa-4">
-                <v-spacer />
-                <v-btn
-                    color="primary"
-                    @click="accountUpdate()"
-                    large
-                >
-                    更新
-                </v-btn>
-                <v-btn
-                    outlined
-                    @click="cancel()"
-                    large
-                    class="ml-4"
-                >
-                    閉じる
-                </v-btn>
-            </v-card-actions>
+                    <div class="input-error-messsage">{{ errors[0] }}</div>
+                    </validation-provider>
+                </v-row>
+                <v-divider />
+                <v-card-actions class="pa-4">
+                    <v-spacer />
+                    <v-btn
+                        color="primary"
+                        @click="accountUpdate()"
+                        large
+                        :disabled="invalid"
+                    >
+                        更新
+                    </v-btn>
+                    <v-btn
+                        outlined
+                        @click="cancel()"
+                        large
+                        class="ml-4"
+                    >
+                        閉じる
+                    </v-btn>
+                </v-card-actions>
+            </validation-observer>
         </v-card>
     </div>
 </template>
