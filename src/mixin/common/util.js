@@ -88,20 +88,6 @@ export default {
         pageMove(page) {
             this.$router.push(page, () => {})
         },
-
-        // サインインに遷移
-        redirectSignin() {
-            window.location = "/auth/signout";
-        },
-        
-        // 配列・オブジェクト変換
-        convertObject(value) {
-            return Object.entries(value)
-        },
-        convertArray(value) {
-            return Object.fromEntries(value)
-        },
-
         // ファイルサイズ変換
         convertUnitSize(byte) {
             let target = null
@@ -133,10 +119,6 @@ export default {
                 }
                 return size
             }
-        },
-        // アップロードを許可する拡張子
-        getPermissionExtension() {
-            return PermissionExtension;
         },
         // 厳密な拡張子チェック(ファイルデータ改ざん対応) 
         async judgeBinaryFileType(file) {
@@ -173,5 +155,3 @@ export default {
         },
     }
 }
-
-const PermissionExtension = ['jpg', 'png', 'svg', 'gif', 'jpeg', 'pdf'];

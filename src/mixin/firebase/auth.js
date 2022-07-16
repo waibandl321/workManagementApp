@@ -61,19 +61,6 @@ export default {
             const auth = getAuth();
             await signInWithRedirect(auth, provider)
         },
-        // async firebaseGoogleAuth() {
-        //     const provider = new GoogleAuthProvider();
-        //     const auth = getAuth();
-        //     provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-        //     return await signInWithPopup(auth, provider)
-        //     .then((result) => {
-        //         return result.user.uid
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //         return false
-        //     });
-        // },
         async authGetRedirectResult() {
             const auth = getAuth();
             return await getRedirectResult(auth)
@@ -130,7 +117,6 @@ export default {
 
             return await deleteUser(user)
             .then(() => {
-                console.log("削除成功")
                 return true;
             })
             .catch((error) => {
