@@ -1,75 +1,77 @@
 <template>
     <div class="pa-6 account-edit">
-        <MessageViewer
-            v-if="params.success || params.error"
-            :params="params"
-            class="mb-6"
-        />
-        <v-card>
-            <v-card-title class="d-flex justify-space-between">
-                <span>アカウント情報更新</span>
-                <v-btn
-                    color="error"
-                    @click="clickDeleteAccount()"
-                >
-                    アカウントを削除
-                </v-btn>
-            </v-card-title>
-            <validation-observer v-slot="{ invalid }">
-                <v-row class="ma-0">
-                    <validation-provider
-                        name="性"
-                        rules="required"
-                        v-slot="{ errors }"
-                        tag="div"
-                        class="col"
+        <v-container>
+            <MessageViewer
+                v-if="params.success || params.error"
+                :params="params"
+                class="mb-6"
+            />
+            <v-card>
+                <v-card-title class="d-flex justify-space-between">
+                    <span>アカウント情報更新</span>
+                    <v-btn
+                        color="error"
+                        @click="clickDeleteAccount()"
                     >
-                        <v-text-field
-                            label="性(必須)"
-                            v-model="last_name"
-                            hide-details
-                            outlined
-                        ></v-text-field>
+                        アカウントを削除
+                    </v-btn>
+                </v-card-title>
+                <validation-observer v-slot="{ invalid }">
+                    <v-row class="ma-0">
+                        <validation-provider
+                            name="性"
+                            rules="required"
+                            v-slot="{ errors }"
+                            tag="div"
+                            class="col"
+                        >
+                            <v-text-field
+                                label="性(必須)"
+                                v-model="last_name"
+                                hide-details
+                                outlined
+                            ></v-text-field>
+                            <div class="input-error-messsage">{{ errors[0] }}</div>
+                        </validation-provider>
+                        <validation-provider
+                            name="名"
+                            rules="required"
+                            v-slot="{ errors }"
+                            tag="div"
+                            class="col"
+                        >
+                            <v-text-field
+                                label="名(必須)"
+                                v-model="first_name"
+                                hide-details
+                                outlined
+                            ></v-text-field>
                         <div class="input-error-messsage">{{ errors[0] }}</div>
-                    </validation-provider>
-                    <validation-provider
-                        name="名"
-                        rules="required"
-                        v-slot="{ errors }"
-                        tag="div"
-                        class="col"
-                    >
-                        <v-text-field
-                            label="名(必須)"
-                            v-model="first_name"
-                            hide-details
+                        </validation-provider>
+                    </v-row>
+                    <v-divider />
+                    <v-card-actions class="pa-4">
+                        <v-spacer />
+                        <v-btn
+                            color="primary"
+                            @click="accountUpdate()"
+                            large
+                            :disabled="invalid"
+                        >
+                            更新
+                        </v-btn>
+                        <v-btn
                             outlined
-                        ></v-text-field>
-                    <div class="input-error-messsage">{{ errors[0] }}</div>
-                    </validation-provider>
-                </v-row>
-                <v-divider />
-                <v-card-actions class="pa-4">
-                    <v-spacer />
-                    <v-btn
-                        color="primary"
-                        @click="accountUpdate()"
-                        large
-                        :disabled="invalid"
-                    >
-                        更新
-                    </v-btn>
-                    <v-btn
-                        outlined
-                        @click="cancel()"
-                        large
-                        class="ml-4"
-                    >
-                        閉じる
-                    </v-btn>
-                </v-card-actions>
-            </validation-observer>
-        </v-card>
+                            @click="cancel()"
+                            large
+                            class="ml-4"
+                        >
+                            閉じる
+                        </v-btn>
+                    </v-card-actions>
+                </validation-observer>
+            </v-card>
+        </v-container>
         <ConfirmDelete
             v-if="delete_modal"
             :delete_options="delete_options"
@@ -146,29 +148,20 @@ export default {
         },
         async execDeleteAccount() {
             this.params.loading = true;
+            this.delete_modal = false;
             try {
-                // OK: ユーザーが作成したファイル（DB）の削除
-                await this.firebaseDeleteAccountFiles()
-                // OK: ユーザーが作成したタスクの削除
-                await this.firebaseDeleteAccountTasks()
-                // OK: アカウントデータ（DB）の削除
-                await this.firebaseDeleteAccount()
-                // OK: ユーザーが作成したファイル（ストレージ）の削除
-                await this.storegeDeleteAccountFiles()
-                // OK: firebase authのアカウント情報削除
-                await this.firebaseDeleteAuthUser()
-                .then(() => {
-                    this.storeDeleteAccountInfo()
-                    this.storeDestroyFirebaseUid()
-                    this.params.success = "アカウント情報を削除しました。";
-                    this.params.delete_flag = true;
-                })
+                await this.firebaseDeleteAccountFiles() //file(db)
+                await this.storegeDeleteAccountFiles() //file(storage)
+                await this.firebaseDeleteAccountTasks() //task
+                await this.firebaseDeleteAccount() //user(db)
+                await this.firebaseDeleteAuthUser() //user(firebase auth)
+                this.params.success = "アカウントを削除しました。";
+                this.params.delete_flag = true;
             } catch (error) {
                 console.log(error);
                 this.params.error = "アカウント削除に失敗しました。もう一度やり直してください。"
             }
             this.delete_options = []
-            this.delete_modal = false;
             this.params.loading = false;
         },
         closeModal() {

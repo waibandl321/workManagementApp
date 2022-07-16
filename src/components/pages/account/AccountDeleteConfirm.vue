@@ -14,6 +14,7 @@
                         @click="finishApp()"
                         x-large
                         color="primary"
+                        rounded
                         width="100%"
                     >
                         アプリケーションの利用を終了する
@@ -29,6 +30,10 @@ import MessageViewer from '@/components/common/MessageViewer.vue'
 export default {
     components: {
         MessageViewer
+    },
+    created() {
+        this.storeDeleteAccountInfo()
+        this.storeDestroyFirebaseUid()
     },
     props: ["params"],
     methods: {

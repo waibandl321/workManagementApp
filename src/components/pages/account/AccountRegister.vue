@@ -1,90 +1,95 @@
 <template>
     <div class="auth">
-        <v-card>
-            <v-card-text>
-                <v-alert
-                    outlined
-                    type="success"
-                    text
-                    v-if="!params.success"
-                >
-                    初期設定は名前を登録するだけです。名前はニックネームでOKです。
-                </v-alert>
-                <v-alert
-                    type="success"
-                    v-else
-                >
-                    {{ params.success }}
-                </v-alert>
-            </v-card-text>
-            <v-divider />
-            <v-card-title>
-                アカウント情報登録
-            </v-card-title>
-            <validation-observer v-slot="{ invalid }">
-                <v-row class="ma-0">
-                    <validation-provider
-                        name="性"
-                        rules="required"
-                        v-slot="{ errors }"
-                        tag="div"
-                        class="col"
-                    >
-                        <v-text-field
-                            label="性(必須)"
-                            v-model="last_name"
-                            hide-details
+        <v-card class="pa-6">
+            <MessageViewer
+                v-if="params.success || params.error"
+                :params="params"
+                class="mb-6"
+            />            
+            <div v-if="!register_status">
+                <v-card-title class="px-0">
+                    アカウント情報登録
+                </v-card-title>
+                <validation-observer v-slot="{ invalid }">
+                    <v-row>
+                        <validation-provider
+                            name="性"
+                            rules="required"
+                            v-slot="{ errors }"
+                            tag="div"
+                            class="col"
+                        >
+                            <v-text-field
+                                label="性(必須)"
+                                v-model="last_name"
+                                hide-details
+                                outlined
+                                autofocus
+                            ></v-text-field>
+                            <div class="input-error-messsage">{{ errors[0] }}</div>
+                        </validation-provider>
+                        <validation-provider
+                            name="名"
+                            rules="required"
+                            v-slot="{ errors }"
+                            tag="div"
+                            class="col"
+                        >
+                            <v-text-field
+                                label="名(必須)"
+                                v-model="first_name"
+                                hide-details
+                                outlined
+                            ></v-text-field>
+                            <div class="input-error-messsage">{{ errors[0] }}</div>
+                        </validation-provider>
+                    </v-row>
+                    <v-divider
+                        class="mt-4"
+                    />
+                    <v-card-actions class="pa-4">
+                        <v-spacer />
+                        <v-btn
+                            color="primary"
+                            @click="register()"
+                            :disabled="invalid"
+                            large
+                        >
+                            登録
+                        </v-btn>
+                        <v-btn
+                            v-if="register_status"
+                            large
+                            @click="pageMove('/')"
                             outlined
-                            autofocus
-                        ></v-text-field>
-                        <div class="input-error-messsage">{{ errors[0] }}</div>
-                    </validation-provider>
-                    <validation-provider
-                        name="名"
-                        rules="required"
-                        v-slot="{ errors }"
-                        tag="div"
-                        class="col"
-                    >
-                        <v-text-field
-                            label="名(必須)"
-                            v-model="first_name"
-                            hide-details
-                            outlined
-                        ></v-text-field>
-                        <div class="input-error-messsage">{{ errors[0] }}</div>
-                    </validation-provider>
-                </v-row>
-                <v-divider />
-                <v-card-actions class="pa-4">
-                    <v-spacer />
-                    <v-btn
-                        color="primary"
-                        @click="register()"
-                        :disabled="invalid"
-                        large
-                    >
-                        登録
-                    </v-btn>
-                    <v-btn
-                        v-if="register_status"
-                        large
-                        @click="pageMove('/')"
-                        outlined
-                    >
-                        閉じる
-                    </v-btn>
-                </v-card-actions>
-            </validation-observer>
+                        >
+                            閉じる
+                        </v-btn>
+                    </v-card-actions>
+                </validation-observer>
+            </div>
+            <div v-else>
+                <v-btn
+                    to="/"
+                    x-large
+                    color="primary"
+                    rounded
+                    width="100%"
+                >
+                    アプリケーションの利用を開始する
+                </v-btn>
+            </div>
         </v-card>
         <ExecLoading v-if="params.loading" />
     </div>
 </template>
 <script>
 import ExecLoading from '@/components/common/ExecLoading.vue'
+import MessageViewer from '@/components/common/MessageViewer.vue'
 import myMixin from './account'
 export default {
     components: {
+        MessageViewer,
         ExecLoading
     },
     mixins: [myMixin],
@@ -106,7 +111,7 @@ export default {
                 this.storeSetAccountInfo(account)
                 this.parents.user_info = this.copyJson(account);
                 this.register_status = true;
-                this.params.success = "アカウント情報を登録しました。「閉じる」ボタンを押してアプリケーションの利用を開始してください。 "
+                this.params.success = `アカウント情報登録が完了しました。\n タスクやファイルを登録してご利用を開始してください。`
             } catch (error) {
                 console.log(error);
                 this.params.error = "アカウント情報に失敗しました。もう一度お試しください。"
@@ -120,7 +125,7 @@ export default {
                 status: true,
                 color: this.setAccountAvatarColor()
             }
-        }
+        },
     }
 }
 </script>
