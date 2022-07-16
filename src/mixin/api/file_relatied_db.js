@@ -41,6 +41,16 @@ export default {
             });
         },
         // アカウント削除と連動
+        async firebaseDeleteAccountTaskFiles() {
+            const db = getDatabase();
+            return await remove(ref(db, '/files/' + this.storeGetFirebaseUid()))
+            .then(() => {
+                return true;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        },
         async firebaseDeleteAccountFiles() {
             const db = getDatabase();
             return await remove(ref(db, '/share_files/' + this.storeGetFirebaseUid()))

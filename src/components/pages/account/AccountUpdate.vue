@@ -154,6 +154,7 @@ export default {
                 await this.storegeDeleteAccountFiles() //file(storage)
                 await this.firebaseDeleteAccountTasks() //task
                 await this.firebaseDeleteAccount() //user(db)
+                await this.firebaseDeleteAccountTaskFiles() // taskfile(db)
                 await this.firebaseDeleteAuthUser() //user(firebase auth)
                 this.params.success = "アカウントを削除しました。";
                 this.params.delete_flag = true;
