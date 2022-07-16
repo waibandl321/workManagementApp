@@ -94,4 +94,15 @@ export default {
     }
 }
 </script>
-<style scoped></style>
+<style scoped>
+.header {
+    border-bottom: 1px solid #ccc;
+    height: 70px;
+    line-height: 70px;
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+}
+</style>

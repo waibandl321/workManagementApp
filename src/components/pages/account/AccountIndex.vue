@@ -60,4 +60,3 @@ export default {
 }
 </script>
 <style scoped src="./scoped.css"></style>
-<style src="../../../assets/css/original.css"></style>
