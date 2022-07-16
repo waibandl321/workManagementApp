@@ -495,7 +495,9 @@ export default {
         },
         async closeSubtask() {
             this.params.subtask_list = await this.getSubtaskList(this.params.viewer)
-            this.subtask_option = []
+            this.subtask_option = [];
+            this.params.subtask_viewer =  {}
+            this.params.subtask_editor =  {}
             this.subtask_mode = "task";
         },
         // タスク期間設定消去
