@@ -4,16 +4,15 @@
         persistent
         max-width="1024px"
     >
-        <v-toolbar flat dark color="primary">
+        <v-toolbar class="grey lighten-3">
             <v-btn
                 icon
-                dark
                 @click="closeDetail()"
             >
                 <v-icon>mdi-close</v-icon>
             </v-btn>
             <!-- タスク名・削除 -->
-            <v-toolbar-title class="toolbar-title">
+            <v-toolbar-title class="toolbar_title px-2">
                 <div
                     v-if="task_name_edit"
                     class="taskname_edit"
@@ -22,7 +21,6 @@
                     <validation-provider
                         name="タスク名"
                         rules="required"
-                        class="mt-6"
                     >
                         <v-text-field
                             autofocus
@@ -30,14 +28,14 @@
                             v-model="params.viewer.task_name"
                             outlined
                             dense
+                            background-color="white"
                         ></v-text-field>
                     </validation-provider>
                     <v-btn
                         @click="tasknameUpdate()"
-                        class="taskname_edit_save px-2"
+                        class="taskname_edit_save px-4"
                         :disabled="invalid"
-                        color="white"
-                        text
+                        color="primary"
                     >
                         保存
                     </v-btn>
@@ -50,8 +48,8 @@
                     {{ params.viewer.task_name ? params.viewer.task_name : '' }}
                     <v-btn
                         icon
-                        dark
                         @click="task_name_edit = true"
+                        color="primary"
                     >
                         <v-icon>mdi-pencil</v-icon>
                     </v-btn>
@@ -59,8 +57,8 @@
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn
-                dark
                 icon
+                color="primary"
                 @click="clickTaskDelete()"
             >
                 <v-icon>mdi-delete</v-icon>
@@ -401,7 +399,6 @@ export default {
         SubtaskView,
     },
     props: {
-        closeDetail: Function,
         listRefresh: Function,
         params: Object,
         viewer: Object,
@@ -522,6 +519,15 @@ export default {
             this.delete_options = []
             this.delete_modal = false;
             this.file_loading = false;
+        },
+        // 詳細閉じる
+        closeDetail() {
+            this.listRefresh()
+            this.params.success = ""
+            this.params.error = ""
+            this.task_name_edit = false
+            this.desc_editor = false
+            this.params.detail_mode = false
         },
     }
 }

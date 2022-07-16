@@ -12,13 +12,11 @@
                     <TaskList
                         :params="params"
                         :listRefresh="listRefresh"
-                        :closeDetail="closeDetail"
                         ref="taskList"
                     />
                 </div>
                 <TaskDetail
                     :params="params"
-                    :closeDetail="closeDetail"
                     :listRefresh="listRefresh"
                 />
             </div>
@@ -73,14 +71,6 @@ export default {
             this.params.task_status_list = this.getTaskStatus()
             this.params.task_priorities = this.getTaskPriorities()
         },
-        // 詳細閉じる
-        closeDetail() {
-            this.listRefresh()
-            this.params.success = ""
-            this.params.error = ""
-            this.params.detail_mode = false
-        },
-
         listRefresh() {
             this.$refs.taskList.initTaskListComponent()
         }

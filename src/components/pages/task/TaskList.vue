@@ -1,88 +1,88 @@
 <template>
-    <div class="list_inner">
-        <div class="list_head">
-            <div class="filter">
-                <v-row class="my-0">
-                    <v-col class="filter-box">
-                        <v-text-field
-                            label="タスク名をテキスト検索"
-                            outlined
-                            dense
-                            color="primary"
-                            v-model.trim="filter_text"
-                            @input="filterList()"
-                        ></v-text-field>
-                    </v-col>
-                    <v-col class="filter-box">
-                        <v-select
-                            label="ステータスで絞り込み"
-                            :items="params.task_status_list"
-                            item-text="text"
-                            item-value="key"
-                            outlined
-                            color="primary"
-                            dense
-                            v-model="filter_status"
-                            @change="filterList()"
-                        ></v-select>
-                    </v-col>
-                    <v-col class="filter-box">
-                        <v-select
-                            label="優先度で絞り込み"
-                            :items="params.task_priorities"
-                            item-text="text"
-                            item-value="key"
-                            outlined
-                            color="primary"
-                            dense
-                            v-model="filter_priority"
-                            @change="filterList()"
-                        ></v-select>
-                    </v-col>
-                </v-row>
-            </div>
-            <!-- add task -->
-            <div class="task-add">
-                <v-btn
+    <div>
+        <v-row>
+            <v-col>
+                <v-text-field
+                    label="タスク名で検索"
+                    outlined
+                    dense
                     color="primary"
-                    text
-                    @click="new_task = !new_task"
-                >
-                    <v-icon>mdi-plus</v-icon>
-                    タスクを追加
-                </v-btn>
-            </div>
-            <div
-                v-show="new_task"
-                class="mt-2 relative"
+                    hide-details
+                    v-model.trim="filter_text"
+                    @input="filterList()"
+                ></v-text-field>
+            </v-col>
+            <v-col>
+                <v-select
+                    label="ステータスで絞り込み"
+                    :items="params.task_status_list"
+                    item-text="text"
+                    item-value="key"
+                    outlined
+                    hide-details
+                    color="primary"
+                    dense
+                    v-model="filter_status"
+                    @change="filterList()"
+                ></v-select>
+            </v-col>
+            <v-col>
+                <v-select
+                    label="優先度で絞り込み"
+                    :items="params.task_priorities"
+                    item-text="text"
+                    item-value="key"
+                    outlined
+                    hide-details
+                    color="primary"
+                    dense
+                    v-model="filter_priority"
+                    @change="filterList()"
+                ></v-select>
+            </v-col>
+        </v-row>
+        
+        <!-- add task -->
+        <div class="mt-4">
+            <v-btn
+                color="primary"
+                text
+                @click="new_task = !new_task"
+                large
             >
-                <validation-observer v-slot="{ invalid }" ref="observer">
-                    <validation-provider
-                        name="新規タスク"
-                        rules="required"
-                        class="mt-6"
-                    >
-                        <v-text-field
-                            label="タスク名を入力"
-                            autofocus
-                            hide-details
-                            v-model="new_task_name"
-                            @compositionstart="composing = true"
-                            @compositionend="composing = false"
-                            @keydown.prevent.enter.exact="createTask()"
-                        ></v-text-field>
-                    </validation-provider>
-                    <v-btn
-                        depressed
-                        class="alt_submit px-4"
-                        color="primary"
-                        :disabled="invalid"
-                        @click="createTask()"
-                    >
-                        新規作成
-                    </v-btn>
-                </validation-observer>
-            </div>
+                <v-icon>{{ new_task ? 'mdi-close' : 'mdi-plus' }}</v-icon>
+                <span>タスク追加</span>
+            </v-btn>
+        </div>
+        <div
+            v-show="new_task"
+            class="mt-2 relative"
+        >
+            <validation-observer v-slot="{ invalid }" ref="observer">
+                <validation-provider
+                    name="新規タスク"
+                    rules="required"
+                    class="mt-6"
+                >
+                    <v-text-field
+                        placeholder="タスク名を入力してください"
+                        autofocus
+                        hide-details
+                        outlined
+                        v-model="new_task_name"
+                    ></v-text-field>
+                </validation-provider>
+                <v-btn
+                    depressed
+                    class="alt_submit"
+                    color="primary"
+                    large
+                    :disabled="invalid"
+                    @click="createTask()"
+                >
+                    新規作成
+                </v-btn>
+            </validation-observer>
         </div>
         
         <div class="list_body">
@@ -177,7 +177,6 @@ export default {
     mixins: [myMixin],
     props: {
         listRefresh: Function,
-        closeDetail: Function,
         params: Object,
     },
     data: () => ({
@@ -335,7 +334,7 @@ export default {
         clickDelete(task) {
             this.delete_options.push(
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
-                { function_cd: "delete", text: "削除する",   callback: this.execDeleteTask }
+                { function_cd: "delete", text: "削除する",   callback: this.execDeleteTaskFromList }
             )
             this.delete_title = `タスク「${task.task_name}」を削除します。`;
             this.params.delete_item = task;
@@ -348,5 +347,4 @@ export default {
     }
 }
 </script>
-<style scoped src="../../../assets/css/original.css"></style>
 <style scoped src="./scoped.css"></style>

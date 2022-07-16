@@ -35,7 +35,22 @@ export default {
                 await this.apiDeleteTask(this.params.delete_item)
                 this.deleteSubtaskHasTask(this.params.delete_item)
                 this.execDeleteAllFile(this.params.files)
-                this.closeDetail();
+                this.params.success = "タスクを削除しました。"
+            } catch (error) {
+                this.params.error = "タスク削除に失敗しました。"
+            }
+            this.closeDetail();
+            this.listRefresh()
+            this.params.delete_item = {}
+            this.delete_options = []
+            this.delete_modal = false
+        },
+        // 一覧からタスク削除 MEMO: リストの場合詳細close処理なし
+        async execDeleteTaskFromList() {
+            try {
+                await this.apiDeleteTask(this.params.delete_item)
+                this.deleteSubtaskHasTask(this.params.delete_item)
+                this.execDeleteAllFile(this.params.files)
                 this.params.success = "タスクを削除しました。"
             } catch (error) {
                 this.params.error = "タスク削除に失敗しました。"
