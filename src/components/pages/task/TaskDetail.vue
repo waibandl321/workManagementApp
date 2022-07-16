@@ -249,7 +249,7 @@
                             @click="updateTaskDescription()"
                             class="px-4"
                         >
-                        <v-icon class="mr-2">mdi-content-save-outline</v-icon>編集内容を保存
+                        <v-icon class="mr-2">mdi-close</v-icon>編集内容を保存
                         </v-btn>
                     </div>
                 </v-card-actions>

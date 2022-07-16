@@ -12,7 +12,7 @@
                 削除後は復元できません。本当によろしいですか？
             </v-card-text>
             <v-divider />
-            <v-card-actions class="px-0 mt-2">
+            <v-card-actions class="px-0 pb-0 mt-2">
                 <v-spacer></v-spacer>
                 <v-btn
                     v-for="(option, index) in menu_options"
