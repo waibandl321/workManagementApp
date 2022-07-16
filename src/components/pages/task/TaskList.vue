@@ -299,7 +299,7 @@ export default {
             if(!this.composing && this.new_task_name) {
                 const task = this.generateTaskObject(this.new_task_name)
                 try {
-                    await this.apiTaskCreate(task)
+                    await this.firebaseTaskCreate(task)
                     this.params.success = "タスクを新規作成しました"
                 } catch (error) {
                     this.params.error = "タスク作成に失敗しました。"

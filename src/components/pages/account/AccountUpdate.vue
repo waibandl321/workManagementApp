@@ -112,7 +112,7 @@ export default {
     methods: {
         async accountUpdate() {
             const account = this.generateAccountObject()
-            const result = await this.apiAccountUpdate(account)
+            const result = await this.firebaseAccountUpdate(account)
             if(result) {
                 this.storeUpdateAccountInfo(this.copyJson(account));
                 this.parents.user_info = this.copyJson(account);

@@ -133,7 +133,7 @@ export default {
                 const uid = await this.firebaseEmailSignin(this.email, this.password);
                 if(uid) {
                     this.storeSetFirebaseUid(uid);
-                    const account = await this.apiGetAccount(uid);
+                    const account = await this.firebaseGetAccount(uid);
                     if(account) {
                         this.storeSetAccountInfo(account);
                         this.pageMove('/');
@@ -164,7 +164,7 @@ export default {
             const result = await this.firebaseAuthGetRedirectResult()
             if(result) {
                 this.storeSetFirebaseUid(result.uid)
-                const account = await this.apiGetAccount(result.uid)
+                const account = await this.firebaseGetAccount(result.uid)
                 if(account) {
                     this.storeSetAccountInfo(account)
                     this.pageMove('/')

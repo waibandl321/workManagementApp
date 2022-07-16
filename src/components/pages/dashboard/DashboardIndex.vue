@@ -35,7 +35,7 @@ import TaskLength from './parts/DashboardTaskLength.vue'
 import DashboardTaskList from './parts/DashboardTaskList.vue'
 import DashboardTaskDetail from '@/components/pages/task/TaskDetail.vue'
 import dashboardMixin from './dashbord.js'
-import taskGlobalMixin from '@/mixin/api/task.js'
+import taskGlobalMixin from '@/mixin/firebase/task.js'
 import taskLocalMixin from '@/components/pages/task/task.js'
 
 export default {

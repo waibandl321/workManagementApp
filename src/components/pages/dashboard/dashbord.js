@@ -14,7 +14,7 @@ export default {
     },
     methods: {
         async getAllDashboardTask() {
-            let result = await this.apiGetTaskList()
+            let result = await this.firebaseGetTaskList()
             if(!result) {
                 return []
             }

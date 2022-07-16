@@ -10,7 +10,7 @@ import {
 export default {
     methods: {
         // タスク一覧取得
-        async apiGetTaskList() {
+        async firebaseGetTaskList() {
             return new Promise((resolve, reject) => {
                 const db = getDatabase()
                 const starCountRef = ref(db, '/tasks/' + this.storeGetFirebaseUid())
@@ -22,7 +22,7 @@ export default {
             })
         },
         // サブタスク一覧取得
-        async apiGetSubtaskList() {
+        async firebaseGetSubtaskList() {
             return new Promise((resolve, reject) => {
                 const db = getDatabase();
                 const userId = this.storeGetFirebaseUid()
@@ -36,7 +36,7 @@ export default {
         },
         
         // タスク作成
-        async apiTaskCreate(task) {
+        async firebaseTaskCreate(task) {
             const db = getDatabase();
             return await set(ref(db, '/tasks/' + this.storeGetFirebaseUid() + '/' + task.task_id), task)
             .then(() => {
@@ -48,7 +48,7 @@ export default {
             })
         },
         // サブタスク作成
-        async apiSubtaskCreate(subtask) {
+        async firebaseSubtaskCreate(subtask) {
             const db = getDatabase();
             const userId = this.storeGetFirebaseUid()
             return await set(ref(db, '/subtasks/' + userId + '/' + subtask.subtask_id), subtask)
@@ -61,7 +61,7 @@ export default {
             })
         },
         // サブタスク更新
-        async apiUpdateSubtask(subtask) {
+        async firebaseUpdateSubtask(subtask) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
@@ -77,7 +77,7 @@ export default {
         },
 
         // タスクステータス更新
-        async apiUpdateTaskStatus(task) {
+        async firebaseUpdateTaskStatus(task) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
@@ -98,7 +98,7 @@ export default {
             });
         },
         // タスク優先度更新
-        async apiUpdateTaskPriority(id, priority) {
+        async firebaseUpdateTaskPriority(id, priority) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
@@ -113,7 +113,7 @@ export default {
             })
         },
         // タスク名更新
-        async apiUpdateTaskname(id, taskname) {
+        async firebaseUpdateTaskname(id, taskname) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
@@ -128,7 +128,7 @@ export default {
             })
         },
         // タスク詳細更新
-        async apiUpdateTaskDescription(id, description) {
+        async firebaseUpdateTaskDescription(id, description) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
@@ -143,7 +143,7 @@ export default {
             })
         },
         // タスク期日更新
-        async apiUpdateTaskDeadline(task_deadline, task_id) {
+        async firebaseUpdateTaskDeadline(task_deadline, task_id) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             const updates = {};
@@ -159,7 +159,7 @@ export default {
         },
         
         // 削除
-        async apiDeleteTask(task) {
+        async firebaseDeleteTask(task) {
             const db = getDatabase()
             const updates = {};
             updates['/tasks/' + this.storeGetFirebaseUid() + '/' + task.task_id] = null;
@@ -173,7 +173,7 @@ export default {
             return await update(ref(db), updates);
         },
         // サブタスク削除
-        async apiDeleteSubtask(subtask) {
+        async firebaseDeleteSubtask(subtask) {
             const db = getDatabase()
             const updates = {};
             updates['/subtasks/' + this.storeGetFirebaseUid() + '/' + subtask.subtask_id] = null;
@@ -194,7 +194,7 @@ export default {
             return await update(ref(db), updates);
         },
         // 親タスク削除時にサブタスクがある場合
-        apiDeleteSubtaskHasTask(subtasks) {
+        firebaseDeleteSubtaskByTask(subtasks) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
             subtasks.forEach(r => {

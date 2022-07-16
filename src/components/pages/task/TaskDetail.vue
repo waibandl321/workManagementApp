@@ -504,7 +504,7 @@ export default {
         deleteTaskTerm() {
             this.task_deadline = null
             this.termSetting = false
-            this.apiUpdateTaskDeadline(this.task_deadline, this.params.viewer.task_id)
+            this.firebaseUpdateTaskDeadline(this.task_deadline, this.params.viewer.task_id)
             this.params.viewer.task_deadline = null
         },
         // タスク削除

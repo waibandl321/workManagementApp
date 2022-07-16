@@ -107,7 +107,7 @@ export default {
             this.params.loading = true
             const account = this.generateNewAccountObject()
             try {
-                await this.apiAccountCreate(account)
+                await this.firebaseAccountCreate(account)
                 this.storeSetAccountInfo(account)
                 this.parents.user_info = this.copyJson(account);
                 this.register_status = true;

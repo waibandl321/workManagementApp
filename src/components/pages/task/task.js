@@ -5,7 +5,7 @@ export default {
     methods: {
         // タスク一覧取得
         async readTaskList() {
-            let result = await this.apiGetTaskList()
+            let result = await this.firebaseGetTaskList()
             if(!result) return []
             result = Object.keys(result)
                     .map( (key) => {return result[key]})
@@ -18,7 +18,7 @@ export default {
         // サブタスク一覧取得
         async getSubtaskList(task_viewer) {
             if(task_viewer.task_id) {
-                let result = await this.apiGetSubtaskList()
+                let result = await this.firebaseGetSubtaskList()
                 if(!result) return {}
                 result = Object.keys(result)
                         .map((key) => {
@@ -32,7 +32,7 @@ export default {
         // タスク削除
         async execDeleteTask() {
             try {
-                await this.apiDeleteTask(this.params.delete_item)
+                await this.firebaseDeleteTask(this.params.delete_item)
                 this.deleteSubtaskHasTask(this.params.delete_item)
                 this.execDeleteAllFile(this.params.files)
                 this.params.success = "タスクを削除しました。"
@@ -48,7 +48,7 @@ export default {
         // 一覧からタスク削除 MEMO: リストの場合詳細close処理なし
         async execDeleteTaskFromList() {
             try {
-                await this.apiDeleteTask(this.params.delete_item)
+                await this.firebaseDeleteTask(this.params.delete_item)
                 this.deleteSubtaskHasTask(this.params.delete_item)
                 this.execDeleteAllFile(this.params.files)
                 this.params.success = "タスクを削除しました。"
@@ -64,7 +64,7 @@ export default {
         async createSubtask(new_subtask) {
             const subtask = this.generateSubtaskObject(new_subtask)
             try {
-                await this.apiSubtaskCreate(subtask)
+                await this.firebaseSubtaskCreate(subtask)
                 this.params.success = "サブタスクを新規作成しました。";
                 this.subtask_option = [];
                 this.params.subtask_editor = {};
@@ -94,7 +94,7 @@ export default {
                     return; //MEMO: finishedの場合は何もしない
                 }
             }
-            const result = await this.apiUpdateSubtask(subtask)
+            const result = await this.firebaseUpdateSubtask(subtask)
             if(result) {
                 this.params.success = "サブタスクを更新しました。"
             } else {
@@ -107,7 +107,7 @@ export default {
         },
         // サブタスク削除
         async deleteSubtask(subtask) {
-            const result = await this.apiDeleteSubtask(subtask);
+            const result = await this.firebaseDeleteSubtask(subtask);
             if(result) {
                 this.params.success = "サブタスクを削除しました。"
             } else {
@@ -159,33 +159,33 @@ export default {
         deleteSubtaskHasTask(task_viewer) {
             this.params.subtask_list = this.getSubtaskList(task_viewer)
             if(this.params.subtask_list.length > 0) {
-                this.apiDeleteSubtaskHasTask(this.params.subtask_list)
+                this.firebaseDeleteSubtaskByTask(this.params.subtask_list)
             }
             return true
         },
         // タスク情報の更新
         async tasknameUpdate() {
-            const result = await this.apiUpdateTaskname(this.params.viewer.task_id, this.params.viewer.task_name)
+            const result = await this.firebaseUpdateTaskname(this.params.viewer.task_id, this.params.viewer.task_name)
             if(result) {
                 this.task_name_edit = false
                 this.params.success = "タスク名を更新しました。"
             }
         },
         async updateTaskDescription() {
-            const result = await this.apiUpdateTaskDescription(this.params.viewer.task_id, this.params.viewer.task_description);
+            const result = await this.firebaseUpdateTaskDescription(this.params.viewer.task_id, this.params.viewer.task_description);
             if(result) {
                 this.desc_editor = false
                 this.params.success = "タスク概要説明を更新しました。"
             }
         },
         async updateTaskStatus() {
-            const result = await this.apiUpdateTaskStatus(this.params.viewer)
+            const result = await this.firebaseUpdateTaskStatus(this.params.viewer)
             if(result) {
                 this.params.success = "タスクのステータスを変更しました。"
             }
         },
         async updateTaskPriority() {
-            const result = await this.apiUpdateTaskPriority(this.params.viewer.task_id, this.params.viewer.task_priority)
+            const result = await this.firebaseUpdateTaskPriority(this.params.viewer.task_id, this.params.viewer.task_priority)
             if(result) {
                 this.params.success = "タスクの優先度を変更しました。"
             }
@@ -196,7 +196,7 @@ export default {
                 this.termSetting = false
                 return
             }
-            const result = await this.apiUpdateTaskDeadline(deadline, this.params.viewer.task_id)
+            const result = await this.firebaseUpdateTaskDeadline(deadline, this.params.viewer.task_id)
             if(result) {
                 this.params.viewer.task_deadline = deadline
                 this.params.success = "タスク期日を変更しました"

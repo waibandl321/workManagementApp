@@ -11,7 +11,7 @@ from "firebase/database";
 export default {
     methods: {
         // アカウント情報取得
-        async apiGetAccount(uid) {
+        async firebaseGetAccount(uid) {
             return new Promise((resolve, reject) => {
                 const db = getDatabase();
                 onValue(ref(db, '/users/' + uid), (snapshot) => {
@@ -22,12 +22,12 @@ export default {
             })
         },
         // アカウント登録
-        async apiAccountCreate(account) {
+        async firebaseAccountCreate(account) {
             const db = getDatabase();
             await set(ref(db, '/users/' + this.storeGetFirebaseUid()), account);
         },
         // アカウント更新
-        async apiAccountUpdate(account) {
+        async firebaseAccountUpdate(account) {
             const db = getDatabase()
             const updates = {};
             updates['/users/' + this.storeGetFirebaseUid()] = account;
