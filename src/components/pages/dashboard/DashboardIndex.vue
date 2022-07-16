@@ -110,7 +110,6 @@ export default {
     }
 }
 </script>
-<style src="../../../assets/css/original.css" scoped></style>
 <style scoped>
 .dashbord {
     background-color: #f8f5f5;

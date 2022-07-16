@@ -60,7 +60,3 @@ export default {
     mixins: [dashboardMixin],
 }
 </script>
-
-<style scoped>
-
-</style>
