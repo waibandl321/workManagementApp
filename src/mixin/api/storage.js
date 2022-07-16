@@ -12,9 +12,6 @@ import {
 export default {
     data: () => ({}),
     methods: {
-        readStorageModule() {
-            return getStorage();
-        },
         initStorageFilePath(file_name) {
             return this.storeGetFirebaseUid() + '/' + file_name
         },
@@ -93,7 +90,7 @@ export default {
         },
         // アカウント削除と連動して削除
         async storegeDeleteAccountFiles() {
-            const results = await this.getStorageAccountFileList()
+            const results = await this.storageGetAccountFileList()
             if(results.length === 0) return;
             results.forEach(r => {
                 const desertRef = ref( getStorage(), this.storeGetFirebaseUid() + '/' + r.name );
@@ -101,7 +98,7 @@ export default {
             })
         },
         // uidに紐づくファイルリストを取得
-        async getStorageAccountFileList() {
+        async storageGetAccountFileList() {
             const listRef = ref(getStorage(), this.storeGetFirebaseUid());
             return await listAll(listRef)
             .then((res) => {
