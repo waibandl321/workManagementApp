@@ -40,7 +40,7 @@
                         v-for="(option, index) in subtask_option"
                         :key="index"
                         :color="option.function_cd === 'save' ? 'primary' : ''"
-                        :disabled="invalid"
+                        :disabled="option.function_cd === 'save' && invalid"
                         outlined
                         @click="clickOption(option, subtask_editor)"
                     >
