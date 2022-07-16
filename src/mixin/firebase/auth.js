@@ -4,12 +4,9 @@ import {
     signOut,
     signInWithEmailAndPassword,
     GoogleAuthProvider,
-    // signInWithPopup,
     getRedirectResult,
     signInWithRedirect,
-    onAuthStateChanged,
     sendPasswordResetEmail,
-    updateEmail,
     deleteUser
 }
 from "firebase/auth";
@@ -61,7 +58,7 @@ export default {
             const auth = getAuth();
             await signInWithRedirect(auth, provider)
         },
-        async authGetRedirectResult() {
+        async firebaseAuthGetRedirectResult() {
             const auth = getAuth();
             return await getRedirectResult(auth)
             .then((result) => {
@@ -70,30 +67,6 @@ export default {
             .catch(() => {
                 console.log("外部認証なし");
                 return null;
-            });
-        },
-        execOnAuthStateChanged() {
-            const auth = getAuth();
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    return user.uid;
-                } else {
-                    return null
-                }
-            });
-        },
-
-        // メールアドレス更新
-        async firebaseUpdateEmail(new_email) {
-            const auth = getAuth();
-            return await updateEmail(auth.currentUser, new_email)
-            .then(() => {
-                return true
-            })
-            .catch((error) => {
-                console.log("メールアドレス更新処理でエラー");
-                console.log(error);
-                return false;
             });
         },
 
@@ -110,7 +83,7 @@ export default {
             });
         },
 
-        // アカウント削除 memo:再認証して削除する
+        // アカウント削除
         async firebaseDeleteAuthUser() {
             const auth = getAuth();
             const user = auth.currentUser;

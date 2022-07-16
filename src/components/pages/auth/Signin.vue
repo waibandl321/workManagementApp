@@ -161,7 +161,7 @@ export default {
             this.loading = false;
         },
         async externalSigninRedirectGoogle() {
-            const result = await this.authGetRedirectResult()
+            const result = await this.firebaseAuthGetRedirectResult()
             if(result) {
                 this.storeSetFirebaseUid(result.uid)
                 const account = await this.apiGetAccount(result.uid)
