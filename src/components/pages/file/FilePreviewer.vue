@@ -1,6 +1,7 @@
 <template>
     <v-dialog
         v-model="dialog"
+        persistent
     >
         <v-card>
             <v-toolbar

@@ -92,15 +92,12 @@
         />
 
         <!-- 削除確認 -->
-        <v-dialog
-            v-model="delete_modal"
-            width="600"
-        >
-            <FileDeleteModal
-                :executeDelete="executeDelete"
-                :delete_item="delete_item"
-            />
-        </v-dialog>
+        <FileDeleteModal
+            v-if="delete_modal"
+            :delete_item="delete_item"
+            :executeDelete="executeDelete"
+            :closeModal="closeModal"
+        />
     </div>
 </template>
 
@@ -254,6 +251,9 @@ export default {
             this.page_current = 1;
             this.page_end = null;
             this.previewer.loading = false;
+        },
+        closeModal() {
+            this.delete_modal = false;
         },
     }
 }
