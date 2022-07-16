@@ -153,6 +153,7 @@ export default {
                 await this.firebaseDeleteAccountFiles() //file(db)
                 await this.storegeDeleteAccountFiles() //file(storage)
                 await this.firebaseDeleteAccountTasks() //task
+                await this.firebaseDeleteAccountSubtasks() //subtask
                 await this.firebaseDeleteAccount() //user(db)
                 await this.firebaseDeleteAccountTaskFiles() // taskfile(db)
                 await this.firebaseDeleteAuthUser() //user(firebase auth)

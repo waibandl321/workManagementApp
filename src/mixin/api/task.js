@@ -172,6 +172,7 @@ export default {
             updates['/tasks/' + this.storeGetFirebaseUid()] = null;
             return await update(ref(db), updates);
         },
+        // サブタスク削除
         async apiDeleteSubtask(subtask) {
             const db = getDatabase()
             const updates = {};
@@ -184,6 +185,13 @@ export default {
                 console.log(error);
                 return false;
             })
+        },
+        // アカウント削除に連動したサブタスク削除
+        async firebaseDeleteAccountSubtasks() {
+            const db = getDatabase()
+            const updates = {};
+            updates['/subtasks/' + this.storeGetFirebaseUid()] = null;
+            return await update(ref(db), updates);
         },
         // 親タスク削除時にサブタスクがある場合
         apiDeleteSubtaskHasTask(subtasks) {
