@@ -7,6 +7,7 @@ import {
     signInWithPopup,
     sendPasswordResetEmail,
     updateEmail,
+    deleteUser
 }
 from "firebase/auth";
 
@@ -91,6 +92,22 @@ export default {
                 console.log(error);
                 return false;
             });
+        },
+
+        // アカウント削除 memo:再認証して削除する
+        async firebaseDeleteAuthUser() {
+            const auth = getAuth();
+            const user = auth.currentUser;
+
+            return await deleteUser(user)
+            .then(() => {
+                console.log("削除成功")
+                return true;
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+
         }
     }
 }

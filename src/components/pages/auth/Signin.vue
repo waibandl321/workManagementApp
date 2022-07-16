@@ -155,7 +155,7 @@ export default {
                     this.storeSetAccountInfo(account)
                     this.pageMove('/')
                 } else {
-                    this.storeSetAccountInfo(null)
+                    // this.storeSetAccountInfo(null)
                     this.pageMove('/account')
                 }
             } catch (error) {

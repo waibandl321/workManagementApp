@@ -4,6 +4,7 @@ import {
     uploadBytes,
     getDownloadURL,
     getMetadata,
+    listAll,
     deleteObject
 } from "firebase/storage";
 
@@ -89,7 +90,26 @@ export default {
                 console.log(error);
                 return false;
             });
-            
+        },
+        // アカウント削除と連動して削除
+        async storegeDeleteAccountFiles() {
+            const results = await this.getStorageAccountFileList()
+            if(results.length === 0) return;
+            results.forEach(r => {
+                const desertRef = ref( getStorage(), this.storeGetFirebaseUid() + '/' + r.name );
+                return deleteObject(desertRef)
+            })
+        },
+        // uidに紐づくファイルリストを取得
+        async getStorageAccountFileList() {
+            const listRef = ref(getStorage(), this.storeGetFirebaseUid());
+            return await listAll(listRef)
+            .then((res) => {
+                return res.items
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         },
         async storageDeleteShareFile(file) {
             const desertRef = ref( getStorage(), this.storeGetFirebaseUid() + '/' + file.name );

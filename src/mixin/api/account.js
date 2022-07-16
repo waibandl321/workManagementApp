@@ -3,7 +3,8 @@ import {
     ref,
     set,
     update,
-    onValue
+    onValue,
+    remove
 }
 from "firebase/database";
 
@@ -39,6 +40,12 @@ export default {
                 console.log(err);
                 return false;
             })
+        },
+
+        // アカウント削除
+        async firebaseDeleteAccount() {
+            const db = getDatabase()
+            return await remove(ref(db, '/users/' + this.storeGetFirebaseUid()));
         },
     }
 }

@@ -6,8 +6,14 @@
             class="mb-6"
         />
         <v-card>
-            <v-card-title>
-                アカウント情報更新
+            <v-card-title class="d-flex justify-space-between">
+                <span>アカウント情報更新</span>
+                <v-btn
+                    color="error"
+                    @click="clickDeleteAccount()"
+                >
+                    アカウントを削除
+                </v-btn>
             </v-card-title>
             <validation-observer v-slot="{ invalid }">
                 <v-row class="ma-0">
@@ -64,15 +70,25 @@
                 </v-card-actions>
             </validation-observer>
         </v-card>
+        <ConfirmDelete
+            v-if="delete_modal"
+            :delete_options="delete_options"
+            :delete_title="delete_title"
+        />
+        <ExecLoading v-if="params.loading" />
     </div>
 </template>
 
 <script>
 import MessageViewer from '@/components/common/MessageViewer.vue'
+import ConfirmDelete from '@/components/common/ConfirmDelete.vue'
+import ExecLoading from '@/components/common/ExecLoading.vue'
 import myMixin from './account'
 export default {
     components: {
-        MessageViewer
+        MessageViewer,
+        ConfirmDelete,
+        ExecLoading
     },
     mixins: [myMixin],
     props: {
@@ -81,7 +97,9 @@ export default {
     },
     data: () => ({
         fitst_name: "",
-        last_name: ""
+        last_name: "",
+        delete_modal: false,
+        delete_options: [],
     }),
     created() {
         this.params.success = "";
@@ -108,7 +126,55 @@ export default {
                 status: this.params.account_info.status,
                 color: this.params.account_info.color
             }
-        }
+        },
+        // アカウント削除
+        clickDeleteAccount() {
+            this.delete_title = `アカウントを削除します。`;
+            this.delete_options.push(
+                {
+                    function_cd: "cancel",
+                    text: "キャンセル",
+                    callback: this.closeModal
+                },
+                {
+                    function_cd: "delete",
+                    text: "削除する", 
+                    callback: this.execDeleteAccount
+                }
+            )
+            this.delete_modal = true;
+        },
+        async execDeleteAccount() {
+            this.params.loading = true;
+            try {
+                // OK: ユーザーが作成したファイル（DB）の削除
+                await this.firebaseDeleteAccountFiles()
+                // OK: ユーザーが作成したタスクの削除
+                await this.firebaseDeleteAccountTasks()
+                // OK: アカウントデータ（DB）の削除
+                await this.firebaseDeleteAccount()
+                // OK: ユーザーが作成したファイル（ストレージ）の削除
+                await this.storegeDeleteAccountFiles()
+                // OK: firebase authのアカウント情報削除
+                await this.firebaseDeleteAuthUser()
+                .then(() => {
+                    this.storeDeleteAccountInfo()
+                    this.storeDestroyFirebaseUid()
+                    this.params.success = "アカウント情報を削除しました。";
+                    this.params.delete_flag = true;
+                })
+            } catch (error) {
+                console.log(error);
+                this.params.error = "アカウント削除に失敗しました。もう一度やり直してください。"
+            }
+            this.delete_options = []
+            this.delete_modal = false;
+            this.params.loading = false;
+        },
+        closeModal() {
+            this.delete_options = []
+            this.delete_modal = false;
+        },
     }
 }
 </script>

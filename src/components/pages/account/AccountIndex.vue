@@ -2,22 +2,21 @@
     <div class="body">
         <Header
             :parents="parents"
+            v-if="!params.delete_flag"
         />
-        <!-- 新規登録 -->
-        <div
-            class="auth"
-            v-if="!params.account_info.status"
-        >
-            <AccountRegister
-                :params="params"
-                :parents="parents"
-            />
-        </div>
-        <!-- 更新 -->
-        <AccountUpdate
-            v-else
+        <AccountRegister
+            v-if="!params.account_info.status && !params.delete_flag"
             :params="params"
             :parents="parents"
+        />
+        <AccountUpdate
+            v-else-if="params.account_info.status && !params.delete_flag"
+            :params="params"
+            :parents="parents"
+        />
+        <AccountDeleteConfirm
+            v-if="params.delete_flag"
+            :params="params"
         />
     </div>
 </template>
@@ -26,12 +25,14 @@
 import Header from '@/components/common/Header'
 import AccountRegister from '@/components/pages/account/AccountRegister.vue'
 import AccountUpdate from '@/components/pages/account/AccountUpdate.vue'
+import AccountDeleteConfirm from '@/components/pages/account/AccountDeleteConfirm'
 
 export default {
     components: {
         Header,
         AccountRegister,
         AccountUpdate,
+        AccountDeleteConfirm
     },
     data: () => ({
         parents: {
@@ -42,6 +43,7 @@ export default {
             success: "",
             error: "",
             loading: false,
+            delete_flag: false,
         }
     }),
     created() {

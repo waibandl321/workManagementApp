@@ -56,6 +56,6 @@ export default
           path: '/account',
           name: 'account_setting',
           component: AccountIndex,
-          meta: { title: 'アカウント情報'}
+          meta: { title: 'アカウント情報'},
         }
     ]

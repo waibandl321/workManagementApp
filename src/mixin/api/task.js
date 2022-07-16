@@ -165,6 +165,13 @@ export default {
             updates['/tasks/' + this.storeGetFirebaseUid() + '/' + task.task_id] = null;
             return await update(ref(db), updates);
         },
+        // アカウント削除に連動したタスク削除
+        async firebaseDeleteAccountTasks() {
+            const db = getDatabase()
+            const updates = {};
+            updates['/tasks/' + this.storeGetFirebaseUid()] = null;
+            return await update(ref(db), updates);
+        },
         async apiDeleteSubtask(subtask) {
             const db = getDatabase()
             const updates = {};
