@@ -14,7 +14,7 @@ export default new Vuex.Store({
     auth: auth,
   },
   plugins: [createPersistedState(
-    { storage: window.sessionStorage }
+    { storage: window.localStorage }
     )
   ]
 });

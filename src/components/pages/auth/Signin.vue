@@ -103,6 +103,7 @@
             </div>
           </v-card>
         </div>
+        <router-view/>
     </div>
 </template>
 
@@ -119,7 +120,11 @@ export default {
         loading: false,
         error: ''
     }),
-
+    async created() {
+        this.loading = true;
+        // 外部認証リダイレクトチェック
+        await this.externalSigninRedirectGoogle()
+    },
     methods: {
         // サインイン(サインイン)
         async emailSignin () {
@@ -128,7 +133,7 @@ export default {
                 const uid = await this.firebaseEmailSignin(this.email, this.password);
                 if(uid) {
                     this.storeSetFirebaseUid(uid);
-                    const account = await this.isExistAuthAccount(uid);
+                    const account = await this.apiGetAccount(uid);
                     if(account) {
                         this.storeSetAccountInfo(account);
                         this.pageMove('/');
@@ -148,24 +153,28 @@ export default {
         async externalSigninByGoogle() {
             this.loading = true;
             try {
-                const uid = await this.firebaseGoogleAuth();
-                this.storeSetFirebaseUid(uid)
-                const account = await this.isExistAuthAccount(uid)
-                if(account) {
-                    this.storeSetAccountInfo(account)
-                    this.pageMove('/')
-                } else {
-                    // this.storeSetAccountInfo(null)
-                    this.pageMove('/account')
-                }
+                await this.firebaseGoogleAuth()
             } catch (error) {
                 console.log(error);
                 this.error = "外部認証に失敗しました。"
             }
             this.loading = false;
         },
-        async isExistAuthAccount(uid) {
-            return await this.apiGetAccount(uid)
+        async externalSigninRedirectGoogle() {
+            const result = await this.authGetRedirectResult()
+            if(result) {
+                this.storeSetFirebaseUid(result.uid)
+                const account = await this.apiGetAccount(result.uid)
+                if(account) {
+                    this.storeSetAccountInfo(account)
+                    this.pageMove('/')
+                } else {
+                    this.pageMove('/account')
+                }
+            }
+            
+            this.loading = false;
+            return;
         },
     },
 }

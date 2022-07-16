@@ -38,7 +38,7 @@ export default
           path: '/auth/signin',
           name: 'signin',
           component: Signin,
-          meta: { title: 'サインイン'}
+          meta: { title: 'サインイン'},
         },
         {
           path: '/auth/password_reset_email',

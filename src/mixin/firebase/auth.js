@@ -4,7 +4,10 @@ import {
     signOut,
     signInWithEmailAndPassword,
     GoogleAuthProvider,
-    signInWithPopup,
+    // signInWithPopup,
+    getRedirectResult,
+    signInWithRedirect,
+    onAuthStateChanged,
     sendPasswordResetEmail,
     updateEmail,
     deleteUser
@@ -56,14 +59,40 @@ export default {
         async firebaseGoogleAuth() {
             const provider = new GoogleAuthProvider();
             const auth = getAuth();
-            provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-            return await signInWithPopup(auth, provider)
+            await signInWithRedirect(auth, provider)
+        },
+        // async firebaseGoogleAuth() {
+        //     const provider = new GoogleAuthProvider();
+        //     const auth = getAuth();
+        //     provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+        //     return await signInWithPopup(auth, provider)
+        //     .then((result) => {
+        //         return result.user.uid
+        //     })
+        //     .catch((error) => {
+        //         console.log(error);
+        //         return false
+        //     });
+        // },
+        async authGetRedirectResult() {
+            const auth = getAuth();
+            return await getRedirectResult(auth)
             .then((result) => {
-                return result.user.uid
+                return result.user;
             })
-            .catch((error) => {
-                console.log(error);
-                return false
+            .catch(() => {
+                console.log("外部認証なし");
+                return null;
+            });
+        },
+        execOnAuthStateChanged() {
+            const auth = getAuth();
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    return user.uid;
+                } else {
+                    return null
+                }
             });
         },
 
