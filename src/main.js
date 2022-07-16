@@ -13,7 +13,7 @@ import accountMixin from "./mixin/firebase/account.js"
 import accountStore from "./mixin/store/account.js"
 import shareFilesMixin from "./mixin/api/share_files.js"
 import taskMixin from "@/mixin/firebase/task.js"
-import storageMixin from "@/mixin/api/storage.js"
+import storageMixin from "@/mixin/firebase/storage.js"
 import fileRelatedDatabaseMixin from "@/mixin/api/file_relatied_db.js"
 Vue.mixin(utilMixin)
 Vue.mixin(commonValidate)
