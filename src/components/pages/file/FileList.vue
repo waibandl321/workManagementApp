@@ -36,7 +36,7 @@
                     <td>更新者</td>
                     <td>更新日</td>
                     <td>サイズ</td>
-                    <td class="options-td"></td>
+                    <td class="options-td">&nbsp;</td>
                 </tr>
             </thead>
             <tbody>
@@ -85,14 +85,11 @@
         </table>
 
         <!-- プレビュー -->
-        <v-dialog
-            v-model="file_preview"
-        >
-            <FilePreviewer
-                :closeFilePreview="closeFilePreview"
-                :previewer="previewer"
-            />
-        </v-dialog>
+        <FilePreviewer
+            v-if="file_preview"
+            :closeFilePreview="closeFilePreview"
+            :previewer="previewer"
+        />
 
         <!-- 削除確認 -->
         <v-dialog
@@ -262,5 +259,5 @@ export default {
 }
 </script>
 
-<style scoped src="../../../assets/css/original.css"></style>
+<style scoped src="./scoped.css"></style>
 

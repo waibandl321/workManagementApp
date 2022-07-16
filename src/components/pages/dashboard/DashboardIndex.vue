@@ -110,11 +110,8 @@ export default {
     }
 }
 </script>
-<style src="../../../assets/css/original.css"></style>
+<style src="../../../assets/css/original.css" scoped></style>
 <style scoped>
-.body {
-  width: 100%;
-}
 .dashbord {
     background-color: #f8f5f5;
     height: calc(100vh - 70px);

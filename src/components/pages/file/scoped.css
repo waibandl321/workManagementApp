@@ -1,6 +1,3 @@
-.fs-sm {
-    font-size: 12px;
-}
 .basic-list {
     border-collapse: collapse;
     table-layout: unset;
@@ -21,6 +18,5 @@
     padding: 4px;
 }
 .options-td {
-    width: 40px;
     text-align: right;
 }
