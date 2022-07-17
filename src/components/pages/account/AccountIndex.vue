@@ -47,6 +47,7 @@ export default {
         }
     }),
     created() {
+        this.setRoutetitle()
         this.accountRead();
     },
     methods: {

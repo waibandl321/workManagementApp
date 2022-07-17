@@ -1,9 +1,20 @@
+import config from '@/config/settings/common.js'
 export default {
     data: () => ({
         
     }),
-
     methods: {
+        // ページタイトル設定
+        getServiceBasetitle() {
+            return config.basetitle;
+        },
+        getRoutetitle() {
+            return this.$route.meta.title;
+        },
+        setRoutetitle() {
+            const result = this.getRoutetitle()
+            document.title = (result + this.getServiceBasetitle())
+        },
         copyJson(value) {
             return JSON.parse(JSON.stringify(value))
         },

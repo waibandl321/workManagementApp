@@ -76,8 +76,12 @@ export default {
         },
     }),
     created() {
+        this.setRoutetitle()
         this.parents.user_info = this.storeGetAccountInfo()
         this.initTaskList()
+    },
+    mounted() {
+        this.setRoutetitle()
     },
     methods: {
         async initTaskList() {

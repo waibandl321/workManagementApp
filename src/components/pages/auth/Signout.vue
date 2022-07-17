@@ -13,6 +13,7 @@ export default {
         loading: true,
     }),
     async created() {
+        this.setRoutetitle()
         const result = await this.firebaseSignout();
         if(result) {
             this.storeDeleteAccountInfo()

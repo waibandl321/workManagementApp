@@ -44,6 +44,7 @@ export default {
         },
     }),
     created() {
+        this.setRoutetitle()
         this.parents.user_info = this.storeGetAccountInfo()
     },
     methods: {

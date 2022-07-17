@@ -24,6 +24,9 @@ export default {
             mode: "input"
         }
     }),
+    created() {
+        this.setRoutetitle()
+    },
 }
 </script>
 

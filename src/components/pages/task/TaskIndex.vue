@@ -63,6 +63,7 @@ export default {
         },
     }),
     created() {
+        this.setRoutetitle()
         this.init()
     },
     methods: {

@@ -121,6 +121,7 @@ export default {
         error: ''
     }),
     async created() {
+        this.setRoutetitle()
         this.loading = true;
         // 外部認証リダイレクトチェック
         await this.externalSigninRedirectGoogle()

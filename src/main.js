@@ -43,11 +43,11 @@ new Vue({
   render: h => h(App),
   // vue-head docs: https://github.com/ktquez/vue-head#examples-new-syntax
   head: {
-    title: {
-      inner: 'タスク管理アプリ'
-    },
     meta: [
-      { name: 'description', content: 'Vue.jsとFirebaseで構築されたタスク管理アプリです。日々のタスクや重要なファイルなどを管理できます。' },
+      {
+          name: 'description',
+          content: 'Vue.jsとFirebaseで構築されたタスク管理アプリです。日々のタスクや重要なファイルなどを管理できます。'
+      },
     ],
   }
 }).$mount('#app')
