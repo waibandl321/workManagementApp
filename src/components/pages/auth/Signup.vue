@@ -33,6 +33,7 @@
                                 outlined
                                 autofocus
                                 dense
+                                data-ut-id="inputEmail"
                             ></v-text-field>
                             <div class="input-error-messsage">{{ errors[0] }}</div>
                         </validation-provider>
@@ -40,6 +41,7 @@
                             name="パスワード"
                             :rules="{
                                 required: {},
+                                alpha_num: {},
                                 min: max_length_password
                             }"
                             v-slot="{ errors }"
@@ -53,6 +55,7 @@
                                 outlined
                                 dense
                                 v-model="password"
+                                data-ut-id="inputPassword"
                             ></v-text-field>
                             <div
                                 v-for="(error, index) in errors"
@@ -68,6 +71,7 @@
                                 color="primary"
                                 class="submit"
                                 @click="signup()"
+                                data-ut-id="execSignup"
                             >
                                 登録する
                             </v-btn>
@@ -82,6 +86,7 @@
                             @click="externalSigninByGoogle()"
                             fab
                             depressed
+                            data-ut-id="googleSignup"
                         >
                             <v-img
                                 src="./img/icons-google.png"
@@ -94,7 +99,11 @@
                 </div>
                 <v-divider />
                 <div class="pa-4">
-                    <v-btn outlined color="primary" to="/auth/signin">
+                    <v-btn
+                        outlined color="primary"
+                        to="/auth/signin"
+                        data-ut-id="pageMoveSignin"
+                    >
                         ログインはこちら
                     </v-btn>
                 </div>
@@ -135,7 +144,7 @@ export default {
                 }
             } catch (error) {
                 console.log(error);
-                this.error = "入力されたメールアドレスのユーザーはすでに登録されている可能性があります。"
+                this.error = "入力された情報のユーザーはすでに登録されている可能性があります。"
             }
             this.loading = false;
         },

@@ -31,6 +31,7 @@
                             outlined
                             dense
                             required
+                            data-ut-id="inputEmail"
                         ></v-text-field>
                         <div class="input-error-messsage">{{ errors[0] }}</div>
                     </validation-provider>
@@ -49,6 +50,7 @@
                             outlined
                             dense
                             v-model="password"
+                            data-ut-id="inputPassword"
                         ></v-text-field>
                         <div class="input-error-messsage">{{ errors[0] }}</div>
                     </validation-provider>
@@ -58,6 +60,7 @@
                             color="primary"
                             class="submit"
                             @click="emailSignin()"
+                            data-ut-id="execSignup"
                         >
                             サインイン
                         </v-btn>
@@ -82,6 +85,7 @@
                     @click="externalSigninByGoogle()"
                     fab
                     depressed
+                    data-ut-id="googleSignin"
                 >
                     <v-img
                         src="./img/icons-google.png"
