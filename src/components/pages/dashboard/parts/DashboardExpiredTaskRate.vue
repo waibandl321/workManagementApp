@@ -7,7 +7,6 @@
                     <v-card>
                         <v-card-title class="justify-center">過去7日間</v-card-title>
                         <apexchart
-                            width="300"
                             type="radialBar"
                             :options="graph_options"
                             :series="setGraphExpiredValueByOneWeek()"
@@ -26,7 +25,6 @@
                     <v-card>
                         <v-card-title class="justify-center">1ヶ月間</v-card-title>
                         <apexchart
-                            width="300"
                             type="radialBar"
                             :options="graph_options"
                             :series="setGraphExpiredValueDataByMonth()"
@@ -104,6 +102,7 @@ export default {
     font-weight: bold;
 }
 .dashboard-card-title {
+    font-weight: bold;
     padding-left: 16px;
     padding-top: 8px;
     padding-bottom: 8px;

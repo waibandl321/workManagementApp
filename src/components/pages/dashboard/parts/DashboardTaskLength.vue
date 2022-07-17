@@ -2,7 +2,7 @@
     <v-row>
         <v-col>
             <v-card class="pa-4">
-                <v-card-title class="pt-0 px-0">アクティブタスク数</v-card-title>
+                <v-card-title class="pt-0 px-0 font-weight-bold justify-center">アクティブタスク数</v-card-title>
                 <div>
                     <v-card
                         color="#359EFA"
@@ -20,7 +20,7 @@
         </v-col>
         <v-col>
             <v-card class="pa-4">
-                <v-card-title class="pt-0 px-0">期限切れタスク数</v-card-title>
+                <v-card-title class="pt-0 px-0 font-weight-bold justify-center">期限切れタスク数</v-card-title>
                 <div>
                     <v-card
                         color="#EB3E79"
@@ -38,7 +38,7 @@
         </v-col>
         <v-col>
             <v-card class="pa-4">
-                <v-card-title class="pt-0 px-0">完了タスク数</v-card-title>
+                <v-card-title class="pt-0 px-0 font-weight-bold justify-center">完了タスク数</v-card-title>
                 <div>
                     <v-card
                         color="#31A85C"

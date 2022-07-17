@@ -126,6 +126,7 @@ export default {
     overflow-y: auto;
 }
 .dashboard-list-title {
+    font-weight: bold;
     position: sticky;
     top: 0;
     background: #fff;
