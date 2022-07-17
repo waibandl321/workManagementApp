@@ -73,6 +73,9 @@
 import pdf from 'vue-pdf'
 import Loading from '@/components/common/Loading.vue'
 
+// MEMO: ChromeでPDFビューするとCROBのエラーが発生する
+// 本来なら画像パスをクライアントから呼び出すのではなく、
+// サーバー側で外部APIを呼び出し、結果をjsonにしてクライアント側に返却する
 export default {
     components: {
         pdf,
