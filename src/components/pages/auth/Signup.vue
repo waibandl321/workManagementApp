@@ -73,6 +73,24 @@
                             </v-btn>
                         </div>
                     </validation-observer>
+                    <v-divider />
+                    <v-card-title class="px-0">
+                        外部サービスでアカウント作成
+                    </v-card-title>
+                    <div class="spb-4">
+                        <v-btn
+                            @click="externalSigninByGoogle()"
+                            fab
+                            depressed
+                        >
+                            <v-img
+                                src="./img/icons-google.png"
+                                max-width="32"
+                                min-width="32"
+                            >
+                            </v-img>
+                        </v-btn>
+                    </div>
                 </div>
                 <v-divider />
                 <div class="pa-4">
@@ -97,7 +115,11 @@ export default {
         loading: false,
         error: '',
     }),
-
+    async created() {
+        this.loading = true;
+        // 外部認証リダイレクトチェック
+        await this.externalSigninRedirectGoogle()
+    },
     methods: {
         // サインアップ
         async signup () {
@@ -115,6 +137,32 @@ export default {
                 this.error = "入力されたメールアドレスのユーザーはすでに登録されている可能性があります。"
             }
             this.loading = false;
+        },
+        async externalSigninByGoogle() {
+            this.loading = true;
+            try {
+                await this.firebaseGoogleAuth()
+            } catch (error) {
+                console.log(error);
+                this.error = "外部認証に失敗しました。"
+            }
+            this.loading = false;
+        },
+        async externalSigninRedirectGoogle() {
+            const result = await this.firebaseAuthGetRedirectResult()
+            if(result) {
+                this.storeSetFirebaseUid(result.uid)
+                const account = await this.firebaseGetAccount(result.uid)
+                if(account) {
+                    this.storeSetAccountInfo(account)
+                    this.pageMove('/')
+                } else {
+                    this.pageMove('/account')
+                }
+            }
+            
+            this.loading = false;
+            return;
         },
     },
 }
