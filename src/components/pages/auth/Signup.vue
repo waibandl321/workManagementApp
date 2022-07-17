@@ -77,7 +77,7 @@
                     <v-card-title class="px-0">
                         外部サービスでアカウント作成
                     </v-card-title>
-                    <div class="spb-4">
+                    <div class="pb-4">
                         <v-btn
                             @click="externalSigninByGoogle()"
                             fab
