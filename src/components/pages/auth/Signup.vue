@@ -35,7 +35,7 @@
                                 dense
                                 data-e2e-id="inputEmail"
                             ></v-text-field>
-                            <div class="input-error-messsage">{{ errors[0] }}</div>
+                            <div class="input-error-message">{{ errors[0] }}</div>
                         </validation-provider>
                         <validation-provider
                             name="パスワード"
@@ -60,7 +60,7 @@
                             <div
                                 v-for="(error, index) in errors"
                                 :key="index"
-                                class="input-error-messsage"
+                                class="input-error-message"
                             >
                                 {{ error }}
                             </div>

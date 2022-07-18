@@ -31,7 +31,7 @@
                             dense
                             data-e2e-id="inputEmail"
                         ></v-text-field>
-                        <div class="input-error-messsage">{{ errors[0] }}</div>
+                        <div class="input-error-message">{{ errors[0] }}</div>
                     </validation-provider>
                     <div class="my-4">
                         <v-btn

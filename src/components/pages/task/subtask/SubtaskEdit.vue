@@ -25,7 +25,7 @@
                             hide-details
                             required
                         ></v-text-field>
-                        <div class="input-error-messsage">{{ errors[0] }}</div>
+                        <div class="input-error-message">{{ errors[0] }}</div>
                     </validation-provider>
                     <quillEditor
                         ref="myQuillEditor"
@@ -98,7 +98,7 @@ export default {
 </script>
 
 <style scoped>
-.input-error-messsage {
+.input-error-message {
     font-size: 14px;
     color: #ff5252;
     margin-top: 4px;

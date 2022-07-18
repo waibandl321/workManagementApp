@@ -33,7 +33,7 @@
                                 outlined
                                 data-e2e-id="lastName"
                             ></v-text-field>
-                            <div class="input-error-messsage">{{ errors[0] }}</div>
+                            <div class="input-error-message">{{ errors[0] }}</div>
                         </validation-provider>
                         <validation-provider
                             name="名"
@@ -49,7 +49,7 @@
                                 outlined
                                 data-e2e-id="firstName"
                             ></v-text-field>
-                        <div class="input-error-messsage">{{ errors[0] }}</div>
+                        <div class="input-error-message">{{ errors[0] }}</div>
                         </validation-provider>
                     </v-row>
                     <v-divider />

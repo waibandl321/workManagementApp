@@ -12,10 +12,10 @@ describe('アカウント登録', () => {
     
     it('入力エラー', () => {
         cy.get('[data-e2e-id="lastName"]').focus().clear().blur()
-        cy.get('.input-error-messsage').should('contain', '性は必須です')
+        cy.get('.input-error-message').should('contain', '性は必須です')
         cy.get('[data-e2e-id="accountRegister"').should('have.attr', 'disabled', 'disabled')
         cy.get('[data-e2e-id="firstName"]').focus().clear().blur()
-        cy.get('.input-error-messsage').should('contain', '名は必須です')
+        cy.get('.input-error-message').should('contain', '名は必須です')
         cy.get('[data-e2e-id="accountRegister"').should('have.attr', 'disabled', 'disabled')
     });
 

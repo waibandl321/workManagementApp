@@ -10,12 +10,12 @@ describe('パスワード再設定画面', () => {
     it('入力エラー', () => {
         // メールアドレス値なし
         cy.get('[data-e2e-id="inputEmail"]').focus().clear().blur()
-        cy.get('.input-error-messsage')
+        cy.get('.input-error-message')
             .should('contain', 'メールアドレスは必須です')
         cy.get('[data-e2e-id="passwordResetEmailSend"]').should('have.attr', 'disabled', 'disabled')
         // メールアドレス形式不備
         cy.get('[data-e2e-id="inputEmail"]').clear().type("hoge")
-        cy.get('.input-error-messsage')
+        cy.get('.input-error-message')
             .should('contain', '有効なメールアドレスではありません')
         cy.get('[data-e2e-id="passwordResetEmailSend"]').should('have.attr', 'disabled', 'disabled')
     });

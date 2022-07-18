@@ -72,7 +72,7 @@
                             label="フォルダ名"
                             data-e2e-id="createFolderInput"
                         ></v-text-field>
-                        <div class="input-error-messsage">{{ errors[0] }}</div>
+                        <div class="input-error-message">{{ errors[0] }}</div>
                     </validation-provider>
                     <v-divider></v-divider>
                     <v-card-actions class="pa-4">
@@ -193,7 +193,7 @@ export default {
     bottom: 24px;
     right: 24px;
 }
-.input-error-messsage {
+.input-error-message {
     font-size: 14px;
     color: #ff5252;
     margin-top: 4px;

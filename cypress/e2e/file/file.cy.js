@@ -20,7 +20,7 @@ describe('ファイル管理', () => {
 
     it('フォルダ作成 入力エラー&キャンセル', () => {
         cy.get('[data-e2e-id="createFolderInput"]').focus().clear().blur()
-        cy.get('.input-error-messsage').should('contain', 'フォルダ名は必須です')
+        cy.get('.input-error-message').should('contain', 'フォルダ名は必須です')
         cy.get('[data-e2e-id="createFolderSave"]').should('have.attr', 'disabled', 'disabled')
         cy.get('[data-e2e-id="createFolderCancel"]').click()
         cy.get('[data-e2e-id="fileListTable"]').should('not.contain', 'hoge folder')

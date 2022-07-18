@@ -47,8 +47,7 @@
             <v-btn
                 color="primary"
                 text
-                @click="new_task = !new_task"
-                large
+                @click="clickTaskInput()"
             >
                 <v-icon>{{ new_task ? 'mdi-close' : 'mdi-plus' }}</v-icon>
                 <span>タスク追加</span>
@@ -60,28 +59,36 @@
         >
             <validation-observer v-slot="{ invalid }" ref="observer">
                 <validation-provider
-                    name="新規タスク"
+                    name="タスク名"
                     rules="required"
                     class="mt-6"
+                    v-slot="{ errors }"
                 >
-                    <v-text-field
-                        placeholder="タスク名を入力してください"
-                        autofocus
-                        hide-details
-                        outlined
-                        v-model="new_task_name"
-                    ></v-text-field>
+                    <div class="relative">
+                        <v-text-field
+                            placeholder="タスク名を入力してください"
+                            autofocus
+                            hide-details
+                            outlined
+                            v-model="new_task_name"
+                            ref="inputTaskname"
+                        ></v-text-field>
+                        <v-btn
+                            depressed
+                            class="alt_submit px-4"
+                            color="primary"
+                            :disabled="invalid"
+                            @click="createTask()"
+                        >新規作成</v-btn>
+                    </div>
+                    <div
+                        v-if="errors.length > 0"
+                        class="input-error-message mb-2"
+                    >
+                        {{ errors[0] }}
+                    </div>
                 </validation-provider>
-                <v-btn
-                    depressed
-                    class="alt_submit"
-                    color="primary"
-                    large
-                    :disabled="invalid"
-                    @click="createTask()"
-                >
-                    新規作成
-                </v-btn>
+                
             </validation-observer>
         </div>
         
@@ -295,6 +302,10 @@ export default {
         },
 
         // タスク作成
+        clickTaskInput() {
+            this.new_task = !this.new_task
+            this.new_task_name = "";
+        },
         async createTask() {
             if(!this.composing && this.new_task_name) {
                 const task = this.generateTaskObject(this.new_task_name)

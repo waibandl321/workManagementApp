@@ -201,3 +201,8 @@ td {
 .toolbar_title {
     width: 100%;
 }
+.input-error-message {
+    font-size: 14px;
+    color: #ff5252;
+    margin-top: 4px;
+}

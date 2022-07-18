@@ -15,10 +15,10 @@ describe('アカウント更新', () => {
 
     it('入力空エラー', () => {
         cy.get('[data-e2e-id="lastName"]').clear()
-        cy.get('.input-error-messsage').should('contain', '性は必須です')
+        cy.get('.input-error-message').should('contain', '性は必須です')
         cy.get('[data-e2e-id="accountUpdate"]').should('have.attr', 'disabled', 'disabled')
         cy.get('[data-e2e-id="firstName"]').clear()
-        cy.get('.input-error-messsage').should('contain', '名は必須です')
+        cy.get('.input-error-message').should('contain', '名は必須です')
         cy.get('[data-e2e-id="accountUpdate"]').should('have.attr', 'disabled', 'disabled')
     });
 
