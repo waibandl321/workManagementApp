@@ -2,6 +2,7 @@
     <v-dialog
         v-model="dialog"
         persistent
+        data-e2e-id="filePreviewer"
     >
         <v-card>
             <v-toolbar
@@ -12,6 +13,7 @@
                     icon
                     dark
                     @click="closeFilePreview()"
+                    data-e2e-id="filePreviewerClose"
                 >
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
@@ -25,6 +27,7 @@
                             :src="previewer.data.download_path"
                             @load="previewer.loading = false"
                             style="max-width: 100%;"
+                            data-e2e-id="filePreviewerImage"
                         >
                     </template>
                     <template v-else>
@@ -58,7 +61,7 @@
                                 @loaded="previewer.loading = false"
                                 @num-pages="previewer.page_end = $event"
                                 :page="previewer.page_current"
-                                
+                                data-e2e-id="filePreviewerPdf"
                             ></pdf>
                         </div>
                     </template>

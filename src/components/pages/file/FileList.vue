@@ -7,12 +7,14 @@
             dense
             outlined
             label="ファイル名でディレクトリ内を検索"
+            data-e2e-id="fileSearchInput"
         ></v-text-field>
 
         <!-- パンくず -->
         <v-breadcrumbs
             :items="breadcrumbs"
             class="pa-0 my-4"
+            data-e2e-id="fileBreadcrumbs"
         >
             <template v-slot:item="{ item }">
                 <v-breadcrumbs-item
@@ -29,7 +31,7 @@
         </v-breadcrumbs>
 
         <!-- リストテーブル -->
-        <table class="basic-list">
+        <table class="basic-list" data-e2e-id="fileListTable">
             <thead>
                 <tr>
                     <td>アイテム名</td>
