@@ -11,14 +11,15 @@ export default {
             let result = []
             try {
                 const files = await this.firebaseReadShareFiles()
-                if(!files) return []
-                this.params.file_data = files
-                this.params.now_dir = "0"
-                if(select_dir_id) {
-                    this.params.now_dir = select_dir_id
-                    _matchParentDirectory(files, select_dir_id)
-                } else {
-                    _matchParentDirectory(files, "0")
+                if(files) {
+                    this.params.file_data = files
+                    this.params.now_dir = "0"
+                    if(select_dir_id) {
+                        this.params.now_dir = select_dir_id
+                        _matchParentDirectory(files, select_dir_id)
+                    } else {
+                        _matchParentDirectory(files, "0")
+                    }
                 }
             } catch (error) {
                 console.log(error);

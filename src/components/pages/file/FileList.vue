@@ -229,7 +229,7 @@ export default {
                 this.params.error = `アイテム：${this.delete_item.name}の削除中にエラーが発生しました。`
                 console.log(error);
             }
-            this.readShareFiles(this.params.now_dir);
+            await this.readShareFiles(this.params.now_dir);
             this.params.loading = false;
         },
         async executeDeleteChildFiles() {
