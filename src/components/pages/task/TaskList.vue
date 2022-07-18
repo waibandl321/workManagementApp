@@ -10,6 +10,7 @@
                     hide-details
                     v-model.trim="filter_text"
                     @input="filterList()"
+                    data-e2e-id="filterText"
                 ></v-text-field>
             </v-col>
             <v-col>
@@ -24,6 +25,7 @@
                     dense
                     v-model="filter_status"
                     @change="filterList()"
+                    data-e2e-id="filterStatus"
                 ></v-select>
             </v-col>
             <v-col>
@@ -38,6 +40,7 @@
                     dense
                     v-model="filter_priority"
                     @change="filterList()"
+                    data-e2e-id="filterPriority"
                 ></v-select>
             </v-col>
         </v-row>
@@ -48,6 +51,7 @@
                 color="primary"
                 text
                 @click="clickTaskInput()"
+                data-e2e-id="taskAddButton"
             >
                 <v-icon>{{ new_task ? 'mdi-close' : 'mdi-plus' }}</v-icon>
                 <span>タスク追加</span>
@@ -71,13 +75,14 @@
                             hide-details
                             outlined
                             v-model="new_task_name"
-                            ref="inputTaskname"
+                            data-e2e-id="taskAddInput"
                         ></v-text-field>
                         <v-btn
                             depressed
                             class="alt_submit px-4"
                             color="primary"
                             :disabled="invalid"
+                            data-e2e-id="taskAddSubmit"
                             @click="createTask()"
                         >新規作成</v-btn>
                     </div>
@@ -93,7 +98,7 @@
         </div>
         
         <div class="list_body">
-            <table class="basic-list mt-4">
+            <table class="basic-list mt-4" data-e2e-id="taskList">
                 <thead>
                     <tr>
                         <td class="drag-icon-td">
@@ -105,6 +110,7 @@
                         <td>
                             <v-btn
                                 text
+                                data-e2e-id="taskSortPriority"
                                 @click="sortByDeadline"
                             >
                                 締切日
@@ -117,6 +123,7 @@
                         <td>
                             <v-btn
                                 text
+                                data-e2e-id="taskSortCreated"
                                 @click="sortByCreated()"
                             >
                                 作成日時

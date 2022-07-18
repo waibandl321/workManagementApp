@@ -7,12 +7,13 @@
         <v-toolbar class="grey lighten-3">
             <v-btn
                 icon
+                data-e2e-id="taskDetailClose"
                 @click="closeDetail()"
             >
                 <v-icon>mdi-close</v-icon>
             </v-btn>
             <!-- タスク名・削除 -->
-            <v-toolbar-title class="toolbar_title px-2">
+            <v-toolbar-title class="toolbar_title px-2" data-e2e-id="taskDetailToolbar">
                 <div
                     v-if="task_name_edit"
                     class="taskname_edit"
@@ -29,12 +30,14 @@
                             outlined
                             dense
                             background-color="white"
+                            data-e2e-id="taskNameInput"
                         ></v-text-field>
                     </validation-provider>
                     <v-btn
                         @click="tasknameUpdate()"
                         class="taskname_edit_save px-4"
                         :disabled="invalid"
+                        data-e2e-id="taskNameSave"
                         color="primary"
                     >
                         保存
@@ -49,6 +52,7 @@
                     <v-btn
                         icon
                         @click="task_name_edit = true"
+                        data-e2e-id="taskNameEdit"
                         color="primary"
                     >
                         <v-icon>mdi-pencil</v-icon>
@@ -59,6 +63,7 @@
             <v-btn
                 icon
                 color="primary"
+                data-e2e-id="taskDetailDelete"
                 @click="clickTaskDelete()"
             >
                 <v-icon>mdi-delete</v-icon>
@@ -73,6 +78,7 @@
                 v-if="judgeRemainingDays(params.viewer.task_deadline) <= 0"
                 type="error"
                 color="red darken-3"
+                data-e2e-id="alertDeadline"
             >
                 {{ outputTaskAlert() }}
             </v-alert>
@@ -90,6 +96,7 @@
                         dense
                         v-model="params.viewer.task_status"
                         @change="updateTaskStatus()"
+                        data-e2e-id="taskDetailStatus"
                     ></v-select>
                 </div>
                 <div class="pl-2" style="width: 50%">
@@ -104,6 +111,7 @@
                         color="primary"
                         dense
                         @change="updateTaskPriority()"
+                        data-e2e-id="taskDetailPriority"
                     ></v-select>
                 </div>
             </div>
@@ -118,10 +126,17 @@
                         fab
                         class="mr-2 white--text"
                         small
+                        data-e2e-id="taskDeadlineOpen"
                     >
                         <v-icon>mdi-calendar-check-outline</v-icon>
                     </v-btn>
-                    <span class="ml-2" style="color: #C62828; font-size: 14px;">{{ this.convertDatetimeFromUnixtime(params.viewer.task_deadline, "yyyy-mm-dd") }}</span>
+                    <span
+                        class="ml-2"
+                        style="color: #C62828; font-size: 14px;"
+                        data-e2e-id="taskDeadlineText"
+                    >
+                        {{ this.convertDatetimeFromUnixtime(params.viewer.task_deadline, "yyyy-mm-dd") }}
+                    </span>
                     <!-- date picker -->
                     <div class="date_picker" v-if="termSetting">
                         <v-text-field
@@ -129,12 +144,14 @@
                             label="日付を選択"
                             prepend-icon="mdi-calendar"
                             readonly
+                            data-e2e-id="taskDeadlineValue"
                         ></v-text-field>
                         <div>
                             <v-date-picker
                                 v-model="task_deadline"
                                 no-title
                                 color="primary"
+                                data-e2e-id="taskDeadlinePicker"
                             ></v-date-picker>
                         </div>
                         <v-divider />
@@ -143,12 +160,14 @@
                                 text
                                 color="primary"
                                 @click="updateTaskTerm()"
+                                data-e2e-id="taskDeadlineSave"
                             >
                                 保存
                             </v-btn>
                             <v-btn
                                 text
                                 @click="task_deadline = [], termSetting = false"
+                                data-e2e-id="taskDeadlineCancel"
                             >
                                 キャンセル
                             </v-btn>
@@ -156,6 +175,7 @@
                                 text
                                 color="red"
                                 @click="deleteTaskTerm()"
+                                data-e2e-id="taskDeadlineDelete"
                             >
                                 日付を消去
                             </v-btn>
@@ -163,13 +183,13 @@
                     </div>
                 </div>
                 <v-spacer />
-                <div class="fs-sm">
+                <div class="fs-sm" data-e2e-id="taskCreatedText">
                     タスク作成日: {{ convertDatetimeFromUnixtime(params.viewer.created, "yyyy-mm-dd") }}
                 </div>
-                <div class="ml-4 fs-sm">
+                <div class="ml-4 fs-sm" data-e2e-id="taskTermText">
                     タスク実施期間：{{ convertTaskPeriod(params.viewer.created, params.viewer.task_deadline) }}
                 </div>
-                <div class="ml-4 fs-sm">
+                <div class="ml-4 fs-sm" data-e2e-id="taskDaysLeft">
                     期日までの残り日数：{{ convertRemainingDays(params.viewer.task_deadline) }}
                 </div>
             </div>
@@ -183,6 +203,7 @@
                             text
                             color="primary"
                             @click="clickSubtaskNew()"
+                            data-e2e-id="subtaskCreateButton"
                         >
                             <v-icon >mdi-plus</v-icon>
                             サブタスクを追加
@@ -194,6 +215,7 @@
                         v-for="(subtask, index) in params.subtask_list"
                         :key="index"
                         class="subtask-card__wrap"
+                        data-e2e-id="subtaskList"
                     >
                         <div class="subtask-card__icon">
                             <v-icon large>mdi-subdirectory-arrow-right</v-icon>
@@ -201,10 +223,11 @@
                         <v-card
                             @click="clickSubtaskRecord(subtask)"
                             class="subtask-card__body"
-                            hove                            
+                            hove
+                            data-e2e-id="subtaskCard"                    
                         >
                             <v-card-actions class="justify-space-between px-4">
-                                <span>{{ subtask.subtask_name ? subtask.subtask_name : '' }}</span>
+                                <span data-e2e-id="subtaskName">{{ subtask.subtask_name ? subtask.subtask_name : '' }}</span>
                                 <span>
                                     <v-btn 
                                         fab
@@ -212,6 +235,7 @@
                                         class="mr-2"
                                         @click.stop="updateSubtask(subtask, true)"
                                         :color="subtask.finished_at ? 'primary' : null"
+                                        data-e2e-id="subtaskCheckButton"
                                     >
                                         <v-icon>mdi-check-bold</v-icon>
                                     </v-btn>
@@ -219,6 +243,7 @@
                                         @click.stop="deleteSubtask(subtask)"
                                         fab
                                         small
+                                        data-e2e-id="subtaskDeleteButton"
                                     >
                                         <v-icon>mdi-trash-can-outline</v-icon>
                                     </v-btn>
@@ -239,6 +264,7 @@
                             text
                             @click="desc_editor = true"
                             class="px-4"
+                            data-e2e-id="taskDescriptionEdit"
                         >
                         <v-icon class="mr-2">mdi-pencil-outline</v-icon>概要を編集
                         </v-btn>
@@ -248,6 +274,7 @@
                             color="primary"
                             @click="updateTaskDescription()"
                             class="px-4"
+                            data-e2e-id="taskDescriptionSave"
                         >
                         <v-icon class="mr-2">mdi-close</v-icon>編集内容を保存
                         </v-btn>
@@ -262,13 +289,20 @@
                         ref="myQuillEditor"
                         v-model="params.viewer.task_description"
                         :options="editorOption"
+                        data-e2e-id="taskDescriptionEditor"
                     />
                 </div>
                 <div class="editor_body" v-else>
                     <div v-if="params.viewer.task_description">
-                        <div v-html="params.viewer.task_description"></div>
+                        <div
+                            v-html="params.viewer.task_description"
+                            data-e2e-id="taskDescriptionText"
+                        ></div>
                     </div>
-                    <div v-else>
+                    <div
+                        v-else
+                        data-e2e-id="taskDescriptionNothing"
+                    >
                         タスクの詳細がありません
                     </div>
                 </div>
@@ -282,6 +316,7 @@
                         text
                         color="primary"
                         @click="clickUploadButton()"
+                        data-e2e-id="taskAttachmentButton"
                     >
                         <v-icon>mdi-paperclip</v-icon>ファイルを添付する
                     </v-btn>
@@ -289,17 +324,23 @@
                 <v-divider />
                 
                 <div class="pt-4">
-                    <div v-if="!params.files.length > 0">添付ファイルはありません。</div>
+                    <div
+                        v-if="!params.files.length > 0"
+                        data-e2e-id="taskAttachmentNothing"
+                    >
+                        添付ファイルはありません。
+                    </div>
                     <div
                         v-else
                         class="d-flex align-center"
                     >
-                        <div>{{ params.files.length }} Files</div>
+                        <div data-e2e-id="taskAttachmentLength">{{ params.files.length }} Files</div>
                         <v-spacer />
                         <v-btn
                             text
                             color="error"
-                            @click="clickAllFile()"
+                            @click="clickAllFileDelete()"
+                            data-e2e-id="taskAttachmentAllDelete"
                         >
                             <v-icon>mdi-trash-can-outline</v-icon>
                             全ファイル削除
@@ -318,27 +359,33 @@
                 </template>
                 <!-- ファイル一覧 -->
                 <template v-else>
-                    <table class="file-table">
+                    <table class="file-table" data-e2e-id="taskAttachmentList">
                         <tr v-for="(file, i) in params.files" :key="i">
                             <td>
-                                <img :src="file.download_path" width="40">
+                                <img
+                                    :src="file.download_path"
+                                    width="40"
+                                    data-e2e-id="taskAttachmentView"
+                                >
                             </td>
-                            <td>{{ file.name }}</td>
-                            <td>{{ convertUnitSize(file.size) }}</td>
-                            <td>{{ file.contentType }}</td>
+                            <td data-e2e-id="taskAttachmentName">{{ file.name }}</td>
+                            <td data-e2e-id="taskAttachmentSize">{{ convertUnitSize(file.size) }}</td>
+                            <td data-e2e-id="taskAttachmentType">{{ file.contentType }}</td>
                             <td class="operation-td">
                                 <v-btn
                                     link
                                     text
                                     :href="file.download_path"
                                     target="_blank" rel="noopener noreferrer"
-                                    >
+                                    data-e2e-id="taskAttachmentPreviewButton"
+                                >
                                         <v-icon>mdi-open-in-new</v-icon>
                                 </v-btn>
                                 <v-btn
                                     @click="clickFileDeleteSingle(file)"
                                     text
                                     class="ml-2"
+                                    data-e2e-id="taskAttachmentDelete"
                                 >
                                     <v-icon>mdi-trash-can-outline</v-icon>
                                 </v-btn>
@@ -350,6 +397,7 @@
                         ref="fileUploadButton"
                         type="file"
                         @change="onFileChange"
+                        data-e2e-id="taskAttachmentInput"
                     >
                 </template>
             </div>
@@ -461,7 +509,7 @@ export default {
             this.delete_modal = true;
         },
         // 全てのファイルを削除
-        clickAllFile() {
+        clickAllFileDelete() {
             this.delete_title = `このタスクにアップされている全てのファイルを削除します`;
             this.delete_options.push(
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
