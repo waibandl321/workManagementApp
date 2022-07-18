@@ -68,6 +68,7 @@
                                 text
                                 fab
                                 small
+                                data-e2e-id="fileDownload"
                             >
                                 <v-icon>mdi-cloud-download-outline</v-icon>
                             </v-btn>
@@ -77,6 +78,7 @@
                                 @click.stop="deleteItem(item)"
                                 fab
                                 small
+                                data-e2e-id="fileDelete"
                             >
                                 <v-icon>mdi-delete</v-icon>
                             </v-btn>
