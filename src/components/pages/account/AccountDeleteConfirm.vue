@@ -16,6 +16,7 @@
                         color="primary"
                         rounded
                         width="100%"
+                        data-e2e-id="finishApp"
                     >
                         アプリケーションの利用を終了する
                     </v-btn>

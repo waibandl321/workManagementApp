@@ -24,7 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add("appSignin", () => {
+// サインイン
+Cypress.Commands.add("appSignin", (path) => {
     cy.fixture("app.json").then(info => {
         cy.visit('/auth/signin')
         cy.get('[data-e2e-id="inputEmail"]').clear().type(info.email)
@@ -32,15 +33,12 @@ Cypress.Commands.add("appSignin", () => {
         cy.get('[data-e2e-id="execSignin"]').should('not.have.attr', 'disabled')
         cy.get('[data-e2e-id="execSignin"]').click()
         cy.wait(2000)
-        cy.visit('/account')
+        cy.visit( path ? path : 'account' )
     })
 })
-// Cypress.Commands.add("appSignin", (user) => {
-//     cy.visit('/auth/signin')
-//     cy.get('[data-e2e-id="inputEmail"]').clear().type(user.email)
-//     cy.get('[data-e2e-id="inputPassword"]').clear().type(user.password)
-//     cy.get('[data-e2e-id="execSignin"]').should('not.have.attr', 'disabled')
-//     cy.get('[data-e2e-id="execSignin"]').click()
-//     cy.wait(2000)
-//     cy.visit('/account')
-// })
+// 削除モーダル要素確認
+Cypress.Commands.add("confirmDeleteModal", () => {
+    cy.get('.v-card__title').should('contain', 'を削除します。')
+    cy.get('[data-e2e-id="modalcancel"]')
+    cy.get('[data-e2e-id="modaldelete"]')
+})

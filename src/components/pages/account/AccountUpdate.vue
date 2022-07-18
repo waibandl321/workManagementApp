@@ -12,6 +12,7 @@
                     <v-btn
                         color="error"
                         @click="clickDeleteAccount()"
+                        data-e2e-id="accountDelete"
                     >
                         アカウントを削除
                     </v-btn>
@@ -30,6 +31,7 @@
                                 v-model="last_name"
                                 hide-details
                                 outlined
+                                data-e2e-id="lastName"
                             ></v-text-field>
                             <div class="input-error-messsage">{{ errors[0] }}</div>
                         </validation-provider>
@@ -45,6 +47,7 @@
                                 v-model="first_name"
                                 hide-details
                                 outlined
+                                data-e2e-id="firstName"
                             ></v-text-field>
                         <div class="input-error-messsage">{{ errors[0] }}</div>
                         </validation-provider>
@@ -57,6 +60,7 @@
                             @click="accountUpdate()"
                             large
                             :disabled="invalid"
+                            data-e2e-id="accountUpdate"
                         >
                             更新
                         </v-btn>
@@ -65,6 +69,7 @@
                             @click="cancel()"
                             large
                             class="ml-4"
+                            data-e2e-id="accountClose"
                         >
                             閉じる
                         </v-btn>
