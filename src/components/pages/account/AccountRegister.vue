@@ -25,6 +25,7 @@
                                 hide-details
                                 outlined
                                 autofocus
+                                data-e2e-id="lastName"
                             ></v-text-field>
                             <div class="input-error-messsage">{{ errors[0] }}</div>
                         </validation-provider>
@@ -40,6 +41,7 @@
                                 v-model="first_name"
                                 hide-details
                                 outlined
+                                data-e2e-id="firstName"
                             ></v-text-field>
                             <div class="input-error-messsage">{{ errors[0] }}</div>
                         </validation-provider>
@@ -54,16 +56,9 @@
                             @click="register()"
                             :disabled="invalid"
                             large
+                            data-e2e-id="accountRegister"
                         >
                             登録
-                        </v-btn>
-                        <v-btn
-                            v-if="register_status"
-                            large
-                            @click="pageMove('/')"
-                            outlined
-                        >
-                            閉じる
                         </v-btn>
                     </v-card-actions>
                 </validation-observer>
@@ -75,6 +70,7 @@
                     color="primary"
                     rounded
                     width="100%"
+                    data-e2e-id="startApp"
                 >
                     アプリケーションの利用を開始する
                 </v-btn>

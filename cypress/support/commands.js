@@ -23,3 +23,24 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add("appSignin", () => {
+    cy.fixture("app.json").then(info => {
+        cy.visit('/auth/signin')
+        cy.get('[data-e2e-id="inputEmail"]').clear().type(info.email)
+        cy.get('[data-e2e-id="inputPassword"]').clear().type(info.password)
+        cy.get('[data-e2e-id="execSignin"]').should('not.have.attr', 'disabled')
+        cy.get('[data-e2e-id="execSignin"]').click()
+        cy.wait(2000)
+        cy.visit('/account')
+    })
+})
+// Cypress.Commands.add("appSignin", (user) => {
+//     cy.visit('/auth/signin')
+//     cy.get('[data-e2e-id="inputEmail"]').clear().type(user.email)
+//     cy.get('[data-e2e-id="inputPassword"]').clear().type(user.password)
+//     cy.get('[data-e2e-id="execSignin"]').should('not.have.attr', 'disabled')
+//     cy.get('[data-e2e-id="execSignin"]').click()
+//     cy.wait(2000)
+//     cy.visit('/account')
+// })

@@ -34,6 +34,7 @@
                             filled
                             :color="'#' + parents.user_info.color"
                             class="pa-2 white--text"
+                            data-e2e-id="headerAccountName"
                         >
                             ログイン中: {{ parents.user_info.last_name }} {{ parents.user_info.first_name }}
                         </v-btn>
@@ -45,6 +46,7 @@
                         class="pa-2 white--text"
                         filled
                         to="/auth/signout"
+                        data-e2e-id="appSignout"
                     >
                         ログアウト
                     </v-btn>

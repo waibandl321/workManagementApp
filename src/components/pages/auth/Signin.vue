@@ -31,7 +31,7 @@
                             outlined
                             dense
                             required
-                            data-ut-id="inputEmail"
+                            data-e2e-id="inputEmail"
                         ></v-text-field>
                         <div class="input-error-messsage">{{ errors[0] }}</div>
                     </validation-provider>
@@ -52,7 +52,7 @@
                             outlined
                             dense
                             v-model="password"
-                            data-ut-id="inputPassword"
+                            data-e2e-id="inputPassword"
                         ></v-text-field>
                         <div class="input-error-messsage">{{ errors[0] }}</div>
                     </validation-provider>
@@ -62,7 +62,7 @@
                             color="primary"
                             class="submit"
                             @click="emailSignin()"
-                            data-ut-id="execSignin"
+                            data-e2e-id="execSignin"
                         >
                             サインイン
                         </v-btn>
@@ -74,7 +74,7 @@
                 <v-btn
                     to="/auth/password_reset_email"
                     outlined
-                    data-ut-id="passwordReset"
+                    data-e2e-id="passwordReset"
                 >
                     パスワード再設定
                 </v-btn>
@@ -88,7 +88,7 @@
                     @click="externalSigninByGoogle()"
                     fab
                     depressed
-                    data-ut-id="googleSignin"
+                    data-e2e-id="googleSignin"
                 >
                     <v-img
                         src="./img/icons-google.png"
@@ -104,7 +104,7 @@
                     outlined
                     color="primary"
                     to="/auth/signup"
-                    data-ut-id="pageMoveSignup"
+                    data-e2e-id="pageMoveSignup"
                 >
                     ユーザー登録がまだの方はこちら
                 </v-btn>

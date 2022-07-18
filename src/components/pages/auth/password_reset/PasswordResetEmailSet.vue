@@ -29,7 +29,7 @@
                             hide-details
                             autofocus
                             dense
-                            data-ut-id="inputEmail"
+                            data-e2e-id="inputEmail"
                         ></v-text-field>
                         <div class="input-error-messsage">{{ errors[0] }}</div>
                     </validation-provider>
@@ -39,7 +39,7 @@
                             color="primary"
                             class="submit"
                             @click="sendPasswordResetEmail()"
-                            data-ut-id="passwordResetEmailSend"
+                            data-e2e-id="passwordResetEmailSend"
                         >
                             送信
                         </v-btn>
@@ -50,7 +50,7 @@
             <div class="pa-4">
                <v-btn
                     to="/auth/signin"
-                    data-ut-id="backSigninFromPasswordReset"
+                    data-e2e-id="backSigninFromPasswordReset"
                 >
                     サインイン画面に戻る
                 </v-btn>

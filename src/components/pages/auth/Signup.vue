@@ -33,7 +33,7 @@
                                 outlined
                                 autofocus
                                 dense
-                                data-ut-id="inputEmail"
+                                data-e2e-id="inputEmail"
                             ></v-text-field>
                             <div class="input-error-messsage">{{ errors[0] }}</div>
                         </validation-provider>
@@ -55,7 +55,7 @@
                                 outlined
                                 dense
                                 v-model="password"
-                                data-ut-id="inputPassword"
+                                data-e2e-id="inputPassword"
                             ></v-text-field>
                             <div
                                 v-for="(error, index) in errors"
@@ -71,7 +71,7 @@
                                 color="primary"
                                 class="submit"
                                 @click="signup()"
-                                data-ut-id="execSignup"
+                                data-e2e-id="execSignup"
                             >
                                 登録する
                             </v-btn>
@@ -86,7 +86,7 @@
                             @click="externalSigninByGoogle()"
                             fab
                             depressed
-                            data-ut-id="googleSignup"
+                            data-e2e-id="googleSignup"
                         >
                             <v-img
                                 src="./img/icons-google.png"
@@ -102,7 +102,7 @@
                     <v-btn
                         outlined color="primary"
                         to="/auth/signin"
-                        data-ut-id="pageMoveSignin"
+                        data-e2e-id="pageMoveSignin"
                     >
                         ログインはこちら
                     </v-btn>
