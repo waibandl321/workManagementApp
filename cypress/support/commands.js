@@ -44,3 +44,14 @@ Cypress.Commands.add("confirmDeleteModal", () => {
     cy.get('[data-e2e-id="modalcancel"]')
     cy.get('[data-e2e-id="modaldelete"]')
 })
+
+// ファイル管理：フォルダ作成
+Cypress.Commands.add("createFolder", (index) => {
+    cy.get('[data-e2e-id="addFile"]').click()
+    cy.get('[data-e2e-id="createFolder"]').click()
+    cy.get('[data-e2e-id="createFolderInput"]').clear().type('hoge folder' + index)
+    cy.get('[data-e2e-id="createFolderSave"]').should('not.have.attr', 'disabled', 'disabled' + index)
+    cy.get('[data-e2e-id="createFolderSave"]').click()
+    cy.wait(1000)
+    cy.get('.v-alert').should('contain', 'を作成しました。')
+})

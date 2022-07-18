@@ -31,7 +31,10 @@
         </v-breadcrumbs>
 
         <!-- リストテーブル -->
-        <table class="basic-list" data-e2e-id="fileListTable">
+        <table
+            class="basic-list"
+            data-e2e-id="fileListTable"
+        >
             <thead>
                 <tr>
                     <td>アイテム名</td>
@@ -161,6 +164,8 @@ export default {
             }
         },
         async listClick(item) {
+            this.params.success = "";
+            this.params.error = "";
             this.previewer.loading = true;
             // directory
             if(item.type === 0) {
@@ -196,6 +201,8 @@ export default {
         },
         // ファイルダウンロード
         downloadFile(item) {
+            this.params.success = "";
+            this.params.error = "";
             fetch(item.download_path)
             .then((response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -210,6 +217,7 @@ export default {
         deleteItem(item) {
             this.delete_item = item;
             this.params.success = "";
+            this.params.error = "";
             this.delete_modal = true;
         },
         async executeDelete() {
