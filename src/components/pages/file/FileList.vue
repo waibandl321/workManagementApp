@@ -46,6 +46,7 @@
                     v-for="(item, i) in params.files"
                     :key="i"
                     @click="listClick(item)"
+                    data-e2e-id="fileListRecord"
                 >
                     <td>
                         <v-icon
