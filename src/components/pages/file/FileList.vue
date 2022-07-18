@@ -85,12 +85,18 @@
                             >
                                 <v-icon>mdi-delete</v-icon>
                             </v-btn>
-                            
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
+        <div
+            v-if="params.files.length === 0"
+            data-e2e-id="noItem"
+            class="text-center py-4"
+        >
+            <span style="font-size: 18px;">アイテムがありません</span>
+        </div>
 
         <!-- プレビュー -->
         <FilePreviewer

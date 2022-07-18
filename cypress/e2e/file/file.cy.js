@@ -8,6 +8,7 @@ describe('ファイル管理', () => {
         cy.get('[data-e2e-id="fileBreadcrumbs"]')
         cy.get('[data-e2e-id="fileListTable"]')
         cy.get('[data-e2e-id="addFile"]')
+        cy.get('[data-e2e-id="noItem"]').should('contain', 'アイテムがありません')
     });
 
     it('フォルダ作成モーダル', () => {
@@ -33,6 +34,7 @@ describe('ファイル管理', () => {
     it('レコードクリック フォルダ階層移動（親→子）', () => {
         cy.get('[data-e2e-id="fileListRecord"]').click()
         cy.get('.v-breadcrumbs>li>a').filter('.v-breadcrumbs__item--disabled').should('contain', 'hoge folder1')
+        cy.get('[data-e2e-id="noItem"]').should('contain', 'アイテムがありません')
     });
 
     it('子階層でフォルダ作成', () => {
@@ -75,6 +77,15 @@ describe('ファイル管理', () => {
         cy.get('[data-e2e-id="fileListTable"]').should('not.contain', 'app.json')
     });
 
+    it('ファイルリスト検索', () => {
+        cy.get('[data-e2e-id="fileSearchInput"]').clear().type('hoge')
+        cy.get('[data-e2e-id="fileListRecord"]').should('contain', 'hoge folder1')
+        cy.get('[data-e2e-id="fileListRecord"]').should('have.length', 1)
+        cy.get('[data-e2e-id="fileSearchInput"]').clear()
+        cy.get('[data-e2e-id="fileListRecord"]').should('contain', 'git.png')
+        cy.get('[data-e2e-id="fileListRecord"]').should('have.length', 2)
+    })
+
     it('ファイル、フォルダ削除キャンセル',  () => {
         cy.get('[data-e2e-id="fileDelete"]').eq(0).click()
         cy.get('.font-weight-bold').should('contain', 'アイテム削除')
@@ -100,6 +111,7 @@ describe('ファイル管理', () => {
         cy.get('[data-e2e-id="fileDeleteDone"]').click()
         cy.wait(1000)
         cy.get('.v-alert').should('contain', 'を削除しました。')
+        cy.get('[data-e2e-id="noItem"]').should('contain', 'アイテムがありません')
     })
 
     it('ファイルアップロード実行', () => {
@@ -117,9 +129,7 @@ describe('ファイル管理', () => {
         cy.wait(1000)
         cy.contains('.v-toolbar__content', 'ファイル詳細')
         cy.get('[data-e2e-id="filePreviewerImage"]').should('have.attr', 'src')
-    });
-
-    it('ファイルプレビュー閉じる', () => {
+        // ファイルプレビュー閉じる
         cy.get('[data-e2e-id="filePreviewerClose"]').click()
     });
 
