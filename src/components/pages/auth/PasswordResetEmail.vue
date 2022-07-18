@@ -21,7 +21,8 @@ export default {
     },
     data: () => ({
         params: {
-            mode: "input"
+            mode: "input",
+            error: "",
         }
     }),
     created() {

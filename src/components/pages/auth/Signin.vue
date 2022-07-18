@@ -37,7 +37,9 @@
                     </validation-provider>
                     <validation-provider
                         name="パスワード"
-                        rules="required"
+                        :rules="{
+                            required: {},
+                        }"
                         v-slot="{ errors }"
                         tag="div"
                         class="mt-6"
@@ -60,7 +62,7 @@
                             color="primary"
                             class="submit"
                             @click="emailSignin()"
-                            data-ut-id="execSignup"
+                            data-ut-id="execSignin"
                         >
                             サインイン
                         </v-btn>
@@ -72,6 +74,7 @@
                 <v-btn
                     to="/auth/password_reset_email"
                     outlined
+                    data-ut-id="passwordReset"
                 >
                     パスワード再設定
                 </v-btn>
@@ -101,8 +104,9 @@
                     outlined
                     color="primary"
                     to="/auth/signup"
+                    data-ut-id="pageMoveSignup"
                 >
-                    ユーザー登録はこちら
+                    ユーザー登録がまだの方はこちら
                 </v-btn>
             </div>
           </v-card>

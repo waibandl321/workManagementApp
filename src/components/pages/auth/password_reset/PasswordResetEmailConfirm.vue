@@ -12,6 +12,7 @@
             <div class="pa-4">
                 <v-btn
                     to="/auth/signin"
+                    data-ut-id="backSigninFromPasswordReset"
                 >
                     サインイン画面に戻る
                 </v-btn>

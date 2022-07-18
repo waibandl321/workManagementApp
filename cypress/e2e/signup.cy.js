@@ -13,24 +13,24 @@ describe('サインアップ画面', () => {
         cy.get('[data-ut-id="inputEmail"]').focus().clear().blur()
         cy.get('.input-error-messsage')
             .should('contain', 'メールアドレスは必須です')
-        cy.get('[data-ut-id="execSignup"]').should('have.attr', 'disabled')
+        cy.get('[data-ut-id="execSignup"]').should('have.attr', 'disabled', 'disabled')
         // パスワード値なし
         cy.get('[data-ut-id="inputPassword"]').focus().clear().blur()
         cy.get('.input-error-messsage').should('contain', 'パスワードは必須です')
-        cy.get('[data-ut-id="execSignup"]').should('have.attr', 'disabled')
-        // メールアドレスバリデーションエラー
+        cy.get('[data-ut-id="execSignup"]').should('have.attr', 'disabled', 'disabled')
+        // メールアドレス形式不備
         cy.get('[data-ut-id="inputEmail"]').clear().type("hoge")
         cy.get('.input-error-messsage')
             .should('contain', '有効なメールアドレスではありません')
-        cy.get('[data-ut-id="execSignup"]').should('have.attr', 'disabled')
+        cy.get('[data-ut-id="execSignup"]').should('have.attr', 'disabled', 'disabled')
         // パスワード7文字エラー
         cy.get('[data-ut-id="inputPassword"]').clear().type('e2etest')
-        cy.get('[data-ut-id="execSignup"]').should('have.attr', 'disabled')
+        cy.get('[data-ut-id="execSignup"]').should('have.attr', 'disabled', 'disabled')
         cy.get('.input-error-messsage')
             .should('contain', 'パスワードは8文字以上でなければなりません')
         // パスワード全角エラー
         cy.get('[data-ut-id="inputPassword"]').clear().type('aaaaaaaあ')
-        cy.get('[data-ut-id="execSignup"]').should('have.attr', 'disabled')
+        cy.get('[data-ut-id="execSignup"]').should('have.attr', 'disabled', 'disabled')
         cy.get('.input-error-messsage')
             .should('contain', 'パスワードは英数字のみ使用できます')
     })

@@ -11,15 +11,7 @@
                 入力されたメールアドレスに再設定用のリンクを送付します。
             </v-card-text>
             <div class="px-4">
-                <div class="py-4" v-if="error">
-                    <v-alert
-                        dense
-                        outlined
-                        type="error"
-                    >
-                        {{ error }}
-                    </v-alert>
-                </div>
+                <MessageViewer :params="params" />
                 <validation-observer v-slot="{ invalid }" ref="observer">
                     <validation-provider
                         name="メールアドレス"
@@ -37,7 +29,7 @@
                             hide-details
                             autofocus
                             dense
-                            required
+                            data-ut-id="inputEmail"
                         ></v-text-field>
                         <div class="input-error-messsage">{{ errors[0] }}</div>
                     </validation-provider>
@@ -47,6 +39,7 @@
                             color="primary"
                             class="submit"
                             @click="sendPasswordResetEmail()"
+                            data-ut-id="passwordResetEmailSend"
                         >
                             送信
                         </v-btn>
@@ -57,8 +50,9 @@
             <div class="pa-4">
                <v-btn
                     to="/auth/signin"
+                    data-ut-id="backSigninFromPasswordReset"
                 >
-                    ログイン画面に戻る
+                    サインイン画面に戻る
                 </v-btn>
             </div>
           </v-card>
@@ -67,10 +61,12 @@
 </template>
 
 <script>
+import MessageViewer from '@/components/common/MessageViewer.vue'
 import ExecLoading from "@/components/common/ExecLoading.vue"
 export default {
     components: {
-        ExecLoading
+        ExecLoading,
+        MessageViewer
     },
     props: {
         params: Object
@@ -78,7 +74,6 @@ export default {
     data: () => ({
         loading: false,
         email: '',
-        error: ''
     }),
     methods: {
         async sendPasswordResetEmail() {
@@ -91,7 +86,7 @@ export default {
                     throw new Error()
                 }
             } catch (error) {
-                this.error = "メール送信中にエラーが発生しました。再度時間をおいて設定してください。";
+                this.params.error = "メール送信中にエラーが発生しました。再度時間をおいて設定してください。";
             }
             this.loading = false
         }
