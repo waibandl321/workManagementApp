@@ -83,8 +83,8 @@
                 {{ outputTaskAlert() }}
             </v-alert>
             <!-- ステータス・優先度設定 -->
-            <div class="d-flex">
-                <div class="pr-2" style="width: 50%">
+            <v-row>
+                <v-col data-e2e-id="taskDetailStatus">
                     <div class="font-weight-bold pb-4">■ ステータス</div>
                     <v-select
                         label="ステータス"
@@ -96,10 +96,9 @@
                         dense
                         v-model="params.viewer.task_status"
                         @change="updateTaskStatus()"
-                        data-e2e-id="taskDetailStatus"
                     ></v-select>
-                </div>
-                <div class="pl-2" style="width: 50%">
+                </v-col>
+                <v-col data-e2e-id="taskDetailPriority">
                     <div class="font-weight-bold pb-4">■ 優先度</div>
                     <v-select
                         label="優先度"
@@ -110,11 +109,10 @@
                         outlined
                         color="primary"
                         dense
-                        @change="updateTaskPriority()"
-                        data-e2e-id="taskDetailPriority"
+                        @change="updateTaskPriority()"                        
                     ></v-select>
-                </div>
-            </div>
+                </v-col>
+            </v-row>
             <v-divider />
             <!-- 期日設定 -->
             <div class="py-2 d-flex align-center">
@@ -486,9 +484,14 @@ export default {
         delete_modal: false,
     }),
     created() {
+        scrollTo(0,0)
         this.editorOption.modules.toolbar = this.getEditorOptions();
         this.params.success = "";
         this.params.error = "";
+    },
+
+    updated() {
+        scrollTo(0,0)
     },
 
     methods: {
