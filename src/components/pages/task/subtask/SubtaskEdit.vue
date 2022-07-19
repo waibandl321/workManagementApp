@@ -6,7 +6,7 @@
     >
         <v-card>
             <validation-observer v-slot="{ invalid }" ref="observer">
-                <v-card-title class="text-h5 grey lighten-2">
+                <v-card-title class="text-h5 grey lighten-2" data-e2e-id="subtaskEditTitle">
                     サブタスク作成
                 </v-card-title>
                 <v-card-text class="py-6">
@@ -24,6 +24,7 @@
                             v-model="subtask_editor.subtask_name"
                             hide-details
                             required
+                            data-e2e-id="subtaskNameInput"
                         ></v-text-field>
                         <div class="input-error-message">{{ errors[0] }}</div>
                     </validation-provider>
@@ -31,6 +32,7 @@
                         ref="myQuillEditor"
                         :options="editorOption"
                         v-model.trim="subtask_editor.subtask_description"
+                        data-e2e-id="subtaskDescriptionEditor"
                     />
                 </v-card-text>
                 <v-divider></v-divider>
@@ -43,6 +45,7 @@
                         :disabled="option.function_cd === 'save' && invalid"
                         outlined
                         @click="clickOption(option, subtask_editor)"
+                        :data-e2e-id="'subtaskEdit' + option.function_cd"
                     >
                         {{ option.text }}
                     </v-btn>

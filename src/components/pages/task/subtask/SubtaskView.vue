@@ -5,18 +5,22 @@
         width="800"
     >
         <v-card>
-            <v-card-title class="text-h5 grey lighten-2">
+            <v-card-title
+                class="text-h5 grey lighten-2"
+                data-e2e-id="subtaskTitle"
+            >
                 サブタスク詳細
             </v-card-title>
             <v-card-text class="py-6">
                 <div class="font-weight-bold">■ サブタスク名</div>
-                <div class="mt-3">{{ params.subtask_viewer.subtask_name }}</div>
+                <div class="mt-3" data-e2e-id="subtaskName">{{ params.subtask_viewer.subtask_name }}</div>
             </v-card-text>
             <v-card-text class="py-6">
                 <div class="font-weight-bold">■ サブタスク詳細</div>
                 <div
                     v-html="params.subtask_viewer.subtask_description"
                     class="mt-3"
+                    data-e2e-id="subtaskDescription"
                 ></div>
             </v-card-text> 
 
@@ -30,6 +34,7 @@
                     :color="option.function_cd === 'edit' ? 'primary' : ''"
                     outlined
                     @click="clickOption(option, params.subtask_viewer)"
+                    :data-e2e-id="'subtaskView' + option.function_cd"
                 >
                     {{ option.text }}
                 </v-btn>
