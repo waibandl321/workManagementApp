@@ -11,18 +11,25 @@
             >
                 サブタスク詳細
             </v-card-title>
-            <v-card-text class="py-6">
-                <div class="font-weight-bold">■ サブタスク名</div>
-                <div class="mt-3" data-e2e-id="subtaskName">{{ params.subtask_viewer.subtask_name }}</div>
-            </v-card-text>
-            <v-card-text class="py-6">
-                <div class="font-weight-bold">■ サブタスク詳細</div>
+            <v-card class="ma-4 pa-4">
+                <div class="font-weight-bold pb-2">■ サブタスク名</div>
+                <v-divider />
+                <div
+                    class="mt-3"
+                    data-e2e-id="subtaskName"
+                >
+                    {{ params.subtask_viewer.subtask_name }}
+                </div>
+            </v-card>
+            <v-card class="ma-4 pa-4">
+                <div class="font-weight-bold pb-2">■ サブタスク詳細</div>
+                <v-divider />
                 <div
                     v-html="params.subtask_viewer.subtask_description"
                     class="mt-3"
                     data-e2e-id="subtaskDescription"
                 ></div>
-            </v-card-text> 
+            </v-card> 
 
             <v-divider></v-divider>
 

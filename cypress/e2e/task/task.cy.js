@@ -1,70 +1,33 @@
-describe('タスク', () => {
+describe('タスク一覧', () => {
     before(() => {
         cy.appSignin('/task')
     })
     it('タスク一覧表示', () => {
-        
+        cy.get('[data-e2e-id="filterText"]')
+        cy.get('[data-e2e-id="filterStatus"]')
+        cy.get('[data-e2e-id="filterPriority"]')
+        cy.get('[data-e2e-id="taskAddButton"]')
+        cy.get('[data-e2e-id="taskList"]')
+        // cy.get('[data-e2e-id="noItem"]').should('contain', 'アイテムがありません')
     });
     
     it('タスク作成入力エラー', () => {
-        // autofocusチェック
+        cy.get('[data-e2e-id="taskAddButton"]').click()
+        cy.get('[data-e2e-id="taskAddInput"]').focus().clear().blur()
+        cy.get('.input-error-message').should('contain', 'タスク名は必須です')
+        cy.get('[data-e2e-id="taskAddSubmit"]').should('have.attr', 'disabled', 'disabled')
+        cy.get('[data-e2e-id="taskAddButton"]').click()
+        cy.get('[data-e2e-id="taskAddButtonWrap"]').next().should('not.have.attr', 'data-e2e-id="taskAddInputWrap"')
     });
     
     it('タスク作成実行', () => {
-        // 送信
-        // alertメッセージ
-        // input部品の値チェック
-        // 一覧描画チェック
-    });
-
-    it('タスク詳細表示', () => {
-        
-    });
-    it('タスク名更新', () => {
-        
-    });
-    it('タスクステータス更新', () => {
-        
-    });
-    it('タスク優先度更新', () => {
-        
-    });
-    it('タスク期日更新', () => {
-        
-    });
-    it('タスク概要説明 エディタ表示', () => {
-        
-    });
-    it('タスク概要説明 更新', () => {
-        
-    });
-    it('タスク詳細 ファイルアップロード拡張子エラー', () => {
-        
-    });
-    it('タスク詳細 ファイルアップロード実行', () => {
-        
-    });
-
-    it('タスク詳細 サブタスク作成表示', () => {
-        
-    });
-    it('タスク詳細 サブタスク作成入力エラー', () => {
-        
-    });
-    it('タスク詳細 サブタスク作成実行', () => {
-        
-    });
-    it('タスク詳細 サブタスク更新', () => {
-       // タイトル
-       // 説明文
-       // チェック
-    });
-    it('タスク詳細 サブタスク削除', () => {
-       
-    });
-    
-    it('タスク詳細 閉じる', () => {
-        
+        cy.get('[data-e2e-id="taskAddButton"]').click()
+        cy.get('[data-e2e-id="taskAddInput"]').clear().type('hoge task')
+        cy.get('[data-e2e-id="taskAddSubmit"]').should('not.have.attr', 'disabled', 'disabled')        
+        cy.get('[data-e2e-id="taskAddSubmit"]').click() // 送信
+        cy.wait(1000)        
+        cy.get('.v-alert').should('contain', 'タスクを新規作成しました') // alertメッセージ
+        cy.get('.basic-list').contains('tr', 'hoge task') // 一覧描画チェック
     });
 
     // MEMO: ある程度タスクデータを手動で作成した状態で行う
@@ -84,10 +47,23 @@ describe('タスク', () => {
         
     });
 
-    it('タスク削除 一覧', () => {
-        
+    it('タスク削除 モーダル', () => {
+        cy.get('[data-e2e-id="taskListDeleteButton"]').click()
+        cy.contains('タスク「hoge task」を削除します。 ')
+        cy.contains('.v-card__text', '削除後は復元できません。本当によろしいですか？')
+        cy.get('[data-e2e-id="modalcancel"]').should('contain', 'キャンセル')
+        cy.get('[data-e2e-id="modaldelete"]').should('contain', '削除する')
     });
-    it('タスク削除 詳細', () => {
-        
-    });
+
+    it('タスク削除キャンセル', () => {
+        cy.get('[data-e2e-id="modalcancel"]').click()
+        cy.get('.basic-list').contains('tr', 'hoge task')
+        cy.get('[data-e2e-id="taskListRecord"]').should('have.length', 1)
+    })
+    it('タスク削除実行', () => {
+        cy.get('[data-e2e-id="taskListDeleteButton"]').click()
+        cy.get('[data-e2e-id="modaldelete"]').click()
+        cy.get('.v-alert').should('contain', 'タスクを削除しました。') // alertメッセージ
+        cy.get('[data-e2e-id="taskListRecord"]').should('have.length', 0) //リスト0
+    })
 })

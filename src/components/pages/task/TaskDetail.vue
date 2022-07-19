@@ -588,5 +588,6 @@ export default {
 <style>
 .ql-container.ql-snow {
     min-height: 200px;
+    font-size: medium;
 }
 </style>

@@ -46,7 +46,7 @@
         </v-row>
         
         <!-- add task -->
-        <div class="mt-4">
+        <div class="mt-4" data-e2e-id="taskAddButtonWrap">
             <v-btn
                 color="primary"
                 text
@@ -58,8 +58,9 @@
             </v-btn>
         </div>
         <div
-            v-show="new_task"
+            v-if="new_task"
             class="mt-2 relative"
+            data-e2e-id="taskAddInputWrap"
         >
             <validation-observer v-slot="{ invalid }" ref="observer">
                 <validation-provider
@@ -84,7 +85,9 @@
                             :disabled="invalid"
                             data-e2e-id="taskAddSubmit"
                             @click="createTask()"
-                        >新規作成</v-btn>
+                        >
+                            新規作成
+                        </v-btn>
                     </div>
                     <div
                         v-if="errors.length > 0"
@@ -140,6 +143,7 @@
                         v-for="(task, i) in filter_items"
                         :key="i"
                         @click.stop="recordClick(task)"
+                        data-e2e-id="taskListRecord"
                     >
                         <td class="drag-icon-td">
                             <v-icon>mdi-drag</v-icon>
@@ -155,6 +159,7 @@
                                 text
                                 @click.stop="clickDelete(task)"
                                 color="primary"
+                                data-e2e-id="taskListDeleteButton"
                             >
                                 <v-icon>mdi-trash-can-outline</v-icon>
                             </v-btn>
@@ -162,6 +167,13 @@
                     </tr>
                 </tbody>
             </table>
+            <div
+                v-if="filter_items.length === 0"
+                class="pa-4 text-center"
+                data-e2e-id="noItem"
+            >
+                <span style="font-size: 18px;">アイテムがありません</span>
+            </div>
         </div>
         <!-- 削除確認モーダル -->
         <ConfirmDelete
@@ -324,6 +336,7 @@ export default {
                     console.log(error);
                 }
                 this.listRefresh()
+                this.new_task = !this.new_task
                 this.new_task_name = ""
                 this.composing = false
             }
@@ -359,6 +372,8 @@ export default {
             this.delete_modal = true;
         },
         closeModal() {
+            this.params.delete_item = {}
+            this.delete_options = []
             this.delete_modal = false
         },
 
