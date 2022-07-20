@@ -3,6 +3,7 @@
         v-model="dialog"
         persistent
         width="800"
+        content-class="subtask-edit-modal"
     >
         <v-card>
             <validation-observer v-slot="{ invalid }" ref="observer">

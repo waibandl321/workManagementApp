@@ -148,12 +148,24 @@
                         <td class="drag-icon-td">
                             <v-icon>mdi-drag</v-icon>
                         </td>
-                        <td class="py-2">{{ task.task_name }}</td>
-                        <td class="py-2">{{ extractTaskStatus(task.task_status) }}</td>
-                        <td class="py-2">{{ extractTaskPriority(task.task_priority) }}</td>
-                        <td class="py-2">{{ convertDatetimeFromUnixtime(task.task_deadline, "yyyy-mm-dd") }}</td>
-                        <td class="py-2">{{ convertTaskPeriod(task.created, task.task_deadline) }}</td>
-                        <td class="py-2">{{ convertDatetimeFromUnixtime(task.created, "yyyy-mm-dd") }}</td>
+                        <td class="py-2" data-e2e-id="tdTaskName">
+                            {{ task.task_name }}
+                        </td>
+                        <td class="py-2" data-e2e-id="tdStatus">
+                            {{ extractTaskStatus(task.task_status) }}
+                        </td>
+                        <td class="py-2" data-e2e-id="tdPriority">
+                            {{ extractTaskPriority(task.task_priority) }}
+                        </td>
+                        <td class="py-2" data-e2e-id="tdDeadline">
+                            {{ convertDatetimeFromUnixtime(task.task_deadline, "yyyy-mm-dd") }}
+                        </td>
+                        <td class="py-2" data-e2e-id="tdTerm">
+                            {{ convertTaskPeriod(task.created, task.task_deadline) }}
+                        </td>
+                        <td class="py-2" data-e2e-id="tdCreated">
+                            {{ convertDatetimeFromUnixtime(task.created, "yyyy-mm-dd") }}
+                        </td>
                         <td class="options-td">
                             <v-btn
                                 text

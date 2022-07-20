@@ -118,11 +118,11 @@ export default {
         // 戻り値：タスク期日 - タスク作成日
         convertTaskPeriod(begin, end) {
             if(!end) {
-                return "未指定"
+                return "未設定"
             }
             const _begin = new Date(this.convertDatetimeFromUnixtime(begin, "yyyy-mm-dd")),
                 _end = new Date(this.convertDatetimeFromUnixtime(end, "yyyy-mm-dd"));
-            return (_end - _begin) / 86400000 + " 日間"
+            return (_end - _begin) / 86400000 + "日間"
         },
         convertRemainingDays(end) {
             const days = this.judgeRemainingDays(end)

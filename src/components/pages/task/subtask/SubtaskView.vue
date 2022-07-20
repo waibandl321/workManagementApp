@@ -3,6 +3,7 @@
         v-model="dialog"
         persistent
         width="800"
+        content-class="subtask-view-modal"
     >
         <v-card>
             <v-card-title
