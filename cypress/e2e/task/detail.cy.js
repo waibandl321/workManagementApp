@@ -216,31 +216,75 @@ describe('タスク詳細', () => {
     
 
     // memo: エディタ機能のテストはなし
-    it('タスク概要説明 表示確認', () => {
-        cy.get('[data-e2e-id="taskDescriptionText"]').should('contain', 'タスクの詳細がありません')
-        cy.get('[data-e2e-id="taskDescriptionEdit"]').should('contain', '概要を編集')
-    });
-    it('タスク概要説明 編集', () => {
-        cy.get('[data-e2e-id="taskDescriptionEdit"]').click()
-        cy.get('[data-e2e-id="taskDescriptionEditor"] .ql-editor').type('hoge task description')
-        // 保存処理
-        cy.get('[data-e2e-id="taskDescriptionSave"]').click()
-        cy.get('.v-alert').should('contain', 'タスク概要説明を更新しました。')
-        cy.get('[data-e2e-id="taskDescriptionText"]').contains('hoge task description')
-    });
+    // it('タスク概要説明 表示確認', () => {
+    //     cy.get('[data-e2e-id="taskDescriptionText"]').should('contain', 'タスクの詳細がありません')
+    //     cy.get('[data-e2e-id="taskDescriptionEdit"]').should('contain', '概要を編集')
+    // });
+    // it('タスク概要説明 編集', () => {
+    //     cy.get('[data-e2e-id="taskDescriptionEdit"]').click()
+    //     cy.get('[data-e2e-id="taskDescriptionEditor"] .ql-editor').type('hoge task description')
+    //     // 保存処理
+    //     cy.get('[data-e2e-id="taskDescriptionSave"]').click()
+    //     cy.get('.v-alert').should('contain', 'タスク概要説明を更新しました。')
+    //     cy.get('[data-e2e-id="taskDescriptionText"]').contains('hoge task description')
+    // });
 
-    it('タスク概要説明 編集', () => {
-        cy.get('[data-e2e-id="taskDescriptionEdit"]').click()
-        cy.get('[data-e2e-id="taskDescriptionEditor"] .ql-editor').clear().type('hoge task description update')
-        // 保存処理
-        cy.get('[data-e2e-id="taskDescriptionSave"]').click()
-        cy.get('[data-e2e-id="taskDescriptionText"]').contains('hoge task description update')
-    });
+    // it('タスク概要説明 編集', () => {
+    //     cy.get('[data-e2e-id="taskDescriptionEdit"]').click()
+    //     cy.get('[data-e2e-id="taskDescriptionEditor"] .ql-editor').clear().type('hoge task description update')
+    //     // 保存処理
+    //     cy.get('[data-e2e-id="taskDescriptionSave"]').click()
+    //     cy.get('[data-e2e-id="taskDescriptionText"]').contains('hoge task description update')
+    // });
 
-    it('ファイルアップロード拡張子エラー', () => {
+    it('添付ファイル 要素確認', () => {
+        cy.get('[data-e2e-id="taskAttachmentNothing"]').should('contain', '添付ファイルはありません。')
+    });
+    it('添付ファイル アップロード拡張子エラー', () => {
         
+
     });
-    it('ファイルアップロード実行', () => {
+    it('添付ファイル アップロード成功', () => {
+        cy.get('[data-e2e-id="taskAttachmentButton"]').click()
+        cy.get('[data-e2e-id="taskAttachmentInput"]').attachFile('git.png');
+        cy.wait(2000)
+        cy.get('.v-alert').should('contain', 'ファイルをアップロードしました。')
+        // 確認
+        cy.get('[data-e2e-id="taskAttachmentLength"]').contains('1')
+        cy.get('[data-e2e-id="taskAttachmentAllDelete"]').should('contain', '全ファイル削除')
+        cy.get('[data-e2e-id="taskAttachmentList"]').contains('git.png')
+        cy.get('[data-e2e-id="taskAttachmentView"]').should('have.attr', 'src')
+    });
+    it('添付ファイル プレビュー', () => {
+        cy.get('[data-e2e-id="taskAttachmentPreviewButton"]').click()
+        // memo: crosブロックのためクリックまで
+        // 正常なら、cypressアプリで別タブでプレビューが開く
+    });
+    it('添付ファイル 削除キャンセル', () => {
+        cy.get('[data-e2e-id="taskAttachmentDelete"]').click()
+        cy.get('.v-dialog').contains('ファイル「git.png」を削除します。')
+        cy.get('[data-e2e-id="modalcancel"]').click()
+        cy.get('[data-e2e-id="taskAttachmentList"]').contains('git.png')
+    });
+    it('添付ファイル 1つ削除', () => {
+        cy.get('[data-e2e-id="taskAttachmentDelete"]').click()
+        cy.get('.v-dialog').contains('ファイル「git.png」を削除します。')
+        cy.get('[data-e2e-id="modaldelete"]').click()
+        cy.wait(2000)
+        cy.get('.v-alert').should('contain', 'ファイルgit.pngを削除しました。')
+        cy.get('[data-e2e-id="taskAttachmentNothing"]').should('contain', '添付ファイルはありません。')
+    });
+
+    it('ファイル再アップ 複数', () => {
+        cy.get('[data-e2e-id="taskAttachmentButton"]').click()
+        cy.get('[data-e2e-id="taskAttachmentInput"]').attachFile('git.png');
+        cy.wait(2000)
+        cy.get('[data-e2e-id="taskAttachmentButton"]').click()
+        cy.get('[data-e2e-id="taskAttachmentInput"]').attachFile('npm.png');
+        cy.get('[data-e2e-id="taskAttachmentList"]').contains('git.png')
+        cy.get('[data-e2e-id="taskAttachmentList"]').contains('npm.png')
+    });
+    it('添付ファイル まとめて削除', () => {
         
     });
 
