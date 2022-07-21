@@ -4,6 +4,9 @@ describe('タスク詳細', () => {
     })
 
     it('タスク詳細表示', () => {
+        // タイトル
+        cy.title().should('include', 'タスク管理')
+        // 要素
         cy.get('[data-e2e-id="taskListRecord"]').click()
         cy.get('.v-overlay--active')
         cy.get('[data-e2e-id="taskDetailToolbar"]').contains('hoge task')

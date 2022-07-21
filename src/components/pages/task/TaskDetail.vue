@@ -210,7 +210,7 @@
                 <v-divider />
                 <div class="mt-4">
                     <div
-                        v-if="params.subtask_list.length === 0"
+                        v-if="!params.subtask_list.length"
                         data-e2e-id="noSubtask"
                     >
                         サブタスクはありません
@@ -587,6 +587,7 @@ export default {
             this.listRefresh()
             this.params.success = ""
             this.params.error = ""
+            this.delete_options = []
             this.params.delete_item = {}
             this.params.subtask_viewer =  {}
             this.params.subtask_editor =  {}

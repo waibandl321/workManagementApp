@@ -43,7 +43,17 @@ describe('サインイン画面', () => {
     cy.get('.v-alert').should('contain', '認証に失敗しました。正しいメールアドレス、パスワードを入力してください。')
   });
 
+  // 遷移OKだけ確認
+  it('パスワード再設定画面遷移', () => {
+    cy.get('[data-e2e-id="passwordReset"]').click()
+    cy.wait(500)
+    cy.visit('/auth/password_reset_email')
+    cy.get('.v-card__title').should('contain', 'パスワード再設定')
+    cy.get('.v-card__text').should('contain', 'パスワード再設定用のメールアドレスを入力してください。')
+  })
+
   it('サインイン成功', () => {
+    cy.visit('/auth/signin')
     cy.get('[data-e2e-id="inputEmail"]').clear().type("e2etest@example.com")
     cy.get('[data-e2e-id="inputPassword"]').clear().type("e2eteste")
     cy.get('[data-e2e-id="execSignin"]').should('not.have.attr', 'disabled')
@@ -54,14 +64,7 @@ describe('サインイン画面', () => {
     cy.get('.v-card__title').should('contain', 'アカウント情報登録')
   })
 
-  // 遷移OKだけ確認
-  it('パスワード再設定画面遷移', () => {
-    cy.get('[data-e2e-id="passwordReset"]').click()
-    cy.wait(500)
-    cy.visit('/auth/password_reset_email')
-    cy.get('.v-card__title').should('contain', 'パスワード再設定')
-    cy.get('.v-card__text').should('contain', 'パスワード再設定用のメールアドレスを入力してください。')
-  })
+  
 
   it('サインアップ画面遷移 ', () => {
     cy.visit('/auth/signin')

@@ -7,7 +7,7 @@ import {
     getRedirectResult,
     signInWithRedirect,
     sendPasswordResetEmail,
-    deleteUser
+    deleteUser,
 }
 from "firebase/auth";
 
@@ -87,15 +87,14 @@ export default {
         async firebaseDeleteAuthUser() {
             const auth = getAuth();
             const user = auth.currentUser;
-
-            return await deleteUser(user)
+            
+            await deleteUser(user)
             .then(() => {
-                return true;
+                console.log("削除処理成功！");
             })
             .catch((error) => {
                 console.log(error)
             });
-
         }
     }
 }

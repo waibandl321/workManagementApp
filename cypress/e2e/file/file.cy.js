@@ -4,6 +4,9 @@ describe('ファイル管理', () => {
     })
 
     it('初期表示チェック', () => {
+        // タイトル
+        cy.title().should('include', 'ファイル管理')
+        // 要素
         cy.get('[data-e2e-id="fileSearchInput"]')
         cy.get('[data-e2e-id="fileBreadcrumbs"]')
         cy.get('[data-e2e-id="fileListTable"]')
