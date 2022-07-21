@@ -156,6 +156,7 @@ describe('タスク詳細', () => {
     it('サブタスク作成実行', () => {
         cy.get('[data-e2e-id="subtaskCreateButton"]').click()
         cy.get('[data-e2e-id="subtaskNameInput"]').clear().type('hoge subtask')
+        cy.get('.ql-editor').clear().type('hoge subtask description')
         cy.get('[data-e2e-id="subtaskEditsave"]').should('not.have.attr', 'disabled')
         // 保存実行
         cy.get('[data-e2e-id="subtaskEditsave"]').click()
@@ -166,7 +167,22 @@ describe('タスク詳細', () => {
         cy.get('[data-e2e-id="subtaskCard"]').contains('hoge subtask')
 
     });
+    it('サブタスク詳細表示', () => {
+        cy.get('[data-e2e-id="subtaskCard"]').click()
+        // 要素チェック
+        cy.get('.subtask-view-modal').contains('[data-e2e-id="subtaskTitle"]', 'サブタスク詳細')
+        cy.get('.subtask-view-modal').contains('サブタスク名')
+        cy.get('.subtask-view-modal').contains('サブタスク詳細')
+        // タイトル・説明文
+        cy.get('[data-e2e-id="subtaskName"]').should('contain', 'hoge subtask')
+        cy.get('[data-e2e-id="subtaskDescription"]').should('contain', 'hoge subtask description')
+    });
+    it('サブタスク詳細→編集 切り替え', () => {
+        cy.get('[data-e2e-id="subtaskViewedit"]').click()
+    });
+
     it('サブタスク更新', () => {
+        cy.get('[data-e2e-id="subtaskCard"]').click()
        // タイトル
        // 説明文
        // チェック
