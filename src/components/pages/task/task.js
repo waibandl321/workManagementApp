@@ -116,13 +116,13 @@ export default {
             this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
         },
         // 戻り値：タスク期日 - タスク作成日
-        convertTaskPeriod(begin, end) {
+        convertTaskPeriod(begin, end) {            
             if(!end) {
                 return "未設定"
             }
-            const _begin = new Date(this.convertDatetimeFromUnixtime(begin, "yyyy-mm-dd")),
-                _end = new Date(this.convertDatetimeFromUnixtime(end, "yyyy-mm-dd"));
-            return (_end - _begin) / 86400000 + "日間"
+            const _begin = Number(this.convertDatetimeFromUnixtime(begin, "yyyymmdd")),
+                _end = Number(this.convertDatetimeFromUnixtime(end, "yyyymmdd"));
+            return ((_end - _begin) + 1) + "日間"
         },
         convertRemainingDays(end) {
             const days = this.judgeRemainingDays(end)
