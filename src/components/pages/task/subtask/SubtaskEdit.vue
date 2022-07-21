@@ -8,7 +8,7 @@
         <v-card>
             <validation-observer v-slot="{ invalid }" ref="observer">
                 <v-card-title class="text-h5 grey lighten-2" data-e2e-id="subtaskEditTitle">
-                    サブタスク{{ subtask_editor.subtask_name ? '更新' : '作成' }}
+                    サブタスク{{ subtask_option.is_new ? '作成' : '更新' }}
                 </v-card-title>
                 <v-card-text class="py-6">
                     <validation-provider

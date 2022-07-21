@@ -526,6 +526,7 @@ export default {
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeSubtask },
                 { function_cd: "save", text: "保存", callback: this.createSubtask },
             )
+            this.subtask_option.is_new = true
             this.subtask_mode = "subtask_edit";
         },
         // サブタスク詳細
