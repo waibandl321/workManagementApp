@@ -256,9 +256,13 @@ describe('タスク詳細', () => {
         cy.get('[data-e2e-id="taskAttachmentView"]').should('have.attr', 'src')
     });
     it('添付ファイル プレビュー', () => {
-        cy.get('[data-e2e-id="taskAttachmentPreviewButton"]').click()
+        // 一応属性とhrefのURLチェックはしておく
+        cy.get('[data-e2e-id="taskAttachmentPreviewButton"]')
+            .should('have.attr', 'href')
+            .and('include', 'git.png')
         // memo: crosブロックのためクリックまで
         // 正常なら、cypressアプリで別タブでプレビューが開く
+        cy.get('[data-e2e-id="taskAttachmentPreviewButton"]').click()
     });
     it('添付ファイル 削除キャンセル', () => {
         cy.get('[data-e2e-id="taskAttachmentDelete"]').click()
@@ -281,11 +285,18 @@ describe('タスク詳細', () => {
         cy.wait(2000)
         cy.get('[data-e2e-id="taskAttachmentButton"]').click()
         cy.get('[data-e2e-id="taskAttachmentInput"]').attachFile('npm.png');
+        cy.wait(2000)
         cy.get('[data-e2e-id="taskAttachmentList"]').contains('git.png')
         cy.get('[data-e2e-id="taskAttachmentList"]').contains('npm.png')
+        cy.get('[data-e2e-id="taskAttachmentLength"]').contains('2')
     });
     it('添付ファイル まとめて削除', () => {
-        
+        cy.get('[data-e2e-id="taskAttachmentAllDelete"]').click()
+        cy.get('.v-dialog').contains('このタスクにアップされている全てのファイルを削除します')
+        cy.get('[data-e2e-id="modaldelete"]').click()
+        cy.wait(2000)
+        cy.get('.v-alert').should('contain', '全てのファイルを削除しました。')
+        cy.get('[data-e2e-id="taskAttachmentNothing"]').should('contain', '添付ファイルはありません。')
     });
 
     it('タスク削除', () => {
