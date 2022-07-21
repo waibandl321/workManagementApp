@@ -182,10 +182,10 @@ describe('タスク詳細', () => {
     });
 
     it('サブタスク更新', () => {
-        cy.get('[data-e2e-id="subtaskCard"]').click()
-       // タイトル
-       // 説明文
-       // チェック
+        cy.get('.subtask-edit-modal').contains('サブタスク更新')
+        // 値チェック
+        cy.get('[data-e2e-id="subtaskNameInput"]').should('have.value', 'hoge subtask')
+        cy.get('.ql-editor').contains('hoge subtask description')
     });
     it('サブタスク削除', () => {
        
