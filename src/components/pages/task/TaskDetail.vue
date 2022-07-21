@@ -578,6 +578,7 @@ export default {
         },
         closeModal() {
             this.delete_options = []
+            this.params.delete_item = {}
             this.delete_modal = false;
             this.file_loading = false;
         },
@@ -586,6 +587,9 @@ export default {
             this.listRefresh()
             this.params.success = ""
             this.params.error = ""
+            this.params.delete_item = {}
+            this.params.subtask_viewer =  {}
+            this.params.subtask_editor =  {}
             this.task_name_edit = false
             this.desc_editor = false
             this.params.detail_mode = false
