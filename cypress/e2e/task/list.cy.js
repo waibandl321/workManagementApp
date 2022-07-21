@@ -30,19 +30,19 @@ describe('タスク一覧', () => {
         cy.get('.basic-list').contains('tr', 'hoge task') // 一覧描画チェック
     });
 
-    // it('タスク絞り込み（テキスト） true', () => {
-    //     cy.get('[data-e2e-id="filterText"]').clear().type('hoge')
-    //     cy.get('.basic-list').contains('tr', 'hoge task') 
-    // });
-    // it('タスク絞り込み（テキスト） false', () => {
-    //     cy.get('[data-e2e-id="filterText"]').clear().type('あ')
-    //     cy.get('[data-e2e-id="taskListRecord"]').should('have.length', 0)
-    //     cy.get('[data-e2e-id="noItem"]').should('contain', 'アイテムがありません')
-    // });
-    // it('タスク絞り込み（テキスト） 初期化', () => {
-    //     cy.get('[data-e2e-id="filterText"]').clear()
-    //     cy.get('.basic-list').contains('tr', 'hoge task') 
-    // })
+    it('タスク絞り込み（テキスト） true', () => {
+        cy.get('[data-e2e-id="filterText"]').clear().type('hoge')
+        cy.get('.basic-list').contains('tr', 'hoge task') 
+    });
+    it('タスク絞り込み（テキスト） false', () => {
+        cy.get('[data-e2e-id="filterText"]').clear().type('あ')
+        cy.get('[data-e2e-id="taskListRecord"]').should('have.length', 0)
+        cy.get('[data-e2e-id="noItem"]').should('contain', 'アイテムがありません')
+    });
+    it('タスク絞り込み（テキスト） 初期化', () => {
+        cy.get('[data-e2e-id="filterText"]').clear()
+        cy.get('.basic-list').contains('tr', 'hoge task') 
+    })
     // MEMO: ある程度タスクデータを手動で作成した状態で行う
     // it('タスク絞り込み（ステータス）', () => {
         
@@ -70,11 +70,11 @@ describe('タスク一覧', () => {
         cy.get('.basic-list').contains('tr', 'hoge task')
         cy.get('[data-e2e-id="taskListRecord"]').should('have.length', 1)
     })
-    // it('タスク削除実行', () => {
-    //     cy.get('[data-e2e-id="taskListDeleteButton"]').click()
-    //     cy.get('[data-e2e-id="modaldelete"]').click()
-    //     cy.get('.v-alert').should('contain', 'タスクを削除しました。') // alertメッセージ
-    //     cy.get('[data-e2e-id="taskListRecord"]').should('have.length', 0) //リスト0
-    //     cy.get('[data-e2e-id="noItem"]').should('contain', 'アイテムがありません')
-    // })
+    it('タスク削除実行', () => {
+        cy.get('[data-e2e-id="taskListDeleteButton"]').click()
+        cy.get('[data-e2e-id="modaldelete"]').click()
+        cy.get('.v-alert').should('contain', 'タスクを削除しました。') // alertメッセージ
+        cy.get('[data-e2e-id="taskListRecord"]').should('have.length', 0) //リスト0
+        cy.get('[data-e2e-id="noItem"]').should('contain', 'アイテムがありません')
+    })
 })
