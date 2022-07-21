@@ -296,19 +296,20 @@
                         data-e2e-id="taskDescriptionEditor"
                     />
                 </div>
-                <div class="editor_body" v-else>
-                    <div v-if="params.viewer.task_description">
-                        <div
-                            v-html="params.viewer.task_description"
-                            data-e2e-id="taskDescriptionText"
-                        ></div>
-                    </div>
+                <div 
+                    v-else
+                    class="editor_body"
+                >
                     <div
-                        v-else
-                        data-e2e-id="taskDescriptionNothing"
+                        v-if="!params.viewer.task_description"
+                        data-e2e-id="taskDescriptionText"
                     >
                         タスクの詳細がありません
                     </div>
+                    <div
+                        v-html="params.viewer.task_description"
+                        data-e2e-id="taskDescriptionText"
+                    ></div>
                 </div>
             </div>
             <!-- 添付ファイル -->
