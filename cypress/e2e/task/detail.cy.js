@@ -139,6 +139,7 @@ describe('タスク詳細', () => {
     });
 
     it('サブタスク作成 表示確認', () => {
+        cy.get('[data-e2e-id="taskListRecord"]').click()
         cy.get('[data-e2e-id="subtaskCreateButton"]').click()
         cy.get('.subtask-edit-modal').contains('[data-e2e-id="subtaskEditTitle"]', 'サブタスク作成')
         cy.get('[data-e2e-id="subtaskNameInput"]')

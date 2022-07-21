@@ -13,7 +13,7 @@
                     data-e2e-id="filterText"
                 ></v-text-field>
             </v-col>
-            <v-col>
+            <v-col data-e2e-id="filterStatus">
                 <v-select
                     label="ステータスで絞り込み"
                     :items="params.task_status_list"
@@ -25,10 +25,9 @@
                     dense
                     v-model="filter_status"
                     @change="filterList()"
-                    data-e2e-id="filterStatus"
                 ></v-select>
             </v-col>
-            <v-col>
+            <v-col data-e2e-id="filterPriority">
                 <v-select
                     label="優先度で絞り込み"
                     :items="params.task_priorities"
@@ -40,7 +39,6 @@
                     dense
                     v-model="filter_priority"
                     @change="filterList()"
-                    data-e2e-id="filterPriority"
                 ></v-select>
             </v-col>
         </v-row>
@@ -180,7 +178,7 @@
                 </tbody>
             </table>
             <div
-                v-if="filter_items.length === 0"
+                v-if="!params.loading && filter_items.length === 0"
                 class="pa-4 text-center"
                 data-e2e-id="noItem"
             >
