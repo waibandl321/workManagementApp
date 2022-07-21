@@ -12,28 +12,25 @@
             >
                 サブタスク詳細
             </v-card-title>
-            <v-card class="ma-4 pa-4">
+            <div class="pa-4">
                 <div class="font-weight-bold pb-2">■ サブタスク名</div>
                 <v-divider />
                 <div
-                    class="mt-3"
+                    class="mt-2"
                     data-e2e-id="subtaskName"
                 >
                     {{ params.subtask_viewer.subtask_name }}
                 </div>
-            </v-card>
-            <v-card class="ma-4 pa-4">
-                <div class="font-weight-bold pb-2">■ サブタスク詳細</div>
+            
+                <div class="font-weight-bold mt-10 pb-2">■ サブタスク詳細</div>
                 <v-divider />
                 <div
                     v-html="params.subtask_viewer.subtask_description"
-                    class="mt-3"
+                    class="mt-2 pb-10"
                     data-e2e-id="subtaskDescription"
                 ></div>
-            </v-card> 
-
+            </div>
             <v-divider></v-divider>
-
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
