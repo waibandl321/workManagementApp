@@ -210,6 +210,12 @@
                 <v-divider />
                 <div class="mt-4">
                     <div
+                        v-if="params.subtask_list.length === 0"
+                        data-e2e-id="noSubtask"
+                    >
+                        サブタスクはありません
+                    </div>
+                    <div
                         v-for="(subtask, index) in params.subtask_list"
                         :key="index"
                         class="subtask-card__wrap"

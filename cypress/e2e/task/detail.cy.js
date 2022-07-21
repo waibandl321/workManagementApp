@@ -153,10 +153,10 @@ describe('タスク詳細', () => {
         cy.get('[data-e2e-id="subtaskEditcancel"]').click()
         cy.get('.v-dialog').should('not.have.class', '.subtask-edit-modal')
     });
-    it('サブタスク作成実行', () => {
+    it('サブタスク 作成実行', () => {
         cy.get('[data-e2e-id="subtaskCreateButton"]').click()
         cy.get('[data-e2e-id="subtaskNameInput"]').clear().type('hoge subtask')
-        cy.get('.ql-editor').clear().type('hoge subtask description')
+        cy.get('.subtask-edit-modal .ql-editor').clear().type('hoge subtask description')
         cy.get('[data-e2e-id="subtaskEditsave"]').should('not.have.attr', 'disabled')
         // 保存実行
         cy.get('[data-e2e-id="subtaskEditsave"]').click()
@@ -167,7 +167,7 @@ describe('タスク詳細', () => {
         cy.get('[data-e2e-id="subtaskCard"]').contains('hoge subtask')
 
     });
-    it('サブタスク詳細表示', () => {
+    it('サブタスク 詳細表示', () => {
         cy.get('[data-e2e-id="subtaskCard"]').click()
         // 要素チェック
         cy.get('.subtask-view-modal').contains('[data-e2e-id="subtaskTitle"]', 'サブタスク詳細')
@@ -177,19 +177,43 @@ describe('タスク詳細', () => {
         cy.get('[data-e2e-id="subtaskName"]').should('contain', 'hoge subtask')
         cy.get('[data-e2e-id="subtaskDescription"]').should('contain', 'hoge subtask description')
     });
-    it('サブタスク詳細→編集 切り替え', () => {
+    it('サブタスク 詳細→編集 切り替え', () => {
         cy.get('[data-e2e-id="subtaskViewedit"]').click()
-    });
-
-    it('サブタスク更新', () => {
         cy.get('.subtask-edit-modal').contains('サブタスク更新')
         // 値チェック
         cy.get('[data-e2e-id="subtaskNameInput"]').should('have.value', 'hoge subtask')
         cy.get('.ql-editor').contains('hoge subtask description')
     });
-    it('サブタスク削除', () => {
-       
+
+    it('サブタスク 更新', () => {
+        // タイトル消すと保存ボタン押せない
+        cy.get('[data-e2e-id="subtaskNameInput"]').clear().blur()
+        cy.get('.input-error-message').should('contain', 'サブタスク名は必須です')
+        cy.get('[data-e2e-id="subtaskEditsave"]').should('have.attr', 'disabled', 'disabled')
+        // 更新実行
+        cy.get('[data-e2e-id="subtaskNameInput"]').clear().type('hoge subtask update')
+        cy.get('.subtask-edit-modal .ql-editor').clear().type('hoge subtask description update')
+        cy.get('[data-e2e-id="subtaskEditsave"]').click()
+        cy.wait(1000)
+        cy.get('.v-dialog').should('not.have.class', '.subtask-edit-modal')
+        cy.get('.v-alert').should('contain', 'サブタスクを更新しました。')
+        // 更新確認
+        cy.get('[data-e2e-id="subtaskCard"]').contains('hoge subtask update')
     });
+
+    it('サブタスク チェック', () => {
+        cy.get('[data-e2e-id="subtaskCheckButton"]').click()
+        cy.get('[data-e2e-id="subtaskCheckButton"]').should('have.class', 'primary')
+        // サブタスクの完了取り消しはなし
+        cy.get('[data-e2e-id="subtaskCheckButton"]').click()
+        cy.get('[data-e2e-id="subtaskCheckButton"]').should('have.class', 'primary')
+    });
+    it('サブタスク 削除', () => {
+        cy.get('[data-e2e-id="subtaskDeleteButton"]').click()
+        cy.get('.v-alert').should('contain', 'サブタスクを削除しました。')
+        cy.get('[data-e2e-id="noSubtask"]').should('contain', 'サブタスクはありません')
+    });
+    
 
     it('タスク概要説明 エディタ表示', () => {
         
