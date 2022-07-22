@@ -24,17 +24,16 @@ export default {
                 await this.firebaseDeleteAccountSubtasks() //subtask
                 await this.firebaseDeleteAccount() //user(db)
                 await this.firebaseDeleteAccountTaskFiles() // taskfile(db)
-                this.loading = false;
                 // memo: storeにアカウント削除結果保存
                 this.storeSetDeleteResult(true)
-                this.openAlert("アカウントを削除しました。")
-                this.pageMove("/auth/signout")
+                this.pageMove("/auth/delete_confirm")
             } catch (error) {
                 console.log(error);
                 // memo: storeにアカウント削除結果保存
                 this.storeSetDeleteResult(false)
                 this.pageMove("/account")
             }
+            this.loading = false;
         }
     }
 }

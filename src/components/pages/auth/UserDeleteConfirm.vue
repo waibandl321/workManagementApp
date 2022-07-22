@@ -2,19 +2,17 @@
     <div class="auth">
         <v-container>
             <v-card width="100%" class="pa-6">
-                <MessageViewer
-                    v-if="params.success || params.error"
-                    :params="params"
-                    class="mb-6"
-                />
+                <v-alert type="error">
+                    アカウントを削除しました。
+                </v-alert>
                 <v-card-actions
                     class="mt-2 justify-center"
                 >
                     <v-btn
                         @click="finishApp()"
                         x-large
-                        color="primary"
-                        rounded
+                        color="#333"
+                        dark
                         width="100%"
                         data-e2e-id="finishApp"
                     >
@@ -27,15 +25,7 @@
 </template>
 
 <script>
-import MessageViewer from '@/components/common/MessageViewer.vue'
 export default {
-    components: {
-        MessageViewer,
-    },
-    created() {
-        
-    },
-    props: ["params"],
     methods: {
         finishApp() {
             this.$router.push("/auth/signout")
@@ -43,3 +33,23 @@ export default {
     }
 }
 </script>
+<style>
+.auth {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #eee;
+    opacity: 1;
+}
+.auth >>> .v-card {
+    width: 800px
+}
+.card .v-sheet.v-card {
+    box-shadow: none;
+}
+</style>

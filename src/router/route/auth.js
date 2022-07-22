@@ -3,6 +3,7 @@ import Signin from '@/components/pages/auth/Signin'
 import PasswordResetEmail from '@/components/pages/auth/PasswordResetEmail'
 import Signout from '@/components/pages/auth/Signout'
 import UserDelete from '@/components/pages/auth/UserDelete'
+import UserDeleteConfirm from '@/components/pages/auth/UserDeleteConfirm'
 
 export default [
     {
@@ -33,5 +34,9 @@ export default [
         path: '/auth/delete',
         component: UserDelete,
         meta: { title: 'アカウント削除'},
+    },
+    {
+        path: '/auth/delete_confirm',
+        component: UserDeleteConfirm, 
     },
 ]
