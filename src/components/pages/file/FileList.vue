@@ -91,7 +91,7 @@
             </tbody>
         </table>
         <div
-            v-if="params.files.length === 0"
+            v-if="!params.loading && params.files.length === 0"
             data-e2e-id="noItem"
             class="text-center py-4"
         >
