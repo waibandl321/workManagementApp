@@ -1,7 +1,6 @@
 <template>
     <div class="auth">
-        <ExecLoading v-if="params.loading" />
-        <v-container v-else>
+        <v-container>
             <v-card width="100%" class="pa-6">
                 <MessageViewer
                     v-if="params.success || params.error"
@@ -28,22 +27,16 @@
 </template>
 
 <script>
-import ExecLoading from '@/components/common/ExecLoading.vue'
 import MessageViewer from '@/components/common/MessageViewer.vue'
 export default {
     components: {
         MessageViewer,
-        ExecLoading
     },
     created() {
-        this.storeDeleteAccountInfo()
-        this.storeDestroyFirebaseUid()
+        
     },
     props: ["params"],
     methods: {
-        async accountDelete() {
-            
-        },
         finishApp() {
             this.$router.push("/auth/signout")
         }

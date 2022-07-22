@@ -2,7 +2,6 @@
     <ExecLoading v-if="loading" />
 </template>
 
-
 <script>
 import ExecLoading from '@/components/common/ExecLoading.vue'
 export default {
@@ -17,7 +16,8 @@ export default {
         const result = await this.firebaseSignout();
         if(result) {
             this.storeDeleteAccountInfo()
-            this.storeDestroyFirebaseUid()
+            this.storeDeleteFirebaseUid()
+            this.setDeleteAccountDeleteResult()
             this.pageMove('/auth/signin')
             this.loading = false
         }

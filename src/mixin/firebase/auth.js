@@ -87,13 +87,13 @@ export default {
         async firebaseDeleteAuthUser() {
             const auth = getAuth();
             const user = auth.currentUser;
-            
-            await deleteUser(user)
-            .then(() => {
-                console.log("削除処理成功！");
-            })
-            .catch((error) => {
+
+            return await deleteUser(user).then((res) => {
+                console.log(res);
+                return true
+            }).catch((error) => {
                 console.log(error)
+                return false
             });
         }
     }

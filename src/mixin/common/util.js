@@ -4,6 +4,10 @@ export default {
         
     }),
     methods: {
+        // アラート
+        openAlert(message) {
+            alert(message)
+        },
         // ページタイトル設定
         getServiceBasetitle() {
             return config.basetitle;

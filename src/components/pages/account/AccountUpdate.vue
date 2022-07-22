@@ -113,8 +113,23 @@ export default {
         this.params.error = "";
         this.first_name = this.params.account_info.first_name
         this.last_name = this.params.account_info.last_name
+
+        this.checkAccountDeleteResult()
     },
     methods: {
+        checkAccountDeleteResult() {
+            if(typeof this.storeGetDeleteResult() === 'boolean') {
+                if(!this.storeGetDeleteResult()) {
+                    this.params.error = `
+                        アカウント削除時にエラーが発生しました。
+                        時間を置いてから再度削除してください。
+                        尚、アカウントを削除されると復元できません。
+                    `
+                }
+            }
+            this.setDeleteAccountDeleteResult()
+            return;
+        },
         async accountUpdate() {
             const account = this.generateAccountObject()
             const result = await this.firebaseAccountUpdate(account)
@@ -152,24 +167,25 @@ export default {
             this.delete_modal = true;
         },
         async execDeleteAccount() {
-            this.params.loading = true;
+            // this.params.loading = true;
             this.delete_modal = false;
-            try {
-                await this.firebaseDeleteAccountFiles() //file(db)
-                await this.storegeDeleteAccountFiles() //file(storage)
-                await this.firebaseDeleteAccountTasks() //task
-                await this.firebaseDeleteAccountSubtasks() //subtask
-                await this.firebaseDeleteAccount() //user(db)
-                await this.firebaseDeleteAccountTaskFiles() // taskfile(db)
-                await this.firebaseDeleteAuthUser() //user(firebase auth)
-                this.params.success = "アカウントを削除しました。";
-                this.params.delete_flag = true;
-            } catch (error) {
-                console.log(error);
-                this.params.error = "アカウント削除に失敗しました。もう一度やり直してください。"
-            }
+            this.pageMove("/auth/delete")
+            // try {
+            //     await this.firebaseDeleteAccountFiles() //file(db)
+            //     await this.storegeDeleteAccountFiles() //file(storage)
+            //     await this.firebaseDeleteAccountTasks() //task
+            //     await this.firebaseDeleteAccountSubtasks() //subtask
+            //     await this.firebaseDeleteAccount() //user(db)
+            //     await this.firebaseDeleteAccountTaskFiles() // taskfile(db)
+            //     await this.firebaseDeleteAuthUser() //user(firebase auth)
+            //     this.params.success = "アカウントを削除しました。";
+            //     this.params.delete_flag = true;
+            // } catch (error) {
+            //     console.log(error);
+            //     this.params.error = "アカウント削除に失敗しました。もう一度やり直してください。"
+            // }
             this.delete_options = []
-            this.params.loading = false;
+            // this.params.loading = false;
         },
         closeModal() {
             this.delete_options = []

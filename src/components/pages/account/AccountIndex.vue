@@ -1,22 +1,15 @@
 <template>
     <div class="body">
-        <Header
-            :parents="parents"
-            v-if="!params.delete_flag"
-        />
+        <Header :parents="parents"/>
         <AccountRegister
-            v-if="!params.account_info.status && !params.delete_flag"
+            v-if="!params.account_info.status"
             :params="params"
             :parents="parents"
         />
         <AccountUpdate
-            v-else-if="params.account_info.status && !params.delete_flag"
+            v-else-if="params.account_info.status"
             :params="params"
             :parents="parents"
-        />
-        <AccountDeleteConfirm
-            v-if="params.delete_flag"
-            :params="params"
         />
     </div>
 </template>
@@ -25,14 +18,12 @@
 import Header from '@/components/common/Header'
 import AccountRegister from '@/components/pages/account/AccountRegister.vue'
 import AccountUpdate from '@/components/pages/account/AccountUpdate.vue'
-import AccountDeleteConfirm from '@/components/pages/account/AccountDeleteConfirm'
 
 export default {
     components: {
         Header,
         AccountRegister,
         AccountUpdate,
-        AccountDeleteConfirm
     },
     data: () => ({
         parents: {
@@ -43,7 +34,6 @@ export default {
             success: "",
             error: "",
             loading: false,
-            delete_flag: false,
         }
     }),
     created() {

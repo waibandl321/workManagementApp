@@ -11,9 +11,19 @@ export default {
             store.dispatch("setUid", uid)
         },
         // ユーザーIDの破棄
-        storeDestroyFirebaseUid() {
+        storeDeleteFirebaseUid() {
             store.dispatch("destroyUid")
-        }
+        },
+        // アカウント削除結果
+        storeSetDeleteResult(result) {
+            store.dispatch("setAccountDeleteResult", result)
+        },
+        setDeleteAccountDeleteResult() {
+            store.dispatch("deleteAccountDeleteResult")
+        },
+        storeGetDeleteResult() {
+            return store.state.auth.delete_result
+        },
     }
 }
 
