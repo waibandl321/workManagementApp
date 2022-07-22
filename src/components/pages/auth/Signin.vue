@@ -91,7 +91,7 @@
                     data-e2e-id="googleSignin"
                 >
                     <v-img
-                        src="./img/icons-google.png"
+                        src="@/assets/img/icons-google.png"
                         max-width="32"
                         min-width="32"
                     >

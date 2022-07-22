@@ -89,7 +89,7 @@
                             data-e2e-id="googleSignup"
                         >
                             <v-img
-                                src="./img/icons-google.png"
+                                src="@/assets/img/icons-google.png"
                                 max-width="32"
                                 min-width="32"
                             >
