@@ -373,6 +373,8 @@ export default {
         
         // 削除
         clickDelete(task) {
+            this.params.success = ""
+            this.params.error = ""
             this.delete_options.push(
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
                 { function_cd: "delete", text: "削除する",   callback: this.execDeleteTaskFromList }
