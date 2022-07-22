@@ -1,16 +1,6 @@
 <template>
     <div class="header">
         <div class="inner d-flex align-center">
-            <div class="d-flex align-center">
-                <div class="pr-4">
-                    <v-btn
-                        text
-                        to="/"
-                    >
-                        <v-icon color="primary" x-large>mdi-home-variant-outline</v-icon>
-                    </v-btn>
-                </div>
-            </div>
             <v-spacer />
             <div class="d-flex align-center">
                 <div
@@ -36,7 +26,7 @@
                             class="pa-2 white--text"
                             data-e2e-id="headerAccountName"
                         >
-                            ログイン中: {{ parents.user_info.last_name }} {{ parents.user_info.first_name }}
+                            アカウント: {{ parents.user_info.last_name }} {{ parents.user_info.first_name }}
                         </v-btn>
                     </div>
                 </div>
@@ -45,28 +35,12 @@
                         color="blue-grey"
                         class="pa-2 white--text"
                         filled
-                        to="/auth/signout"
+                        @click="clickSignout()"
                         data-e2e-id="appSignout"
                     >
                         ログアウト
                     </v-btn>
                 </div>
-            </div>
-            <div>
-                <v-alert
-                    dense
-                    outlined
-                    type="error"
-                    v-if="error"
-                >
-                    {{ error }}
-                </v-alert>
-            </div>
-            <div v-if="loading">
-                <v-progress-linear
-                    indeterminate
-                    color="primary"
-                ></v-progress-linear>
             </div>
         </div>
     </div>
@@ -80,18 +54,18 @@ export default {
         parents: Object,
     },
     data: () => ({
-        loading: false,
-        error: "",
         functions: [
             { text: "ダッシュボード", path: "/", icon: "mdi-view-dashboard-outline" },
             { text: "タスク一覧", path: "/task", icon: "mdi-format-list-checks" },
             { text: "ファイル管理", path: "/file", icon: "mdi-folder" },
         ],
     }),
-    created() {},
     methods: {
         accountEdit() {
             this.pageMove('/account/update')
+        },
+        clickSignout() {
+            this.pageMove('/auth/signout')
         }
     }
 }
