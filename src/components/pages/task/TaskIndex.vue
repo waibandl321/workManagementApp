@@ -64,11 +64,14 @@ export default {
     }),
     created() {
         this.setRoutetitle()
+        this.parents.user_info = this.storeGetAccountInfo()
+        if(!this.parents.user_info.first_name) {
+            this.pageMove('/account/register')
+        }
         this.init()
     },
     methods: {
         async init() {
-            this.parents.user_info = this.storeGetAccountInfo()
             this.params.task_status_list = this.getTaskStatus()
             this.params.task_priorities = this.getTaskPriorities()
         },

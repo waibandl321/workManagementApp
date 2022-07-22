@@ -74,6 +74,9 @@ export default {
     created() {
         this.setRoutetitle()
         this.parents.user_info = this.storeGetAccountInfo()
+        if(!this.parents.user_info.first_name) {
+            this.pageMove('/account/register')
+        }
         this.initTaskList()
     },
     mounted() {

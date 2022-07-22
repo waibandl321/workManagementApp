@@ -25,11 +25,13 @@ const router = new Router({
 // ナビゲーションガード
 router.beforeEach((to, from, next) => {
   if(!to.path.includes('/auth/')) {
+
     // アカウント初期設定が完了している場合は新規登録画面には遷移できないように
     if(to.path.includes('/account/register') && Utils.routerAccountExists()) {
       window.location = "/account/update"
       return;
     }
+
     // ログインチェック
     if(!Utils.isSignin()) {
         window.location = "/auth/signin"
