@@ -1,10 +1,9 @@
 describe('アカウント更新', () => {
     before(() => {
-        cy.appSignin()
+        cy.appSignin('/account/update')
     })
 
     it('画面確認', () => {
-        cy.visit('/account')
         cy.get('.v-card__title').should('contain', 'アカウント情報更新')
         cy.get('[data-e2e-id="lastName"]')
         cy.get('[data-e2e-id="firstName"]')
@@ -14,7 +13,6 @@ describe('アカウント更新', () => {
     });
 
     it('アカウント削除モーダル', () => {
-        cy.appSignin()
         cy.get('[data-e2e-id="accountDelete"]').click()
         cy.confirmDeleteModal()
     });
@@ -29,9 +27,9 @@ describe('アカウント更新', () => {
         cy.confirmDeleteModal()
         cy.get('[data-e2e-id="modaldelete"]').click()
         cy.wait(2000)
-        cy.get('.v-alert').should('contain', 'アカウントを削除しました。')
-        cy.get('[data-e2e-id="finishApp"]').should('contain', 'アプリケーションの利用を終了する')
-        cy.get('[data-e2e-id="finishApp"]').click()
+        cy.on('window:alert', (str) => {
+            expect(str).to.equal('アカウントを削除しました。アプリケーションの利用を終了します。')
+        })
         cy.url().should('eq', 'http://localhost:8080/auth/signin')
     });
 })

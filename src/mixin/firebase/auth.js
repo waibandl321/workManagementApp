@@ -86,9 +86,8 @@ export default {
         // アカウント削除
         async firebaseDeleteAuthUser() {
             const auth = getAuth();
-            const user = auth.currentUser;
 
-            return await deleteUser(user).then((res) => {
+            return await deleteUser(auth.currentUser).then((res) => {
                 console.log(res);
                 return true
             }).catch((error) => {

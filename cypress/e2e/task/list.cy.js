@@ -28,7 +28,6 @@ describe('タスク一覧', () => {
         cy.get('[data-e2e-id="taskAddInput"]').clear().type('hoge task')
         cy.get('[data-e2e-id="taskAddSubmit"]').should('not.have.attr', 'disabled', 'disabled')        
         cy.get('[data-e2e-id="taskAddSubmit"]').click() // 送信
-        cy.wait(1000)        
         cy.get('.v-alert').should('contain', 'タスクを新規作成しました') // alertメッセージ
         cy.get('.basic-list').contains('tr', 'hoge task') // 一覧描画チェック
     });
