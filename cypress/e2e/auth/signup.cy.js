@@ -44,7 +44,7 @@ describe('サインアップ画面', () => {
         cy.get('[data-e2e-id="execSignup"]').click()
         cy.wait(2000)
         // 登録完了→アカウント登録画面に遷移
-        cy.visit('/account')
+        cy.visit('/account/register')
         cy.get('.v-card__title').should('contain', 'アカウント情報登録')
     })
 

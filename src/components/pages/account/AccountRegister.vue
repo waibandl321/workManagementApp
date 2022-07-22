@@ -98,6 +98,9 @@ export default {
         first_name: "",
         register_status: false,
     }),
+    created() {
+        
+    },
     methods: {
         async register() {
             this.params.loading = true

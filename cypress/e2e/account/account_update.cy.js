@@ -1,10 +1,9 @@
 describe('アカウント更新', () => {
     before(() => {
-        cy.appSignin()
+        cy.appSignin('account/update')
     })
 
     it('画面確認', () => {
-        cy.visit('/account')
         cy.get('.v-card__title').should('contain', 'アカウント情報更新')
         cy.get('[data-e2e-id="lastName"]')
         cy.get('[data-e2e-id="firstName"]')
@@ -30,7 +29,7 @@ describe('アカウント更新', () => {
 
     // 更新処理失敗はAPI要因のため除外
     it('更新処理', () => {
-        cy.appSignin()
+        cy.appSignin('account/update')
         cy.get('[data-e2e-id="lastName"]').clear().type('uhoge')
         cy.get('[data-e2e-id="firstName"]').clear().type('uchan')
         cy.get('[data-e2e-id="accountUpdate"]').should('not.have.attr', 'disabled', 'disabled')

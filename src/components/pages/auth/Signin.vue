@@ -148,7 +148,7 @@ export default {
                         this.pageMove('/');
                     } else {
                         this.storeSetAccountInfo(null)
-                        this.pageMove('/account')
+                        this.pageMove('/account/register')
                     }
                 } else {
                     throw new Error();
@@ -178,7 +178,7 @@ export default {
                     this.storeSetAccountInfo(account)
                     this.pageMove('/')
                 } else {
-                    this.pageMove('/account')
+                    this.pageMove('/account/register')
                 }
             }
             

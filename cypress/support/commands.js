@@ -35,7 +35,7 @@ Cypress.Commands.add("appSignin", (path) => {
         cy.get('[data-e2e-id="execSignin"]').should('not.have.attr', 'disabled')
         cy.get('[data-e2e-id="execSignin"]').click()
         cy.wait(2000)
-        cy.visit( path ? path : 'account' )
+        cy.visit( path ? path : '/' )
     })
 })
 // 削除モーダル要素確認

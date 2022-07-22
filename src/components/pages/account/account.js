@@ -1,7 +1,7 @@
 export default {
     methods: {
         cancel() {
-            this.$router.go(-1)
+            this.pageMove('/')
         },
         setAccountAvatarColor() {
             let letters= '0123456789ABCDEF'.split('');

@@ -91,7 +91,7 @@ export default {
     created() {},
     methods: {
         accountEdit() {
-            this.pageMove('/account')
+            this.pageMove('/account/update')
         }
     }
 }

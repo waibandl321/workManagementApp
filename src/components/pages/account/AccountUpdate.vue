@@ -1,6 +1,6 @@
 <template>
-    <div class="pa-6 account-edit">
-        <v-container>
+    <div class="auth">
+        <v-card>
             <MessageViewer
                 v-if="params.success || params.error"
                 :params="params"
@@ -76,7 +76,7 @@
                     </v-card-actions>
                 </validation-observer>
             </v-card>
-        </v-container>
+        </v-card>
         <ConfirmDelete
             v-if="delete_modal"
             :delete_options="delete_options"

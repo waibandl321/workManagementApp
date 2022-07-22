@@ -1,6 +1,6 @@
 describe('アカウント登録', () => {
     before(() => {
-        cy.appSignin()
+        cy.appSignin('account/register')
         // cy.appSignin({ email: "e2etest@example.com", password: "e2eteste" })
     })
     it('画面遷移', () => {
