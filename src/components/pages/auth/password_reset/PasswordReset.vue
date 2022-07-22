@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import PasswordResetEmailConfirm from "./password_reset/PasswordResetEmailConfirm.vue"
-import PasswordResetEmailSet from "./password_reset/PasswordResetEmailSet.vue"
+import PasswordResetEmailConfirm from "./PasswordResetEmailConfirm.vue"
+import PasswordResetEmailSet from "./PasswordResetEmailSet.vue"
 export default {
     components: {
         PasswordResetEmailConfirm,
@@ -31,4 +31,4 @@ export default {
 }
 </script>
 
-<style scoped src="././scoped.css"></style>
+<style scoped src="@/components/pages/auth/scoped.css"></style>

@@ -72,7 +72,7 @@
             <v-divider />
             <div class="pa-4">
                 <v-btn
-                    to="/auth/password_reset_email"
+                    to="/auth/password_reset"
                     outlined
                     data-e2e-id="passwordReset"
                 >

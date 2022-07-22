@@ -47,7 +47,7 @@ describe('サインイン画面', () => {
   it('パスワード再設定画面遷移', () => {
     cy.get('[data-e2e-id="passwordReset"]').click()
     cy.wait(500)
-    cy.visit('/auth/password_reset_email')
+    cy.visit('/auth/password_reset')
     cy.get('.v-card__title').should('contain', 'パスワード再設定')
     cy.get('.v-card__text').should('contain', 'パスワード再設定用のメールアドレスを入力してください。')
   })

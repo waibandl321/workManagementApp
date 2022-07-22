@@ -1,6 +1,6 @@
 import Signup from '@/components/pages/auth/Signup'
 import Signin from '@/components/pages/auth/Signin'
-import PasswordResetEmail from '@/components/pages/auth/PasswordResetEmail'
+import PasswordReset from '@/components/pages/auth/password_reset/PasswordReset'
 import Signout from '@/components/pages/auth/Signout'
 import UserDelete from '@/components/pages/auth/UserDelete'
 import UserDeleteConfirm from '@/components/pages/auth/UserDeleteConfirm'
@@ -19,9 +19,9 @@ export default [
         meta: { title: 'サインイン'},
     },
     {
-        path: '/auth/password_reset_email',
-        name: 'password_reset_email',
-        component: PasswordResetEmail,
+        path: '/auth/password_reset',
+        name: 'password_reset',
+        component: PasswordReset,
         meta: { title: 'パスワード再設定'}
     },
     {
