@@ -1,15 +1,7 @@
 <template>
     <div class="body">
         <Header :parents="parents" />
-        <v-progress-linear
-            v-if="params.loading"
-            indeterminate
-            color="primary"
-        ></v-progress-linear>
-        <div
-            class="pa-4 dashbord"
-            v-else
-        >
+        <div class="pa-4 dashbord">
             <v-row>
                 <CompletedTaskRate :params="params" />    
                 <ExpiredTaskRate :params="params" />
@@ -24,6 +16,7 @@
                 :closeDetail="closeDetail"
             />
         </div>
+        <ExecLoading v-if="params.loading"/>
     </div>
 </template>
 
@@ -34,6 +27,8 @@ import ExpiredTaskRate from './parts/DashboardExpiredTaskRate.vue'
 import TaskLength from './parts/DashboardTaskLength.vue'
 import DashboardTaskList from './parts/DashboardTaskList.vue'
 import DashboardTaskDetail from '@/components/pages/task/TaskDetail.vue'
+import ExecLoading from "@/components/common/ExecLoading.vue"
+
 import dashboardMixin from './dashbord.js'
 import taskGlobalMixin from '@/mixin/firebase/task.js'
 import taskLocalMixin from '@/components/pages/task/task.js'
@@ -46,6 +41,7 @@ export default {
         TaskLength,
         DashboardTaskList,
         DashboardTaskDetail,
+        ExecLoading,
     },
     mixins: [dashboardMixin, taskGlobalMixin, taskLocalMixin],
     data: () => ({
