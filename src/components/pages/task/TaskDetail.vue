@@ -12,53 +12,10 @@
             >
                 <v-icon>mdi-close</v-icon>
             </v-btn>
-            <!-- タスク名・削除 -->
-            <v-toolbar-title class="toolbar_title px-2" data-test-id="taskDetailToolbar">
-                <div
-                    v-if="task_name_edit"
-                    class="taskname_edit"
-                >
-                <validation-observer v-slot="{ invalid }" ref="observer">
-                    <validation-provider
-                        name="タスク名"
-                        rules="required"
-                    >
-                        <v-text-field
-                            autofocus
-                            hide-details
-                            v-model="params.viewer.task_name"
-                            outlined
-                            dense
-                            background-color="white"
-                            data-test-id="taskNameInput"
-                        ></v-text-field>
-                    </validation-provider>
-                    <v-btn
-                        @click="tasknameUpdate()"
-                        class="taskname_edit_save px-4"
-                        :disabled="invalid"
-                        data-test-id="taskNameSave"
-                        color="primary"
-                    >
-                        保存
-                    </v-btn>
-                </validation-observer>
-                </div>
-                <div
-                    v-else
-                    class="d-flex align-center"
-                >
-                    {{ params.viewer.task_name ? params.viewer.task_name : '' }}
-                    <v-btn
-                        icon
-                        @click="task_name_edit = true"
-                        data-test-id="taskNameEdit"
-                        color="primary"
-                    >
-                        <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
-                </div>
-            </v-toolbar-title>
+            <!-- タスク名 -->
+            <TaskName 
+                :params="params"
+            />
             <v-spacer></v-spacer>
             <v-btn
                 icon
@@ -432,6 +389,7 @@
 <script>
 import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
 import MessageViewer from '@/components/common/MessageViewer.vue'
+import TaskName from './detail/TaskName.vue'
 import SubtaskEdit from "./subtask/SubtaskEdit.vue"
 import SubtaskView from "./subtask/SubtaskView.vue"
 // エディタ
@@ -448,6 +406,7 @@ export default {
         ConfirmDelete,
         MessageViewer,
         quillEditor,
+        TaskName,
         SubtaskEdit,
         SubtaskView,
     },

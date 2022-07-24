@@ -164,13 +164,6 @@ export default {
             return true
         },
         // タスク情報の更新
-        async tasknameUpdate() {
-            const result = await this.firebaseUpdateTaskname(this.params.viewer.task_id, this.params.viewer.task_name)
-            if(result) {
-                this.task_name_edit = false
-                this.params.success = "タスク名を更新しました。"
-            }
-        },
         async updateTaskDescription() {
             const result = await this.firebaseUpdateTaskDescription(this.params.viewer.task_id, this.params.viewer.task_description);
             if(result) {

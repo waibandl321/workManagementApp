@@ -4,7 +4,7 @@ describe('アカウント登録', () => {
         // cy.appSignin({ email: "e2etest@example.com", password: "e2eteste" })
     })
     it('画面遷移', () => {
-        cy.get('.v-card__title').should('contain', 'アカウント情報登録')
+        cy.get('.v-card__title').contains('アカウント情報登録')
         cy.get('[data-test-id="lastName"]')
         cy.get('[data-test-id="firstName"]')
         cy.get('[data-test-id="accountRegister"').should('have.attr', 'disabled', 'disabled')
