@@ -112,6 +112,7 @@
                                 text
                                 data-test-id="taskSortPriority"
                                 @click="sortByDeadline"
+                                class="px-1"
                             >
                                 締切日
                                 <v-icon small>
@@ -125,6 +126,7 @@
                                 text
                                 data-test-id="taskSortCreated"
                                 @click="sortByCreated()"
+                                class="px-1"
                             >
                                 作成日時
                                 <v-icon small>
@@ -391,4 +393,44 @@ export default {
     }
 }
 </script>
-<style scoped src="./scoped.css"></style>
+<style scoped>
+.basic-list {
+    border-collapse: collapse;
+    table-layout: unset;
+    width: 100%;
+}
+.basic-list thead {
+    background-color: #eee;
+}
+.basic-list tbody tr {
+    border-bottom: 1px solid #ccc;
+}
+.basic-list tbody tr:hover {
+    cursor: pointer;
+    background-color: #f6f6f6;
+}
+.basic-list td {
+    font-size: 14px;
+    padding: 4px;
+}
+.options-td {
+    text-align: right;
+}
+.drag-icon-td {
+    width: 32px;
+}
+.relative {
+    position: relative;
+}
+.alt_submit {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.input-error-message {
+    font-size: 14px;
+    color: #ff5252;
+    margin-top: 4px;
+}
+</style>

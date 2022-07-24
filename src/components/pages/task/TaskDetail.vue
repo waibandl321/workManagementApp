@@ -187,6 +187,10 @@ export default {
     }
 }
 </script>
-
-<style scoped src="../../../assets/css/original.css"></style>
-<style scoped src="./scoped.css"></style>
+<style scoped>
+.detail {
+    padding-bottom: 120px!important;
+    height: 100%;
+    background-color: #fff;
+}
+</style>

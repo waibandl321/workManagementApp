@@ -89,6 +89,14 @@ export default {
 </script>
 
 <style scoped>
+.v-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+.toolbar_title {
+    width: 100%;
+}
 .taskname {
     position: relative;
     width: 100%;

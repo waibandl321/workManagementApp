@@ -78,4 +78,14 @@ export default {
     }
 }
 </script>
-<style scoped src="./scoped.css"></style>
+<style scoped>
+.list {
+    box-sizing: border-box;
+    padding: 24px 16px 10%;
+}
+.list {
+    overflow: auto;
+    width: 100%;
+    height: calc(100vh - 70px);
+}
+</style>
