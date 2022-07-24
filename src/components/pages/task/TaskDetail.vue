@@ -26,19 +26,12 @@
                 <v-icon>mdi-delete</v-icon>
             </v-btn>
         </v-toolbar>
-        <div class="pa-6 detail" style="background: #fff;">
+        <div class="pa-6 detail">
             <MessageViewer
                 :params="params"
             />
             <!-- 期限切れアラート -->
-            <v-alert
-                v-if="judgeRemainingDays(params.viewer.task_deadline) <= 0"
-                type="error"
-                color="red darken-3"
-                data-test-id="alertDeadline"
-            >
-                {{ outputTaskAlert() }}
-            </v-alert>
+            <TaskDeadlineAlert :params="params"></TaskDeadlineAlert>
             <!-- ステータス・優先度設定 -->
             <v-row>
                 <v-col data-test-id="taskDetailStatus">
@@ -390,6 +383,7 @@
 import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
 import MessageViewer from '@/components/common/MessageViewer.vue'
 import TaskName from './detail/TaskName.vue'
+import TaskDeadlineAlert from './detail/TaskDeadlineAlert.vue'
 import SubtaskEdit from "./subtask/SubtaskEdit.vue"
 import SubtaskView from "./subtask/SubtaskView.vue"
 // エディタ
@@ -407,6 +401,7 @@ export default {
         MessageViewer,
         quillEditor,
         TaskName,
+        TaskDeadlineAlert,
         SubtaskEdit,
         SubtaskView,
     },
