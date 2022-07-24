@@ -16,36 +16,7 @@
         <!-- 期限切れアラート -->
         <TaskDeadlineAlert :params="params"></TaskDeadlineAlert>
         <!-- ステータス・優先度設定 -->
-        <v-row>
-            <v-col data-test-id="taskDetailStatus">
-                <div class="font-weight-bold pb-4">■ ステータス</div>
-                <v-select
-                    label="ステータス"
-                    :items="params.task_status_list"
-                    item-text="text"
-                    item-value="key"
-                    outlined
-                    color="primary"
-                    dense
-                    v-model="params.viewer.task_status"
-                    @change="updateTaskStatus()"
-                ></v-select>
-            </v-col>
-            <v-col data-test-id="taskDetailPriority">
-                <div class="font-weight-bold pb-4">■ 優先度</div>
-                <v-select
-                    label="優先度"
-                    :items="params.task_priorities"
-                    item-text="text"
-                    item-value="key"
-                    v-model="params.viewer.task_priority"
-                    outlined
-                    color="primary"
-                    dense
-                    @change="updateTaskPriority()"                        
-                ></v-select>
-            </v-col>
-        </v-row>
+        <TaskStatusPriority :params="params"></TaskStatusPriority>
         <v-divider />
         <!-- 期日設定 -->
         <TaskTerm
@@ -244,6 +215,7 @@ import TaskDetailToolbar from './detail/TaskDetailToolbar.vue'
 import TaskDeadlineAlert from './detail/TaskDeadlineAlert.vue'
 import TaskDescription from './detail/TaskDescription.vue'
 import TaskTerm from './detail/TaskTerm.vue'
+import TaskStatusPriority from "./detail/TaskStatusPriority.vue"
 
 import SubtaskEdit from "./subtask/SubtaskEdit.vue"
 import SubtaskView from "./subtask/SubtaskView.vue"
@@ -251,18 +223,20 @@ import SubtaskView from "./subtask/SubtaskView.vue"
 
 import myMixin from "./task.js"
 
+
 export default {
     mixins: [myMixin],
     components: {
-        ConfirmDelete,
-        MessageViewer,
-        TaskDetailToolbar,
-        TaskDeadlineAlert,
-        TaskDescription,
-        TaskTerm,
-        SubtaskEdit,
-        SubtaskView,
-    },
+    ConfirmDelete,
+    MessageViewer,
+    TaskDetailToolbar,
+    TaskDeadlineAlert,
+    TaskDescription,
+    TaskTerm,
+    SubtaskEdit,
+    SubtaskView,
+    TaskStatusPriority
+},
     props: {
         listRefresh: Function,
         params: Object,

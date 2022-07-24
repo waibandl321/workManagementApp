@@ -171,18 +171,7 @@ export default {
                 this.params.success = "タスク概要説明を更新しました。"
             }
         },
-        async updateTaskStatus() {
-            const result = await this.firebaseUpdateTaskStatus(this.params.viewer)
-            if(result) {
-                this.params.success = "タスクのステータスを変更しました。"
-            }
-        },
-        async updateTaskPriority() {
-            const result = await this.firebaseUpdateTaskPriority(this.params.viewer.task_id, this.params.viewer.task_priority)
-            if(result) {
-                this.params.success = "タスクの優先度を変更しました。"
-            }
-        },
+        
         // 優先度・ステータス文字列変換
         extractTaskStatus(status) {
             let result = this.params.task_status_list
