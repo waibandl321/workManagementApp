@@ -100,19 +100,12 @@
     display: none;
 }
 .file_select,
-.date_picker,
-.task_link,
-.select_manager {
+.task_link {
     position: absolute;
     box-shadow: 0px 2px 8px #00000029;
     padding: 0.5rem 1rem;
     background-color: #fff;
     z-index: 2;
-}
-.date_picker,
-.select_manager {
-    left: 0;
-    top: 100%;
 }
 .select_init {
     position: absolute;

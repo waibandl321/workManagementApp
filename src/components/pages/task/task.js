@@ -183,21 +183,6 @@ export default {
                 this.params.success = "タスクの優先度を変更しました。"
             }
         },
-        async updateTaskTerm() {
-            const deadline = this.convertUnixtimeFromDate(this.task_deadline)
-            if(deadline === this.params.viewer.task_deadline){
-                this.termSetting = false
-                return
-            }
-            const result = await this.firebaseUpdateTaskDeadline(deadline, this.params.viewer.task_id)
-            if(result) {
-                this.params.viewer.task_deadline = deadline
-                this.params.success = "タスク期日を変更しました"
-            }
-            this.task_deadline = null
-            this.termSetting = false
-            
-        },
         // 優先度・ステータス文字列変換
         extractTaskStatus(status) {
             let result = this.params.task_status_list

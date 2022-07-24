@@ -67,7 +67,7 @@
 
 <script>
 export default {
-  name: "TaskName",
+  name: "TaskDetailToobar",
   props: {
     params: Object,
     closeDetail: Function,

@@ -48,82 +48,9 @@
         </v-row>
         <v-divider />
         <!-- 期日設定 -->
-        <div class="py-2 d-flex align-center">
-            <div class="font-weight-bold">■ タスク期日</div>
-            <div class="ml-4 relative">
-                <v-btn
-                    @click="termSetting = !termSetting" 
-                    color="red darken-3"
-                    fab
-                    class="mr-2 white--text"
-                    small
-                    data-test-id="taskDeadlineOpen"
-                >
-                    <v-icon>mdi-calendar-check-outline</v-icon>
-                </v-btn>
-                <span
-                    class="ml-2"
-                    style="color: #C62828; font-size: 14px;"
-                    data-test-id="taskDeadlineText"
-                >
-                    {{ this.convertDatetimeFromUnixtime(params.viewer.task_deadline, "yyyy-mm-dd") }}
-                </span>
-                <!-- date picker -->
-                <div class="date_picker" v-if="termSetting">
-                    <v-text-field
-                        v-model="task_deadline"
-                        label="日付を選択"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        data-test-id="taskDeadlineValue"
-                    ></v-text-field>
-                    <div>
-                        <v-date-picker
-                            v-model="task_deadline"
-                            no-title
-                            color="primary"
-                            data-test-id="taskDeadlinePicker"
-                        ></v-date-picker>
-                    </div>
-                    <v-divider />
-                    <div class="mt-2">
-                        <v-btn
-                            text
-                            color="primary"
-                            @click="updateTaskTerm()"
-                            data-test-id="taskDeadlineSave"
-                        >
-                            保存
-                        </v-btn>
-                        <v-btn
-                            text
-                            @click="task_deadline = [], termSetting = false"
-                            data-test-id="taskDeadlineCancel"
-                        >
-                            キャンセル
-                        </v-btn>
-                        <v-btn
-                            text
-                            color="red"
-                            @click="deleteTaskTerm()"
-                            data-test-id="taskDeadlineDelete"
-                        >
-                            日付を消去
-                        </v-btn>
-                    </div>
-                </div>
-            </div>
-            <v-spacer />
-            <div class="fs-sm" data-test-id="taskCreatedText">
-                タスク作成日: {{ convertDatetimeFromUnixtime(params.viewer.created, "yyyy-mm-dd") }}
-            </div>
-            <div class="ml-4 fs-sm" data-test-id="taskTermText">
-                タスク実施期間：{{ convertTaskPeriod(params.viewer.created, params.viewer.task_deadline) }}
-            </div>
-            <div class="ml-4 fs-sm" data-test-id="taskDaysLeft">
-                期日までの残り日数：{{ convertRemainingDays(params.viewer.task_deadline) }}
-            </div>
-        </div>
+        <TaskTerm
+            :params="params"
+        ></TaskTerm>
         <v-divider />
         <!-- サブタスク一覧 -->
         <div class="subtask_list" v-if="params.subtask_list">
@@ -316,6 +243,7 @@ import MessageViewer from '@/components/common/MessageViewer.vue'
 import TaskDetailToolbar from './detail/TaskDetailToolbar.vue'
 import TaskDeadlineAlert from './detail/TaskDeadlineAlert.vue'
 import TaskDescription from './detail/TaskDescription.vue'
+import TaskTerm from './detail/TaskTerm.vue'
 
 import SubtaskEdit from "./subtask/SubtaskEdit.vue"
 import SubtaskView from "./subtask/SubtaskView.vue"
@@ -331,6 +259,7 @@ export default {
         TaskDetailToolbar,
         TaskDeadlineAlert,
         TaskDescription,
+        TaskTerm,
         SubtaskEdit,
         SubtaskView,
     },
@@ -431,12 +360,12 @@ export default {
             this.subtask_mode = "task";
         },
         // タスク期間設定消去
-        deleteTaskTerm() {
-            this.task_deadline = null
-            this.termSetting = false
-            this.firebaseUpdateTaskDeadline(this.task_deadline, this.params.viewer.task_id)
-            this.params.viewer.task_deadline = null
-        },
+        // deleteTaskTerm() {
+        //     this.task_deadline = null
+        //     this.termSetting = false
+        //     this.firebaseUpdateTaskDeadline(this.task_deadline, this.params.viewer.task_id)
+        //     this.params.viewer.task_deadline = null
+        // },
         // タスク削除
         clickTaskDelete() {
             this.delete_options.push(
