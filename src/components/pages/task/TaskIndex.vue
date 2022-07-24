@@ -3,24 +3,20 @@
         <Header
             :parents="parents"
         />
-        <div class="main">
-            <div class="inner">
-                <div class="list">
-                    <MessageViewer
-                        :params="params"
-                    />
-                    <TaskList
-                        :params="params"
-                        :listRefresh="listRefresh"
-                        ref="taskList"
-                    />
-                </div>
-                <TaskDetail
-                    :params="params"
-                    :listRefresh="listRefresh"
-                />
-            </div>
+        <div class="list">
+            <MessageViewer
+                :params="params"
+            />
+            <TaskList
+                :params="params"
+                :listRefresh="listRefresh"
+                ref="taskList"
+            />
         </div>
+        <TaskDetail
+            :params="params"
+            :listRefresh="listRefresh"
+        />
     </div>
 </template>
 
@@ -82,8 +78,3 @@ export default {
 }
 </script>
 <style scoped src="./scoped.css"></style>
-<style scoped>
-.body {
-  width: 100%;
-}
-</style>

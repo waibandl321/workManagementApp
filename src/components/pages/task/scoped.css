@@ -1,7 +1,3 @@
-.inner {    
-    height: 100%;
-    overflow-y: hidden;
-}
 .list,
 .detail {
     box-sizing: border-box;
