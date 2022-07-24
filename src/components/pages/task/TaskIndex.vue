@@ -1,8 +1,6 @@
 <template>
     <div class="body">
-        <Header
-            :parents="parents"
-        />
+        <Header :parents="parents"/>
         <div class="list">
             <MessageViewer
                 :params="params"

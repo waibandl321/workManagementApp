@@ -73,7 +73,7 @@
                             autofocus
                             hide-details
                             outlined
-                            v-model="new_task_name"
+                            v-model.trim="new_task_name"
                             data-test-id="taskAddInput"
                         ></v-text-field>
                         <v-btn
@@ -82,7 +82,7 @@
                             color="primary"
                             :disabled="invalid"
                             data-test-id="taskAddSubmit"
-                            @click="createTask()"
+                            @click="execCreateTask()"
                         >
                             新規作成
                         </v-btn>
@@ -220,7 +220,6 @@ export default {
         // 作成
         new_task: false,
         new_task_name: "",
-        composing: false,
         
         // 削除
         delete_options: [],
@@ -260,22 +259,6 @@ export default {
                 this.params.error = "タスクデータの読み込みに失敗しました。"
             }
             this.params.loading = false;
-        },
-        // 一覧クリック
-        async recordClick(task) {
-            this.params.success = ""
-            this.params.error = "";
-            this.params.viewer = task
-            try {
-                this.params.subtask_list = await this.getSubtaskList(task)
-                this.params.files = await this.getFileList();
-                this.params.detail_mode = true
-            } catch (error) {
-                this.params.error = `
-                データの読み込みに失敗しました。ブラウザを再読み込みしていただくか、
-                しばらく時間を置いてから操作してください。`;
-                this.params.viewer = {}
-            }
         },
         // リストの絞り込み
         async filterList() {
@@ -330,46 +313,26 @@ export default {
             }
             this.filter_items = result
         },
-
+        // 一覧クリック
+        async recordClick(task) {
+            this.params.success = ""
+            this.params.error = "";
+            this.params.viewer = task
+            try {
+                this.params.subtask_list = await this.getSubtaskList(task)
+                this.params.files = await this.getFileList();
+                this.params.detail_mode = true
+            } catch (error) {
+                this.params.error = `
+                データの読み込みに失敗しました。ブラウザを再読み込みしていただくか、
+                しばらく時間を置いてから操作してください。`;
+                this.params.viewer = {}
+            }
+        },
         // タスク作成
         clickTaskInput() {
             this.new_task = !this.new_task
             this.new_task_name = "";
-        },
-        async createTask() {
-            if(!this.composing && this.new_task_name) {
-                const task = this.generateTaskObject(this.new_task_name)
-                try {
-                    await this.firebaseTaskCreate(task)
-                    this.params.success = "タスクを新規作成しました"
-                } catch (error) {
-                    this.params.error = "タスク作成に失敗しました。"
-                    console.log(error);
-                }
-                this.listRefresh()
-                this.new_task = !this.new_task
-                this.new_task_name = ""
-                this.composing = false
-            }
-        },
-        generateTaskObject(new_task_name) {
-            const id = this.createRandomId();
-            return {
-                task_id: id,
-                project_id: "",
-                task_name: new_task_name,
-                task_description: "",
-                task_message_content: "",
-                task_message_post_account: "",
-                task_status: 0,
-                task_priority: 0,
-                task_manager: "",
-                task_deadline: null,
-                create_account: this.storeGetFirebaseUid(),
-                created: this.getCurrentUnixtime(),
-                updated: "",
-                finished_at: ""
-            }
         },
         
         // 削除

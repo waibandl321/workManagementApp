@@ -29,6 +29,39 @@ export default {
                 return result;
             }
         },
+        // タスク作成
+        async execCreateTask() {
+            const task = this.generateTaskObject(this.new_task_name)
+            try {
+                await this.firebaseTaskCreate(task)
+                this.params.success = "タスクを新規作成しました"
+            } catch (error) {
+                this.params.error = "タスク作成に失敗しました。"
+                console.log(error);
+            }
+            this.listRefresh();
+            this.new_task = false;
+            this.new_task_name = "";
+        },
+        generateTaskObject(new_task_name) {
+            const id = this.createRandomId();
+            return {
+                task_id: id,
+                project_id: "",
+                task_name: new_task_name,
+                task_description: "",
+                task_message_content: "",
+                task_message_post_account: "",
+                task_status: 0,
+                task_priority: 0,
+                task_manager: "",
+                task_deadline: null,
+                create_account: this.storeGetFirebaseUid(),
+                created: this.getCurrentUnixtime(),
+                updated: "",
+                finished_at: ""
+            }
+        },
         // タスク削除
         async execDeleteTask() {
             try {
