@@ -75,39 +75,6 @@ export default {
     clickSubtaskRecord: Function,
   },
   mixins: [myMixin],
-  data: () => ({}),
-  methods: {
-    // サブタスク更新
-    async updateSubtask(subtask, is_finished_flag) {
-      if(is_finished_flag) {
-        if(!subtask.finished_at) {
-          subtask.finished_at = this.getCurrentUnixtime()
-        } else {
-          return; //MEMO: finishedの場合は何もしない
-        }
-      }
-      const result = await this.firebaseUpdateSubtask(subtask)
-      if(result) {
-        this.params.success = "サブタスクを更新しました。"
-      } else {
-        this.params.error = "サブタスクの更新に失敗しました。"
-      }
-      this.params.subtask_editor = {};
-      this.subtask_option = []
-      this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
-      this.subtask_mode = "task";
-    },
-    // サブタスク削除
-    async deleteSubtask(subtask) {
-      const result = await this.firebaseDeleteSubtask(subtask);
-      if(result) {
-          this.params.success = "サブタスクを削除しました。"
-      } else {
-          this.params.error = "サブタスクの削除に失敗しました。"
-      }
-      this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
-    },
-  }
 }
 </script>
 

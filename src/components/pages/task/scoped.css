@@ -147,18 +147,6 @@ td {
     text-align: right;
 }
 /* editor style */
-.subtask-card__wrap {
-    display: flex;
-    align-items: center;
-}
-.subtask-card__icon {
-    width: 40px;
-    text-align: center;
-}
-.subtask-card__body {
-    width: calc(100% - 40px);
-    margin-top: 8px;
-}
 .toolbar_title {
     width: 100%;
 }

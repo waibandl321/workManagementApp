@@ -85,35 +85,34 @@ export default {
                 finished_at: ""
             }
         },
-        // サブタスク更新
         async updateSubtask(subtask, is_finished_flag) {
-            if(is_finished_flag) {
-                if(!subtask.finished_at) {
-                    subtask.finished_at = this.getCurrentUnixtime()
-                } else {
-                    return; //MEMO: finishedの場合は何もしない
-                }
-            }
-            const result = await this.firebaseUpdateSubtask(subtask)
-            if(result) {
-                this.params.success = "サブタスクを更新しました。"
+        if(is_finished_flag) {
+            if(!subtask.finished_at) {
+            subtask.finished_at = this.getCurrentUnixtime()
             } else {
-                this.params.error = "サブタスクの更新に失敗しました。"
+            return; //MEMO: finishedの場合は何もしない
             }
-            this.params.subtask_editor = {};
-            this.subtask_option = []
-            this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
-            this.subtask_mode = "task";
+        }
+        const result = await this.firebaseUpdateSubtask(subtask)
+        if(result) {
+            this.params.success = "サブタスクを更新しました。"
+        } else {
+            this.params.error = "サブタスクの更新に失敗しました。"
+        }
+        this.params.subtask_editor = {};
+        this.subtask_option = []
+        this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
+        this.subtask_mode = "task";
         },
         // サブタスク削除
         async deleteSubtask(subtask) {
-            const result = await this.firebaseDeleteSubtask(subtask);
-            if(result) {
-                this.params.success = "サブタスクを削除しました。"
-            } else {
-                this.params.error = "サブタスクの削除に失敗しました。"
-            }
-            this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
+        const result = await this.firebaseDeleteSubtask(subtask);
+        if(result) {
+            this.params.success = "サブタスクを削除しました。"
+        } else {
+            this.params.error = "サブタスクの削除に失敗しました。"
+        }
+        this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
         },
         // 戻り値：タスク期日 - タスク作成日
         convertTaskPeriod(begin, end) {            
@@ -142,8 +141,8 @@ export default {
             if(!end) {
                 return undefined
             }
-            const today = new Date(this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyy-mm-dd")),
-                  _end = new Date(this.convertDatetimeFromUnixtime(end, "yyyy-mm-dd"));
+            const today = new Date(this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyy-mm-dd"));
+            const _end = new Date(this.convertDatetimeFromUnixtime(end, "yyyy-mm-dd"));
              return (_end - today) / 86400000;
         },
         
@@ -211,7 +210,7 @@ export default {
             return result;
         },
         // ファイルアップロード
-        async onFileChange(event) {
+        async taskFileInputChange(event) {
             this.file_loading = true
             const files = event.target.files || event.dataTransfer.files
             if(await this.judgeBinaryFileType(files)) {
