@@ -4,56 +4,27 @@
         persistent
         max-width="1024px"
     >
-    <!-- ツールバー -->
     <TaskDetailToolbar 
         :closeDetail="closeDetail"
         :clickTaskDelete="clickTaskDelete"
         :params="params"
     ></TaskDetailToolbar>
     <div class="pa-6 detail">
-        <!-- メッセージ -->
         <MessageViewer
             :params="params"
         />
-        <!-- 期限切れアラート -->
         <TaskDeadlineAlert :params="params"></TaskDeadlineAlert>
-
-        <!-- ステータス・優先度設定 -->
         <TaskStatusPriority :params="params"></TaskStatusPriority>
         <v-divider />
-
-        <!-- 期日設定 -->
         <TaskTerm
             :params="params"
         ></TaskTerm>
         <v-divider />
-
-        <!-- サブタスク一覧 -->
         <SubtaskList
             :params="params"
             :clickSubtaskNew="clickSubtaskNew"
             :clickSubtaskRecord="clickSubtaskRecord"
         ></SubtaskList>
-
-        <!-- 概要 -->
-        <TaskDescription :params="params"></TaskDescription>
-        
-        <!-- 添付ファイル -->
-        <TaskAttachment
-            :params="params"
-            :file_loading="file_loading"
-            :clickAllFileDelete="clickAllFileDelete"
-            :clickFileDeleteSingle="clickFileDeleteSingle"
-        ></TaskAttachment>
-
-        <!-- 削除確認 -->
-        <ConfirmDelete
-            v-if="delete_modal"
-            :delete_title="delete_title"
-            :delete_options="delete_options"
-        />
-
-        <!-- サブタスク詳細・編集 -->
         <SubtaskView 
             :params="params"
             :subtask_option="subtask_option"
@@ -63,6 +34,18 @@
             :params="params"
             :subtask_option="subtask_option"
             v-if="subtask_mode == 'subtask_edit'"
+        />
+        <TaskDescription :params="params"></TaskDescription>
+        <TaskAttachment
+            :params="params"
+            :file_loading="file_loading"
+            :clickAllFileDelete="clickAllFileDelete"
+            :clickFileDeleteSingle="clickFileDeleteSingle"
+        ></TaskAttachment>
+        <ConfirmDelete
+            v-if="delete_modal"
+            :delete_title="delete_title"
+            :delete_options="delete_options"
         />
     </div>
 </v-dialog>
