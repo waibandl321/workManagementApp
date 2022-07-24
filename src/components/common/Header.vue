@@ -24,7 +24,7 @@
                             filled
                             :color="'#' + parents.user_info.color"
                             class="pa-2 white--text"
-                            data-e2e-id="headerAccountName"
+                            data-test-id="headerAccountName"
                         >
                             アカウント: {{ parents.user_info.last_name }} {{ parents.user_info.first_name }}
                         </v-btn>
@@ -36,7 +36,7 @@
                         class="pa-2 white--text"
                         filled
                         @click="clickSignout()"
-                        data-e2e-id="appSignout"
+                        data-test-id="appSignout"
                     >
                         ログアウト
                     </v-btn>

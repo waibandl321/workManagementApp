@@ -22,7 +22,7 @@
                     large
                     @click="clickOption(option)"
                     :color="option.function_cd === 'delete' ? 'red darken-3' : ''"                
-                    :data-e2e-id="'modal' + option.function_cd"
+                    :data-test-id="'modal' + option.function_cd"
                     class="pa-4"
                 >
                     {{ option.text }}

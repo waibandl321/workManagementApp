@@ -10,10 +10,10 @@
                     hide-details
                     v-model.trim="filter_text"
                     @input="filterList()"
-                    data-e2e-id="filterText"
+                    data-test-id="filterText"
                 ></v-text-field>
             </v-col>
-            <v-col data-e2e-id="filterStatus">
+            <v-col data-test-id="filterStatus">
                 <v-select
                     label="ステータスで絞り込み"
                     :items="params.task_status_list"
@@ -27,7 +27,7 @@
                     @change="filterList()"
                 ></v-select>
             </v-col>
-            <v-col data-e2e-id="filterPriority">
+            <v-col data-test-id="filterPriority">
                 <v-select
                     label="優先度で絞り込み"
                     :items="params.task_priorities"
@@ -44,12 +44,12 @@
         </v-row>
         
         <!-- add task -->
-        <div class="mt-4" data-e2e-id="taskAddButtonWrap">
+        <div class="mt-4" data-test-id="taskAddButtonWrap">
             <v-btn
                 color="primary"
                 text
                 @click="clickTaskInput()"
-                data-e2e-id="taskAddButton"
+                data-test-id="taskAddButton"
             >
                 <v-icon>{{ new_task ? 'mdi-close' : 'mdi-plus' }}</v-icon>
                 <span>タスク追加</span>
@@ -58,7 +58,7 @@
         <div
             v-if="new_task"
             class="mt-2 relative"
-            data-e2e-id="taskAddInputWrap"
+            data-test-id="taskAddInputWrap"
         >
             <validation-observer v-slot="{ invalid }" ref="observer">
                 <validation-provider
@@ -74,14 +74,14 @@
                             hide-details
                             outlined
                             v-model="new_task_name"
-                            data-e2e-id="taskAddInput"
+                            data-test-id="taskAddInput"
                         ></v-text-field>
                         <v-btn
                             depressed
                             class="alt_submit px-4"
                             color="primary"
                             :disabled="invalid"
-                            data-e2e-id="taskAddSubmit"
+                            data-test-id="taskAddSubmit"
                             @click="createTask()"
                         >
                             新規作成
@@ -99,7 +99,7 @@
         </div>
         
         <div class="list_body">
-            <table class="basic-list mt-4" data-e2e-id="taskList">
+            <table class="basic-list mt-4" data-test-id="taskList">
                 <thead>
                     <tr>
                         <td class="drag-icon-td">
@@ -111,7 +111,7 @@
                         <td>
                             <v-btn
                                 text
-                                data-e2e-id="taskSortPriority"
+                                data-test-id="taskSortPriority"
                                 @click="sortByDeadline"
                             >
                                 締切日
@@ -124,7 +124,7 @@
                         <td>
                             <v-btn
                                 text
-                                data-e2e-id="taskSortCreated"
+                                data-test-id="taskSortCreated"
                                 @click="sortByCreated()"
                             >
                                 作成日時
@@ -141,27 +141,27 @@
                         v-for="(task, i) in filter_items"
                         :key="i"
                         @click.stop="recordClick(task)"
-                        data-e2e-id="taskListRecord"
+                        data-test-id="taskListRecord"
                     >
                         <td class="drag-icon-td">
                             <v-icon>mdi-drag</v-icon>
                         </td>
-                        <td class="py-2" data-e2e-id="tdTaskName">
+                        <td class="py-2" data-test-id="tdTaskName">
                             {{ task.task_name }}
                         </td>
-                        <td class="py-2" data-e2e-id="tdStatus">
+                        <td class="py-2" data-test-id="tdStatus">
                             {{ extractTaskStatus(task.task_status) }}
                         </td>
-                        <td class="py-2" data-e2e-id="tdPriority">
+                        <td class="py-2" data-test-id="tdPriority">
                             {{ extractTaskPriority(task.task_priority) }}
                         </td>
-                        <td class="py-2" data-e2e-id="tdDeadline">
+                        <td class="py-2" data-test-id="tdDeadline">
                             {{ convertDatetimeFromUnixtime(task.task_deadline, "yyyy-mm-dd") }}
                         </td>
-                        <td class="py-2" data-e2e-id="tdTerm">
+                        <td class="py-2" data-test-id="tdTerm">
                             {{ convertTaskPeriod(task.created, task.task_deadline) }}
                         </td>
-                        <td class="py-2" data-e2e-id="tdCreated">
+                        <td class="py-2" data-test-id="tdCreated">
                             {{ convertDatetimeFromUnixtime(task.created, "yyyy-mm-dd") }}
                         </td>
                         <td class="options-td">
@@ -169,7 +169,7 @@
                                 text
                                 @click.stop="clickDelete(task)"
                                 color="primary"
-                                data-e2e-id="taskListDeleteButton"
+                                data-test-id="taskListDeleteButton"
                             >
                                 <v-icon>mdi-trash-can-outline</v-icon>
                             </v-btn>
@@ -180,7 +180,7 @@
             <div
                 v-if="!params.loading && filter_items.length === 0"
                 class="pa-4 text-center"
-                data-e2e-id="noItem"
+                data-test-id="noItem"
             >
                 <span style="font-size: 18px;">アイテムがありません</span>
             </div>

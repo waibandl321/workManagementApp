@@ -8,7 +8,7 @@
         <v-card>
             <v-card-title
                 class="text-h5 grey lighten-2"
-                data-e2e-id="subtaskTitle"
+                data-test-id="subtaskTitle"
             >
                 サブタスク詳細
             </v-card-title>
@@ -17,7 +17,7 @@
                 <v-divider />
                 <div
                     class="mt-2"
-                    data-e2e-id="subtaskName"
+                    data-test-id="subtaskName"
                 >
                     {{ params.subtask_viewer.subtask_name }}
                 </div>
@@ -27,7 +27,7 @@
                 <div
                     v-html="params.subtask_viewer.subtask_description"
                     class="mt-2 pb-10"
-                    data-e2e-id="subtaskDescription"
+                    data-test-id="subtaskDescription"
                 ></div>
             </div>
             <v-divider></v-divider>
@@ -39,7 +39,7 @@
                     :color="option.function_cd === 'edit' ? 'primary' : ''"
                     outlined
                     @click="clickOption(option, params.subtask_viewer)"
-                    :data-e2e-id="'subtaskView' + option.function_cd"
+                    :data-test-id="'subtaskView' + option.function_cd"
                 >
                     {{ option.text }}
                 </v-btn>

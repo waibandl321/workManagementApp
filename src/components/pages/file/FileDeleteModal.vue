@@ -23,7 +23,7 @@
                     outlined
                     large
                     @click="closeModal"
-                    data-e2e-id="fileDeleteCancel"
+                    data-test-id="fileDeleteCancel"
                 >
                     キャンセル
                 </v-btn>
@@ -32,7 +32,7 @@
                     dark
                     large
                     @click="deleteDecision"
-                    data-e2e-id="fileDeleteDone"
+                    data-test-id="fileDeleteDone"
                 >
                     削除
                 </v-btn>

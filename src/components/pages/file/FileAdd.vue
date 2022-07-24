@@ -10,7 +10,7 @@
                         dark
                         v-bind="attrs"
                         v-on="on"
-                        data-e2e-id="addFile"
+                        data-test-id="addFile"
                     >
                         <v-icon x-large>mdi-plus</v-icon>
                     </v-btn>
@@ -20,7 +20,7 @@
                         <v-btn
                             text
                             @click="$refs.pseudoInputFile.click()"
-                            data-e2e-id="selectFile"
+                            data-test-id="selectFile"
                         >
                             ファイルを選択
                         </v-btn>
@@ -29,7 +29,7 @@
                         <v-btn
                             text
                             @click="create_folder_modal = true"
-                            data-e2e-id="createFolder"
+                            data-test-id="createFolder"
                         >
                             フォルダを作成
                         </v-btn>
@@ -40,7 +40,7 @@
                 type="file"
                 @change="uploadChange"
                 ref="pseudoInputFile"
-                data-e2e-id="pseudoInputFile"
+                data-test-id="pseudoInputFile"
                 style="display: none;"
             >
         </div>
@@ -70,7 +70,7 @@
                             autofocus
                             hide-details
                             label="フォルダ名"
-                            data-e2e-id="createFolderInput"
+                            data-test-id="createFolderInput"
                         ></v-text-field>
                         <div class="input-error-message">{{ errors[0] }}</div>
                     </validation-provider>
@@ -82,7 +82,7 @@
                             outlined
                             large
                             @click="create_folder_modal = false"
-                            data-e2e-id="createFolderCancel"
+                            data-test-id="createFolderCancel"
                         >
                             キャンセル
                         </v-btn>
@@ -91,7 +91,7 @@
                             large
                             color="primary"
                             @click="executeCreateFolder()"
-                            data-e2e-id="createFolderSave"
+                            data-test-id="createFolderSave"
                         >
                             保存
                         </v-btn>

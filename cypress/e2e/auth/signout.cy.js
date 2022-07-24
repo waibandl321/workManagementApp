@@ -6,7 +6,7 @@ describe('サインアウト', () => {
 
     it('ヘッダーボタンからサインアウト', () => {
         cy.get('.header').within(() => {
-            cy.get('[data-e2e-id="appSignout"]').click()
+            cy.get('[data-test-id="appSignout"]').click()
         })
         cy.wait(1000)
         cy.url().should('eq', 'http://localhost:8080/auth/signin')

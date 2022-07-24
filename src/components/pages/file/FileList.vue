@@ -7,14 +7,14 @@
             dense
             outlined
             label="ファイル名でディレクトリ内を検索"
-            data-e2e-id="fileSearchInput"
+            data-test-id="fileSearchInput"
         ></v-text-field>
 
         <!-- パンくず -->
         <v-breadcrumbs
             :items="breadcrumbs"
             class="pa-0 my-4"
-            data-e2e-id="fileBreadcrumbs"
+            data-test-id="fileBreadcrumbs"
         >
             <template v-slot:item="{ item }">
                 <v-breadcrumbs-item
@@ -33,7 +33,7 @@
         <!-- リストテーブル -->
         <table
             class="basic-list"
-            data-e2e-id="fileListTable"
+            data-test-id="fileListTable"
         >
             <thead>
                 <tr>
@@ -49,7 +49,7 @@
                     v-for="(item, i) in params.files"
                     :key="i"
                     @click="listClick(item)"
-                    data-e2e-id="fileListRecord"
+                    data-test-id="fileListRecord"
                 >
                     <td>
                         <v-icon
@@ -71,7 +71,7 @@
                                 text
                                 fab
                                 small
-                                data-e2e-id="fileDownload"
+                                data-test-id="fileDownload"
                             >
                                 <v-icon>mdi-cloud-download-outline</v-icon>
                             </v-btn>
@@ -81,7 +81,7 @@
                                 @click.stop="deleteItem(item)"
                                 fab
                                 small
-                                data-e2e-id="fileDelete"
+                                data-test-id="fileDelete"
                             >
                                 <v-icon>mdi-delete</v-icon>
                             </v-btn>
@@ -92,7 +92,7 @@
         </table>
         <div
             v-if="!params.loading && params.files.length === 0"
-            data-e2e-id="noItem"
+            data-test-id="noItem"
             class="text-center py-4"
         >
             <span style="font-size: 18px;">アイテムがありません</span>
