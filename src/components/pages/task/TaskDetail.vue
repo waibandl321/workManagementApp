@@ -4,333 +4,316 @@
         persistent
         max-width="1024px"
     >
-        <v-toolbar class="grey lighten-3">
-            <v-btn
-                icon
-                data-test-id="taskDetailClose"
-                @click="closeDetail()"
-            >
-                <v-icon>mdi-close</v-icon>
-            </v-btn>
-            <!-- タスク名 -->
-            <TaskName 
-                :params="params"
-            />
-            <v-spacer></v-spacer>
-            <v-btn
-                icon
-                color="primary"
-                data-test-id="taskDetailDelete"
-                @click="clickTaskDelete()"
-            >
-                <v-icon>mdi-delete</v-icon>
-            </v-btn>
-        </v-toolbar>
-        <div class="pa-6 detail">
-            <MessageViewer
-                :params="params"
-            />
-            <!-- 期限切れアラート -->
-            <TaskDeadlineAlert :params="params"></TaskDeadlineAlert>
-            <!-- ステータス・優先度設定 -->
-            <v-row>
-                <v-col data-test-id="taskDetailStatus">
-                    <div class="font-weight-bold pb-4">■ ステータス</div>
-                    <v-select
-                        label="ステータス"
-                        :items="params.task_status_list"
-                        item-text="text"
-                        item-value="key"
-                        outlined
-                        color="primary"
-                        dense
-                        v-model="params.viewer.task_status"
-                        @change="updateTaskStatus()"
-                    ></v-select>
-                </v-col>
-                <v-col data-test-id="taskDetailPriority">
-                    <div class="font-weight-bold pb-4">■ 優先度</div>
-                    <v-select
-                        label="優先度"
-                        :items="params.task_priorities"
-                        item-text="text"
-                        item-value="key"
-                        v-model="params.viewer.task_priority"
-                        outlined
-                        color="primary"
-                        dense
-                        @change="updateTaskPriority()"                        
-                    ></v-select>
-                </v-col>
-            </v-row>
-            <v-divider />
-            <!-- 期日設定 -->
-            <div class="py-2 d-flex align-center">
-                <div class="font-weight-bold">■ タスク期日</div>
-                <div class="ml-4 relative">
-                    <v-btn
-                        @click="termSetting = !termSetting" 
-                        color="red darken-3"
-                        fab
-                        class="mr-2 white--text"
-                        small
-                        data-test-id="taskDeadlineOpen"
-                    >
-                        <v-icon>mdi-calendar-check-outline</v-icon>
-                    </v-btn>
-                    <span
-                        class="ml-2"
-                        style="color: #C62828; font-size: 14px;"
-                        data-test-id="taskDeadlineText"
-                    >
-                        {{ this.convertDatetimeFromUnixtime(params.viewer.task_deadline, "yyyy-mm-dd") }}
-                    </span>
-                    <!-- date picker -->
-                    <div class="date_picker" v-if="termSetting">
-                        <v-text-field
+    <TaskDetailToolbar 
+        :closeDetail="closeDetail"
+        :clickTaskDelete="clickTaskDelete"
+        :params="params"
+    ></TaskDetailToolbar>
+    <div class="pa-6 detail">
+        <MessageViewer
+            :params="params"
+        />
+        <!-- 期限切れアラート -->
+        <TaskDeadlineAlert :params="params"></TaskDeadlineAlert>
+        <!-- ステータス・優先度設定 -->
+        <v-row>
+            <v-col data-test-id="taskDetailStatus">
+                <div class="font-weight-bold pb-4">■ ステータス</div>
+                <v-select
+                    label="ステータス"
+                    :items="params.task_status_list"
+                    item-text="text"
+                    item-value="key"
+                    outlined
+                    color="primary"
+                    dense
+                    v-model="params.viewer.task_status"
+                    @change="updateTaskStatus()"
+                ></v-select>
+            </v-col>
+            <v-col data-test-id="taskDetailPriority">
+                <div class="font-weight-bold pb-4">■ 優先度</div>
+                <v-select
+                    label="優先度"
+                    :items="params.task_priorities"
+                    item-text="text"
+                    item-value="key"
+                    v-model="params.viewer.task_priority"
+                    outlined
+                    color="primary"
+                    dense
+                    @change="updateTaskPriority()"                        
+                ></v-select>
+            </v-col>
+        </v-row>
+        <v-divider />
+        <!-- 期日設定 -->
+        <div class="py-2 d-flex align-center">
+            <div class="font-weight-bold">■ タスク期日</div>
+            <div class="ml-4 relative">
+                <v-btn
+                    @click="termSetting = !termSetting" 
+                    color="red darken-3"
+                    fab
+                    class="mr-2 white--text"
+                    small
+                    data-test-id="taskDeadlineOpen"
+                >
+                    <v-icon>mdi-calendar-check-outline</v-icon>
+                </v-btn>
+                <span
+                    class="ml-2"
+                    style="color: #C62828; font-size: 14px;"
+                    data-test-id="taskDeadlineText"
+                >
+                    {{ this.convertDatetimeFromUnixtime(params.viewer.task_deadline, "yyyy-mm-dd") }}
+                </span>
+                <!-- date picker -->
+                <div class="date_picker" v-if="termSetting">
+                    <v-text-field
+                        v-model="task_deadline"
+                        label="日付を選択"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        data-test-id="taskDeadlineValue"
+                    ></v-text-field>
+                    <div>
+                        <v-date-picker
                             v-model="task_deadline"
-                            label="日付を選択"
-                            prepend-icon="mdi-calendar"
-                            readonly
-                            data-test-id="taskDeadlineValue"
-                        ></v-text-field>
-                        <div>
-                            <v-date-picker
-                                v-model="task_deadline"
-                                no-title
-                                color="primary"
-                                data-test-id="taskDeadlinePicker"
-                            ></v-date-picker>
-                        </div>
-                        <v-divider />
-                        <div class="mt-2">
-                            <v-btn
-                                text
-                                color="primary"
-                                @click="updateTaskTerm()"
-                                data-test-id="taskDeadlineSave"
-                            >
-                                保存
-                            </v-btn>
-                            <v-btn
-                                text
-                                @click="task_deadline = [], termSetting = false"
-                                data-test-id="taskDeadlineCancel"
-                            >
-                                キャンセル
-                            </v-btn>
-                            <v-btn
-                                text
-                                color="red"
-                                @click="deleteTaskTerm()"
-                                data-test-id="taskDeadlineDelete"
-                            >
-                                日付を消去
-                            </v-btn>
-                        </div>
+                            no-title
+                            color="primary"
+                            data-test-id="taskDeadlinePicker"
+                        ></v-date-picker>
                     </div>
-                </div>
-                <v-spacer />
-                <div class="fs-sm" data-test-id="taskCreatedText">
-                    タスク作成日: {{ convertDatetimeFromUnixtime(params.viewer.created, "yyyy-mm-dd") }}
-                </div>
-                <div class="ml-4 fs-sm" data-test-id="taskTermText">
-                    タスク実施期間：{{ convertTaskPeriod(params.viewer.created, params.viewer.task_deadline) }}
-                </div>
-                <div class="ml-4 fs-sm" data-test-id="taskDaysLeft">
-                    期日までの残り日数：{{ convertRemainingDays(params.viewer.task_deadline) }}
-                </div>
-            </div>
-            <v-divider />
-            <!-- サブタスク一覧 -->
-            <div class="subtask_list" v-if="params.subtask_list">
-                <v-card-actions class="px-0">
-                    <p class="font-weight-bold my-0">■ サブタスク</p>
-                    <v-spacer />
+                    <v-divider />
+                    <div class="mt-2">
                         <v-btn
                             text
                             color="primary"
-                            @click="clickSubtaskNew()"
-                            data-test-id="subtaskCreateButton"
+                            @click="updateTaskTerm()"
+                            data-test-id="taskDeadlineSave"
                         >
-                            <v-icon >mdi-plus</v-icon>
-                            サブタスクを追加
-                    </v-btn>
-                </v-card-actions>
-                <v-divider />
-                <div class="mt-4">
-                    <div
-                        v-if="!params.subtask_list.length"
-                        data-test-id="noSubtask"
-                    >
-                        サブタスクはありません
-                    </div>
-                    <div
-                        v-for="(subtask, index) in params.subtask_list"
-                        :key="index"
-                        class="subtask-card__wrap"
-                        data-test-id="subtaskList"
-                    >
-                        <div class="subtask-card__icon">
-                            <v-icon large>mdi-subdirectory-arrow-right</v-icon>
-                        </div>
-                        <v-card
-                            @click="clickSubtaskRecord(subtask)"
-                            class="subtask-card__body"
-                            hove
-                            data-test-id="subtaskCard"                    
-                        >
-                            <v-card-actions class="justify-space-between px-4">
-                                <span data-test-id="subtaskName">{{ subtask.subtask_name ? subtask.subtask_name : '' }}</span>
-                                <span>
-                                    <v-btn 
-                                        fab
-                                        small
-                                        class="mr-2"
-                                        @click.stop="updateSubtask(subtask, true)"
-                                        :color="subtask.finished_at ? 'primary' : null"
-                                        data-test-id="subtaskCheckButton"
-                                    >
-                                        <v-icon>mdi-check-bold</v-icon>
-                                    </v-btn>
-                                    <v-btn
-                                        @click.stop="deleteSubtask(subtask)"
-                                        fab
-                                        small
-                                        data-test-id="subtaskDeleteButton"
-                                    >
-                                        <v-icon>mdi-trash-can-outline</v-icon>
-                                    </v-btn>
-                                </span>
-                            </v-card-actions>
-                        </v-card>
-                    </div>
-                </div>
-            </div>
-            <!-- 概要 -->
-            <TaskDescription :params="params"></TaskDescription>
-            <!-- 添付ファイル -->
-            <div class="mt-6">
-                <v-card-actions class="relative px-0">
-                    <p class="font-weight-bold mb-0">■ 添付ファイル</p>
-                    <v-spacer />
-                    <v-btn
-                        text
-                        color="primary"
-                        @click="clickUploadButton()"
-                        data-test-id="taskAttachmentButton"
-                    >
-                        <v-icon>mdi-paperclip</v-icon>ファイルを添付する
-                    </v-btn>
-                </v-card-actions>
-                <v-divider />
-                
-                <div class="pt-4">
-                    <div
-                        v-if="!params.files.length > 0"
-                        data-test-id="taskAttachmentNothing"
-                    >
-                        添付ファイルはありません。
-                    </div>
-                    <div
-                        v-else
-                        class="d-flex align-center"
-                    >
-                        <div data-test-id="taskAttachmentLength">{{ params.files.length }} Files</div>
-                        <v-spacer />
+                            保存
+                        </v-btn>
                         <v-btn
                             text
-                            color="error"
-                            @click="clickAllFileDelete()"
-                            data-test-id="taskAttachmentAllDelete"
+                            @click="task_deadline = [], termSetting = false"
+                            data-test-id="taskDeadlineCancel"
                         >
-                            <v-icon>mdi-trash-can-outline</v-icon>
-                            全ファイル削除
+                            キャンセル
+                        </v-btn>
+                        <v-btn
+                            text
+                            color="red"
+                            @click="deleteTaskTerm()"
+                            data-test-id="taskDeadlineDelete"
+                        >
+                            日付を消去
                         </v-btn>
                     </div>
                 </div>
-                <!-- ローディング -->
-                <template v-if="file_loading">
-                    <div class="text-center py-6">
-                        <v-progress-circular
-                            :size="50"
-                            color="primary"
-                            indeterminate
-                        ></v-progress-circular>
+            </div>
+            <v-spacer />
+            <div class="fs-sm" data-test-id="taskCreatedText">
+                タスク作成日: {{ convertDatetimeFromUnixtime(params.viewer.created, "yyyy-mm-dd") }}
+            </div>
+            <div class="ml-4 fs-sm" data-test-id="taskTermText">
+                タスク実施期間：{{ convertTaskPeriod(params.viewer.created, params.viewer.task_deadline) }}
+            </div>
+            <div class="ml-4 fs-sm" data-test-id="taskDaysLeft">
+                期日までの残り日数：{{ convertRemainingDays(params.viewer.task_deadline) }}
+            </div>
+        </div>
+        <v-divider />
+        <!-- サブタスク一覧 -->
+        <div class="subtask_list" v-if="params.subtask_list">
+            <v-card-actions class="px-0">
+                <p class="font-weight-bold my-0">■ サブタスク</p>
+                <v-spacer />
+                    <v-btn
+                        text
+                        color="primary"
+                        @click="clickSubtaskNew()"
+                        data-test-id="subtaskCreateButton"
+                    >
+                        <v-icon >mdi-plus</v-icon>
+                        サブタスクを追加
+                </v-btn>
+            </v-card-actions>
+            <v-divider />
+            <div class="mt-4">
+                <div
+                    v-if="!params.subtask_list.length"
+                    data-test-id="noSubtask"
+                >
+                    サブタスクはありません
+                </div>
+                <div
+                    v-for="(subtask, index) in params.subtask_list"
+                    :key="index"
+                    class="subtask-card__wrap"
+                    data-test-id="subtaskList"
+                >
+                    <div class="subtask-card__icon">
+                        <v-icon large>mdi-subdirectory-arrow-right</v-icon>
                     </div>
-                </template>
-                <!-- ファイル一覧 -->
-                <template v-else>
-                    <table class="file-table" data-test-id="taskAttachmentList">
-                        <tr v-for="(file, i) in params.files" :key="i">
-                            <td>
-                                <img
-                                    :src="file.download_path"
-                                    width="40"
-                                    data-test-id="taskAttachmentView"
+                    <v-card
+                        @click="clickSubtaskRecord(subtask)"
+                        class="subtask-card__body"
+                        hove
+                        data-test-id="subtaskCard"                    
+                    >
+                        <v-card-actions class="justify-space-between px-4">
+                            <span data-test-id="subtaskName">{{ subtask.subtask_name ? subtask.subtask_name : '' }}</span>
+                            <span>
+                                <v-btn 
+                                    fab
+                                    small
+                                    class="mr-2"
+                                    @click.stop="updateSubtask(subtask, true)"
+                                    :color="subtask.finished_at ? 'primary' : null"
+                                    data-test-id="subtaskCheckButton"
                                 >
-                            </td>
-                            <td data-test-id="taskAttachmentName">{{ file.name }}</td>
-                            <td data-test-id="taskAttachmentSize">{{ convertUnitSize(file.size) }}</td>
-                            <td data-test-id="taskAttachmentType">{{ file.contentType }}</td>
-                            <td class="operation-td">
-                                <v-btn
-                                    link
-                                    text
-                                    :href="file.download_path"
-                                    target="_blank" rel="noopener noreferrer"
-                                    data-test-id="taskAttachmentPreviewButton"
-                                >
-                                        <v-icon>mdi-open-in-new</v-icon>
+                                    <v-icon>mdi-check-bold</v-icon>
                                 </v-btn>
                                 <v-btn
-                                    @click="clickFileDeleteSingle(file)"
-                                    text
-                                    class="ml-2"
-                                    data-test-id="taskAttachmentDelete"
+                                    @click.stop="deleteSubtask(subtask)"
+                                    fab
+                                    small
+                                    data-test-id="subtaskDeleteButton"
                                 >
                                     <v-icon>mdi-trash-can-outline</v-icon>
                                 </v-btn>
-                            </td>
-                        </tr>
-                    </table>
-                    <input
-                        style="display: none"
-                        ref="fileUploadButton"
-                        type="file"
-                        @change="onFileChange"
-                        data-test-id="taskAttachmentInput"
-                    >
-                </template>
+                            </span>
+                        </v-card-actions>
+                    </v-card>
+                </div>
             </div>
-
-            <!-- 削除確認 -->
-            <ConfirmDelete
-                v-if="delete_modal"
-                :delete_title="delete_title"
-                :delete_options="delete_options"
-            />
-
-            <SubtaskView 
-                :params="params"
-                :subtask_option="subtask_option"
-                v-if="subtask_mode == 'subtask_detail'"
-            />
-
-            <SubtaskEdit 
-                :params="params"
-                :subtask_option="subtask_option"
-                v-if="subtask_mode == 'subtask_edit'"
-            />
         </div>
-    </v-dialog>
+        <!-- 概要 -->
+        <TaskDescription :params="params"></TaskDescription>
+        <!-- 添付ファイル -->
+        <div class="mt-6">
+            <v-card-actions class="relative px-0">
+                <p class="font-weight-bold mb-0">■ 添付ファイル</p>
+                <v-spacer />
+                <v-btn
+                    text
+                    color="primary"
+                    @click="clickUploadButton()"
+                    data-test-id="taskAttachmentButton"
+                >
+                    <v-icon>mdi-paperclip</v-icon>ファイルを添付する
+                </v-btn>
+            </v-card-actions>
+            <v-divider />
+            
+            <div class="pt-4">
+                <div
+                    v-if="!params.files.length > 0"
+                    data-test-id="taskAttachmentNothing"
+                >
+                    添付ファイルはありません。
+                </div>
+                <div
+                    v-else
+                    class="d-flex align-center"
+                >
+                    <div data-test-id="taskAttachmentLength">{{ params.files.length }} Files</div>
+                    <v-spacer />
+                    <v-btn
+                        text
+                        color="error"
+                        @click="clickAllFileDelete()"
+                        data-test-id="taskAttachmentAllDelete"
+                    >
+                        <v-icon>mdi-trash-can-outline</v-icon>
+                        全ファイル削除
+                    </v-btn>
+                </div>
+            </div>
+            <!-- ローディング -->
+            <template v-if="file_loading">
+                <div class="text-center py-6">
+                    <v-progress-circular
+                        :size="50"
+                        color="primary"
+                        indeterminate
+                    ></v-progress-circular>
+                </div>
+            </template>
+            <!-- ファイル一覧 -->
+            <template v-else>
+                <table class="file-table" data-test-id="taskAttachmentList">
+                    <tr v-for="(file, i) in params.files" :key="i">
+                        <td>
+                            <img
+                                :src="file.download_path"
+                                width="40"
+                                data-test-id="taskAttachmentView"
+                            >
+                        </td>
+                        <td data-test-id="taskAttachmentName">{{ file.name }}</td>
+                        <td data-test-id="taskAttachmentSize">{{ convertUnitSize(file.size) }}</td>
+                        <td data-test-id="taskAttachmentType">{{ file.contentType }}</td>
+                        <td class="operation-td">
+                            <v-btn
+                                link
+                                text
+                                :href="file.download_path"
+                                target="_blank" rel="noopener noreferrer"
+                                data-test-id="taskAttachmentPreviewButton"
+                            >
+                                    <v-icon>mdi-open-in-new</v-icon>
+                            </v-btn>
+                            <v-btn
+                                @click="clickFileDeleteSingle(file)"
+                                text
+                                class="ml-2"
+                                data-test-id="taskAttachmentDelete"
+                            >
+                                <v-icon>mdi-trash-can-outline</v-icon>
+                            </v-btn>
+                        </td>
+                    </tr>
+                </table>
+                <input
+                    style="display: none"
+                    ref="fileUploadButton"
+                    type="file"
+                    @change="onFileChange"
+                    data-test-id="taskAttachmentInput"
+                >
+            </template>
+        </div>
+
+        <!-- 削除確認 -->
+        <ConfirmDelete
+            v-if="delete_modal"
+            :delete_title="delete_title"
+            :delete_options="delete_options"
+        />
+
+        <SubtaskView 
+            :params="params"
+            :subtask_option="subtask_option"
+            v-if="subtask_mode == 'subtask_detail'"
+        />
+
+        <SubtaskEdit 
+            :params="params"
+            :subtask_option="subtask_option"
+            v-if="subtask_mode == 'subtask_edit'"
+        />
+    </div>
+</v-dialog>
 </template>
 
 <script>
 import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
 import MessageViewer from '@/components/common/MessageViewer.vue'
 
-import TaskName from './detail/TaskName.vue'
+import TaskDetailToolbar from './detail/TaskDetailToolbar.vue'
 import TaskDeadlineAlert from './detail/TaskDeadlineAlert.vue'
 import TaskDescription from './detail/TaskDescription.vue'
 
@@ -345,7 +328,7 @@ export default {
     components: {
         ConfirmDelete,
         MessageViewer,
-        TaskName,
+        TaskDetailToolbar,
         TaskDeadlineAlert,
         TaskDescription,
         SubtaskEdit,
@@ -359,7 +342,6 @@ export default {
     data: () => ({
 
         //タスク情報
-        task_name_edit: false,
         status: null,
         priority: null,
         termSetting: false,
