@@ -6,6 +6,7 @@
         <div class="list">
             <MessageViewer
                 :params="params"
+                v-if="!params.detail_mode"
             />
             <TaskList
                 :params="params"
