@@ -135,7 +135,7 @@ export default {
             const result = await this.firebaseAccountUpdate(account)
             if(result) {
                 this.storeUpdateAccountInfo(this.copyJson(account));
-                this.parents.user_info = this.copyJson(account);
+                this.params.user_info = this.copyJson(account);
                 this.params.success = "アカウント情報を更新しました。「閉じる」ボタンからアプリケーションにお戻りください。";
             } else {
                 this.params.error = "アカウント情報に失敗しました。時間を空けて再度更新してください。";

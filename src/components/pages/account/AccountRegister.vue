@@ -108,7 +108,7 @@ export default {
             try {
                 await this.firebaseAccountCreate(account)
                 this.storeSetAccountInfo(account)
-                this.parents.user_info = this.copyJson(account);
+                this.params.user_info = this.copyJson(account);
                 this.register_status = true;
                 this.params.success = `アカウント情報登録が完了しました。\n タスクやファイルを登録してご利用を開始してください。`
             } catch (error) {

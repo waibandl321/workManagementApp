@@ -1,6 +1,6 @@
 <template>
     <div class="body">
-        <Header :parents="parents"/>
+        <Header :params="params"/>
         <div class="list">
             <MessageViewer
                 :params="params"
@@ -35,10 +35,6 @@ export default {
     },
     mixins: [myMixin],
     data: () => ({
-        parents: {
-            user_info: {}
-        },
-        
         params: {
             loading: false,
             error: "",
@@ -59,8 +55,8 @@ export default {
     }),
     created() {
         this.setRoutetitle()
-        this.parents.user_info = this.storeGetAccountInfo()
-        if(!this.parents.user_info.first_name) {
+        this.params.user_info = this.storeGetAccountInfo()
+        if(!this.params.user_info.first_name) {
             this.pageMove('/account/register')
         }
         this.init()

@@ -1,6 +1,6 @@
 <template>
     <div class="body">
-        <Header :parents="parents"/>
+        <Header :params="params"/>
         <AccountRegister
             v-if="!params.account_info.status"
             :params="params"
@@ -26,9 +26,6 @@ export default {
         AccountUpdate,
     },
     data: () => ({
-        parents: {
-            user_info: {}
-        },
         params: {
             account_info: {},
             success: "",
@@ -45,7 +42,7 @@ export default {
             this.params.success = ""
             this.params.error = ""
             this.params.account_info = this.storeGetAccountInfo()
-            this.parents.user_info = this.storeGetAccountInfo()
+            this.params.user_info = this.storeGetAccountInfo()
         },
     },
 }

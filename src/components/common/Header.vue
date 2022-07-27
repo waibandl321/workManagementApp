@@ -22,11 +22,11 @@
                         <v-btn
                             @click="accountEdit()"
                             filled
-                            :color="'#' + parents.user_info.color"
+                            :color="'#' + params.user_info.color"
                             class="pa-2 white--text"
                             data-test-id="headerAccountName"
                         >
-                            アカウント: {{ parents.user_info.last_name }} {{ parents.user_info.first_name }}
+                            アカウント: {{ params.user_info.last_name }} {{ params.user_info.first_name }}
                         </v-btn>
                     </div>
                 </div>
@@ -52,6 +52,7 @@
 export default {
     props: {
         parents: Object,
+        params: Object
     },
     data: () => ({
         functions: [

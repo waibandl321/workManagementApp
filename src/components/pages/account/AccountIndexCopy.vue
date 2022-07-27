@@ -23,7 +23,7 @@ export default {
             this.params.success = ""
             this.params.error = ""
             this.params.account_info = this.storeGetAccountInfo()
-            this.parents.user_info = this.storeGetAccountInfo()
+            this.params.user_info = this.storeGetAccountInfo()
         },
     },
 }

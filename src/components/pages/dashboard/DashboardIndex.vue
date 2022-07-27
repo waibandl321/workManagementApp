@@ -1,6 +1,6 @@
 <template>
     <div class="body">
-        <Header :parents="parents" />
+        <Header :params="params" />
         <div class="pa-4 dashbord">
             <v-row>
                 <CompletedTaskRate :params="params" />    
@@ -45,9 +45,6 @@ export default {
     },
     mixins: [dashboardMixin, taskGlobalMixin, taskLocalMixin],
     data: () => ({
-        parents: {
-            user_info: {}
-        },
         params: {
             loading: false,
             success: "",
@@ -73,8 +70,8 @@ export default {
     }),
     created() {
         this.setRoutetitle()
-        this.parents.user_info = this.storeGetAccountInfo()
-        if(!this.parents.user_info.first_name) {
+        this.params.user_info = this.storeGetAccountInfo()
+        if(!this.params.user_info.first_name) {
             this.pageMove('/account/register')
         }
         this.initTaskList()
