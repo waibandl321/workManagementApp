@@ -19,13 +19,13 @@
                     class="mt-2"
                     data-test-id="subtaskName"
                 >
-                    {{ params.subtask_viewer.subtask_name }}
+                    {{ subtask_viewer.subtask_name }}
                 </div>
             
                 <div class="font-weight-bold mt-10 pb-2">■ サブタスク詳細</div>
                 <v-divider />
                 <div
-                    v-html="params.subtask_viewer.subtask_description"
+                    v-html="subtask_viewer.subtask_description"
                     class="mt-2 pb-10"
                     data-test-id="subtaskDescription"
                 ></div>
@@ -38,7 +38,7 @@
                     :key="index"
                     :color="option.function_cd === 'edit' ? 'primary' : ''"
                     outlined
-                    @click="clickOption(option, params.subtask_viewer)"
+                    @click="clickOption(option)"
                     :data-test-id="'subtaskView' + option.function_cd"
                 >
                     {{ option.text }}
@@ -51,7 +51,8 @@
 <script>
 export default {
     props: {
-        params: Object,
+        subtask_editor: Object,
+        subtask_viewer: Object,
         subtask_option: Array,
     },
     data: () => ({
@@ -59,10 +60,9 @@ export default {
     }),
     methods: {
         // 編集遷移込み
-        clickOption(option, subtask) {
-            if(option.function_cd === 'edit' && subtask) {
-                this.params.subtask_editor = subtask;
-                option.callback("subtask_edit");
+        clickOption(option) {
+            if(option.function_cd === 'edit' && this.subtask_viewer) {
+                option.callback("subtask_edit", this.subtask_viewer);
                 return
             }
             option.callback();

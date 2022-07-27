@@ -98,7 +98,7 @@ export default {
         async clickTaskList(task) {
             this.params.viewer = task;
             this.params.subtask_list = await this.getSubtaskList(task)
-            this.params.files = this.getFileList()
+            this.params.files = this.getTaskFileList()
             this.params.detail_mode = true;
         },
         closeDetail() {

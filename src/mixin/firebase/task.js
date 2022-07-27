@@ -21,6 +21,7 @@ export default {
                 })
             })
         },
+
         // サブタスク一覧取得
         async firebaseGetSubtaskList() {
             return new Promise((resolve, reject) => {

@@ -1,5 +1,6 @@
 <template>
     <div>
+        <MessageViewer :params="messages"/>
         <v-row>
             <v-col>
                 <v-text-field
@@ -179,7 +180,7 @@
                 </tbody>
             </table>
             <div
-                v-if="!params.loading && filter_items.length === 0"
+                v-if="!loading && filter_items.length === 0"
                 class="pa-4 text-center"
                 data-test-id="noItem"
             >
@@ -194,12 +195,13 @@
         />
         <!-- ローディング -->
         <ExecLoading
-            v-if="params.loading"
+            v-if="loading"
         />
     </div>
 </template>
 
 <script>
+import MessageViewer from '@/components/common/MessageViewer.vue'
 import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
 import ExecLoading from "@/components/common/ExecLoading.vue"
 import draggable from 'vuedraggable'
@@ -207,6 +209,7 @@ import myMixin from "./task.js"
 
 export default {
     components: {
+        MessageViewer,
         draggable,
         ExecLoading,
         ConfirmDelete
@@ -217,158 +220,229 @@ export default {
         params: Object,
     },
     data: () => ({
+        loading: false,
+        messages: {
+            success: "",
+            error: "",
+        },
+        items: [],
         // 作成
         new_task: false,
         new_task_name: "",
-        
         // 削除
+        delete_item: {},
         delete_options: [],
         delete_title: "",
         delete_modal: false,
-        
         // 絞り込み
         filter_items: [],
         filter_text: "",
         filter_status: null,
         filter_priority: null,
-
         // ソート
         sort_by_deadline: false,
         sort_by_created: true,
     }),
-
-    created() {
-        this.initTaskListComponent()
+    async created() {
+        await this.initTaskListComponent();
     },
-
     computed: {
         statusText() {
             return (status_key) => {
-                let result = this.getTaskStatus()
-                result = result.find(v => v.key === status_key)
-                return result.text
+                let result = this.getTaskStatus();
+                result = result.find(v => v.key === status_key);
+                return result.text;
             }
         },
         priorityText() {
             return (priority_key) => {
-                let result = this.getTaskPriorities()
-                result = result.find(v => v.key === priority_key)
-                return result.text
+                let result = this.getTaskPriorities();
+                result = result.find(v => v.key === priority_key);
+                return result.text;
             }
         },
     },
-
     methods: {
         async initTaskListComponent() {
-            this.params.loading = true;
+            this.loading = true;
             try {
-                let result = await this.readTaskList()
+                let result = await this.readTaskList();
                 if(result.length === 0) {
-                    this.params.items = []
-                    this.params.loading = false;
+                    this.items = [];
+                    this.loading = false;
                     this.filterList();
                     return;
                 }
                 result = result.filter(v => v.task_status !== 5)
-                this.params.items = result
+                this.items = result;
                 this.filterList();
             } catch (error) {
-                this.params.error = "タスクデータの読み込みに失敗しました。"
+                this.messages.error = "タスクデータの読み込みに失敗しました。";
             }
-            this.params.loading = false;
+            this.loading = false;
+        },
+        // タスク一覧取得
+        async readTaskList() {
+            let result = await this.firebaseGetTaskList(); // global mixin
+            if(!result) return [];
+            result = Object.keys(result)
+                    .map( (key) => {return result[key]})
+                    .sort((a, b) => a.created - b.created)
+
+            return result;
         },
         // リストの絞り込み
         async filterList() {
-            let result = this.params.items
+            let result = this.items;
             if(this.filter_status) {
                 // 完了の場合は全タスク取得してからフィルタ
                 if(this.filter_status === 5) {
-                    result = await this.readTaskList()
-                    result = result.filter(v => v.task_status === 5)
+                    result = await this.readDoneTasks();
                 } else {
-                    result = result.filter(v => v.task_status === this.filter_status)
+                    result = result.filter(
+                        v => v.task_status === this.filter_status
+                    );
                 }
             }
             if(this.filter_priority) {
-                result = result.filter(v => v.task_priority === this.filter_priority)
+                result = result.filter(
+                    v => v.task_priority === this.filter_priority
+                );
             }
             if(this.filter_text) {
-                result = result.filter(v => v.task_name.includes(this.filter_text))
+                result = result.filter(
+                    v => v.task_name.includes(this.filter_text)
+                );
             }
-            this.filter_items = result
+            this.filter_items = result;
+        },
+        async readDoneTasks() {
+            let result = await this.firebaseGetTaskList(); // global mixin
+            if(!result) return [];
+            result = Object.keys(result)
+                    .map( (key) => { return result[key]} )
+                    .filter( v => v.task_status === 5 )
+                    .sort((a, b) => a.created - b.created)
+
+            return result;
         },
         // ソート
         sortByDeadline() {
-            this.sort_by_deadline = !this.sort_by_deadline
-            let result = this.params.items
+            this.sort_by_deadline = !this.sort_by_deadline;
+            let result = this.items;
             if(this.sort_by_deadline) {
                 result.sort((a, b) => {
-                    if(!a.task_deadline) return 1
-                    if(!b.task_deadline) return -1
+                    if(!a.task_deadline) return 1;
+                    if(!b.task_deadline) return -1;
                     return a.task_deadline - b.task_deadline;
                 })
             } else {
                 result.sort((a, b) => {
-                    if(!a.task_deadline) return 1
-                    if(!b.task_deadline) return -1
-                    return b.task_deadline - a.task_deadline
+                    if(!a.task_deadline) return 1;
+                    if(!b.task_deadline) return -1;
+                    return b.task_deadline - a.task_deadline;
                 })
             }
-            this.filter_items = result
+            this.filter_items = result;
         },
         sortByCreated() {
-            this.sort_by_created = !this.sort_by_created
-            let result = this.params.items
+            this.sort_by_created = !this.sort_by_created;
+            let result = this.items;
             if(this.sort_by_created) {
                 result.sort((a, b) => {
-                    return (a.created - b.created)
+                    return (a.created - b.created);
                 })
             } else {
                 result.sort((a, b) => {
-                    return (b.created - a.created)
+                    return (b.created - a.created);
                 })
             }
-            this.filter_items = result
+            this.filter_items = result;
         },
         // 一覧クリック
         async recordClick(task) {
-            this.params.success = ""
-            this.params.error = "";
+            this.messages.success = ""
+            this.messages.error = "";
             this.params.viewer = task
             try {
-                this.params.subtask_list = await this.getSubtaskList(task)
-                this.params.files = await this.getFileList();
-                this.params.detail_mode = true
+                this.params.files = await this.getTaskFileList(); // mixin
+                this.params.detail_mode = true;
             } catch (error) {
-                this.params.error = `
+                this.messages.error = `
                 データの読み込みに失敗しました。ブラウザを再読み込みしていただくか、
                 しばらく時間を置いてから操作してください。`;
-                this.params.viewer = {}
+                this.params.viewer = {};
             }
         },
         // タスク作成
         clickTaskInput() {
-            this.new_task = !this.new_task
+            this.new_task = !this.new_task;
             this.new_task_name = "";
         },
-        // 削除
+        async execCreateTask() {
+            const task = this.generateTaskObject(this.new_task_name);
+            try {
+                await this.firebaseTaskCreate(task); // global mixin
+                this.messages.success = "タスクを新規作成しました";
+            } catch (error) {
+                this.messages.error = "タスク作成に失敗しました。";
+                console.log(error);
+            }
+            this.listRefresh(); //props
+            this.new_task = false;
+            this.new_task_name = "";
+        },
+        generateTaskObject(new_task_name) {
+            const id = this.createRandomId();
+            return {
+                task_id: id,
+                project_id: "",
+                task_name: new_task_name,
+                task_description: "",
+                task_message_content: "",
+                task_message_post_account: "",
+                task_status: 0,
+                task_priority: 0,
+                task_manager: "",
+                task_deadline: null,
+                create_account: this.storeGetFirebaseUid(),
+                created: this.getCurrentUnixtime(),
+                updated: "",
+                finished_at: ""
+            }
+        },
+         // 削除
         clickDelete(task) {
-            this.params.success = ""
-            this.params.error = ""
+            this.messages.success = "";
+            this.messages.error = "";
             this.delete_options.push(
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
                 { function_cd: "delete", text: "削除する",   callback: this.execDeleteTaskFromList }
-            )
+            );
             this.delete_title = `タスク「${task.task_name}」を削除します。`;
-            this.params.delete_item = task;
+            this.delete_item = task;
             this.delete_modal = true;
         },
         closeModal() {
-            this.params.delete_item = {}
-            this.delete_options = []
-            this.delete_modal = false
+            this.delete_item = {};
+            this.delete_options = [];
+            this.delete_modal = false;
         },
-
+        // タスク削除
+        async execDeleteTaskFromList() {
+            try {
+                await this.firebaseDeleteTask(this.delete_item); //global mixin
+                this.deleteSubtaskHasTask(this.delete_item); // mixin
+                this.execDeleteAllFile(this.params.files); // mixin
+                this.messages.success = "タスクを削除しました。";
+            } catch (error) {
+                this.messages.error = "タスク削除に失敗しました。";
+            }
+            this.listRefresh(); // props
+            this.delete_item = {};
+            this.delete_options = [];
+            this.delete_modal = false;
+        },
     }
 }
 </script>

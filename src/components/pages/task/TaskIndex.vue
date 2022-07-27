@@ -2,10 +2,6 @@
     <div class="body">
         <Header :params="params"/>
         <div class="list">
-            <MessageViewer
-                :params="params"
-                v-if="!params.detail_mode"
-            />
             <TaskList
                 :params="params"
                 :listRefresh="listRefresh"
@@ -13,6 +9,7 @@
             />
         </div>
         <TaskDetail
+            v-if="params.detail_mode"
             :params="params"
             :listRefresh="listRefresh"
         />
@@ -23,7 +20,6 @@
 import Header from '@/components/common/Header'
 import TaskDetail from "@/components/pages/task/TaskDetail"
 import TaskList from "@/components/pages/task/TaskList"
-import MessageViewer from '@/components/common/MessageViewer.vue'
 import myMixin from "./task.js"
 
 export default {
@@ -31,24 +27,13 @@ export default {
         Header,
         TaskList,
         TaskDetail,
-        MessageViewer
     },
     mixins: [myMixin],
     data: () => ({
         params: {
-            loading: false,
-            error: "",
-            success: "",
-
             viewer: {},
-            items: [],
-            subtask_viewer: {},
-            subtask_editor: {},
-            delete_item: {},
-
             task_status_list: {},
             task_priorities: {},
-            subtask_list: {},
             files: [],
             detail_mode: false,
         },

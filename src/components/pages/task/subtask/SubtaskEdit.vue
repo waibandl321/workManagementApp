@@ -22,7 +22,7 @@
                             label="サブタスク名"
                             outlined
                             autofocus
-                            v-model="subtask_editor.subtask_name"
+                            v-model="edit_item.subtask_name"
                             hide-details
                             required
                             data-test-id="subtaskNameInput"
@@ -32,7 +32,7 @@
                     <quillEditor
                         ref="myQuillEditor"
                         :options="editorOption"
-                        v-model.trim="subtask_editor.subtask_description"
+                        v-model.trim="edit_item.subtask_description"
                         data-test-id="subtaskDescriptionEditor"
                     />
                 </v-card-text>
@@ -45,7 +45,7 @@
                         :color="option.function_cd === 'save' ? 'primary' : ''"
                         :disabled="option.function_cd === 'save' && invalid"
                         outlined
-                        @click="clickOption(option, subtask_editor)"
+                        @click="clickOption(option, edit_item)"
                         :data-test-id="'subtaskEdit' + option.function_cd"
                     >
                         {{ option.text }}
@@ -64,7 +64,7 @@ import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
 export default {
     props: {
-        params: Object,
+        subtask_editor: Object,
         subtask_option: Array,
     },
     components: {
@@ -80,13 +80,14 @@ export default {
                 toolbar: [],
             }
         },
-        subtask_editor: {},
+        edit_item: {},
+
     }),
     created() {
         this.editorOption.modules.toolbar = this.getEditorOptions();
         // 編集か新規か判定
-        if(this.params.subtask_editor) {
-            this.subtask_editor = this.params.subtask_editor
+        if(this.subtask_editor) {
+            this.edit_item = this.subtask_editor
         }
     },
     methods: {

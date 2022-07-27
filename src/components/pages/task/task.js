@@ -3,18 +3,6 @@ export default {
         
     }),
     methods: {
-        // タスク一覧取得
-        async readTaskList() {
-            let result = await this.firebaseGetTaskList()
-            if(!result) return []
-            result = Object.keys(result)
-                    .map( (key) => {return result[key]})
-                    // .filter( v => v.task_status !== 5 )
-                    .sort((a, b) => a.created - b.created)
-
-            return result;
-        },
-
         // サブタスク一覧取得
         async getSubtaskList(task_viewer) {
             if(task_viewer.task_id) {
@@ -29,124 +17,6 @@ export default {
                 return result;
             }
         },
-        // タスク作成
-        async execCreateTask() {
-            const task = this.generateTaskObject(this.new_task_name)
-            try {
-                await this.firebaseTaskCreate(task)
-                this.params.success = "タスクを新規作成しました"
-            } catch (error) {
-                this.params.error = "タスク作成に失敗しました。"
-                console.log(error);
-            }
-            this.listRefresh();
-            this.new_task = false;
-            this.new_task_name = "";
-        },
-        generateTaskObject(new_task_name) {
-            const id = this.createRandomId();
-            return {
-                task_id: id,
-                project_id: "",
-                task_name: new_task_name,
-                task_description: "",
-                task_message_content: "",
-                task_message_post_account: "",
-                task_status: 0,
-                task_priority: 0,
-                task_manager: "",
-                task_deadline: null,
-                create_account: this.storeGetFirebaseUid(),
-                created: this.getCurrentUnixtime(),
-                updated: "",
-                finished_at: ""
-            }
-        },
-        // タスク削除
-        async execDeleteTask() {
-            try {
-                await this.firebaseDeleteTask(this.params.delete_item)
-                this.deleteSubtaskHasTask(this.params.delete_item)
-                this.execDeleteAllFile(this.params.files)
-                this.params.success = "タスクを削除しました。"
-            } catch (error) {
-                this.params.error = "タスク削除に失敗しました。"
-            }
-            this.closeDetail();
-            this.listRefresh()
-            this.params.delete_item = {}
-            this.delete_options = []
-            this.delete_modal = false
-        },
-        // 一覧からタスク削除 MEMO: リストの場合詳細close処理なし
-        async execDeleteTaskFromList() {
-            try {
-                await this.firebaseDeleteTask(this.params.delete_item)
-                this.deleteSubtaskHasTask(this.params.delete_item)
-                this.execDeleteAllFile(this.params.files)
-                this.params.success = "タスクを削除しました。"
-            } catch (error) {
-                this.params.error = "タスク削除に失敗しました。"
-            }
-            this.listRefresh()
-            this.params.delete_item = {}
-            this.delete_options = []
-            this.delete_modal = false
-        },
-        // サブタスク作成
-        async createSubtask(new_subtask) {
-            const subtask = this.generateSubtaskObject(new_subtask)
-            try {
-                await this.firebaseSubtaskCreate(subtask)
-                this.params.success = "サブタスクを新規作成しました。";
-                this.subtask_option = [];
-                this.params.subtask_editor = {};
-                this.params.subtask_list = await this.getSubtaskList(this.params.viewer)
-            } catch (error) {
-                this.params.error = "サブタスク作成中にエラーが発生しました。";
-            }
-            this.subtask_mode = "task";
-        },
-        generateSubtaskObject(new_subtask) {
-            return {
-                subtask_id: this.createRandomId(),
-                task_id: this.params.viewer.task_id,
-                subtask_name: new_subtask.subtask_name,
-                subtask_description: new_subtask.subtask_description ? new_subtask.subtask_description : "",
-                create_account: this.storeGetFirebaseUid(),
-                created: this.getCurrentUnixtime(),
-                finished_at: ""
-            }
-        },
-        async updateSubtask(subtask, is_finished_flag) {
-        if(is_finished_flag) {
-            if(!subtask.finished_at) {
-            subtask.finished_at = this.getCurrentUnixtime()
-            } else {
-            return; //MEMO: finishedの場合は何もしない
-            }
-        }
-        const result = await this.firebaseUpdateSubtask(subtask)
-        if(result) {
-            this.params.success = "サブタスクを更新しました。"
-        } else {
-            this.params.error = "サブタスクの更新に失敗しました。"
-        }
-        this.params.subtask_editor = {};
-        this.subtask_option = []
-        this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
-        this.subtask_mode = "task";
-        },
-        // サブタスク削除
-        async deleteSubtask(subtask) {
-        const result = await this.firebaseDeleteSubtask(subtask);
-        if(result) {
-            this.params.success = "サブタスクを削除しました。"
-        } else {
-            this.params.error = "サブタスクの削除に失敗しました。"
-        }
-        this.params.subtask_list = await this.getSubtaskList(this.params.viewer);
-        },
         // 戻り値：タスク期日 - タスク作成日
         convertTaskPeriod(begin, end) {            
             if(!end) {
@@ -156,38 +26,9 @@ export default {
                 _end = Number(this.convertDatetimeFromUnixtime(end, "yyyymmdd"));
             return ((_end - _begin) + 1) + "日間"
         },
-        convertRemainingDays(end) {
-            const days = this.judgeRemainingDays(end)
-            
-            switch (true) {
-                case days < 0:
-                    return "期限切れ";
-                case days === 0:
-                    return "本日期日";
-                case days > 0:
-                    return days + "日";
-                default:
-                    break;
-            }
-        },
-        judgeRemainingDays(end) {
-            if(!end) {
-                return undefined
-            }
-            const today = new Date(this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyy-mm-dd"));
-            const _end = new Date(this.convertDatetimeFromUnixtime(end, "yyyy-mm-dd"));
-             return (_end - today) / 86400000;
-        },
         
         
-        // リスト削除 => 詳細情報の削除
-        deleteTaskDetail(delete_item) {
-            if(delete_item.task_id == this.task_detail.task_id) {
-                this.task_detail = []
-                this.detail_mode = false
-            }
-        },
-        // サブタスクの削除
+        // タスクに紐付くサブタスクの削除
         deleteSubtaskHasTask(task_viewer) {
             this.params.subtask_list = this.getSubtaskList(task_viewer)
             if(this.params.subtask_list.length > 0) {
@@ -195,31 +36,9 @@ export default {
             }
             return true
         },
-        // タスク情報の更新
-        async updateTaskDescription() {
-            const result = await this.firebaseUpdateTaskDescription(this.params.viewer.task_id, this.params.viewer.task_description);
-            if(result) {
-                this.desc_editor = false
-                this.params.success = "タスク概要説明を更新しました。"
-            }
-        },
-        // タスク期日アラート
-        outputTaskAlert() {
-            if(!this.params.viewer.task_deadline) {
-                return
-            }
-            const result = this.judgeRemainingDays(this.params.viewer.task_deadline)
-            switch (true) {
-                case result === 0:
-                    return "本日期日です";
-                case result < 0:
-                    return "タスクが期日を過ぎています";
-                default:
-                    break;
-            }
-        },
+        
         // ファイル一覧取得
-        async getFileList() {
+        async getTaskFileList() {
             let result = await this.firebaseReadFile()
             if(!result) return []
             result = Object.keys(result)
@@ -234,22 +53,22 @@ export default {
         async taskFileInputChange(event) {
             this.file_loading = true
             const files = event.target.files || event.dataTransfer.files
-            if(await this.judgeBinaryFileType(files)) {
+            if(await this.judgeBinaryFileType(files)) { //util
                 try {
                     await this.judgeSameTaskFile(...files)
-                    await this.storageUploadTaskFile(...files, this.params.viewer.task_id)
+                    await this.storageUploadTaskFile(...files, this.params.viewer.task_id) //mixin
                     .then((result) => {
                         const task_file_obj = this.generateTaskFileObject(result)
-                        this.firebaseSaveFile(task_file_obj);
+                        this.firebaseSaveFile(task_file_obj); //mixin
                     })
-                    this.params.success = "ファイルをアップロードしました。";
+                    this.messages.success = "ファイルをアップロードしました。";
                 } catch (error) {
-                    this.params.error = "ファイルアップロードに失敗しました。";
+                    this.messages.error = "ファイルアップロードに失敗しました。";
                     console.log(error);
                 }
-                this.params.files = await this.getFileList();
+                this.params.files = await this.getTaskFileList(); //mixin
             } else {
-                this.params.error = `
+                this.messages.error = `
                     許可されていないファイル形式または、ファイルの元データが改ざんされています。\n
                     アップロード可能なファイル形式はjpg, png, gif, pdfです
                 `;
@@ -273,9 +92,9 @@ export default {
             result = result.filter((v) => v.name === upload_file.name)
             if(result.length === 0) return;
             console.log("same file name: " + result[0].name);
-            return await this._executeDeleteSameTaskFile(...result)
+            return await this.executeDeleteSameTaskFile(...result)
         },
-        async _executeDeleteSameTaskFile(file) {
+        async executeDeleteSameTaskFile(file) {
             try {
                 const result = await this.firebaseDeleteFile(file)
                 if(result) {
@@ -287,18 +106,18 @@ export default {
             return;
         },
          // ファイル物理削除
-         async execDeleteFile() {
+        async execDeleteFile() {
             this.file_loading = true;
             this.delete_modal = false;
             const storage_result = await this.storageDeleteFile(this.delete_file)
             if(storage_result) {
                 await this.firebaseDeleteFile(this.delete_file)
-                this.params.success = `ファイル${this.delete_file.name}を削除しました。`
+                this.messages.success = `ファイル${this.delete_file.name}を削除しました。`
             } else {
-                this.params.success = `ファイル${this.delete_file.name}の削除に失敗しました。`
+                this.messages.success = `ファイル${this.delete_file.name}の削除に失敗しました。`
             }
             scrollTo(0,0)
-            this.params.files = await this.getFileList()
+            this.params.files = await this.getTaskFileList()
             this.delete_file = {}
             this.delete_options = []
             this.file_loading = false;
@@ -314,11 +133,11 @@ export default {
                         await this.firebaseDeleteFile(file)
                     }
                 }
-                this.params.success = "全てのファイルを削除しました。";
-                this.params.files = await this.getFileList()
+                this.messages.success = "全てのファイルを削除しました。";
+                this.params.files = await this.getTaskFileList()
             } catch (error) {
                 console.log(error);
-                this.params.error = `
+                this.messages.error = `
                 ファイル削除中にエラーが発生しました。
                 時間をおいてもう一度やり直してください。`
             }
