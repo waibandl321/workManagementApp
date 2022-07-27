@@ -151,10 +151,10 @@
                             {{ task.task_name }}
                         </td>
                         <td class="py-2" data-test-id="tdStatus">
-                            {{ extractTaskStatus(task.task_status) }}
+                            {{ statusText(task.task_status) }}
                         </td>
                         <td class="py-2" data-test-id="tdPriority">
-                            {{ extractTaskPriority(task.task_priority) }}
+                            {{ priorityText(task.task_priority) }}
                         </td>
                         <td class="py-2" data-test-id="tdDeadline">
                             {{ convertDatetimeFromUnixtime(task.task_deadline, "yyyy-mm-dd") }}
@@ -239,6 +239,23 @@ export default {
 
     created() {
         this.initTaskListComponent()
+    },
+
+    computed: {
+        statusText() {
+            return (status_key) => {
+                let result = this.getTaskStatus()
+                result = result.find(v => v.key === status_key)
+                return result.text
+            }
+        },
+        priorityText() {
+            return (priority_key) => {
+                let result = this.getTaskPriorities()
+                result = result.find(v => v.key === priority_key)
+                return result.text
+            }
+        },
     },
 
     methods: {
@@ -334,7 +351,6 @@ export default {
             this.new_task = !this.new_task
             this.new_task_name = "";
         },
-        
         // 削除
         clickDelete(task) {
             this.params.success = ""

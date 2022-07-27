@@ -203,18 +203,6 @@ export default {
                 this.params.success = "タスク概要説明を更新しました。"
             }
         },
-        
-        // 優先度・ステータス文字列変換
-        extractTaskStatus(status) {
-            let result = this.params.task_status_list
-            result = result.filter(v => v.key === status)
-            return result[0].text
-        },
-        extractTaskPriority(priority) {
-            let result = this.params.task_priorities
-            result = result.filter(v => v.key === priority)
-            return result[0].text
-        },
         // タスク期日アラート
         outputTaskAlert() {
             if(!this.params.viewer.task_deadline) {
