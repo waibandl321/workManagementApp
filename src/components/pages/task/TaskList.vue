@@ -52,12 +52,12 @@
                 @click="clickTaskInput()"
                 data-test-id="taskAddButton"
             >
-                <v-icon>{{ new_task ? 'mdi-close' : 'mdi-plus' }}</v-icon>
+                <v-icon>{{ create_task_mode ? 'mdi-close' : 'mdi-plus' }}</v-icon>
                 <span>タスク追加</span>
             </v-btn>
         </div>
         <div
-            v-if="new_task"
+            v-if="create_task_mode"
             class="mt-2 relative"
             data-test-id="taskAddInputWrap"
         >
@@ -74,7 +74,7 @@
                             autofocus
                             hide-details
                             outlined
-                            v-model.trim="new_task_name"
+                            v-model.trim="create_task_name"
                             data-test-id="taskAddInput"
                         ></v-text-field>
                         <v-btn
@@ -227,8 +227,8 @@ export default {
         },
         items: [],
         // 作成
-        new_task: false,
-        new_task_name: "",
+        create_task_mode: false,
+        create_task_name: "",
         // 削除
         delete_item: {},
         delete_options: [],
@@ -376,11 +376,11 @@ export default {
         },
         // タスク作成
         clickTaskInput() {
-            this.new_task = !this.new_task;
-            this.new_task_name = "";
+            this.create_task_mode = !this.create_task_mode;
+            this.create_task_name = "";
         },
         async execCreateTask() {
-            const task = this.generateTaskObject(this.new_task_name);
+            const task = this.generateTaskObject(this.create_task_name);
             try {
                 await this.firebaseTaskCreate(task); // global mixin
                 this.messages.success = "タスクを新規作成しました";
@@ -389,15 +389,15 @@ export default {
                 console.log(error);
             }
             this.listRefresh(); //props
-            this.new_task = false;
-            this.new_task_name = "";
+            this.create_task_mode = false;
+            this.create_task_name = "";
         },
-        generateTaskObject(new_task_name) {
+        generateTaskObject(create_task_name) {
             const id = this.createRandomId();
             return {
                 task_id: id,
                 project_id: "",
-                task_name: new_task_name,
+                task_name: create_task_name,
                 task_description: "",
                 task_message_content: "",
                 task_message_post_account: "",
