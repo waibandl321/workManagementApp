@@ -8,23 +8,23 @@
         :closeDetail="closeDetail"
         :clickTaskDelete="clickTaskDelete"
         :params="params"
-    ></TaskDetailToolbar>
+    />
     <div class="pa-6 detail">
         <MessageViewer
             :params="params"
         />
-        <TaskDeadlineAlert :params="params"></TaskDeadlineAlert>
-        <TaskStatusPriority :params="params"></TaskStatusPriority>
+        <TaskDeadlineAlert :params="params" />
+        <TaskStatusPriority :params="params" />
         <v-divider />
         <TaskTerm
             :params="params"
-        ></TaskTerm>
+        />
         <v-divider />
         <SubtaskList
             :params="params"
             :clickSubtaskNew="clickSubtaskNew"
             :clickSubtaskRecord="clickSubtaskRecord"
-        ></SubtaskList>
+        />
         <SubtaskView 
             :params="params"
             :subtask_option="subtask_option"
@@ -35,13 +35,13 @@
             :subtask_option="subtask_option"
             v-if="subtask_mode == 'subtask_edit'"
         />
-        <TaskDescription :params="params"></TaskDescription>
+        <TaskDescription :params="params" />
         <TaskAttachment
             :params="params"
             :file_loading="file_loading"
             :clickAllFileDelete="clickAllFileDelete"
             :clickFileDeleteSingle="clickFileDeleteSingle"
-        ></TaskAttachment>
+        />
         <ConfirmDelete
             v-if="delete_modal"
             :delete_title="delete_title"

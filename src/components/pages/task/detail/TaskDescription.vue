@@ -86,7 +86,10 @@ export default {
   },
   methods: {
     async updateTaskDescription() {
-        const result = await this.firebaseUpdateTaskDescription(this.params.viewer.task_id, this.params.viewer.task_description);
+        const result = await this.firebaseUpdateTaskDescription(
+          this.params.viewer.task_id,
+          this.params.viewer.task_description
+        );
         if(result) {
             this.desc_editor = false
             this.params.success = "タスク概要説明を更新しました。"

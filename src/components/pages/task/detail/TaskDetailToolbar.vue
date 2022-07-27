@@ -78,7 +78,10 @@ export default {
   }),
   methods: {
     async tasknameUpdate() {
-        const result = await this.firebaseUpdateTaskname(this.params.viewer.task_id, this.params.viewer.task_name)
+        const result = await this.firebaseUpdateTaskname(
+          this.params.viewer.task_id,
+          this.params.viewer.task_name
+        )
         if(result) {
             this.edit_mode = false
             this.params.success = "タスク名を更新しました。"

@@ -94,7 +94,10 @@ export default {
     deleteTaskTerm() {
       this.task_deadline = null;
       this.termSetting = false;
-      this.firebaseUpdateTaskDeadline(this.task_deadline, this.params.viewer.task_id)
+      this.firebaseUpdateTaskDeadline(
+        this.task_deadline,
+        this.params.viewer.task_id
+      )
       this.params.viewer.task_deadline = null;
     },
     async updateTaskTerm() {
@@ -103,7 +106,10 @@ export default {
             this.termSetting = false;
             return;
         }
-        const result = await this.firebaseUpdateTaskDeadline(deadline, this.params.viewer.task_id)
+        const result = await this.firebaseUpdateTaskDeadline(
+          deadline,
+          this.params.viewer.task_id
+        )
         if(result) {
             this.params.viewer.task_deadline = deadline;
             this.params.success = "タスク期日を変更しました";
