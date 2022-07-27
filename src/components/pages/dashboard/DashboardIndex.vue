@@ -54,8 +54,6 @@ export default {
             viewer: {},
             subtask_list: [],
             files: [],
-            task_status_list: {},
-            task_priorities: {},
             // ダッシュボード用タスクデータ
             all_tasks: [],
             is_completed_tasks: [],
@@ -68,6 +66,14 @@ export default {
             is_created_tasks_month: [],
         },
     }),
+    provide() {       
+        const task_status_list = this.getTaskStatus()
+        const task_priority_list = this.getTaskPriorities() 
+        return {
+            task_status_list,
+            task_priority_list
+        }
+    },
     created() {
         this.setRoutetitle()
         this.params.user_info = this.storeGetAccountInfo()

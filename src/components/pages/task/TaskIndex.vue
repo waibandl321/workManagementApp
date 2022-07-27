@@ -1,6 +1,6 @@
 <template>
     <div class="body">
-        <Header :params="params"/>
+        <Header :params="params" />
         <div class="list">
             <TaskList
                 :params="params"
@@ -32,9 +32,6 @@ export default {
     data: () => ({
         params: {
             viewer: {},
-            task_status_list: {},
-            task_priorities: {},
-            files: [],
             detail_mode: false,
         },
     }),
@@ -52,13 +49,8 @@ export default {
         if(!this.params.user_info.first_name) {
             this.pageMove('/account/register')
         }
-        this.init()
     },
     methods: {
-        async init() {
-            this.params.task_status_list = this.getTaskStatus()
-            this.params.task_priorities = this.getTaskPriorities()
-        },
         listRefresh() {
             this.$refs.taskList.initTaskListComponent()
         }

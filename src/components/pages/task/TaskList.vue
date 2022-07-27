@@ -367,16 +367,8 @@ export default {
         async recordClick(task) {
             this.messages.success = ""
             this.messages.error = "";
-            this.params.viewer = task
-            try {
-                this.params.files = await this.getTaskFileList(); // mixin
-                this.params.detail_mode = true;
-            } catch (error) {
-                this.messages.error = `
-                データの読み込みに失敗しました。ブラウザを再読み込みしていただくか、
-                しばらく時間を置いてから操作してください。`;
-                this.params.viewer = {};
-            }
+            this.params.viewer = task;
+            this.params.detail_mode = true;
         },
         // タスク作成
         clickTaskInput() {
@@ -434,10 +426,12 @@ export default {
         },
         // タスク削除
         async execDeleteTaskFromList() {
+            this.delete_modal = false;
+            this.loading = true;
             try {
                 await this.firebaseDeleteTask(this.delete_item); //global mixin
-                this.deleteSubtaskHasTask(this.delete_item); // mixin
-                this.execDeleteAllFile(this.params.files); // mixin
+                await this.deleteSubtasksByTaskFromList(this.delete_item); // mixin
+                await this.deleteFilesByTaskFromList(this.delete_item); //TODO
                 this.messages.success = "タスクを削除しました。";
             } catch (error) {
                 this.messages.error = "タスク削除に失敗しました。";
@@ -445,7 +439,40 @@ export default {
             this.listRefresh(); // props
             this.delete_item = {};
             this.delete_options = [];
-            this.delete_modal = false;
+        },
+        // タスクに紐づくファイル削除
+        async deleteFilesByTaskFromList(delete_task) {
+            let results = await this.firebaseReadFile();
+            if(!results) return;
+            results = Object.keys(results)
+                    .map((key) => {
+                        return results[key]
+                    })
+                    .filter((v) => v.task_id == delete_task.task_id);
+            try {
+                for(const file of results) {
+                    const result = await this.storageDeleteFile(file)
+                    if(result) {
+                        await this.firebaseDeleteFile(file)
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+                throw new Error();
+            }
+        },
+        // タスクに紐づくサブタスク
+        async deleteSubtasksByTaskFromList(delete_task) {
+            const subtasks = await this.getSubtaskList(delete_task);
+            if(subtasks.length === 0) return;
+            try {
+                subtasks.forEach(subtask => {
+                    this.firebaseDeleteSubtask(subtask);
+                })
+            } catch (error) {
+                console.log(error);
+                throw new Error()
+            }
         },
     }
 }

@@ -198,10 +198,16 @@ export default {
         firebaseDeleteSubtaskByTask(subtasks) {
             const db = getDatabase()
             const userId = this.storeGetFirebaseUid()
-            subtasks.forEach(r => {
-                const subtask_id = r.subtask_id;
-                remove(ref(db, '/subtasks/' + userId + '/' + subtask_id));
-            })
+            try {
+                subtasks.forEach(r => {
+                    const subtask_id = r.subtask_id;
+                    remove(ref(db, '/subtasks/' + userId + '/' + subtask_id));
+                })    
+            } catch (error) {
+                console.log(error);
+                return "タスクに紐づくサブタスクの削除に失敗しました。";
+            }
+            
         },
         getSortStatusOptions() {
             return SORT_STATUS_OPTION;

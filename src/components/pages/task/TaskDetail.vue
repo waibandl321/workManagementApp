@@ -300,27 +300,27 @@
                 v-if="desc_editor"
                 class="detail-editor"
             >
-            <quillEditor
-                ref="myQuillEditor"
-                v-model="params.viewer.task_description"
-                :options="editorOption"
-                data-test-id="taskDescriptionEditor"
-            />
+                <quillEditor
+                    ref="myQuillEditor"
+                    v-model="params.viewer.task_description"
+                    :options="editorOption"
+                    data-test-id="taskDescriptionEditor"
+                />
             </div>
             <div 
                 v-else
                 class="editor_body"
             >
-            <div
-                v-if="!params.viewer.task_description"
-                data-test-id="taskDescriptionText"
-            >
-                タスクの詳細がありません
-            </div>
-            <div
-                v-html="params.viewer.task_description"
-                data-test-id="taskDescriptionText"
-            ></div>
+                <div
+                    v-if="!params.viewer.task_description"
+                    data-test-id="taskDescriptionText"
+                >
+                    タスクの詳細がありません
+                </div>
+                <div
+                    v-html="params.viewer.task_description"
+                    data-test-id="taskDescriptionText"
+                ></div>
             </div>
         </div>
         <!-- 添付 -->
@@ -340,31 +340,23 @@
             <v-divider />
             
             <div class="pt-4">
-                <div
-                v-if="!params.files.length > 0"
-                data-test-id="taskAttachmentNothing"
-                >
-                添付ファイルはありません。
-                </div>
-                <div
-                    v-else
-                    class="d-flex align-center"
-                >
-                <div data-test-id="taskAttachmentLength">{{ params.files.length }} Files</div>
-                <v-spacer />
-                <v-btn
-                    text
-                    color="error"
-                    @click="clickAllFileDelete()"
-                    data-test-id="taskAttachmentAllDelete"
-                >
-                    <v-icon>mdi-trash-can-outline</v-icon>
-                    全ファイル削除
-                </v-btn>
+                <div class="d-flex align-center">
+                    <div data-test-id="taskAttachmentLength">{{ task_files.length }} Files</div>
+                    <v-spacer />
+                    <v-btn
+                        v-if="task_files.length > 0"
+                        text
+                        color="error"
+                        @click="clickAllFileDelete()"
+                        data-test-id="taskAttachmentAllDelete"
+                    >
+                        <v-icon>mdi-trash-can-outline</v-icon>
+                        全ファイル削除
+                    </v-btn>
                 </div>
             </div>
             <!-- ローディング -->
-            <template v-if="file_loading">
+            <template v-if="task_file_loading">
                 <div class="text-center py-6">
                     <v-progress-circular
                         :size="50"
@@ -375,46 +367,46 @@
             </template>
             <!-- ファイル一覧 -->
             <template v-else>
-            <table class="file-table" data-test-id="taskAttachmentList">
-                <tr v-for="(file, i) in params.files" :key="i">
-                <td>
-                    <img
-                    :src="file.download_path"
-                    width="40"
-                    data-test-id="taskAttachmentView"
-                    >
-                </td>
-                <td data-test-id="taskAttachmentName">{{ file.name }}</td>
-                <td data-test-id="taskAttachmentSize">{{ convertUnitSize(file.size) }}</td>
-                <td data-test-id="taskAttachmentType">{{ file.contentType }}</td>
-                <td class="operation-td">
-                    <v-btn
-                    link
-                    text
-                    :href="file.download_path"
-                    target="_blank" rel="noopener noreferrer"
-                    data-test-id="taskAttachmentPreviewButton"
-                    >
-                    <v-icon>mdi-open-in-new</v-icon>
-                    </v-btn>
-                    <v-btn
-                    @click="clickFileDeleteSingle(file)"
-                    text
-                    class="ml-2"
-                    data-test-id="taskAttachmentDelete"
-                    >
-                    <v-icon>mdi-trash-can-outline</v-icon>
-                    </v-btn>
-                </td>
-                </tr>
-            </table>
-            <input
-                style="display: none"
-                ref="fileUploadButton"
-                type="file"
-                @change="taskFileInputChange"
-                data-test-id="taskAttachmentInput"
-            >
+                <table class="file-table" data-test-id="taskAttachmentList">
+                    <tr v-for="(file, i) in task_files" :key="i">
+                    <td>
+                        <img
+                        :src="file.download_path"
+                        width="40"
+                        data-test-id="taskAttachmentView"
+                        >
+                    </td>
+                    <td data-test-id="taskAttachmentName">{{ file.name }}</td>
+                    <td data-test-id="taskAttachmentSize">{{ convertUnitSize(file.size) }}</td>
+                    <td data-test-id="taskAttachmentType">{{ file.contentType }}</td>
+                    <td class="operation-td">
+                        <v-btn
+                        link
+                        text
+                        :href="file.download_path"
+                        target="_blank" rel="noopener noreferrer"
+                        data-test-id="taskAttachmentPreviewButton"
+                        >
+                        <v-icon>mdi-open-in-new</v-icon>
+                        </v-btn>
+                        <v-btn
+                        @click="clickFileDeleteSingle(file)"
+                        text
+                        class="ml-2"
+                        data-test-id="taskAttachmentDelete"
+                        >
+                        <v-icon>mdi-trash-can-outline</v-icon>
+                        </v-btn>
+                    </td>
+                    </tr>
+                </table>
+                <input
+                    style="display: none"
+                    ref="fileUploadButton"
+                    type="file"
+                    @change="taskFileInputChange"
+                    data-test-id="taskAttachmentInput"
+                >
             </template>
         </div>
         <SubtaskView 
@@ -474,7 +466,7 @@ export default {
         task_name_edit_mode: false,
         term_setting: false,
         task_deadline: null,
-        file_loading: false,
+        
         delete_file: {},
 
         desc_editor: false,
@@ -491,6 +483,9 @@ export default {
         subtask_viewer: {},
         subtask_editor: {},
         subtask_option: [],
+
+        task_file_loading: false,
+        task_files: [],
         
         delete_item: {},
         delete_options: [],
@@ -503,11 +498,14 @@ export default {
         this.messages.error = "";
         this.editorOption.modules.toolbar = this.getEditorOptions();
         this.readSubtaskList()
+        this.getTaskFileList()
     },
     updated() {
         scrollTo(0,0)
     },
     methods: {
+        
+        // サブタスク読み込み
         async readSubtaskList() {
             this.subtask_list = await this.getSubtaskList(this.params.viewer);
         },
@@ -698,13 +696,93 @@ export default {
                 this.messages.success = "タスク概要説明を更新しました。"
             }
         },
-        // ファイルアップ
+        // ファイル一覧取得
+        async getTaskFileList() {
+            let result = []
+            try {
+                result = await this.firebaseReadFile();
+            } catch (error) {
+                console.log(error);
+                this.messages.error = `
+                ファイルの読み込みに失敗しました。ブラウザを再読み込みしていただくか、
+                しばらく時間を置いてから操作してください。`;
+            }
+
+            if(result) {
+                this.task_files = _getFilesByTaskId(result, this.params.viewer);
+            } else {
+                this.task_files = []
+            }
+            this.task_file_loading = false;
+            function _getFilesByTaskId(_result, target) {
+                return Object.keys(_result)
+                        .map((key) => {
+                            return _result[key]
+                        })
+                        .filter((v) => v.task_id == target.task_id);
+            }
+        },
+        // ファイルアップロード
         clickUploadButton() {
             this.params.success = "";
             this.params.error = "";
             this.$refs.fileUploadButton.click()
         },
-        // 単ーファイル削除
+        async taskFileInputChange(event) {
+            this.task_file_loading = true
+            const files = event.target.files || event.dataTransfer.files
+            if( await this.judgeBinaryFileType(files) ) { //util
+                try {
+                    await this.judgeSameTaskFile(...files)
+                    await this.storageUploadTaskFile(...files, this.params.viewer.task_id) //mixin
+                    .then((result) => {
+                        const task_file_obj = this.generateTaskFileObject(result)
+                        this.firebaseSaveFile(task_file_obj); //mixin
+                    })
+                    this.messages.success = "ファイルをアップロードしました。";
+                } catch (error) {
+                    this.messages.error = "ファイルアップロードに失敗しました。";
+                    console.log(error);
+                }
+                await this.getTaskFileList(); //mixin
+            } else {
+                this.messages.error = `
+                    許可されていないファイル形式または、ファイルの元データが改ざんされています。\n
+                    アップロード可能なファイル形式はjpg, png, gif, pdfです
+                `;
+            }
+            scrollTo(0,0)
+            this.task_file_loading = false;
+        },
+        generateTaskFileObject(result) {
+            return {
+                db_id: result.customMetadata.db_id,
+                name: result.name,
+                size: result.size,
+                contentType: result.contentType,
+                download_path: result.download_path,
+                task_id: result.customMetadata.task_id,
+            }
+        },
+        // 同名ファイルの上書き
+        async judgeSameTaskFile(upload_file) {
+            let result = this.task_files;
+            result = result.filter((v) => v.name === upload_file.name)
+            if(result.length === 0) return;
+            return await this.executeDeleteSameTaskFile(...result)
+        },
+        async executeDeleteSameTaskFile(file) {
+            try {
+                const result = await this.firebaseDeleteFile(file)
+                if(result) {
+                    await this.storageDeleteFile(file)
+                }
+            } catch (error) {
+                console.log(error);
+            }
+            return;
+        },
+        // ファイル削除確認
         clickFileDeleteSingle(file) {
             this.delete_title = `ファイル「${file.name}」を削除します。`;
             this.delete_options.push(
@@ -714,15 +792,56 @@ export default {
             this.delete_file = file;
             this.delete_modal = true;
         },
-        // 全てのファイルを削除
+        // ファイル物理削除
+        async execDeleteFile() {
+            this.task_file_loading = true;
+            this.delete_modal = false;
+            const storage_result = await this.storageDeleteFile(this.delete_file)
+            if(storage_result) {
+                await this.firebaseDeleteFile(this.delete_file)
+                this.messages.success = `ファイル${this.delete_file.name}を削除しました。`
+            } else {
+                this.messages.success = `ファイル${this.delete_file.name}の削除に失敗しました。`
+            }
+            scrollTo(0,0)
+            await this.getTaskFileList()
+            this.delete_file = {}
+            this.delete_options = []
+            this.task_file_loading = false;
+        },
+        // 全てのファイルを削除確認
         clickAllFileDelete() {
             this.delete_title = `このタスクにアップされている全てのファイルを削除します`;
             this.delete_options.push(
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
-                { function_cd: "delete", text: "削除する",   callback: this.execDeleteAllFile }
+                { function_cd: "delete", text: "削除する",   callback: this.execDeleteAllTaskFile }
             )
             this.delete_modal = true;
         },
+        // 全てのファイル物理削除
+        async deleteFilesByTaskFromDetail() {
+            this.delete_modal = false;
+            this.task_file_loading = true;
+            try {
+                for(const file of this.task_files) {
+                    const result = await this.storageDeleteFile(file)
+                    if(result) {
+                        await this.firebaseDeleteFile(file)
+                    }
+                }
+                this.messages.success = "全てのファイルを削除しました。";
+            } catch (error) {
+                console.log(error);
+                this.messages.error = `
+                ファイル削除中にエラーが発生しました。
+                時間をおいてもう一度やり直してください。`
+            }
+            scrollTo(0,0)
+            await this.getTaskFileList();
+            this.delete_options = [];
+            this.task_file_loading = false;
+        },
+        
         // タスク削除
         clickTaskDelete() {
             this.delete_options.push(
@@ -737,8 +856,8 @@ export default {
         async execDeleteTask() {
             try {
                 await this.firebaseDeleteTask(this.delete_item)
-                this.deleteSubtaskHasTask(this.delete_item)
-                this.execDeleteAllFile(this.params.files)
+                await this.deleteSubtasksByTaskFromDetail(this.subtask_list)
+                await this.deleteFilesByTaskFromDetail(this.task_files)
                 this.messages.success = "タスクを削除しました。"
             } catch (error) {
                 this.messages.error = "タスク削除に失敗しました。"
@@ -749,11 +868,23 @@ export default {
             this.delete_options = []
             this.delete_modal = false
         },
+        // タスクに紐付くサブタスクの物理削除
+        async deleteSubtasksByTaskFromDetail(subtask_list) {
+            if(subtask_list.length === 0) return;
+            try {
+                await subtask_list.forEach(item => {
+                    this.firebaseDeleteSubtask(item);
+                })    
+            } catch (error) {
+                console.log(error);
+                throw new Error();
+            }
+        },
         closeModal() {
             this.delete_options = []
             this.delete_item = {}
             this.delete_modal = false;
-            this.file_loading = false;
+            this.task_file_loading = false;
         },
         // 詳細閉じる
         closeDetail() {
