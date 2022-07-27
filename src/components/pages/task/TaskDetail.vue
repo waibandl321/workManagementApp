@@ -87,7 +87,7 @@
             <div class="font-weight-bold pb-4">■ ステータス</div>
             <v-select
                 label="ステータス"
-                :items="params.task_status_list"
+                :items="task_status_list"
                 item-text="text"
                 item-value="key"
                 outlined
@@ -101,7 +101,7 @@
             <div class="font-weight-bold pb-4">■ 優先度</div>
             <v-select
                 label="優先度"
-                :items="params.task_priorities"
+                :items="task_priority_list"
                 item-text="text"
                 item-value="key"
                 v-model="params.viewer.task_priority"
@@ -462,6 +462,10 @@ export default {
         listRefresh: Function,
         params: Object,
     },
+    inject: [
+        "task_status_list",
+        "task_priority_list"
+    ],
     data: () => ({
         messages: {
             success: "",

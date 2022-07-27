@@ -17,7 +17,7 @@
             <v-col data-test-id="filterStatus">
                 <v-select
                     label="ステータスで絞り込み"
-                    :items="params.task_status_list"
+                    :items="task_status_list"
                     item-text="text"
                     item-value="key"
                     outlined
@@ -31,7 +31,7 @@
             <v-col data-test-id="filterPriority">
                 <v-select
                     label="優先度で絞り込み"
-                    :items="params.task_priorities"
+                    :items="task_priority_list"
                     item-text="text"
                     item-value="key"
                     outlined
@@ -219,6 +219,10 @@ export default {
         listRefresh: Function,
         params: Object,
     },
+    inject: [
+        "task_status_list",
+        "task_priority_list"
+    ],
     data: () => ({
         loading: false,
         messages: {

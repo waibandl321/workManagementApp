@@ -38,6 +38,14 @@ export default {
             detail_mode: false,
         },
     }),
+    provide() {       
+        const task_status_list = this.getTaskStatus()
+        const task_priority_list = this.getTaskPriorities() 
+        return {
+            task_status_list,
+            task_priority_list
+        }
+    },
     created() {
         this.setRoutetitle()
         this.params.user_info = this.storeGetAccountInfo()
