@@ -6,7 +6,65 @@
                 <CompletedTaskRate :params="params" />    
                 <ExpiredTaskRate :params="params" />
             </v-row>
-            <TaskLength :params="params" />
+            <v-row>
+                <v-col>
+                    <v-card class="pa-4">
+                        <v-card-title class="pt-0 px-0 font-weight-bold justify-center">
+                            アクティブタスク数
+                        </v-card-title>
+                        <div>
+                            <v-card
+                                color="#359EFA"
+                                dark
+                                link
+                                hover
+                                to="/task"
+                            >
+                                <v-card-title class="justify-center" style="font-size: 32px;">
+                                    {{ activate }}
+                                </v-card-title>
+                            </v-card>
+                        </div>
+                    </v-card>
+                </v-col>
+                <v-col>
+                    <v-card class="pa-4">
+                        <v-card-title class="pt-0 px-0 font-weight-bold justify-center">
+                            期限切れタスク数
+                        </v-card-title>
+                        <div>
+                            <v-card
+                                color="#EB3E79"
+                                dark
+                                link
+                                hover
+                                to="/task"
+                            >
+                                <v-card-title class="justify-center" style="font-size: 32px;">
+                                    {{ expired }}
+                                </v-card-title>
+                            </v-card>
+                        </div>
+                    </v-card>
+                </v-col>
+                <v-col>
+                    <v-card class="pa-4">
+                        <v-card-title class="pt-0 px-0 font-weight-bold justify-center">
+                            完了タスク数
+                        </v-card-title>
+                        <div>
+                            <v-card
+                                color="#31A85C"
+                                dark
+                            >
+                                <v-card-title class="justify-center" style="font-size: 32px;">
+                                    {{ completed }}
+                                </v-card-title>
+                            </v-card>
+                        </div>
+                    </v-card>
+                </v-col>
+            </v-row>
             <!-- <DashboardTaskList
                 :params="params" 
                 :clickTaskList="clickTaskList"
@@ -24,7 +82,7 @@
 import Header from '@/components/common/Header'
 import CompletedTaskRate from './parts/DashboardCompletedTaskRate.vue'
 import ExpiredTaskRate from './parts/DashboardExpiredTaskRate.vue'
-import TaskLength from './parts/DashboardTaskLength.vue'
+// import TaskLength from './parts/DashboardTaskLength.vue'
 // import DashboardTaskList from './parts/DashboardTaskList.vue'
 // import DashboardTaskDetail from '@/components/pages/task/TaskDetail.vue'
 import ExecLoading from "@/components/common/ExecLoading.vue"
@@ -38,7 +96,7 @@ export default {
         Header,
         CompletedTaskRate,
         ExpiredTaskRate,
-        TaskLength,
+        // TaskLength,
         // DashboardTaskList,
         // DashboardTaskDetail,
         ExecLoading,
@@ -47,13 +105,13 @@ export default {
     data: () => ({
         params: {
             loading: false,
-            success: "",
-            error: "",
+            // success: "",
+            // error: "",
             // 詳細情報
-            detail_mode: false,
-            viewer: {},
-            subtask_list: [],
-            files: [],
+            // detail_mode: false,
+            // viewer: {},
+            // subtask_list: [],
+            // files: [],
             // ダッシュボード用タスクデータ
             all_tasks: [],
             is_completed_tasks: [],
@@ -66,13 +124,24 @@ export default {
             is_created_tasks_month: [],
         },
     }),
-    provide() {       
-        const task_status_list = this.getTaskStatus()
-        const task_priority_list = this.getTaskPriorities() 
-        return {
-            task_status_list,
-            task_priority_list
-        }
+    // provide() {       
+    //     const task_status_list = this.getTaskStatus()
+    //     const task_priority_list = this.getTaskPriorities() 
+    //     return {
+    //         task_status_list,
+    //         task_priority_list
+    //     }
+    // },
+    computed: {
+        activate: function() {
+            return this.params.all_tasks.length - this.params.is_completed_tasks.length;
+        },
+        expired: function() {
+            return this.params.is_expired_tasks.length;
+        },
+        completed: function() {
+            return this.params.is_completed_tasks.length;
+        },
     },
     created() {
         this.setRoutetitle()
@@ -101,18 +170,18 @@ export default {
                 this.params.loading = false;
             }
         },
-        async clickTaskList(task) {
-            this.params.viewer = task;
-            this.params.subtask_list = await this.getSubtaskList(task)
-            this.params.files = this.getTaskFileList()
-            this.params.detail_mode = true;
-        },
-        closeDetail() {
-            this.initTaskList();
-            this.params.error = "";
-            this.params.success = "";
-            this.params.detail_mode = false;
-        },
+        // async clickTaskList(task) {
+        //     this.params.viewer = task;
+        //     this.params.subtask_list = await this.getSubtaskList(task)
+        //     this.params.files = this.getTaskFileList()
+        //     this.params.detail_mode = true;
+        // },
+        // closeDetail() {
+        //     this.initTaskList();
+        //     this.params.error = "";
+        //     this.params.success = "";
+        //     this.params.detail_mode = false;
+        // },
     }
 }
 </script>
