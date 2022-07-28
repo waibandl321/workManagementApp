@@ -233,7 +233,7 @@ export default {
             return TASK_STATUS;
         },
         getEditorOptions() {
-            return ERITOR_OPTIONS;
+            return Editoe_Toolbar_Options;
         },
     }
 }
@@ -266,7 +266,7 @@ const TASK_PRIORITIES = [
     { key: 2, text: "中" },
     { key: 3, text: "低" },
 ];
-const ERITOR_OPTIONS = [
+const Editoe_Toolbar_Options = [
     ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
     ['blockquote', 'code-block'],
     [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme

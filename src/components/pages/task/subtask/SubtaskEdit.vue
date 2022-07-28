@@ -108,4 +108,8 @@ export default {
     color: #ff5252;
     margin-top: 4px;
 }
+.quill-editor >>> .ql-container.ql-snow {
+    min-height: 150px;
+    font-size: medium;
+}
 </style>

@@ -476,8 +476,6 @@ export default {
             task_name_edit_mode: false,
             term_setting: false,
             task_deadline: null,
-            
-            delete_file: {},
 
             desc_editor: false,
             editorOption: {
@@ -496,6 +494,7 @@ export default {
 
             task_file_loading: false,
             task_files: [],
+            delete_file: {},
             
             detail: this.detailItem,
             delete_options: [],
