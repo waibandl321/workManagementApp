@@ -217,13 +217,13 @@
                 </v-btn>
             </v-card-actions>
             <v-divider />
-            <div class="mt-4">
-            <div
-                v-if="!subtask_list.length"
-                data-test-id="noSubtask"
-            >
-                サブタスクはありません
-            </div>
+            <div class="mt-2">
+                <div
+                    v-if="!subtask_list.length"
+                    data-test-id="noSubtask"
+                >
+                    サブタスクはありません
+                </div>
                 <div
                     v-for="(subtask, index) in subtask_list"
                     :key="index"
@@ -338,21 +338,29 @@
                 </v-btn>
             </v-card-actions>
             <v-divider />
-            
-            <div class="pt-4">
-                <div class="d-flex align-center">
-                    <div data-test-id="taskAttachmentLength">{{ task_files.length }} Files</div>
-                    <v-spacer />
-                    <v-btn
-                        v-if="task_files.length > 0"
-                        text
-                        color="error"
-                        @click="clickAllFileDelete()"
-                        data-test-id="taskAttachmentAllDelete"
-                    >
-                        <v-icon>mdi-trash-can-outline</v-icon>
-                        全ファイル削除
-                    </v-btn>
+            <div>
+                <div 
+                    v-if="task_files.length === 0"
+                    class="py-2"
+                    data-test-id="taskAttachmentNothing"
+                >
+                    添付ファイルはありません。
+                </div>
+                <div class="pt-4">
+                    <div class="d-flex align-center">
+                        <div data-test-id="taskAttachmentLength">{{ task_files.length }} Files</div>
+                        <v-spacer />
+                        <v-btn
+                            v-if="task_files.length > 0"
+                            text
+                            color="error"
+                            @click="clickAllFileDelete()"
+                            data-test-id="taskAttachmentAllDelete"
+                        >
+                            <v-icon>mdi-trash-can-outline</v-icon>
+                            全ファイル削除
+                        </v-btn>
+                    </div>
                 </div>
             </div>
             <!-- ローディング -->
@@ -390,10 +398,10 @@
                         <v-icon>mdi-open-in-new</v-icon>
                         </v-btn>
                         <v-btn
-                        @click="clickFileDeleteSingle(file)"
-                        text
-                        class="ml-2"
-                        data-test-id="taskAttachmentDelete"
+                            @click="clickFileDeleteSingle(file)"
+                            text
+                            class="ml-2"
+                            data-test-id="taskAttachmentDelete"
                         >
                         <v-icon>mdi-trash-can-outline</v-icon>
                         </v-btn>
@@ -814,7 +822,7 @@ export default {
             this.delete_title = `このタスクにアップされている全てのファイルを削除します`;
             this.delete_options.push(
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
-                { function_cd: "delete", text: "削除する",   callback: this.execDeleteAllTaskFile }
+                { function_cd: "delete", text: "削除する",   callback: this.deleteFilesByTaskFromDetail }
             )
             this.delete_modal = true;
         },
