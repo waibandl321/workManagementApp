@@ -34,7 +34,7 @@ Cypress.Commands.add("appSignin", (path) => {
         cy.get('[data-test-id="inputPassword"]').clear().type(info.password)
         cy.get('[data-test-id="execSignin"]').should('not.have.attr', 'disabled')
         cy.get('[data-test-id="execSignin"]').click()
-        cy.wait(2000)
+        cy.wait(3000)
         cy.visit( path ? path : '/' )
     })
 })

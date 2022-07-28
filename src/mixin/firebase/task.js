@@ -21,6 +21,17 @@ export default {
                 })
             })
         },
+        async firebaseGetTaskDetail(task_id) {
+            return new Promise((resolve, reject) => {
+                const db = getDatabase()
+                const starCountRef = ref(db, '/tasks/' + this.storeGetFirebaseUid() + '/' + task_id)
+                onValue(starCountRef, (snapshot) => {
+                    resolve(snapshot.val());
+                }, (err) => {
+                    reject(err);
+                })
+            })
+        },
 
         // サブタスク一覧取得
         async firebaseGetSubtaskList() {

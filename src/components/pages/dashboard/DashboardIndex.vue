@@ -7,14 +7,14 @@
                 <ExpiredTaskRate :params="params" />
             </v-row>
             <TaskLength :params="params" />
-            <DashboardTaskList
+            <!-- <DashboardTaskList
                 :params="params" 
                 :clickTaskList="clickTaskList"
             />
             <DashboardTaskDetail
                 :params="params"
                 :closeDetail="closeDetail"
-            />
+            /> -->
         </div>
         <ExecLoading v-if="params.loading"/>
     </div>
@@ -25,8 +25,8 @@ import Header from '@/components/common/Header'
 import CompletedTaskRate from './parts/DashboardCompletedTaskRate.vue'
 import ExpiredTaskRate from './parts/DashboardExpiredTaskRate.vue'
 import TaskLength from './parts/DashboardTaskLength.vue'
-import DashboardTaskList from './parts/DashboardTaskList.vue'
-import DashboardTaskDetail from '@/components/pages/task/TaskDetail.vue'
+// import DashboardTaskList from './parts/DashboardTaskList.vue'
+// import DashboardTaskDetail from '@/components/pages/task/TaskDetail.vue'
 import ExecLoading from "@/components/common/ExecLoading.vue"
 
 import dashboardMixin from './dashbord.js'
@@ -39,8 +39,8 @@ export default {
         CompletedTaskRate,
         ExpiredTaskRate,
         TaskLength,
-        DashboardTaskList,
-        DashboardTaskDetail,
+        // DashboardTaskList,
+        // DashboardTaskDetail,
         ExecLoading,
     },
     mixins: [dashboardMixin, taskGlobalMixin, taskLocalMixin],

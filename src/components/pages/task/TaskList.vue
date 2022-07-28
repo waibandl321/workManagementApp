@@ -367,8 +367,7 @@ export default {
         async recordClick(task) {
             this.messages.success = ""
             this.messages.error = "";
-            this.params.viewer = task;
-            this.params.detail_mode = true;
+            this.$emit("set-task-detail", task);
         },
         // タスク作成
         clickTaskInput() {

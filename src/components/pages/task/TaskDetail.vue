@@ -1,6 +1,6 @@
 <template>
     <v-dialog
-        v-model="params.detail_mode"
+        v-model="detailMode"
         persistent
         max-width="1024px"
     >
@@ -25,7 +25,7 @@
                 <v-text-field
                     autofocus
                     hide-details
-                    v-model="params.viewer.task_name"
+                    v-model="detail.task_name"
                     outlined
                     dense
                     background-color="white"
@@ -47,7 +47,7 @@
             v-else
             class="d-flex align-center"
         >
-            {{ params.viewer.task_name ? params.viewer.task_name : '' }}
+            {{ detail.task_name ? detail.task_name : '' }}
             <v-btn
                 icon
                 @click="task_name_edit_mode = true"
@@ -74,7 +74,7 @@
         />
         <!-- 期日アラート -->
         <v-alert
-            v-if="judgeRemainingDays(params.viewer.task_deadline) <= 0"
+            v-if="judgeRemainingDays(detail.task_deadline) <= 0"
             type="error"
             color="red darken-3"
             data-test-id="alertDeadline"
@@ -93,7 +93,7 @@
                 outlined
                 color="primary"
                 dense
-                v-model="params.viewer.task_status"
+                v-model="detail.task_status"
                 @change="updateTaskStatus()"
             ></v-select>
             </v-col>
@@ -104,7 +104,7 @@
                 :items="task_priority_list"
                 item-text="text"
                 item-value="key"
-                v-model="params.viewer.task_priority"
+                v-model="detail.task_priority"
                 outlined
                 color="primary"
                 dense
@@ -131,7 +131,7 @@
                     style="color: #C62828; font-size: 14px;"
                     data-test-id="taskDeadlineText"
                 >
-                    {{ this.convertDatetimeFromUnixtime(params.viewer.task_deadline, "yyyy-mm-dd") }}
+                    {{ this.convertDatetimeFromUnixtime(detail.task_deadline, "yyyy-mm-dd") }}
                 </span>
                 <!-- date picker -->
                 <div class="date_picker" v-if="term_setting">
@@ -183,19 +183,19 @@
                 class="fs-sm"
                 data-test-id="taskCreatedText"
             >
-                タスク作成日: {{ convertDatetimeFromUnixtime(params.viewer.created, "yyyy-mm-dd") }}
+                タスク作成日: {{ convertDatetimeFromUnixtime(detail.created, "yyyy-mm-dd") }}
             </div>
             <div
                 class="ml-4 fs-sm"
                 data-test-id="taskTermText"
             >
-                タスク実施期間：{{ convertTaskPeriod(params.viewer.created, params.viewer.task_deadline) }}
+                タスク実施期間：{{ convertTaskPeriod(detail.created, detail.task_deadline) }}
             </div>
             <div
                 class="ml-4 fs-sm"
                 data-test-id="taskDaysLeft"
             >
-                期日までの残り日数：{{ convertRemainingDays(params.viewer.task_deadline) }}
+                期日までの残り日数：{{ convertRemainingDays(detail.task_deadline) }}
             </div>
         </div>
         <v-divider />
@@ -302,7 +302,7 @@
             >
                 <quillEditor
                     ref="myQuillEditor"
-                    v-model="params.viewer.task_description"
+                    v-model="detail.task_description"
                     :options="editorOption"
                     data-test-id="taskDescriptionEditor"
                 />
@@ -312,13 +312,13 @@
                 class="editor_body"
             >
                 <div
-                    v-if="!params.viewer.task_description"
+                    v-if="!detail.task_description"
                     data-test-id="taskDescriptionText"
                 >
                     タスクの詳細がありません
                 </div>
                 <div
-                    v-html="params.viewer.task_description"
+                    v-html="detail.task_description"
                     data-test-id="taskDescriptionText"
                 ></div>
             </div>
@@ -460,46 +460,49 @@ export default {
     },
     props: {
         listRefresh: Function,
-        params: Object,
+        detailMode: Boolean,
+        detailItem: Object,
     },
     inject: [
         "task_status_list",
         "task_priority_list"
     ],
-    data: () => ({
-        messages: {
-            success: "",
-            error: "",
-        },
-        task_name_edit_mode: false,
-        term_setting: false,
-        task_deadline: null,
-        
-        delete_file: {},
+    data: function() {
+        return {
+            messages: {
+                success: "",
+                error: "",
+            },
+            task_name_edit_mode: false,
+            term_setting: false,
+            task_deadline: null,
+            
+            delete_file: {},
 
-        desc_editor: false,
-        editorOption: {
-            theme: 'snow',
-            placeholder: 'タスク詳細を入力してください',
-            modules: {
-                toolbar: [],
-            }
-        },
-        
-        subtask_mode: "task",
-        subtask_list: [],
-        subtask_viewer: {},
-        subtask_editor: {},
-        subtask_option: [],
+            desc_editor: false,
+            editorOption: {
+                theme: 'snow',
+                placeholder: 'タスク詳細を入力してください',
+                modules: {
+                    toolbar: [],
+                }
+            },
+            
+            subtask_mode: "task",
+            subtask_list: [],
+            subtask_viewer: {},
+            subtask_editor: {},
+            subtask_option: [],
 
-        task_file_loading: false,
-        task_files: [],
-        
-        delete_item: {},
-        delete_options: [],
-        delete_title: "",
-        delete_modal: false,
-    }),
+            task_file_loading: false,
+            task_files: [],
+            
+            detail: this.detailItem,
+            delete_options: [],
+            delete_title: "",
+            delete_modal: false,
+        }
+    },
     created() {
         scrollTo(0,0)
         this.messages.success = "";
@@ -515,12 +518,12 @@ export default {
         
         // サブタスク読み込み
         async readSubtaskList() {
-            this.subtask_list = await this.getSubtaskList(this.params.viewer);
+            this.subtask_list = await this.getSubtaskList(this.detail);
         },
         async updateTaskName() {
             const result = await this.firebaseUpdateTaskname(
-            this.params.viewer.task_id,
-            this.params.viewer.task_name
+            this.detail.task_id,
+            this.detail.task_name
             )
             if(result) {
                 this.task_name_edit_mode = false
@@ -528,15 +531,15 @@ export default {
             }
         },
         async updateTaskStatus() {
-            const result = await this.firebaseUpdateTaskStatus(this.params.viewer)
+            const result = await this.firebaseUpdateTaskStatus(this.detail)
             if(result) {
                 this.messages.success = "タスクのステータスを変更しました。"
             }
         },
         async updateTaskPriority() {
             const result = await this.firebaseUpdateTaskPriority(
-                this.params.viewer.task_id,
-                this.params.viewer.task_priority
+                this.detail.task_id,
+                this.detail.task_priority
             )
             if(result) {
                 this.messages.success = "タスクの優先度を変更しました。"
@@ -544,10 +547,10 @@ export default {
         },
         // タスク期日アラート
         outputTaskAlert() {
-            if(!this.params.viewer.task_deadline) {
+            if(!this.detail.task_deadline) {
                 return
             }
-            const result = this.judgeRemainingDays(this.params.viewer.task_deadline)
+            const result = this.judgeRemainingDays(this.detail.task_deadline)
             switch (true) {
                 case result === 0:
                     return "本日期日です";
@@ -563,22 +566,22 @@ export default {
             this.term_setting = false;
             this.firebaseUpdateTaskDeadline(
                 this.task_deadline,
-                this.params.viewer.task_id
+                this.detail.task_id
             )
-            this.params.viewer.task_deadline = null;
+            this.detail.task_deadline = null;
         },
         async updateTaskTerm() {
             const deadline = this.convertUnixtimeFromDate(this.task_deadline)
-            if(deadline === this.params.viewer.task_deadline){
+            if(deadline === this.detail.task_deadline){
                 this.term_setting = false;
                 return;
             }
             const result = await this.firebaseUpdateTaskDeadline(
             deadline,
-            this.params.viewer.task_id
+            this.detail.task_id
             )
             if(result) {
-                this.params.viewer.task_deadline = deadline;
+                this.detail.task_deadline = deadline;
                 this.messages.success = "タスク期日を変更しました";
             }
             this.task_deadline = null;
@@ -622,7 +625,7 @@ export default {
                 this.messages.success = "サブタスクを新規作成しました。";
                 this.subtask_option = [];
                 this.subtask_editor = {};
-                this.subtask_list = await this.getSubtaskList(this.params.viewer)
+                this.subtask_list = await this.getSubtaskList(this.detail)
             } catch (error) {
                 this.messages.error = "サブタスク作成中にエラーが発生しました。";
             }
@@ -631,7 +634,7 @@ export default {
         generateSubtaskObject(new_subtask) {
             return {
                 subtask_id: this.createRandomId(),
-                task_id: this.params.viewer.task_id,
+                task_id: this.detail.task_id,
                 subtask_name: new_subtask.subtask_name,
                 subtask_description: new_subtask.subtask_description ? new_subtask.subtask_description : "",
                 create_account: this.storeGetFirebaseUid(),
@@ -656,7 +659,7 @@ export default {
             }
             this.subtask_editor = {};
             this.subtask_option = []
-            this.subtask_list = await this.getSubtaskList(this.params.viewer);
+            this.subtask_list = await this.getSubtaskList(this.detail);
             this.subtask_mode = "task";
         },
         // サブタスク削除
@@ -667,7 +670,7 @@ export default {
             } else {
                 this.messages.error = "サブタスクの削除に失敗しました。"
             }
-            this.subtask_list = await this.getSubtaskList(this.params.viewer);
+            this.subtask_list = await this.getSubtaskList(this.detail);
         },
         // サブタスク詳細
         clickSubtaskRecord(subtask) {
@@ -687,7 +690,7 @@ export default {
             this.subtask_mode = mode;
         },
         async closeSubtask() {
-            this.subtask_list = await this.getSubtaskList(this.params.viewer)
+            this.subtask_list = await this.getSubtaskList(this.detail)
             this.subtask_option = [];
             this.subtask_viewer =  {}
             this.subtask_editor =  {}
@@ -696,8 +699,8 @@ export default {
         // タスク概要
         async updateTaskDescription() {
             const result = await this.firebaseUpdateTaskDescription(
-            this.params.viewer.task_id,
-            this.params.viewer.task_description
+            this.detail.task_id,
+            this.detail.task_description
             );
             if(result) {
                 this.desc_editor = false
@@ -717,7 +720,7 @@ export default {
             }
 
             if(result) {
-                this.task_files = _getFilesByTaskId(result, this.params.viewer);
+                this.task_files = _getFilesByTaskId(result, this.detail);
             } else {
                 this.task_files = []
             }
@@ -732,8 +735,8 @@ export default {
         },
         // ファイルアップロード
         clickUploadButton() {
-            this.params.success = "";
-            this.params.error = "";
+            this.messages.success = "";
+            this.messages.error = "";
             this.$refs.fileUploadButton.click()
         },
         async taskFileInputChange(event) {
@@ -742,7 +745,7 @@ export default {
             if( await this.judgeBinaryFileType(files) ) { //util
                 try {
                     await this.judgeSameTaskFile(...files)
-                    await this.storageUploadTaskFile(...files, this.params.viewer.task_id) //mixin
+                    await this.storageUploadTaskFile(...files, this.detail.task_id) //mixin
                     .then((result) => {
                         const task_file_obj = this.generateTaskFileObject(result)
                         this.firebaseSaveFile(task_file_obj); //mixin
@@ -856,8 +859,8 @@ export default {
                 { function_cd: "cancel", text: "キャンセル", callback: this.closeModal },
                 { function_cd: "delete", text: "削除する",   callback: this.execDeleteTask }
             )
-            this.delete_title = `タスク「${this.params.viewer.task_name}」を削除します。`;
-            this.delete_item = this.params.viewer;
+            this.delete_title = `タスク「${this.detail.task_name}」を削除します。`;
+            this.delete_item = this.detail;
             this.delete_modal = true;
         },
         // 物理削除
@@ -905,7 +908,7 @@ export default {
             this.subtask_editor =  {}
             this.task_name_edit = false
             this.desc_editor = false
-            this.params.detail_mode = false
+            this.$emit("close-detail-modal")
         },
     }
 }
