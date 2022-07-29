@@ -22,8 +22,8 @@ export default {
             if(!end) {
                 return "未設定"
             }
-            const _begin = Number(this.convertDatetimeFromUnixtime(begin, "yyyymmdd")),
-                _end = Number(this.convertDatetimeFromUnixtime(end, "yyyymmdd"));
+            const _begin = Number(this.toDatetime(begin, "yyyymmdd")),
+                _end = Number(this.toDatetime(end, "yyyymmdd"));
             return ((_end - _begin) + 1) + "日間"
         },
     }

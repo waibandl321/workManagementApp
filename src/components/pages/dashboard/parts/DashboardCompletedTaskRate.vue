@@ -2,22 +2,22 @@
     <v-col>
         <v-card class="pa-4">
             <v-card-title class="dashboard-card-title">タスク完了率（週間・月間）</v-card-title>
-            <v-row class="mt-2">
+            <v-row class="mt-2 dashboard-card-row">
                 <v-col>
                     <v-card>
                         <v-card-title class="justify-center">過去7日間</v-card-title>
                         <apexchart
                             type="radialBar"
                             :options="graph_options"
-                            :series="setGraphDataByCompletedTasksByOneWeek()"
+                            :series="setCompletionRateWeekly()"
                         ></apexchart>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            完了したタスク：{{ getDashboardCompletedTasksByOneWeek().length }}
+                            完了したタスク：{{ completed_task_length }}
                         </div>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            週間タスク数：{{ getDashboardTasksByCreatedOneWeek().length }}
+                            週間タスク数：{{ weekly_task_length }}
                         </div>
                     </v-card>
                 </v-col>
@@ -27,15 +27,15 @@
                         <apexchart
                             type="radialBar"
                             :options="graph_options"
-                            :series="setGraphDataByCompletedTasksByMonth()"
+                            :series="setCompletionRateMonthly()"
                         ></apexchart>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            完了したタスク：{{ getDashboardCompletedTasksByOneMonth().length }}
+                            完了したタスク：{{ completed_month_length }}
                         </div>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            月間タスク数：{{ getDashboardTasksByCreatedOneMonth().length }}
+                            月間タスク数：{{ monthly_task_length }}
                         </div>
                     </v-card>
                 </v-col>
@@ -78,21 +78,32 @@ export default {
             labels: ['完了率'],
         },
     }),
-    created() {
-        
+    computed: {
+        completed_task_length: function() {
+            return this.completedTasksWeekly().length;
+        },
+        weekly_task_length: function() {
+            return this.createdTasksWeekly().length;
+        },
+        completed_month_length: function() {
+            return this.completedTasksMonthly().length;
+        },
+        monthly_task_length: function() {
+            return this.createdTasksMonthly().length;
+        },
     },
     methods: {
-        setGraphDataByCompletedTasksByOneWeek() {
-            let result =  this.calcCompletedTaskRateBySevenDays()
+        setCompletionRateWeekly() {
+            let result =  this.calcCompletionRateWeekly()
             if(!result) {
                 return [0]    
             }
             return [result]
         },
-        setGraphDataByCompletedTasksByMonth() {
-            let result =  this.calcCompletedTaskRateByOneMonth()
+        setCompletionRateMonthly() {
+            let result =  this.calcCompletionRateMonthly()
             if(!result) {
-                return [0]    
+                return [0]
             }
             return [result]
         },
@@ -111,5 +122,8 @@ export default {
     padding-top: 8px;
     padding-bottom: 8px;
     border-left: 4px solid #31A85C;
+}
+.dashboard-card-row {
+    flex-wrap: nowrap;
 }
 </style>

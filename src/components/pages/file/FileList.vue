@@ -60,7 +60,7 @@
                         <span class="ml-2">{{ item.name }}</span>
                     </td>
                     <td>{{ item.uid }}</td>
-                    <td>{{ convertDatetimeFromUnixtime(item.upload_at, "yyyy/mm/dd") }}</td>
+                    <td>{{ toDatetime(item.upload_at, "yyyy/mm/dd") }}</td>
                     <td>{{ outputFilesize(item) }}</td>
                     <td>
                         <div class="d-flex align-center justify-end">

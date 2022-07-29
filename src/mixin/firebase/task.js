@@ -96,7 +96,7 @@ export default {
 
             if(task.task_status == 5) {
                 updates['/tasks/' + userId + '/' + task.task_id + '/task_status'] = task.task_status
-                updates['/tasks/' + userId + '/' + task.task_id + '/finished_at'] = this.getCurrentUnixtime()
+                updates['/tasks/' + userId + '/' + task.task_id + '/finished_at'] = this.nowUnix()
             } else {
                 updates['/tasks/' + userId + '/' + task.task_id + '/task_status'] = task.task_status
             }

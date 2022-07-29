@@ -23,7 +23,7 @@ export default {
             return JSON.parse(JSON.stringify(value))
         },
         // 日時取得(Unixtime形式)
-        getCurrentUnixtime() {
+        nowUnix() {
             var a = new Date().getTime();
             var b = Math.floor( a / 1000 );
             return b
@@ -35,7 +35,7 @@ export default {
             return b
         },
         // Unixtimeをformat(ex. yyyy/mm/dd)に変換
-        convertDatetimeFromUnixtime(value, format) {
+        toDatetime(value, format) {
             if(!value) {
                 return "未設定"
             }

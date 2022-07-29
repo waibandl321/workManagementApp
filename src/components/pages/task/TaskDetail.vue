@@ -131,7 +131,7 @@
                     style="color: #C62828; font-size: 14px;"
                     data-test-id="taskDeadlineText"
                 >
-                    {{ this.convertDatetimeFromUnixtime(detail.task_deadline, "yyyy-mm-dd") }}
+                    {{ this.toDatetime(detail.task_deadline, "yyyy-mm-dd") }}
                 </span>
                 <!-- date picker -->
                 <div class="date_picker" v-if="term_setting">
@@ -183,7 +183,7 @@
                 class="fs-sm"
                 data-test-id="taskCreatedText"
             >
-                タスク作成日: {{ convertDatetimeFromUnixtime(detail.created, "yyyy-mm-dd") }}
+                タスク作成日: {{ toDatetime(detail.created, "yyyy-mm-dd") }}
             </div>
             <div
                 class="ml-4 fs-sm"
@@ -503,15 +503,13 @@ export default {
         }
     },
     created() {
+        console.log(this.detailItem);
         scrollTo(0,0)
         this.messages.success = "";
         this.messages.error = "";
         this.editorOption.modules.toolbar = this.getEditorOptions();
         this.readSubtaskList()
         this.getTaskFileList()
-    },
-    updated() {
-        scrollTo(0,0)
     },
     methods: {
         
@@ -604,8 +602,8 @@ export default {
             if(!end) {
                 return undefined
             }
-            const today = new Date(this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyy-mm-dd"));
-            const _end = new Date(this.convertDatetimeFromUnixtime(end, "yyyy-mm-dd"));
+            const today = new Date(this.toDatetime(this.nowUnix(), "yyyy-mm-dd"));
+            const _end = new Date(this.toDatetime(end, "yyyy-mm-dd"));
             return (_end - today) / 86400000;
         },
         // サブタスク作成
@@ -637,7 +635,7 @@ export default {
                 subtask_name: new_subtask.subtask_name,
                 subtask_description: new_subtask.subtask_description ? new_subtask.subtask_description : "",
                 create_account: this.storeGetFirebaseUid(),
-                created: this.getCurrentUnixtime(),
+                created: this.nowUnix(),
                 finished_at: ""
             }
         },
@@ -645,7 +643,7 @@ export default {
         async updateSubtask(subtask, is_finished_flag) {
             if(is_finished_flag) {
                 if(!subtask.finished_at) {
-                subtask.finished_at = this.getCurrentUnixtime()
+                subtask.finished_at = this.nowUnix()
                 } else {
                 return; //MEMO: finishedの場合は何もしない
                 }

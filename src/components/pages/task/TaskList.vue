@@ -158,13 +158,13 @@
                             {{ priorityText(task.task_priority) }}
                         </td>
                         <td class="py-2" data-test-id="tdDeadline">
-                            {{ convertDatetimeFromUnixtime(task.task_deadline, "yyyy-mm-dd") }}
+                            {{ toDatetime(task.task_deadline, "yyyy-mm-dd") }}
                         </td>
                         <td class="py-2" data-test-id="tdTerm">
                             {{ convertTaskPeriod(task.created, task.task_deadline) }}
                         </td>
                         <td class="py-2" data-test-id="tdCreated">
-                            {{ convertDatetimeFromUnixtime(task.created, "yyyy-mm-dd") }}
+                            {{ toDatetime(task.created, "yyyy-mm-dd") }}
                         </td>
                         <td class="options-td">
                             <v-btn
@@ -401,7 +401,7 @@ export default {
                 task_manager: "",
                 task_deadline: null,
                 create_account: this.storeGetFirebaseUid(),
-                created: this.getCurrentUnixtime(),
+                created: this.nowUnix(),
                 updated: "",
                 finished_at: ""
             }

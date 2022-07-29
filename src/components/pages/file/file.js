@@ -43,7 +43,7 @@ export default {
                 "type"         : 0,
                 "name"         : this.folder_name,
                 "size"         : "",
-                "upload_at"    : this.getCurrentUnixtime(),
+                "upload_at"    : this.nowUnix(),
                 "delete"       : 0,
                 "parent_dir_id": this.params.now_dir,
             }
@@ -55,7 +55,7 @@ export default {
                     "type"         : 1,
                     "name"         : file.name,
                     "size"         : file.size,
-                    "upload_at"    : this.getCurrentUnixtime(),
+                    "upload_at"    : this.nowUnix(),
                     "delete"       : 0,
                     "parent_dir_id": this.params.now_dir,
             }

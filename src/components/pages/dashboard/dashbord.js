@@ -5,11 +5,11 @@ export default {
         
     }),
     async created() {
-        this.today = this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyymmdd");
+        this.today = this.toDatetime(this.nowUnix(), "yyyymmdd");
         this.params.task_status_list = this.getTaskStatus()
         this.params.task_priorities = this.getTaskPriorities()
         this.items = await this.getAllDashboardTask()
-        this.getDashboardTasksByCreatedOneWeek()
+        this.createdTasksWeekly()
         
     },
     methods: {
@@ -27,7 +27,7 @@ export default {
         },
 
         // 直近7日間で作成されたタスク
-        getDashboardTasksByCreatedOneWeek() {
+        createdTasksWeekly() {
             let result = this.items;
             result = result.filter((v) => 
                 // 本日以前に作成
@@ -38,7 +38,7 @@ export default {
             return result;
         },
         // 直近7日間で完了したタスク
-        getDashboardCompletedTasksByOneWeek() {
+        completedTasksWeekly() {
             let result = this.items;
             result = result.filter((v) => 
                 this.judgeDateBeforeToday(v.created)
@@ -48,13 +48,13 @@ export default {
             return result;
         },
         // 直近7日間で完了したタスク：7日以内の完了タスク / 直近7日間で作成されたタスク * 100
-        calcCompletedTaskRateBySevenDays() {
-            const r = this.getDashboardCompletedTasksByOneWeek()
-            const s = this.getDashboardTasksByCreatedOneWeek();
+        calcCompletionRateWeekly() {
+            const r = this.completedTasksWeekly()
+            const s = this.createdTasksWeekly();
             return Math.round(r.length / s.length * 100)
         },
         // 直近1ヶ月で作成されたタスク
-        getDashboardTasksByCreatedOneMonth() {
+        createdTasksMonthly() {
             let result = this.items;
             result = result.filter((v) => 
                 // 本日以前に作成
@@ -65,7 +65,7 @@ export default {
             return result;
         },
         // 直近1ヶ月で完了したタスク
-        getDashboardCompletedTasksByOneMonth() {
+        completedTasksMonthly() {
             let result = this.items;
             result = result.filter((v) => 
                 this.judgeDateBeforeToday(v.created)
@@ -75,16 +75,16 @@ export default {
             return result;
         },
         // 一ヶ月間のタスク完了率：1ヶ月以内の完了タスク / 一ヶ月のタスク数 * 100
-        calcCompletedTaskRateByOneMonth() {
-            const r = this.getDashboardCompletedTasksByOneMonth()
-            const s = this.getDashboardTasksByCreatedOneMonth();
+        calcCompletionRateMonthly() {
+            const r = this.completedTasksMonthly()
+            const s = this.createdTasksMonthly();
             return Math.round(r.length / s.length * 100)
         },
         
 
         // 期限切れタスク（直近7日間）
         getExpiredTasksRateByOneWeek() {
-            let result = this.getDashboardCompletedTasksByOneWeek();
+            let result = this.completedTasksWeekly();
             result = result.filter((v) =>
                 v.task_deadline &&
                 v.finished_at &&
@@ -94,7 +94,7 @@ export default {
         },
         // 期限切れタスク（直近30日間）
         getExpiredTasksRateByOneMonth() {
-            let result = this.getDashboardTasksByCreatedOneMonth()
+            let result = this.createdTasksMonthly()
             result = result.filter((v) =>
                 v.task_deadline &&
                 v.finished_at &&
@@ -104,28 +104,19 @@ export default {
         },
 
         // 直近7日間のタスク期限切れ率：期限切れタスク数 / 7日間のタスク作成数 * 100
-        calcExpiredTasksRateByOneWeek() {
+        calcExpirationRateWeekly() {
             const r = this.getExpiredTasksRateByOneWeek()
-            const s = this.getDashboardTasksByCreatedOneWeek();
+            const s = this.createdTasksWeekly();
             return Math.round(r.length / s.length * 100)
         },
         // 一ヶ月間のタスク期限切れ率：期限切れタスク数 / 一ヶ月のタスク作成数 * 100
-        calcExpiredTasksRateByOneMonth() {
+        calcExpirationRateMonthly() {
             const r = this.getExpiredTasksRateByOneMonth()
-            const s = this.getDashboardTasksByCreatedOneMonth();
+            const s = this.createdTasksMonthly();
             return Math.round(r.length / s.length * 100)
         },
 
-        // 期日設定がされている＋期限が直近7日間以内のタスク（土・日・祝日を含む）
-        getNearDeadlineTasksByOneWeek() {
-            let result = this.getActivateTasks();
-            result = result.filter((v) => 
-                v.task_deadline
-                && this.judgeDateAfterToday(v.task_deadline)
-                && this.judgeDateRangeAfter7Days(v.task_deadline)
-            )
-            return result;
-        },
+        
         // 期限切れのタスク(＋期日設定がされている) 
         getExpiredTasks() {
             let result = this.getActivateTasks();
@@ -134,14 +125,7 @@ export default {
             )
             return result;
         },
-        // 本日期日のタスク
-        getExpiredTasksToday() {
-            let result = this.getActivateTasks();
-            result = result.filter((v) => 
-                this.judgeDateJustToday(v.task_deadline)
-            )
-            return result;
-        },
+        
         // アクティブタスク
         getActivateTasks() {
             let result = this.items;
@@ -156,46 +140,46 @@ export default {
         },
         // 本日チェック
         judgeDateJustToday(target_date) {
-            return this.convertDatetimeFromUnixtime(target_date, "yyyymmdd") == this.today
+            return this.toDatetime(target_date, "yyyymmdd") == this.today
         },
         // 本日以前チェック
         judgeDateBeforeToday(target_date) {
-            return this.convertDatetimeFromUnixtime(target_date, "yyyymmdd")
-                    <= this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyymmdd")
+            return this.toDatetime(target_date, "yyyymmdd")
+                    <= this.toDatetime(this.nowUnix(), "yyyymmdd")
         },
         // 本日含まないver
         judgeDateBeforeYesterday(target_date) {
-            return this.convertDatetimeFromUnixtime(target_date, "yyyymmdd")
-                    < this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyymmdd")
+            return this.toDatetime(target_date, "yyyymmdd")
+                    < this.toDatetime(this.nowUnix(), "yyyymmdd")
         },
         // 本日以降チェック
         judgeDateAfterToday(target_date) {
-            return this.convertDatetimeFromUnixtime(target_date, "yyyymmdd") 
-                    >= this.convertDatetimeFromUnixtime(this.getCurrentUnixtime(), "yyyymmdd")
+            return this.toDatetime(target_date, "yyyymmdd") 
+                    >= this.toDatetime(this.nowUnix(), "yyyymmdd")
         },
         // １週間後チェック
         judgeDateRangeAfter7Days(target_date) {
-            return this.convertDatetimeFromUnixtime(target_date, "yyyymmdd") 
+            return this.toDatetime(target_date, "yyyymmdd") 
                     < this.getUnixtimeAfter7Days()
         },
         // １週間前チェック
         judgeDateRangeBefore7Days(target_date) {
-            return this.convertDatetimeFromUnixtime(target_date, "yyyymmdd") 
+            return this.toDatetime(target_date, "yyyymmdd") 
                     > this.getUnixtimeBefore7Days()
         },
         // １ヶ月後チェック
         judgeDateRangeAfterOneMonth(target_date) {
-            return this.convertDatetimeFromUnixtime(target_date, "yyyymmdd") 
+            return this.toDatetime(target_date, "yyyymmdd") 
                     < this.getUnixtimeAfterOneMonth()
         },
         // １ヶ月前チェック
         judgeDateRangeBeforeOneMonth(target_date) {
-            return this.convertDatetimeFromUnixtime(target_date, "yyyymmdd") 
+            return this.toDatetime(target_date, "yyyymmdd") 
                     > this.getUnixtimeBeforeOneMonth()
         },
         // 期日 < 終了日チェック
         judgeExpired(task_deadline, finished_at) {
-            return this.convertDatetimeFromUnixtime(task_deadline, "yyyymmdd") < this.convertDatetimeFromUnixtime(finished_at, "yyyymmdd")
+            return this.toDatetime(task_deadline, "yyyymmdd") < this.toDatetime(finished_at, "yyyymmdd")
         },
     }
 }

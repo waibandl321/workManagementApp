@@ -2,22 +2,22 @@
     <v-col>
         <v-card class="pa-4">
             <v-card-title class="dashboard-card-title">期限切れ率（週間・月間）</v-card-title>
-            <v-row class="mt-2">
+            <v-row class="mt-2 dashboard-card-row">
                 <v-col>
                     <v-card>
                         <v-card-title class="justify-center">過去7日間</v-card-title>
                         <apexchart
                             type="radialBar"
                             :options="graph_options"
-                            :series="setGraphExpiredValueByOneWeek()"
+                            :series="setExpirationRateWeekly()"
                         ></apexchart>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            期限切れタスク: {{ getExpiredTasksRateByOneWeek().length }}
+                            e了時に期限切れ: {{ expiration_length_weekly }}
                         </div>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            週間タスク数：{{ getDashboardTasksByCreatedOneWeek().length }}
+                            週間タスク数：{{ t_weeklyask_length }}
                         </div>
                     </v-card>
                 </v-col>
@@ -27,15 +27,15 @@
                         <apexchart
                             type="radialBar"
                             :options="graph_options"
-                            :series="setGraphExpiredValueDataByMonth()"
+                            :series="setExpirationRateMonthly()"
                         ></apexchart>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            期限切れタスク: {{ getExpiredTasksRateByOneMonth().length }}
+                            完了時に期限切れ: {{ expiration_length_monthly }}
                         </div>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            月間タスク数：{{ getDashboardTasksByCreatedOneMonth().length }}
+                            月間タスク数：{{ t_monthlyask_length }}
                         </div>
                     </v-card>
                 </v-col>
@@ -78,21 +78,35 @@ export default {
             labels: ['期限切れ率'],
         },
     }),
+    computed: {
+        expiration_length_weekly: function() {
+            return this.getExpiredTasksRateByOneWeek().length
+        },
+        task_length_weekly: function() {
+            return this.createdTasksWeekly().length;
+        },
+        expiration_length_monthly: function() {
+            return this.getExpiredTasksRateByOneMonth().length
+        },
+        task_length_monthly: function() {
+            return this.createdTasksMonthly().length;
+        },
+    },
     methods: {
-        setGraphExpiredValueByOneWeek() {
-            let result =  this.calcExpiredTasksRateByOneWeek()
+        setExpirationRateWeekly() {
+            let result =  this.calcExpirationRateWeekly()
             if(!result) {
                 return [0]
             }
             return [result]
         },
-        setGraphExpiredValueDataByMonth() {
-            let result =  this.calcExpiredTasksRateByOneMonth()
+        setExpirationRateMonthly() {
+            let result =  this.calcExpirationRateMonthly()
             if(!result) {
                 return [0]
             }
             return [result]
-        }
+        },
     }
 }
 </script>
@@ -107,5 +121,8 @@ export default {
     padding-top: 8px;
     padding-bottom: 8px;
     border-left: 4px solid rgba(233, 30, 99, 0.85);;
+}
+.dashboard-card-row {
+    flex-wrap: nowrap;
 }
 </style>

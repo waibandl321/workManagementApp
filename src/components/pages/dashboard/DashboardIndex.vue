@@ -2,7 +2,7 @@
     <div class="body">
         <Header :params="params" />
         <div class="pa-4 dashbord">
-            <v-row>
+            <v-row class="dashboard-graph-wrap">
                 <CompletedTaskRate :params="params" />    
                 <ExpiredTaskRate :params="params" />
             </v-row>
@@ -65,14 +65,10 @@
                     </v-card>
                 </v-col>
             </v-row>
-            <!-- <DashboardTaskList
-                :params="params" 
-                :clickTaskList="clickTaskList"
-            />
-            <DashboardTaskDetail
+            <DashboardTaskList
                 :params="params"
-                :closeDetail="closeDetail"
-            /> -->
+                :initTaskList="initTaskList"
+            />
         </div>
         <ExecLoading v-if="params.loading"/>
     </div>
@@ -83,35 +79,24 @@ import Header from '@/components/common/Header'
 import CompletedTaskRate from './parts/DashboardCompletedTaskRate.vue'
 import ExpiredTaskRate from './parts/DashboardExpiredTaskRate.vue'
 // import TaskLength from './parts/DashboardTaskLength.vue'
-// import DashboardTaskList from './parts/DashboardTaskList.vue'
-// import DashboardTaskDetail from '@/components/pages/task/TaskDetail.vue'
+import DashboardTaskList from './parts/DashboardTaskList.vue'
 import ExecLoading from "@/components/common/ExecLoading.vue"
-
 import dashboardMixin from './dashbord.js'
-import taskGlobalMixin from '@/mixin/firebase/task.js'
-import taskLocalMixin from '@/components/pages/task/task.js'
 
 export default {
     components: {
         Header,
         CompletedTaskRate,
         ExpiredTaskRate,
-        // TaskLength,
-        // DashboardTaskList,
-        // DashboardTaskDetail,
+        DashboardTaskList,
         ExecLoading,
     },
-    mixins: [dashboardMixin, taskGlobalMixin, taskLocalMixin],
+    mixins: [
+        dashboardMixin,
+    ],
     data: () => ({
         params: {
             loading: false,
-            // success: "",
-            // error: "",
-            // 詳細情報
-            // detail_mode: false,
-            // viewer: {},
-            // subtask_list: [],
-            // files: [],
             // ダッシュボード用タスクデータ
             all_tasks: [],
             is_completed_tasks: [],
@@ -120,18 +105,8 @@ export default {
             is_updated_tasks: [],
             near_deadline_tasks: [],
             today_deadline_tasks: [],
-            is_created_tasks_week: [],
-            is_created_tasks_month: [],
         },
     }),
-    // provide() {       
-    //     const task_status_list = this.getTaskStatus()
-    //     const task_priority_list = this.getTaskPriorities() 
-    //     return {
-    //         task_status_list,
-    //         task_priority_list
-    //     }
-    // },
     computed: {
         activate: function() {
             return this.params.all_tasks.length - this.params.is_completed_tasks.length;
@@ -160,29 +135,37 @@ export default {
             try {
                 this.params.all_tasks = await this.getAllDashboardTask();
                 this.params.is_completed_tasks = this.getCompletedTasks();
-                this.params.today_deadline_tasks = this.getExpiredTasksToday();
                 this.params.is_expired_tasks = this.getExpiredTasks();
+                this.params.today_deadline_tasks = this.getExpiredTasksToday();
                 this.params.near_deadline_tasks = this.getNearDeadlineTasksByOneWeek();
-                this.params.is_created_tasks_week = this.getDashboardTasksByCreatedOneWeek();
+                this.storeSetDashboardTasks(this.params.all_tasks)
                 this.params.loading = false;
             } catch (error) {
                 console.log(error);
                 this.params.loading = false;
             }
         },
-        // async clickTaskList(task) {
-        //     this.params.viewer = task;
-        //     this.params.subtask_list = await this.getSubtaskList(task)
-        //     this.params.files = this.getTaskFileList()
-        //     this.params.detail_mode = true;
-        // },
-        // closeDetail() {
-        //     this.initTaskList();
-        //     this.params.error = "";
-        //     this.params.success = "";
-        //     this.params.detail_mode = false;
-        // },
-    }
+        // 本日期日のタスク
+        getExpiredTasksToday() {
+            let results = this.storeGetDashboardTasks();
+            results = results.filter((v) => 
+                v.task_status !== 5 &&
+                this.judgeDateJustToday(v.task_deadline)
+            )
+            return results;
+        },
+        // 期限が7日以内のタスク
+        getNearDeadlineTasksByOneWeek() {
+            let results = this.storeGetDashboardTasks();
+            results = results.filter((v) => 
+                v.task_deadline
+                && v.task_status !== 5
+                && this.judgeDateAfterToday(v.task_deadline)
+                && this.judgeDateRangeAfter7Days(v.task_deadline)
+            )
+            return results;
+        },
+    },
 }
 </script>
 <style scoped>
@@ -190,5 +173,8 @@ export default {
     background-color: #f8f5f5;
     height: calc(100vh - 70px);
     overflow-y: auto;
+}
+.dashboard-graph-wrap {
+    flex-wrap: nowrap;
 }
 </style>
