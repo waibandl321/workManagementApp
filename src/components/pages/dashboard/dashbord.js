@@ -1,45 +1,37 @@
 export default {
     data: () => ({
         today: null,
-        items: [],
-        
     }),
     async created() {
         this.today = this.toDatetime(this.nowUnix(), "yyyymmdd");
-        this.params.task_status_list = this.getTaskStatus()
-        this.params.task_priorities = this.getTaskPriorities()
-        this.items = await this.getAllDashboardTask()
-        this.createdTasksWeekly()
-        
     },
     methods: {
         async getAllDashboardTask() {
             let result = await this.firebaseGetTaskList()
             if(!result) {
-                return []
+                return [];
             }
             result = Object.keys(result)
             .map((key) => {
                 return result[key]
             })
-            this.items = result
             return result;
         },
 
         // 直近7日間で作成されたタスク
         createdTasksWeekly() {
-            let result = this.items;
+            let result = this.storeGetDashboardTasks();
+            if(!result) return []
             result = result.filter((v) => 
-                // 本日以前に作成
-                this.judgeDateBeforeToday(v.created)
-                // 7日前の日付 > create
-                && this.judgeDateRangeBefore7Days(v.created)
+                this.judgeDateBeforeToday(v.created) // 本日以前に作成
+                && this.judgeDateRangeBefore7Days(v.created) // 7日前の日付 > create
             )
             return result;
         },
         // 直近7日間で完了したタスク
         completedTasksWeekly() {
-            let result = this.items;
+            let result = this.storeGetDashboardTasks();
+            if(!result) return []
             result = result.filter((v) => 
                 this.judgeDateBeforeToday(v.created)
                 && this.judgeDateRangeBefore7Days(v.created)
@@ -55,18 +47,18 @@ export default {
         },
         // 直近1ヶ月で作成されたタスク
         createdTasksMonthly() {
-            let result = this.items;
+            let result = this.storeGetDashboardTasks();
+            if(!result) return []
             result = result.filter((v) => 
-                // 本日以前に作成
-                this.judgeDateBeforeToday(v.created)
-                // 1ヶ月前の日付 > create
-                && this.judgeDateRangeBeforeOneMonth(v.created)
+                this.judgeDateBeforeToday(v.created) // 本日以前に作成
+                && this.judgeDateRangeBeforeOneMonth(v.created) // 1ヶ月前の日付 > create
             )
             return result;
         },
         // 直近1ヶ月で完了したタスク
         completedTasksMonthly() {
-            let result = this.items;
+            let result = this.storeGetDashboardTasks();
+            if(!result) return []
             result = result.filter((v) => 
                 this.judgeDateBeforeToday(v.created)
                 && this.judgeDateRangeBeforeOneMonth(v.created)
@@ -119,8 +111,9 @@ export default {
         
         // 期限切れのタスク(＋期日設定がされている) 
         getExpiredTasks() {
-            let result = this.getActivateTasks();
+            let result = this.storeGetDashboardTasks();
             result = result.filter((v) => 
+                v.task_status !== 5 &&
                 this.judgeDateBeforeYesterday(v.task_deadline)
             )
             return result;
@@ -128,13 +121,13 @@ export default {
         
         // アクティブタスク
         getActivateTasks() {
-            let result = this.items;
+            let result = this.storeGetDashboardTasks();
             result = result.filter((v) => v.task_status !== 5)
             return result;
         },
         // 完了タスク
         getCompletedTasks() {
-            let result = this.items;
+            let result = this.storeGetDashboardTasks();
             result = result.filter((v) => v.task_status === 5)
             return result;
         },

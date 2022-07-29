@@ -503,7 +503,6 @@ export default {
         }
     },
     created() {
-        console.log(this.detailItem);
         scrollTo(0,0)
         this.messages.success = "";
         this.messages.error = "";

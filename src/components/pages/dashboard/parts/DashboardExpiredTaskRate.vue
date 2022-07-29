@@ -13,11 +13,11 @@
                         ></apexchart>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            e了時に期限切れ: {{ expiration_length_weekly }}
+                            完了時に期限切れ: {{ expiration_length_weekly }}
                         </div>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            週間タスク数：{{ t_weeklyask_length }}
+                            週間タスク数：{{ task_length_weekly }}
                         </div>
                     </v-card>
                 </v-col>
@@ -35,7 +35,7 @@
                         </div>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            月間タスク数：{{ t_monthlyask_length }}
+                            月間タスク数：{{ task_length_monthly }}
                         </div>
                     </v-card>
                 </v-col>
@@ -80,16 +80,20 @@ export default {
     }),
     computed: {
         expiration_length_weekly: function() {
-            return this.getExpiredTasksRateByOneWeek().length
+            const result = this.getExpiredTasksRateByOneWeek()
+            return result.length;
         },
         task_length_weekly: function() {
-            return this.createdTasksWeekly().length;
+            const result = this.createdTasksWeekly()
+            return result.length;
         },
         expiration_length_monthly: function() {
-            return this.getExpiredTasksRateByOneMonth().length
+            const result = this.getExpiredTasksRateByOneMonth()
+            return result.length
         },
         task_length_monthly: function() {
-            return this.createdTasksMonthly().length;
+            const result = this.createdTasksMonthly()
+            return result.length;
         },
     },
     methods: {

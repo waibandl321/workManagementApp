@@ -6,65 +6,7 @@
                 <CompletedTaskRate :params="params" />    
                 <ExpiredTaskRate :params="params" />
             </v-row>
-            <v-row>
-                <v-col>
-                    <v-card class="pa-4">
-                        <v-card-title class="pt-0 px-0 font-weight-bold justify-center">
-                            アクティブタスク数
-                        </v-card-title>
-                        <div>
-                            <v-card
-                                color="#359EFA"
-                                dark
-                                link
-                                hover
-                                to="/task"
-                            >
-                                <v-card-title class="justify-center" style="font-size: 32px;">
-                                    {{ activate }}
-                                </v-card-title>
-                            </v-card>
-                        </div>
-                    </v-card>
-                </v-col>
-                <v-col>
-                    <v-card class="pa-4">
-                        <v-card-title class="pt-0 px-0 font-weight-bold justify-center">
-                            期限切れタスク数
-                        </v-card-title>
-                        <div>
-                            <v-card
-                                color="#EB3E79"
-                                dark
-                                link
-                                hover
-                                to="/task"
-                            >
-                                <v-card-title class="justify-center" style="font-size: 32px;">
-                                    {{ expired }}
-                                </v-card-title>
-                            </v-card>
-                        </div>
-                    </v-card>
-                </v-col>
-                <v-col>
-                    <v-card class="pa-4">
-                        <v-card-title class="pt-0 px-0 font-weight-bold justify-center">
-                            完了タスク数
-                        </v-card-title>
-                        <div>
-                            <v-card
-                                color="#31A85C"
-                                dark
-                            >
-                                <v-card-title class="justify-center" style="font-size: 32px;">
-                                    {{ completed }}
-                                </v-card-title>
-                            </v-card>
-                        </div>
-                    </v-card>
-                </v-col>
-            </v-row>
+            <TaskLength :params="params" />
             <DashboardTaskList
                 :params="params"
                 :initTaskList="initTaskList"
@@ -78,7 +20,7 @@
 import Header from '@/components/common/Header'
 import CompletedTaskRate from './parts/DashboardCompletedTaskRate.vue'
 import ExpiredTaskRate from './parts/DashboardExpiredTaskRate.vue'
-// import TaskLength from './parts/DashboardTaskLength.vue'
+import TaskLength from './parts/DashboardTaskLength.vue'
 import DashboardTaskList from './parts/DashboardTaskList.vue'
 import ExecLoading from "@/components/common/ExecLoading.vue"
 import dashboardMixin from './dashbord.js'
@@ -89,6 +31,7 @@ export default {
         CompletedTaskRate,
         ExpiredTaskRate,
         DashboardTaskList,
+        TaskLength,
         ExecLoading,
     },
     mixins: [
@@ -107,17 +50,6 @@ export default {
             today_deadline_tasks: [],
         },
     }),
-    computed: {
-        activate: function() {
-            return this.params.all_tasks.length - this.params.is_completed_tasks.length;
-        },
-        expired: function() {
-            return this.params.is_expired_tasks.length;
-        },
-        completed: function() {
-            return this.params.is_completed_tasks.length;
-        },
-    },
     created() {
         this.setRoutetitle()
         this.params.user_info = this.storeGetAccountInfo()
@@ -126,19 +58,16 @@ export default {
         }
         this.initTaskList()
     },
-    mounted() {
-        this.setRoutetitle()
-    },
     methods: {
         async initTaskList() {
             this.params.loading = true;
             try {
                 this.params.all_tasks = await this.getAllDashboardTask();
+                this.storeSetDashboardTasks(this.params.all_tasks);
                 this.params.is_completed_tasks = this.getCompletedTasks();
                 this.params.is_expired_tasks = this.getExpiredTasks();
                 this.params.today_deadline_tasks = this.getExpiredTasksToday();
                 this.params.near_deadline_tasks = this.getNearDeadlineTasksByOneWeek();
-                this.storeSetDashboardTasks(this.params.all_tasks)
                 this.params.loading = false;
             } catch (error) {
                 console.log(error);

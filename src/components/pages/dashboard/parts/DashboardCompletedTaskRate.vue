@@ -13,11 +13,11 @@
                         ></apexchart>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            完了したタスク：{{ completed_task_length }}
+                            完了したタスク：{{ completed_length_weekly }}
                         </div>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            週間タスク数：{{ weekly_task_length }}
+                            週間タスク数：{{ task_length_weekly }}
                         </div>
                     </v-card>
                 </v-col>
@@ -31,11 +31,11 @@
                         ></apexchart>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            完了したタスク：{{ completed_month_length }}
+                            完了したタスク：{{ completed_length_monthly }}
                         </div>
                         <v-divider></v-divider>
                         <div class="pa-4">
-                            月間タスク数：{{ monthly_task_length }}
+                            月間タスク数：{{ task_length_monthly }}
                         </div>
                     </v-card>
                 </v-col>
@@ -79,17 +79,21 @@ export default {
         },
     }),
     computed: {
-        completed_task_length: function() {
-            return this.completedTasksWeekly().length;
+        completed_length_weekly: function() {
+            const result = this.completedTasksWeekly();
+            return result.length;
         },
-        weekly_task_length: function() {
-            return this.createdTasksWeekly().length;
+        task_length_weekly: function() {
+            const result = this.createdTasksWeekly();
+            return result.length;
         },
-        completed_month_length: function() {
-            return this.completedTasksMonthly().length;
+        completed_length_monthly: function() {
+            const result = this.completedTasksMonthly();
+            return result.length;
         },
-        monthly_task_length: function() {
-            return this.createdTasksMonthly().length;
+        task_length_monthly: function() {
+            const result = this.createdTasksMonthly();
+            return result.length;
         },
     },
     methods: {

@@ -18,6 +18,7 @@ export default {
             this.storeDeleteAccountInfo()
             this.storeDeleteFirebaseUid()
             this.setDeleteAccountDeleteResult()
+            this.storeDeleteDashboardTasks();
             this.pageMove('/auth/signin')
             this.loading = false
         }
