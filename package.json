@@ -1,5 +1,19 @@
 {
   "name": "task_app",
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      ".*\\.(vue)$": "vue-jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    }
+  },
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -52,20 +66,6 @@
     "vue-jest": "^3.0.7",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.7.0"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-      ".*\\.(vue)$": "vue-jest"
-    },
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    }
   },
   "eslintConfig": {
     "root": true,
