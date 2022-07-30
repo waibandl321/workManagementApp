@@ -93,15 +93,9 @@ describe('Header.vue', () => {
   });
 
   // MEMO: 5.6は、ルーティングが絡むのでe2eテストで検証する
-  // ボタンが存在するのは1. 初回レンダリングで検証済みなのでスキップ
+  // リンクの存在は「1. 初回レンダリング」で検証済み
 });
 
-// const user_info = {
-//   color: "32BC1F",
-//   first_name: "chan",
-//   last_name: "hoge",
-//   status: true,
-// }
 /** 
  * テストケース
  * 1. 初回レンダリング

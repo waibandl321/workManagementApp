@@ -95,7 +95,7 @@ describe('MessageViewer.vue', () => {
  * ├── params.successに"success!"がセット: success!が表示される
  * ├── params.errorに"error!"がセット: error!が表示される
  * 
- * MEMO: ↓↓↓↓DOM未定義の要素のため、イベント処理うまくいかないので一旦未実施
+ * MEMO: ↓↓↓↓methodsの処理の中身を検証しないといけないので単体テストで実施
  * 3. 「×」がクリックされた場合
  * ├── success要素の「×」をクリック: params.successが空になる + success要素が描画されない
  * ├── error要素の「×」をクリック: params.errorが空になる + error要素が描画されない
