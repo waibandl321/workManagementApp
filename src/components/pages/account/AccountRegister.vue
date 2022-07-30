@@ -91,7 +91,6 @@ export default {
     mixins: [myMixin],
     props: {
         params: Object,
-        parents: Object
     },
     data: () => ({
         last_name: "",
@@ -99,7 +98,8 @@ export default {
         register_status: false,
     }),
     created() {
-        
+        this.setRoutetitle()
+        console.log(this.params);
     },
     methods: {
         async register() {
@@ -108,7 +108,7 @@ export default {
             try {
                 await this.firebaseAccountCreate(account)
                 this.storeSetAccountInfo(account)
-                this.params.user_info = this.copyJson(account);
+                // this.params.user_info = this.copyJson(account);
                 this.register_status = true;
                 this.params.success = `アカウント情報登録が完了しました。\n タスクやファイルを登録してご利用を開始してください。`
             } catch (error) {

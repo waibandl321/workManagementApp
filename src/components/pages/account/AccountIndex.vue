@@ -4,12 +4,10 @@
         <AccountRegister
             v-if="!params.account_info.status"
             :params="params"
-            :parents="parents"
         />
         <AccountUpdate
             v-else-if="params.account_info.status"
             :params="params"
-            :parents="parents"
         />
     </div>
 </template>
@@ -34,15 +32,14 @@ export default {
         }
     }),
     created() {
-        this.setRoutetitle()
         this.accountRead();
     },
     methods: {
-        async accountRead() {
+        accountRead() {
             this.params.success = ""
             this.params.error = ""
             this.params.account_info = this.storeGetAccountInfo()
-            this.params.user_info = this.storeGetAccountInfo()
+            // this.params.user_info = this.storeGetAccountInfo()
         },
     },
 }

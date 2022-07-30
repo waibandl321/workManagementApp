@@ -17,6 +17,7 @@ export default [
             {
                 path: 'update',
                 component: AccountUpdate,
+                name: "account-update",
                 meta: { title: 'アカウント更新'},
             },
         ]

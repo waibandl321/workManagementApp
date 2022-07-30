@@ -6,9 +6,9 @@
     >
         <v-card class="pa-6">
             <v-card-title class="pa-0">
-                <span class="text-h5">{{ delete_title }} </span>
+                <span class="text-h5" data-test-id="delete-modal-title">{{ delete_title }} </span>
             </v-card-title>
-            <v-card-text class="px-0 mt-2">
+            <v-card-text class="px-0 mt-2" data-test-id="delete-modal-text">
                 削除後は復元できません。本当によろしいですか？
             </v-card-text>
             <v-divider />

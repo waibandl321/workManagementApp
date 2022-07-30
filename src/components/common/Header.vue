@@ -12,6 +12,7 @@
                         class="ml-4"
                         text
                         :to="item.path"
+                        :data-test-id="item.text"
                     >
                         <v-icon>{{ item.icon }}</v-icon>
                         <span class="pl-2">{{ item.text }}</span>
@@ -51,7 +52,6 @@
 
 export default {
     props: {
-        parents: Object,
         params: Object
     },
     data: () => ({
@@ -68,7 +68,7 @@ export default {
         clickSignout() {
             this.pageMove('/auth/signout')
         }
-    }
+    },
 }
 </script>
 <style scoped>

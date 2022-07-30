@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div data-test-id="alertComponent">
         <v-alert
             v-if="params.success"
             dismissible
@@ -24,9 +24,6 @@ export default {
     props: {
         params: Object
     },
-    data: () => ({
-
-    }),
     methods: {
         toggleError() {
             this.params.error = ""

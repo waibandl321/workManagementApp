@@ -100,7 +100,6 @@ export default {
     mixins: [myMixin],
     props: {
         params: Object,
-        parents: Object
     },
     data: () => ({
         fitst_name: "",
@@ -113,7 +112,7 @@ export default {
         this.params.error = "";
         this.first_name = this.params.account_info.first_name
         this.last_name = this.params.account_info.last_name
-
+        this.setRoutetitle()
         this.checkAccountDeleteResult()
     },
     methods: {
@@ -135,7 +134,7 @@ export default {
             const result = await this.firebaseAccountUpdate(account)
             if(result) {
                 this.storeUpdateAccountInfo(this.copyJson(account));
-                this.params.user_info = this.copyJson(account);
+                // this.params.user_info = this.copyJson(account);
                 this.params.success = "アカウント情報を更新しました。「閉じる」ボタンからアプリケーションにお戻りください。";
             } else {
                 this.params.error = "アカウント情報に失敗しました。時間を空けて再度更新してください。";
