@@ -128,11 +128,8 @@ export default {
         loading: false,
         error: ''
     }),
-    async created() {
+    mounted() {
         this.setRoutetitle()
-        this.loading = true;
-        // 外部認証リダイレクトチェック
-        await this.externalSigninRedirectGoogle()
     },
     methods: {
         // サインイン(サインイン)
@@ -159,31 +156,8 @@ export default {
             
             this.loading = false;
         },
-        async externalSigninByGoogle() {
-            this.loading = true;
-            try {
-                await this.firebaseGoogleAuth()
-            } catch (error) {
-                console.log(error);
-                this.error = "外部認証に失敗しました。"
-            }
-            this.loading = false;
-        },
-        async externalSigninRedirectGoogle() {
-            const result = await this.firebaseAuthGetRedirectResult()
-            if(result) {
-                this.storeSetFirebaseUid(result.uid)
-                const account = await this.firebaseGetAccount(result.uid)
-                if(account) {
-                    this.storeSetAccountInfo(account)
-                    this.pageMove('/')
-                } else {
-                    this.pageMove('/account/register')
-                }
-            }
-            
-            this.loading = false;
-            return;
+        externalSigninByGoogle() {
+            this.pageMove("/auth/redirect");
         },
     },
 }

@@ -10,6 +10,10 @@
                 <v-card-title class="px-0">
                     アカウント情報登録
                 </v-card-title>
+                <v-card-text class="px-0">
+                    タスク管理アプリにご登録いただきありがとうございます！<br>
+                    お名前（ニックネーム可）を登録してご利用を開始してください。
+                </v-card-text>
                 <validation-observer v-slot="{ invalid }">
                     <v-row>
                         <validation-provider
@@ -97,9 +101,8 @@ export default {
         first_name: "",
         register_status: false,
     }),
-    created() {
+    mounted() {
         this.setRoutetitle()
-        console.log(this.params);
     },
     methods: {
         async register() {

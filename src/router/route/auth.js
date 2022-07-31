@@ -1,5 +1,6 @@
 import Signup from '@/components/pages/auth/Signup'
 import Signin from '@/components/pages/auth/Signin'
+import SigninRedirect from '@/components/pages/auth/SigninRedirect'
 import PasswordReset from '@/components/pages/auth/password_reset/PasswordReset'
 import Signout from '@/components/pages/auth/Signout'
 import UserDelete from '@/components/pages/auth/UserDelete'
@@ -17,6 +18,11 @@ export default [
         name: 'signin',
         component: Signin,
         meta: { title: 'サインイン'},
+    },
+    {
+        path: '/auth/redirect',
+        name: 'redirect',
+        component: SigninRedirect,
     },
     {
         path: '/auth/password_reset',
