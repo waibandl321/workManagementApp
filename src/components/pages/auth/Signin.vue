@@ -22,6 +22,7 @@
                         rules="email|required"
                         v-slot="{ errors }"
                         tag="div"
+                        ref="email_provider"
                     >
                         <v-text-field
                             v-model="email"
@@ -33,7 +34,10 @@
                             required
                             data-test-id="inputEmail"
                         ></v-text-field>
-                        <div class="input-error-message">{{ errors[0] }}</div>
+                        <div
+                            class="input-error-message"
+                            data-test-id="error-message-email"
+                        >{{ errors[0] }}</div>
                     </validation-provider>
                     <validation-provider
                         name="パスワード"
@@ -42,6 +46,7 @@
                         }"
                         v-slot="{ errors }"
                         tag="div"
+                        ref="password_provider"
                         class="mt-6"
                     >
                         <v-text-field
@@ -54,7 +59,10 @@
                             v-model="password"
                             data-test-id="inputPassword"
                         ></v-text-field>
-                        <div class="input-error-message">{{ errors[0] }}</div>
+                        <div
+                            class="input-error-message"
+                            data-test-id="error-message-password"
+                        >{{ errors[0] }}</div>
                     </validation-provider>
                     <div class="my-4">
                         <v-btn
@@ -80,7 +88,7 @@
                 </v-btn>
             </div>
             <v-divider />
-            <v-card-title>
+            <v-card-title data-test-id="other-signin">
                 外部サービスでサインイン
             </v-card-title>
             <div class="px-4 pb-4">

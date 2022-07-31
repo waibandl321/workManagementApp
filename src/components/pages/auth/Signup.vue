@@ -25,6 +25,7 @@
                             }"
                             v-slot="{ errors }"
                             tag="div"
+                            ref="email_provider"
                         >
                             <v-text-field
                                 v-model="email"
@@ -35,7 +36,10 @@
                                 dense
                                 data-test-id="inputEmail"
                             ></v-text-field>
-                            <div class="input-error-message">{{ errors[0] }}</div>
+                            <div 
+                                class="input-error-message"
+                                data-test-id="error-message-email"
+                            >{{ errors[0] }}</div>
                         </validation-provider>
                         <validation-provider
                             name="パスワード"
@@ -47,6 +51,7 @@
                             v-slot="{ errors }"
                             tag="div"
                             class="mt-6"
+                            ref="password_provider"
                         >
                             <v-text-field
                                 label="パスワード"
@@ -57,13 +62,10 @@
                                 v-model="password"
                                 data-test-id="inputPassword"
                             ></v-text-field>
-                            <div
-                                v-for="(error, index) in errors"
-                                :key="index"
+                            <div 
                                 class="input-error-message"
-                            >
-                                {{ error }}
-                            </div>
+                                data-test-id="error-message-password"
+                            >{{ errors[0] }}</div>
                         </validation-provider>
                         <div class="my-6">
                             <v-btn

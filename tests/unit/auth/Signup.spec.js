@@ -1,7 +1,7 @@
 import Signup from '@/components/pages/auth/Signup.vue'
 import Vuetify from 'vuetify'
-import { createLocalVue, shallowMount, mount, RouterLinkStub, config } from '@vue/test-utils'
-// import flushPromises from 'flush-promises';
+import { createLocalVue, mount, RouterLinkStub, config } from '@vue/test-utils'
+import flushPromises from 'flush-promises';
 
 config.showDeprecationWarnings = false
 
@@ -35,7 +35,7 @@ describe('Signup.vue', () => {
     expect(wrapper.get('[data-test-id="otherSignup"]').text()).toBe("外部サービスでアカウント作成");
     expect((wrapper.get('[data-test-id="googleSignup"]').element.tagName)).toBe("BUTTON");
     expect(wrapper.get('[data-test-id="pageMoveSignin"]').text()).toBe("ログインはこちら");
-    // パスも確認しておく
+    // router-linkのパスも確認しておく
     expect(wrapper.findComponent(RouterLinkStub).props().to).toBe('/auth/signin')
   })
 
@@ -60,12 +60,12 @@ describe('Signup.vue', () => {
     })
     const emailInput = wrapper.get('[data-test-id="inputEmail"]')
     const passwordInput = wrapper.get('[data-test-id="inputPassword"]')
-
     expect(emailInput.element.value).toBe("");
     expect(passwordInput.element.value).toBe("");
+    
   })
 
-  it('入力テスト data側 値あり', async () => {
+  it('data値あり→input反映', async () => {
     const mockFunction = jest.fn();
     const wrapper = mount(Signup, {
       localVue,
@@ -87,7 +87,7 @@ describe('Signup.vue', () => {
     expect(wrapper.get('[data-test-id="inputEmail"]').element.value).toBe("example@example.com")
     expect(wrapper.get('[data-test-id="inputPassword"]').element.value).toBe("exampleexample")
   })
-  it('入力テスト input側 値あり', async () => {
+  it('input入力→data反映', async () => {
     const mockFunction = jest.fn();
     const wrapper = mount(Signup, {
       localVue,
@@ -110,20 +110,104 @@ describe('Signup.vue', () => {
     expect(wrapper.vm.password).toBe("exampleexample");
   })
 
-  it('email,passwordの値がない場合は送信ボタン非活性', async () => {
-    
-  });
-  it('送信OK', async () => {
-    
-  });
-  it('emailバリデーションエラー', () => {
-    
+  it('認証エラーメッセージ data→DOM', () => {
+    const mockFunction = jest.fn();
+    const wrapper = mount(Signup, {
+      localVue,
+      vuetify,
+      stubs: {
+        RouterLink: RouterLinkStub
+      },
+      methods: {
+        setRoutetitle: mockFunction
+      },
+      data() {
+        return {
+          max_length_password: 8,
+          error: "UT認証エラーメッセージ"
+        };
+      }
+    })
+    expect(wrapper.get('.v-alert').text()).toBe("UT認証エラーメッセージ")
   });
 
-  it('passwordバリデーションエラー', () => {
-    
+  it('バリデーションエラー required', async () => {
+    const mockFunction = jest.fn();
+    const wrapper = mount(Signup, {
+      localVue,
+      vuetify,
+      stubs: {
+        RouterLink: RouterLinkStub
+      },
+      methods: {
+        setRoutetitle: mockFunction
+      },
+      data() {
+        return {
+          max_length_password: 8,
+        };
+      }
+    })
+    wrapper.get('[data-test-id="inputEmail"]').setValue("")
+    wrapper.get('[data-test-id="inputPassword"]').setValue("")
+    await flushPromises();
+    expect(wrapper.get('[data-test-id="error-message-email"]').text()).toBe("メールアドレスは必須です");
+    expect(wrapper.get('[data-test-id="error-message-password"]').text()).toBe("パスワードは必須です");
+    // veevalidate側の値もチェック
+    expect(wrapper.vm.$refs.email_provider.errors[0]).toBe("メールアドレスは必須です");
+    expect(wrapper.vm.$refs.password_provider.errors[0]).toBe("パスワードは必須です");
   });
-
+  it('バリデーションエラー email形式不備', async () => {
+    const mockFunction = jest.fn();
+    const wrapper = mount(Signup, {
+      localVue,
+      vuetify,
+      stubs: {
+        RouterLink: RouterLinkStub
+      },
+      methods: {
+        setRoutetitle: mockFunction
+      },
+      data() {
+        return {
+          max_length_password: 8,
+        };
+      }
+    })
+    wrapper.get('[data-test-id="inputEmail"]').setValue("example")
+    wrapper.get('[data-test-id="inputPassword"]').setValue("example")
+    await flushPromises();
+    expect(wrapper.get('[data-test-id="error-message-email"]').text()).toBe("有効なメールアドレスではありません");
+    expect(wrapper.get('[data-test-id="error-message-password"]').text()).toBe("パスワードは8文字以上でなければなりません");
+    // veevalidate側の値もチェック
+    expect(wrapper.vm.$refs.email_provider.errors[0]).toBe("有効なメールアドレスではありません");
+    expect(wrapper.vm.$refs.password_provider.errors[0]).toBe("パスワードは8文字以上でなければなりません");
+  });
+  it('バリデーション emailの形式OKの場合はエラーが表示されない', async () => {
+    const mockFunction = jest.fn();
+    const wrapper = mount(Signup, {
+      localVue,
+      vuetify,
+      stubs: {
+        RouterLink: RouterLinkStub
+      },
+      methods: {
+        setRoutetitle: mockFunction
+      },
+      data() {
+        return {
+          max_length_password: 8,
+        };
+      }
+    })
+    wrapper.get('[data-test-id="inputEmail"]').setValue("example@example.com")
+    wrapper.get('[data-test-id="inputPassword"]').setValue("exampleexample")
+    await flushPromises();
+    expect(wrapper.get('[data-test-id="error-message-email"]').text()).toBe("");
+    expect(wrapper.get('[data-test-id="error-message-password"]').text()).toBe("");
+    expect(wrapper.vm.$refs.email_provider.errors[0]).toBeUndefined();
+    expect(wrapper.vm.$refs.password_provider.errors[0]).toBeUndefined();
+  });
 })
 /** 
  * テストケース
@@ -134,19 +218,29 @@ describe('Signup.vue', () => {
  * ├── Googleログイン用のボタンが存在する
  * ├── 「ログインがこちら」ボタンが存在する
  * ├──「ログインはこちら」ボタンのrouter-linkが"/auth/signin"
- * 2. 入力テスト
+ * 2. 入力データテスト
  * ├── emailが空 = input要素も空
  * ├── passwordが空 = input要素も空
  * ├── emailに"example@example.com"を代入 → inputに"example@example.com"が入る
  * ├── passwordに"exampleexample"を代入 →passwordに"exampleexample"が入る
  * ├── input要素[email]に"example@example.com"を入力 → emailに"example@example.com"が格納される
  * ├── input要素[password]に"exampleexample"を入力 → passwordに"exampleexample"が格納される
- * 3. 送信テスト 
- * ├── emailOK + password空 = 「登録する」ボタン disabled="disabled"
- * ├── passwordOK + email空  = 「登録する」ボタン disabled="disabled"
- * ├── input要素[email]に"example@example.com"を入力 → emailに"example@example.com"が格納される
- * ├── input要素[password]に"exampleexample"を入力 → passwordに"exampleexample"が格納される
- * ├──「登録する」ボタンがアクティブになる
+ * 3. 認証エラーメッセージ
+ * ├── data errorに「UT認証エラーメッセージ」がセットされる
+ * ├── 「UT認証エラーメッセージ」のアラートが表示される
+ * 4. バリデーションエラー
+ * ├── email, passwordに空文字をセット→ エラーメッセージ「〇〇は必須です」と表示される
+ * ├── email, passwordに空文字をセット→ veevalidateのerrors[0]に「〇〇は必須です」が格納される
+ * ├── emailに"example"をセット→ エラーメッセージ「有効なメールアドレスではありません」と表示される
+ *        veevalidateのerrors[0]に「有効なメールアドレスではありません」が格納される
+ * ├── passwordに"example"をセット → エラーメッセージ「パスワードは8文字以上でなければなりません」と表示される
+ *        veevalidateのerrors[0]に「パスワードは8文字以上でなければなりません」が格納される
+ * ├── email, passwordに正しい形式で値をセット→ エラーメッセージは表示されない
+ *        veevalidateのerrors[0]はundefinedになる
+ * 5. 登録するボタン
+ * MEMO:認証チェックはe2eテストで実施
+ *      VeeValidateのValidationObserverの状態取得がうまくいかないので、登録ボタンの検証は一旦スキップ
+ *      e2eでカバーできるならコンポーネントテストでは無理に実施しない
+ *        
  * 
- * // MEMO: フォームのバリデーション、認証チェックはe2eテストで実施
 */
