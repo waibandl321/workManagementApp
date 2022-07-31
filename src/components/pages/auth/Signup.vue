@@ -78,7 +78,7 @@
                         </div>
                     </validation-observer>
                     <v-divider />
-                    <v-card-title class="px-0">
+                    <v-card-title class="px-0" data-test-id="otherSignup">
                         外部サービスでアカウント作成
                     </v-card-title>
                     <div class="pb-4">

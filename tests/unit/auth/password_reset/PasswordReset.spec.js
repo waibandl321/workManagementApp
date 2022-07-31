@@ -1,34 +1,13 @@
-<template>
-    <div>
-        <PasswordResetEmailSet
-            v-if="params.mode === 'input'"
-            :params="params"
-        />
-        <PasswordResetEmailConfirm
-            v-if="params.mode === 'confirm'"
-            :params="params"
-        />
-    </div>
-</template>
-
-<script>
-import PasswordResetEmailConfirm from "./PasswordResetEmailConfirm.vue"
-import PasswordResetEmailSet from "./PasswordResetEmailSet.vue"
-export default {
-    components: {
-        PasswordResetEmailConfirm,
-        PasswordResetEmailSet
-    },
-    data: () => ({
-        params: {
-            mode: "input",
-            error: "",
-        }
-    }),
-    created() {
-        this.setRoutetitle()
-    },
-}
-</script>
-
-<style scoped src="@/components/pages/auth/scoped.css"></style>
+/** 
+ * テストケース
+ * 1. データセット params.mode: inputの場合
+ * ├── 「パスワード再設定」のタイトルが存在する
+ * ├── 「パスワード再設定用のメールアドレスを入力してください。」のテキストが存在する
+ * ├── 「サインイン画面に戻る」ボタンが存在する
+ * ├── 「送信」のボタンが存在する
+ * ├── 「送信」ボタンはdisabled
+ * 2. データセット params.mode: confirmの場合
+ * ├── 「パスワード再設定」のタイトルが存在する
+ * ├── 「入力されたメールアドレスに再設定用のリンクを送付しました。」のテキストが存在する
+ * ├── 「サインイン画面に戻る」ボタンが存在する
+*/

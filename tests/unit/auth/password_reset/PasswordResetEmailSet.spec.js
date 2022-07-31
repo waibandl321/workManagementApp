@@ -1,96 +1,24 @@
-<template>
-    <div class="auth">
-        <ExecLoading v-if="loading" />
-       <div>
-          <v-card class="card">
-            <v-card-title>
-                パスワード再設定
-            </v-card-title>
-            <v-card-text>
-                パスワード再設定用のメールアドレスを入力してください。<br>
-                入力されたメールアドレスに再設定用のリンクを送付します。
-            </v-card-text>
-            <div class="px-4">
-                <MessageViewer :params="params" />
-                <validation-observer v-slot="{ invalid }" ref="observer">
-                    <validation-provider
-                        name="メールアドレス"
-                        :rules="{
-                            email: {},
-                            required: {}
-                        }"
-                        v-slot="{ errors }"
-                        tag="div"
-                    >
-                        <v-text-field
-                            v-model="email"
-                            label="E-mail"
-                            outlined
-                            hide-details
-                            autofocus
-                            dense
-                            data-test-id="inputEmail"
-                        ></v-text-field>
-                        <div class="input-error-message">{{ errors[0] }}</div>
-                    </validation-provider>
-                    <div class="my-4">
-                        <v-btn
-                            :disabled="invalid"
-                            color="primary"
-                            class="submit"
-                            @click="sendPasswordResetEmail()"
-                            data-test-id="passwordResetEmailSend"
-                        >
-                            送信
-                        </v-btn>
-                    </div>
-                </validation-observer>
-            </div>
-            <v-divider></v-divider>
-            <div class="pa-4">
-               <v-btn
-                    to="/auth/signin"
-                    data-test-id="backSigninFromPasswordReset"
-                >
-                    サインイン画面に戻る
-                </v-btn>
-            </div>
-          </v-card>
-        </div>
-    </div>
-</template>
-
-<script>
-import MessageViewer from '@/components/common/MessageViewer.vue'
-import ExecLoading from "@/components/common/ExecLoading.vue"
-export default {
-    components: {
-        ExecLoading,
-        MessageViewer
-    },
-    props: {
-        params: Object
-    },
-    data: () => ({
-        loading: false,
-        email: '',
-    }),
-    methods: {
-        async sendPasswordResetEmail() {
-            this.loading = true;
-            try {
-                const result = await this.firebaseSendEmailByPasswordReset(this.email);
-                if(result) {
-                    this.params.mode = "confirm";
-                } else {
-                    throw new Error()
-                }
-            } catch (error) {
-                this.params.error = "メール送信中にエラーが発生しました。再度時間をおいて設定してください。";
-            }
-            this.loading = false
-        }
-    }
-}
-</script>
-<style scoped src="../scoped.css"></style>
+/** 
+ * テストケース
+ * 1. 初期表示
+ * ├── 「パスワード再設定」のタイトルが存在する
+ * ├── 「パスワード再設定用のメールアドレスを入力してください。」のテキストが存在する
+ * ├── 「サインイン画面に戻る」ボタンが存在する
+ * ├── 「送信」のボタンが存在する
+ * ├── 「送信」ボタンはdisabled
+ * 2. 入力テスト
+ * ├── emailが空 = input要素も空
+ * ├── emailに"example@example.com"を代入 → inputに"example@example.com"が入る
+ * ├── input要素[email]に"example@example.com"を入力 → emailに"example@example.com"が格納される
+ * 3. 送信テスト 
+ * ├── emailOK + password空 = 「登録する」ボタン disabled="disabled"
+ * ├── passwordOK + email空  = 「登録する」ボタン disabled="disabled"
+ * ├── input要素[email]に"example@example.com"を入力 → emailに"example@example.com"が格納される
+ * ├── input要素[password]に"exampleexample"を入力 → passwordに"exampleexample"が格納される
+ * ├──「送信」ボタンがアクティブになる
+ * 4. リンク先チェック
+ * ├──「サインイン画面に戻る」ボタン
+ * // リンク先の確認だけ。
+ * 
+ * // MEMO: フォームのバリデーション、認証チェックはe2eテストで実施
+*/

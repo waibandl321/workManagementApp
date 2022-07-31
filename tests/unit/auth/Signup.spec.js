@@ -1,25 +1,56 @@
-import AppBtn from '../AppBtn.vue'
+import Signup from '@/components/pages/auth/Signup.vue'
+import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import Vuetify from 'vuetify'
-
-// Utilities
-import { createLocalVue, mount } from '@vue/test-utils'
+import { createLocalVue, shallowMount, mount, RouterLinkStub } from '@vue/test-utils'
 
 describe('Signup.vue', () => {
-  // DO NOT use Vuetify on the localInstance
-  // This is bootstrapped in the jest setup
-  // file located in ./tests/setup.js
-  //
-  // localVue.use(Vuetify)
-
   const localVue = createLocalVue()
+  localVue.component('ValidationObserver', ValidationObserver)
+  localVue.component('ValidationProvider', ValidationProvider)
   let vuetify
 
   beforeEach(() => {
     vuetify = new Vuetify()
   })
-
   it('初期表示', () => {
-    //
+    const mockFunction = jest.fn();
+    const wrapper = mount(Signup, {
+      localVue,
+      vuetify,
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
+    })
+    expect(wrapper.get(".v-card__title").text()).toBe("ユーザー登録");
+    expect(wrapper.get('[data-test-id="execSignup"]').element.tagName).toBe("BUTTON");
+    expect(wrapper.get('[data-test-id="execSignup"]').text()).toBe("登録する");
+    expect(wrapper.get('[data-test-id="otherSignup"]').text()).toBe("外部サービスでアカウント作成");
+    expect((wrapper.get('[data-test-id="googleSignup"]').element.tagName)).toBe("BUTTON");
+    expect(wrapper.get('[data-test-id="pageMoveSignin"]').text()).toBe("ログインはこちら");
+    // パスも確認しておく
+    expect(wrapper.findComponent(RouterLinkStub).props().to).toBe('/auth/signin')
+  })
+
+  it('入力テスト data側 値なし', () => {
+    const mockFunction = jest.fn();
+    const wrapper = mount(Signup, {
+      localVue,
+      vuetify,
+      stubs: {
+        RouterLink: RouterLinkStub
+      },
+      data() {
+        return {
+          email: "",
+          password: ""
+        };
+      }
+    })
+    const emailInput = wrapper.get('[data-test-id="inputEmail"]')
+    const passwordInput = wrapper.get('[data-test-id="inputPassword"]')
+
+    expect(emailInput.element.value).toBe("");
+    expect(passwordInput.element.value).toBe("");
   })
 })
 /** 
@@ -30,20 +61,20 @@ describe('Signup.vue', () => {
  * ├── 「外部サービスでアカウント作成」の文言が存在する
  * ├── Googleログイン用のボタンが存在する
  * ├── 「ログインがこちら」ボタンが存在する
+ * ├──「ログインはこちら」ボタンのrouter-linkが"/auth/signin"
  * 2. 入力テスト
  * ├── emailが空 = input要素も空
  * ├── passwordが空 = input要素も空
  * ├── emailに"example@example.com"を代入 → inputに"example@example.com"が入る
- * ├── passwordに"example"を代入 →passwordに"example"が入る
+ * ├── passwordに"exampleexample"を代入 →passwordに"exampleexample"が入る
  * ├── input要素[email]に"example@example.com"を入力 → emailに"example@example.com"が格納される
- * ├── input要素[password]に"example"を入力 → passwordに"example"が格納される
+ * ├── input要素[password]に"exampleexample"を入力 → passwordに"exampleexample"が格納される
  * 3. 送信テスト 
  * ├── emailOK + password空 = 「登録する」ボタン disabled="disabled"
  * ├── passwordOK + email空  = 「登録する」ボタン disabled="disabled"
  * ├── input要素[email]に"example@example.com"を入力 → emailに"example@example.com"が格納される
- * ├── input要素[password]に"example"を入力 → passwordに"example"が格納される
+ * ├── input要素[password]に"exampleexample"を入力 → passwordに"exampleexample"が格納される
  * ├──「登録する」ボタンがアクティブになる
- * 4. 「ログインはこちら」ボタンのリンク先確認？
  * 
  * // MEMO: フォームのバリデーション、認証チェックはe2eテストで実施
 */
