@@ -8,11 +8,8 @@
         <MessageViewer
           :params="messages"
         />
-        <div v-if="!oauth_result">
+        <div class="mt-4">
           <v-btn @click="pageMove('/auth/signin')">サインイン画面に戻る</v-btn>
-        </div>
-        <div v-else>
-          <v-btn @click="afterExternalSignin()">アプリケーションの利用を開始する</v-btn>
         </div>
       </v-card>
     </div>

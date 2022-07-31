@@ -124,7 +124,7 @@ export default {
         loading: false,
         error: '',
     }),
-    mounted() {
+    created() {
         this.setRoutetitle()
     },
     methods: {

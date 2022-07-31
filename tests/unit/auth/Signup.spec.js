@@ -1,12 +1,12 @@
 import Signup from '@/components/pages/auth/Signup.vue'
-import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import Vuetify from 'vuetify'
-import { createLocalVue, shallowMount, mount, RouterLinkStub } from '@vue/test-utils'
+import { createLocalVue, shallowMount, mount, RouterLinkStub, config } from '@vue/test-utils'
+// import flushPromises from 'flush-promises';
+
+config.showDeprecationWarnings = false
 
 describe('Signup.vue', () => {
   const localVue = createLocalVue()
-  localVue.component('ValidationObserver', ValidationObserver)
-  localVue.component('ValidationProvider', ValidationProvider)
   let vuetify
 
   beforeEach(() => {
@@ -19,6 +19,14 @@ describe('Signup.vue', () => {
       vuetify,
       stubs: {
         RouterLink: RouterLinkStub
+      },
+      data() {
+        return {
+          max_length_password: 8
+        };
+      },
+      methods: {
+        setRoutetitle: mockFunction
       }
     })
     expect(wrapper.get(".v-card__title").text()).toBe("ユーザー登録");
@@ -39,10 +47,14 @@ describe('Signup.vue', () => {
       stubs: {
         RouterLink: RouterLinkStub
       },
+      methods: {
+        setRoutetitle: mockFunction
+      },
       data() {
         return {
           email: "",
-          password: ""
+          password: "",
+          max_length_password: 8
         };
       }
     })
@@ -52,6 +64,66 @@ describe('Signup.vue', () => {
     expect(emailInput.element.value).toBe("");
     expect(passwordInput.element.value).toBe("");
   })
+
+  it('入力テスト data側 値あり', async () => {
+    const mockFunction = jest.fn();
+    const wrapper = mount(Signup, {
+      localVue,
+      vuetify,
+      stubs: {
+        RouterLink: RouterLinkStub
+      },
+      methods: {
+        setRoutetitle: mockFunction
+      },
+      data() {
+        return {
+          email: "example@example.com",
+          password: "exampleexample",
+          max_length_password: 8
+        };
+      }
+    })
+    expect(wrapper.get('[data-test-id="inputEmail"]').element.value).toBe("example@example.com")
+    expect(wrapper.get('[data-test-id="inputPassword"]').element.value).toBe("exampleexample")
+  })
+  it('入力テスト input側 値あり', async () => {
+    const mockFunction = jest.fn();
+    const wrapper = mount(Signup, {
+      localVue,
+      vuetify,
+      stubs: {
+        RouterLink: RouterLinkStub
+      },
+      methods: {
+        setRoutetitle: mockFunction
+      },
+      data() {
+        return {
+          max_length_password: 8
+        };
+      }
+    })
+    await wrapper.get('[data-test-id="inputEmail"]').setValue("example@example.com")
+    await wrapper.get('[data-test-id="inputPassword"]').setValue("exampleexample")
+    expect(wrapper.vm.email).toBe("example@example.com");
+    expect(wrapper.vm.password).toBe("exampleexample");
+  })
+
+  it('email,passwordの値がない場合は送信ボタン非活性', async () => {
+    
+  });
+  it('送信OK', async () => {
+    
+  });
+  it('emailバリデーションエラー', () => {
+    
+  });
+
+  it('passwordバリデーションエラー', () => {
+    
+  });
+
 })
 /** 
  * テストケース
