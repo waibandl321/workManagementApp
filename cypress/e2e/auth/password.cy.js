@@ -31,3 +31,6 @@ describe('パスワード再設定画面', () => {
         cy.contains('[data-test-id="backSigninFromPasswordReset"]', 'サインイン画面に戻る')
     });
 })
+
+// MEMO
+// メール送信時に登録されていないメールアドレスが送信された場合のエラーチェックはできる
