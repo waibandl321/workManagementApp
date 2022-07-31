@@ -21,6 +21,7 @@
                         }"
                         v-slot="{ errors }"
                         tag="div"
+                        ref="email_provider"
                     >
                         <v-text-field
                             v-model="email"

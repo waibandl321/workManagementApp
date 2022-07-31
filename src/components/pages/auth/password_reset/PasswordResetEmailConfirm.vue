@@ -20,7 +20,4 @@
         </v-card>
     </div>
 </template>
-<script>
-
-</script>
 <style scoped src="../scoped.css"></style>

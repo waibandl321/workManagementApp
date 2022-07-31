@@ -1,13 +1,58 @@
+import PasswordReset from '@/components/pages/auth/password_reset/PasswordReset.vue'
+import Vuetify from 'vuetify'
+import { createLocalVue, shallowMount, config } from '@vue/test-utils'
+
+config.showDeprecationWarnings = false
+
+describe('PasswordReset.vue', () => {
+  const localVue = createLocalVue()
+  let vuetify
+
+  beforeEach(() => {
+    vuetify = new Vuetify()
+  })
+  it('コンポーネント描画 メールアドレス入力画面', () => {
+    const mockFunction = jest.fn();
+    const wrapper = shallowMount(PasswordReset, {
+      localVue,
+      vuetify,
+      stubs: ['passwordresetemailset'],
+      data() {
+        return {
+          params: {
+            mode: "input"
+          }
+        };
+      },
+      methods: {
+        setRoutetitle: mockFunction
+      }
+    })
+    expect(wrapper.findComponent({ ref: "password_reset_input" }).exists()).toBeTruthy()
+  })
+  it('コンポーネント描画 確認画面', () => {
+    const mockFunction = jest.fn();
+    const wrapper = shallowMount(PasswordReset, {
+      localVue,
+      vuetify,
+      stubs: ['passwordresetemailconfirm'],
+      data() {
+        return {
+          params: {
+            mode: "confirm"
+          }
+        };
+      },
+      methods: {
+        setRoutetitle: mockFunction
+      }
+    })
+    expect(wrapper.findComponent({ ref: "password_reset_confirm" }).exists()).toBeTruthy()
+  })
+})
 /** 
  * テストケース
- * 1. データセット params.mode: inputの場合
- * ├── 「パスワード再設定」のタイトルが存在する
- * ├── 「パスワード再設定用のメールアドレスを入力してください。」のテキストが存在する
- * ├── 「サインイン画面に戻る」ボタンが存在する
- * ├── 「送信」のボタンが存在する
- * ├── 「送信」ボタンはdisabled
- * 2. データセット params.mode: confirmの場合
- * ├── 「パスワード再設定」のタイトルが存在する
- * ├── 「入力されたメールアドレスに再設定用のリンクを送付しました。」のテキストが存在する
- * ├── 「サインイン画面に戻る」ボタンが存在する
+ * 1. コンポーネント描画
+ * ├── inputモードの場合は、PasswordResetEmailSet.vueが描画される
+ * ├── confirmモードの場合は、PasswordResetEmailConfirm.vueが描画される
 */
