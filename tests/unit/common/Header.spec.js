@@ -10,17 +10,24 @@ describe('Header.vue', () => {
     vuetify = new Vuetify()
   })
 
-  it('1. 初回レンダリング', () => {
-    const wrapper = mount(Header, {
+  const mountFunction = options => {
+    return mount(Header, {
       localVue,
       vuetify,
       stubs: { RouterLink: RouterLinkStub },
+      ...options
+    });
+  }
+
+  it('1. 初回レンダリング', () => {
+    const wrapper = mountFunction({
       propsData: {
         params: {
           user_info: {}
         }
       }
-    });
+    })
+
     const dashboard_button = wrapper.get('[data-test-id="ダッシュボード"]');
     const task_button = wrapper.get('[data-test-id="タスク一覧"]');
     const file_button = wrapper.get('[data-test-id="ファイル管理"]');
@@ -36,10 +43,7 @@ describe('Header.vue', () => {
   });
 
   it('アカウント名反映', () => {
-    const wrapper = mount(Header, {
-      localVue,
-      vuetify,
-      stubs: { RouterLink: RouterLinkStub },
+    const wrapper = mountFunction({
       propsData: {
         params: {
           user_info: {
@@ -48,15 +52,13 @@ describe('Header.vue', () => {
           }
         }
       }
-    });
+    })
+
     const account_button = wrapper.get('[data-test-id="headerAccountName"]');
     expect(account_button.text()).toBe("アカウント: hoge chan")
   });
   it('アカウントボタン背景色', () => {
-    const wrapper = mount(Header, {
-      localVue,
-      vuetify,
-      stubs: { RouterLink: RouterLinkStub },
+    const wrapper = mountFunction({
       propsData: {
         params: {
           user_info: {
@@ -66,7 +68,8 @@ describe('Header.vue', () => {
           }
         }
       }
-    });
+    })
+    
     const account_button = wrapper.get('[data-test-id="headerAccountName"]');
     expect(account_button.attributes().style).toContain("background-color: rgb(50, 188, 31);");
   });

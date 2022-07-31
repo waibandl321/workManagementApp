@@ -12,9 +12,10 @@ describe('Signin.vue', () => {
   beforeEach(() => {
     vuetify = new Vuetify()
   })
-  it('初期表示', () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signin, {
+  
+  const mockFunction = jest.fn();
+  const mountFunction = options => {
+    return mount(Signin, {
       localVue,
       vuetify,
       stubs: {
@@ -22,8 +23,14 @@ describe('Signin.vue', () => {
       },
       methods: {
         setRoutetitle: mockFunction
-      }
+      },
+      ...options
     })
+  }
+
+  it('初期表示', () => {
+    const wrapper = mountFunction()
+
     expect(wrapper.get(".v-card__title").text()).toBe("サインイン");
     expect(wrapper.get('[data-test-id="execSignin"]').element.tagName).toBe("BUTTON");
     expect(wrapper.get('[data-test-id="execSignin"]').text()).toBe("サインイン");
@@ -35,33 +42,15 @@ describe('Signin.vue', () => {
     expect(wrapper.findAllComponents(RouterLinkStub).at(1).props().to).toBe('/auth/signup')
   })
   it('input入力→data反映', () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signin, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
-    })
+    const wrapper = mountFunction()
+
     wrapper.get('[data-test-id="inputEmail"]').setValue("example@example.com")
     wrapper.get('[data-test-id="inputPassword"]').setValue("exampleexample")
     expect(wrapper.vm.email).toBe("example@example.com");
     expect(wrapper.vm.password).toBe("exampleexample");
   });
   it('data値あり→input反映', () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signin, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
+    const wrapper = mountFunction({
       data() {
         return {
           email: "example@example.com",
@@ -73,17 +62,8 @@ describe('Signin.vue', () => {
     expect(wrapper.get('[data-test-id="inputPassword"]').element.value).toBe("exampleexample")
   });
   it('input入力→data反映', () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signin, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
-    })
+    const wrapper = mountFunction()
+
     wrapper.get('[data-test-id="inputEmail"]').setValue("example@example.com");
     wrapper.get('[data-test-id="inputPassword"]').setValue("exampleexample");
     // await flushPromises();
@@ -92,36 +72,19 @@ describe('Signin.vue', () => {
     
   });
   it('認証エラーメッセージ data→DOM', () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signin, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
+    const wrapper = mountFunction({
       data() {
         return {
           error: "UT認証エラーメッセージ"
         };
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
+      }
     })
+
     expect(wrapper.get(".v-alert").text()).toBe("UT認証エラーメッセージ");
   });
   it('バリデーションエラー required', async () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signin, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
-    });
+    const wrapper = mountFunction()
+    ;
     wrapper.get('[data-test-id="inputEmail"]').setValue("")
     wrapper.get('[data-test-id="inputPassword"]').setValue("")
     await flushPromises()
@@ -131,17 +94,8 @@ describe('Signin.vue', () => {
     expect(wrapper.vm.$refs.password_provider.errors[0]).toBe("パスワードは必須です")
   });
   it('バリデーションエラー email形式不備', async () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signin, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
-    });
+    const wrapper = mountFunction()
+    ;
     wrapper.get('[data-test-id="inputEmail"]').setValue("example");
     // nextTickもノリで使ってみる
     wrapper.vm.$nextTick(() => {
@@ -150,17 +104,8 @@ describe('Signin.vue', () => {
     })
   });
   it('バリデーション emailの形式OKの場合はエラーが表示されない', () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signin, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
-    });
+    const wrapper = mountFunction()
+    ;
     wrapper.get('[data-test-id="inputEmail"]').setValue("example@example.com");
     wrapper.vm.$nextTick(() => {
       expect(wrapper.get('[data-test-id="error-message-email"]').text()).toBeFalsy()

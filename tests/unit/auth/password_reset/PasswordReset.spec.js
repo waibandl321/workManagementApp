@@ -7,15 +7,24 @@ config.showDeprecationWarnings = false
 describe('PasswordReset.vue', () => {
   const localVue = createLocalVue()
   let vuetify
+  const mockFunction = jest.fn();
+  
+  const mountFunction = options => {
+    return shallowMount(PasswordReset, {
+      localVue,
+      vuetify,
+      methods: {
+        setRoutetitle: mockFunction
+      },
+      ...options
+    })
+  }
 
   beforeEach(() => {
     vuetify = new Vuetify()
   })
-  it('コンポーネント描画 メールアドレス入力画面', () => {
-    const mockFunction = jest.fn();
-    const wrapper = shallowMount(PasswordReset, {
-      localVue,
-      vuetify,
+  it('コンポーネント描画 メールアドレス入力画面', () => {    
+    const wrapper = mountFunction({
       stubs: ['passwordresetemailset'],
       data() {
         return {
@@ -24,17 +33,11 @@ describe('PasswordReset.vue', () => {
           }
         };
       },
-      methods: {
-        setRoutetitle: mockFunction
-      }
     })
     expect(wrapper.findComponent({ ref: "password_reset_input" }).exists()).toBeTruthy()
   })
   it('コンポーネント描画 確認画面', () => {
-    const mockFunction = jest.fn();
-    const wrapper = shallowMount(PasswordReset, {
-      localVue,
-      vuetify,
+    const wrapper = mountFunction({
       stubs: ['passwordresetemailconfirm'],
       data() {
         return {
@@ -43,9 +46,6 @@ describe('PasswordReset.vue', () => {
           }
         };
       },
-      methods: {
-        setRoutetitle: mockFunction
-      }
     })
     expect(wrapper.findComponent({ ref: "password_reset_confirm" }).exists()).toBeTruthy()
   })

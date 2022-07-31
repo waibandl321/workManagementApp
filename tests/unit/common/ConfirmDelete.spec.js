@@ -9,37 +9,40 @@ describe('ConfirmDelete.vue', () => {
     vuetify = new Vuetify()
   })
 
-  it('1. 初回レンダリング', () => {
-    const wrapper = mount(ConfirmDelete, {
+  const mockFunction = jest.fn();
+  const mountFunction = options => {
+    return mount(ConfirmDelete, {
       localVue,
       vuetify,
-    });
+      ...options
+    })
+  }
+  const DELETE_OPTIONS = [
+    { function_cd: "cancel", text: "キャンセル", callback: mockFunction },
+    { function_cd: "delete", text: "削除する",   callback: mockFunction }
+  ]
+
+  it('1. 初回レンダリング', () => {
+    const wrapper = mountFunction()
+
     const text = wrapper.find('[data-test-id="delete-modal-text"]');
     expect(text.text()).toBe("削除後は復元できません。本当によろしいですか？");
   });
   it('2. タイトル確認', () => {
-    const wrapper = mount(ConfirmDelete, {
-      localVue,
-      vuetify,
+    const wrapper = mountFunction({
       propsData: {
         delete_title: "hogehogeを削除します"
       }
-    });
+    })
     const title = wrapper.find('[data-test-id="delete-modal-title"]');
     expect(title.text()).toBe("hogehogeを削除します");
   });
   it('3. ボタン表示確認', () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(ConfirmDelete, {
-      localVue,
-      vuetify,
+    const wrapper = mountFunction({
       propsData: {
-        delete_options: [
-          { function_cd: "cancel", text: "キャンセル", callback: mockFunction },
-          { function_cd: "delete", text: "削除する",   callback: mockFunction }
-        ]
+        delete_options: DELETE_OPTIONS
       }
-    });
+    })
     const cencelBtn = wrapper.find('[data-test-id="modalcancel"]');
     const deleteBtn = wrapper.find('[data-test-id="modaldelete"]');
     expect(cencelBtn.text()).toBe("キャンセル");
@@ -47,33 +50,21 @@ describe('ConfirmDelete.vue', () => {
   });
 
   it('ボタンクリック時のメソッドのcall確認 キャンセル', () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(ConfirmDelete, {
-      localVue,
-      vuetify,
+    const wrapper = mountFunction({
       propsData: {
-        delete_options: [
-          { function_cd: "cancel", text: "キャンセル", callback: mockFunction },
-          { function_cd: "delete", text: "削除する",   callback: mockFunction }
-        ]
+        delete_options: DELETE_OPTIONS
       }
-    });
+    })
     const cencelBtn = wrapper.find('[data-test-id="modalcancel"]');
     cencelBtn.trigger("click");
     expect(mockFunction).toHaveBeenCalled();
   });
   it('ボタンクリック時のメソッドのcall確認 削除', () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(ConfirmDelete, {
-      localVue,
-      vuetify,
+    const wrapper = mountFunction({
       propsData: {
-        delete_options: [
-          { function_cd: "cancel", text: "キャンセル", callback: mockFunction },
-          { function_cd: "delete", text: "削除する",   callback: mockFunction }
-        ]
+        delete_options: DELETE_OPTIONS
       }
-    });
+    })
     const deleteBtn = wrapper.find('[data-test-id="modaldelete"]');
     deleteBtn.trigger("click");
     expect(mockFunction).toHaveBeenCalled();

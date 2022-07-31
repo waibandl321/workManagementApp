@@ -9,13 +9,9 @@ jest.useFakeTimers();
 describe('Signin.vue', () => {
   const localVue = createLocalVue()
   let vuetify
-
-  beforeEach(() => {
-    vuetify = new Vuetify()
-  })
-  it('1. 初期表示', () => {
-    // const mockFunction = jest.fn();
-    const wrapper = mount(PasswordResetEmailSet, {
+  
+  const mountFunction = options => {
+    return mount(PasswordResetEmailSet, {
       localVue,
       vuetify,
       stubs: {
@@ -26,8 +22,16 @@ describe('Signin.vue', () => {
           success: "",
           error: ""
         },
-      }
+      },
+      ...options
     })
+  }
+
+  beforeEach(() => {
+    vuetify = new Vuetify()
+  })
+  it('1. 初期表示', () => {
+    const wrapper = mountFunction()
     expect(wrapper.get('.v-card__title').text()).toBe("パスワード再設定");
     expect(wrapper.get('.v-card__text').text()).toContain("パスワード再設定用のメールアドレスを入力してください。");
     expect(wrapper.get('[data-test-id="passwordResetEmailSend"]').text()).toBe("送信");
@@ -37,18 +41,7 @@ describe('Signin.vue', () => {
   })
 
   it('2-1. 入力テスト 空値', () => {
-    const wrapper = mount(PasswordResetEmailSet, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      propsData: {
-        params: {
-          success: "",
-          error: ""
-        },
-      },
+    const wrapper = mountFunction({
       data() {
         return {
           email: ""
@@ -58,18 +51,7 @@ describe('Signin.vue', () => {
     expect(wrapper.get('[data-test-id="inputEmail"]').element.value).toBeFalsy()
   });
   it('2-2. 入力テスト data→input', () => {
-    const wrapper = mount(PasswordResetEmailSet, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      propsData: {
-        params: {
-          success: "",
-          error: ""
-        },
-      },
+    const wrapper = mountFunction({
       data() {
         return {
           email: "example@example.com"
@@ -79,74 +61,30 @@ describe('Signin.vue', () => {
     expect(wrapper.get('[data-test-id="inputEmail"]').element.value).toBe("example@example.com")
   });
   it('2-3. 入力テスト input→data', () => {
-    const wrapper = mount(PasswordResetEmailSet, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      propsData: {
-        params: {
-          success: "",
-          error: ""
-        },
-      },
-    })
+    const wrapper = mountFunction()
+
     wrapper.get('[data-test-id="inputEmail"]').setValue("example@example.com")
     expect(wrapper.vm.email).toBe("example@example.com")
   });
   it('3. バリデーションエラー 空値', async () => {
-    const wrapper = mount(PasswordResetEmailSet, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      propsData: {
-        params: {
-          success: "",
-          error: ""
-        },
-      },
-    })
+    const wrapper = mountFunction()
+
     wrapper.get('[data-test-id="inputEmail"]').setValue("")
     await flushPromises()
     expect(wrapper.get('.input-error-message').text()).toBe("メールアドレスは必須です")
     expect(wrapper.vm.$refs.email_provider.errors[0]).toBe("メールアドレスは必須です")
   });
   it('3. バリデーションエラー 形式不備', async () => {
-    const wrapper = mount(PasswordResetEmailSet, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      propsData: {
-        params: {
-          success: "",
-          error: ""
-        },
-      },
-    })
+    const wrapper = mountFunction()
+
     wrapper.get('[data-test-id="inputEmail"]').setValue("example")
     await flushPromises()
     expect(wrapper.get('.input-error-message').text()).toBe("有効なメールアドレスではありません")
     expect(wrapper.vm.$refs.email_provider.errors[0]).toBe("有効なメールアドレスではありません")
   });
   it('3. バリデーションエラー 正常値の場合バリデーションエラー出ない', async () => {
-    const wrapper = mount(PasswordResetEmailSet, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      propsData: {
-        params: {
-          success: "",
-          error: ""
-        },
-      },
-    })
+    const wrapper = mountFunction()
+
     wrapper.get('[data-test-id="inputEmail"]').setValue("example@example.com")
     await flushPromises()
     expect(wrapper.get('.input-error-message').text()).toBeFalsy()

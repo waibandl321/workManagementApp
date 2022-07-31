@@ -12,23 +12,31 @@ describe('Signup.vue', () => {
   beforeEach(() => {
     vuetify = new Vuetify()
   })
-  it('初期表示', () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signup, {
+
+  const mockFunction = jest.fn();
+  const mountFunction = options => {
+    return mount(Signup, {
       localVue,
       vuetify,
       stubs: {
         RouterLink: RouterLinkStub
       },
+      methods: {
+        setRoutetitle: mockFunction
+      },
+      ...options
+    })
+  }
+
+  it('初期表示', () => {
+    const wrapper = mountFunction({
       data() {
         return {
           max_length_password: 8
         };
       },
-      methods: {
-        setRoutetitle: mockFunction
-      }
     })
+
     expect(wrapper.get(".v-card__title").text()).toBe("ユーザー登録");
     expect(wrapper.get('[data-test-id="execSignup"]').element.tagName).toBe("BUTTON");
     expect(wrapper.get('[data-test-id="execSignup"]').text()).toBe("登録する");
@@ -40,24 +48,16 @@ describe('Signup.vue', () => {
   })
 
   it('入力テスト data側 値なし', () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signup, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
+    const wrapper = mountFunction({
       data() {
         return {
           email: "",
           password: "",
           max_length_password: 8
         };
-      }
+      },
     })
+
     const emailInput = wrapper.get('[data-test-id="inputEmail"]')
     const passwordInput = wrapper.get('[data-test-id="inputPassword"]')
     expect(emailInput.element.value).toBe("");
@@ -66,43 +66,25 @@ describe('Signup.vue', () => {
   })
 
   it('data値あり→input反映', async () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signup, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
+    const wrapper = mountFunction({
       data() {
         return {
           email: "example@example.com",
           password: "exampleexample",
           max_length_password: 8
         };
-      }
+      },
     })
     expect(wrapper.get('[data-test-id="inputEmail"]').element.value).toBe("example@example.com")
     expect(wrapper.get('[data-test-id="inputPassword"]').element.value).toBe("exampleexample")
   })
   it('input入力→data反映', async () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signup, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
+    const wrapper = mountFunction({
       data() {
         return {
           max_length_password: 8
         };
-      }
+      },
     })
     await wrapper.get('[data-test-id="inputEmail"]').setValue("example@example.com")
     await wrapper.get('[data-test-id="inputPassword"]').setValue("exampleexample")
@@ -111,42 +93,24 @@ describe('Signup.vue', () => {
   })
 
   it('認証エラーメッセージ data→DOM', () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signup, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
+    const wrapper = mountFunction({
       data() {
         return {
           max_length_password: 8,
           error: "UT認証エラーメッセージ"
         };
-      }
+      },
     })
     expect(wrapper.get('.v-alert').text()).toBe("UT認証エラーメッセージ")
   });
 
   it('バリデーションエラー required', async () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signup, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
+    const wrapper = mountFunction({
       data() {
         return {
           max_length_password: 8,
         };
-      }
+      },
     })
     wrapper.get('[data-test-id="inputEmail"]').setValue("")
     wrapper.get('[data-test-id="inputPassword"]').setValue("")
@@ -158,22 +122,14 @@ describe('Signup.vue', () => {
     expect(wrapper.vm.$refs.password_provider.errors[0]).toBe("パスワードは必須です");
   });
   it('バリデーションエラー email形式不備', async () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signup, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
+    const wrapper = mountFunction({
       data() {
         return {
           max_length_password: 8,
         };
-      }
+      },
     })
+
     wrapper.get('[data-test-id="inputEmail"]').setValue("example")
     wrapper.get('[data-test-id="inputPassword"]').setValue("example")
     await flushPromises();
@@ -184,22 +140,14 @@ describe('Signup.vue', () => {
     expect(wrapper.vm.$refs.password_provider.errors[0]).toBe("パスワードは8文字以上でなければなりません");
   });
   it('バリデーション emailの形式OKの場合はエラーが表示されない', async () => {
-    const mockFunction = jest.fn();
-    const wrapper = mount(Signup, {
-      localVue,
-      vuetify,
-      stubs: {
-        RouterLink: RouterLinkStub
-      },
-      methods: {
-        setRoutetitle: mockFunction
-      },
+    const wrapper = mountFunction({
       data() {
         return {
           max_length_password: 8,
         };
-      }
+      },
     })
+    
     wrapper.get('[data-test-id="inputEmail"]').setValue("example@example.com")
     wrapper.get('[data-test-id="inputPassword"]').setValue("exampleexample")
     await flushPromises();
