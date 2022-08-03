@@ -442,10 +442,6 @@ import ConfirmDelete from "@/components/common/ConfirmDelete.vue"
 import MessageViewer from '@/components/common/MessageViewer.vue'
 import SubtaskEdit from "./subtask/SubtaskEdit.vue"
 import SubtaskView from "./subtask/SubtaskView.vue"
-// エディタ
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
 import myMixin from "./task.js"
 

@@ -28,6 +28,9 @@ Vue.mixin(taskMixin)
 Vue.mixin(storageMixin)
 Vue.mixin(fileRelatedDatabaseMixin)
 
+// css
+import "@/assets/css/quill.core.css"
+import "@/assets/css/quill.snow.css"
 
 // Firebase
 import firebaseSettings from "@/config/settings/firebase.js"

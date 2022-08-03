@@ -58,9 +58,6 @@
 
 <script>
 // エディタ
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
 export default {
     props: {
@@ -101,7 +98,8 @@ export default {
     }
 }
 </script>
-
+<style scoped src="@/assets/css/quill.core.css"></style>
+<style scoped src="@/assets/css/quill.snow.css"></style>
 <style scoped>
 .input-error-message {
     font-size: 14px;
