@@ -26,6 +26,7 @@
                     dense
                     v-model="filter_status"
                     @change="filterList()"
+                    data-test-id="filter-status"
                 ></v-select>
             </v-col>
             <v-col data-test-id="filterPriority">
@@ -40,6 +41,7 @@
                     dense
                     v-model="filter_priority"
                     @change="filterList()"
+                    data-test-id="filter-priority"
                 ></v-select>
             </v-col>
         </v-row>
@@ -67,6 +69,7 @@
                     rules="required"
                     class="mt-6"
                     v-slot="{ errors }"
+                    ref="task_name_input"
                 >
                     <div class="relative">
                         <v-text-field

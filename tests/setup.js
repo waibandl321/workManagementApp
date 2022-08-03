@@ -11,3 +11,6 @@ Vue.component('ValidationObserver', ValidationObserver);
 extend('required', required)
 extend('email', email)
 extend('alpha_num', alpha_num)
+
+import { quillEditor } from 'vue-quill-editor'
+Vue.component('quillEditor', quillEditor);
