@@ -184,6 +184,15 @@ describe('Signup.vue', () => {
       expect(wrapper.vm.signup()).toBe("dummy signup")
     }, 500)
   });
+
+  it('3-a-1. 外部認証', () => {
+    const _mockFunction = jest.fn(() => "dummy google signin")
+    const wrapper = mountFunction();
+    wrapper.vm.externalSigninByGoogle = _mockFunction
+    wrapper.get('[data-test-id="googleSignup"]').trigger('click');
+    expect(_mockFunction).toHaveBeenCalled()
+    expect(wrapper.vm.externalSigninByGoogle()).toBe("dummy google signin");
+  });
 })
 
 // 5. 登録するボタン
