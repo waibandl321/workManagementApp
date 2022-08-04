@@ -376,36 +376,40 @@
             <!-- ファイル一覧 -->
             <template v-else>
                 <table class="file-table" data-test-id="taskAttachmentList">
-                    <tr v-for="(file, i) in task_files" :key="i">
-                    <td>
-                        <img
-                        :src="file.download_path"
-                        width="40"
-                        data-test-id="taskAttachmentView"
-                        >
-                    </td>
-                    <td data-test-id="taskAttachmentName">{{ file.name }}</td>
-                    <td data-test-id="taskAttachmentSize">{{ convertUnitSize(file.size) }}</td>
-                    <td data-test-id="taskAttachmentType">{{ file.contentType }}</td>
-                    <td class="operation-td">
-                        <v-btn
-                        link
-                        text
-                        :href="file.download_path"
-                        target="_blank" rel="noopener noreferrer"
-                        data-test-id="taskAttachmentPreviewButton"
-                        >
-                        <v-icon>mdi-open-in-new</v-icon>
-                        </v-btn>
-                        <v-btn
-                            @click="clickFileDeleteSingle(file)"
+                    <tr 
+                        v-for="(file, i) in task_files" 
+                        :key="i" 
+                        data-test-id="taskAttachmentRecord"
+                    >
+                        <td>
+                            <img
+                                :src="file.download_path"
+                                width="40"
+                                data-test-id="taskAttachmentView"
+                            >
+                        </td>
+                        <td data-test-id="taskAttachmentName">{{ file.name }}</td>
+                        <td data-test-id="taskAttachmentSize">{{ convertUnitSize(file.size) }}</td>
+                        <td data-test-id="taskAttachmentType">{{ file.contentType }}</td>
+                        <td class="operation-td">
+                            <v-btn
+                            link
                             text
-                            class="ml-2"
-                            data-test-id="taskAttachmentDelete"
-                        >
-                        <v-icon>mdi-trash-can-outline</v-icon>
-                        </v-btn>
-                    </td>
+                            :href="file.download_path"
+                            target="_blank" rel="noopener noreferrer"
+                            data-test-id="taskAttachmentPreviewButton"
+                            >
+                            <v-icon>mdi-open-in-new</v-icon>
+                            </v-btn>
+                            <v-btn
+                                @click="clickFileDeleteSingle(file)"
+                                text
+                                class="ml-2"
+                                data-test-id="taskAttachmentDelete"
+                            >
+                            <v-icon>mdi-trash-can-outline</v-icon>
+                            </v-btn>
+                        </td>
                     </tr>
                 </table>
                 <input
@@ -502,9 +506,9 @@ export default {
         // scrollTo(0,0)
         this.messages.success = "";
         this.messages.error = "";
-        this.editorOption.modules.toolbar = this.getEditorOptions();
-        this.readSubtaskList()
-        this.getTaskFileList()
+        // this.editorOption.modules.toolbar = this.getEditorOptions();
+        // this.readSubtaskList()
+        // this.getTaskFileList()
     },
     methods: {
         
@@ -592,6 +596,25 @@ export default {
                 default:
                     break;
             }
+        },
+        toDatetime(value, format) {
+            if(!value) {
+                return "未設定"
+            }
+            let date = new Date(value*1000)
+            let fm = format
+
+            const year = date.getFullYear()
+            const month = ("0"+ (date.getMonth() + 1)).slice(-2);
+            const day = ("0"+ date.getDate()).slice(-2);
+            const time = date.getHours()
+            const minutes = date.getMinutes()
+
+            return fm.replace("yyyy", year)
+                    .replace("mm", month)
+                    .replace("dd", day)
+                    .replace("hh", time)
+                    .replace("mm", minutes)
         },
         judgeRemainingDays(end) {
             if(!end) {
