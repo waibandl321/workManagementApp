@@ -70,5 +70,4 @@ describe('TaskIndexTest.vue', () => {
         expect(wrapper.findComponent("tasklist-stub").exists()).toBe(true)
         expect(wrapper.findComponent("taskdetail-stub").exists()).toBe(true)
     })
-
 })

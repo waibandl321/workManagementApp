@@ -28,7 +28,7 @@ describe('Signup.vue', () => {
     })
   }
 
-  it('初期表示', () => {
+  it('1-1-a 初期表示', () => {
     const wrapper = mountFunction({
       data() {
         return {
@@ -47,7 +47,7 @@ describe('Signup.vue', () => {
     expect(wrapper.findComponent(RouterLinkStub).props().to).toBe('/auth/signin')
   })
 
-  it('入力テスト data側 値なし', () => {
+  it('2-a-1, 2-a-2. 入力テスト data側 値なし', () => {
     const wrapper = mountFunction({
       data() {
         return {
@@ -65,7 +65,7 @@ describe('Signup.vue', () => {
     
   })
 
-  it('data値あり→input反映', async () => {
+  it('2-a-3, 2-a-4. data値あり→input反映', async () => {
     const wrapper = mountFunction({
       data() {
         return {
@@ -78,7 +78,7 @@ describe('Signup.vue', () => {
     expect(wrapper.get('[data-test-id="inputEmail"]').element.value).toBe("example@example.com")
     expect(wrapper.get('[data-test-id="inputPassword"]').element.value).toBe("exampleexample")
   })
-  it('input入力→data反映', async () => {
+  it('2-a-5, 2-a-6. input入力→data反映', async () => {
     const wrapper = mountFunction({
       data() {
         return {
@@ -92,7 +92,7 @@ describe('Signup.vue', () => {
     expect(wrapper.vm.password).toBe("exampleexample");
   })
 
-  it('認証エラーメッセージ data→DOM', () => {
+  it('2-b-1 認証エラーメッセージ', () => {
     const wrapper = mountFunction({
       data() {
         return {
@@ -104,7 +104,7 @@ describe('Signup.vue', () => {
     expect(wrapper.get('.v-alert').text()).toBe("UT認証エラーメッセージ")
   });
 
-  it('バリデーションエラー required', async () => {
+  it('2-c-1 バリデーションエラー required', () => {
     const wrapper = mountFunction({
       data() {
         return {
@@ -114,14 +114,21 @@ describe('Signup.vue', () => {
     })
     wrapper.get('[data-test-id="inputEmail"]').setValue("")
     wrapper.get('[data-test-id="inputPassword"]').setValue("")
-    await flushPromises();
-    expect(wrapper.get('[data-test-id="error-message-email"]').text()).toBe("メールアドレスは必須です");
-    expect(wrapper.get('[data-test-id="error-message-password"]').text()).toBe("パスワードは必須です");
-    // veevalidate側の値もチェック
-    expect(wrapper.vm.$refs.email_provider.errors[0]).toBe("メールアドレスは必須です");
-    expect(wrapper.vm.$refs.password_provider.errors[0]).toBe("パスワードは必須です");
+    // 登録ボタンチェック
+    // MEMO: VeeValidateのobserver判定に16msかかるので時間差でテスト
+    setTimeout(() => {
+      expect(wrapper.get('[data-test-id="error-message-email"]').text()).toBe("メールアドレスは必須です");
+      expect(wrapper.get('[data-test-id="error-message-password"]').text()).toBe("パスワードは必須です");
+      // veevalidate側の値もチェック
+      expect(wrapper.vm.$refs.email_provider.errors[0]).toBe("メールアドレスは必須です");
+      expect(wrapper.vm.$refs.password_provider.errors[0]).toBe("パスワードは必須です");
+      // ボタン非活性
+      expect(wrapper.findComponent('[data-test-id="execSignup"]').exists()).toBe(false);
+    }, 500)
+    // await flushPromises();
+    
   });
-  it('バリデーションエラー email形式不備', async () => {
+  it('2-c-2, 2-c-3. バリデーションエラー 形式不備', async () => {
     const wrapper = mountFunction({
       data() {
         return {
@@ -139,7 +146,7 @@ describe('Signup.vue', () => {
     expect(wrapper.vm.$refs.email_provider.errors[0]).toBe("有効なメールアドレスではありません");
     expect(wrapper.vm.$refs.password_provider.errors[0]).toBe("パスワードは8文字以上でなければなりません");
   });
-  it('バリデーション emailの形式OKの場合はエラーが表示されない', async () => {
+  it('2-c-4 email, passwordに正しい形式で値をセット', async () => {
     const wrapper = mountFunction({
       data() {
         return {
@@ -150,45 +157,36 @@ describe('Signup.vue', () => {
     
     wrapper.get('[data-test-id="inputEmail"]').setValue("example@example.com")
     wrapper.get('[data-test-id="inputPassword"]').setValue("exampleexample")
-    await flushPromises();
     expect(wrapper.get('[data-test-id="error-message-email"]').text()).toBe("");
     expect(wrapper.get('[data-test-id="error-message-password"]').text()).toBe("");
     expect(wrapper.vm.$refs.email_provider.errors[0]).toBeUndefined();
     expect(wrapper.vm.$refs.password_provider.errors[0]).toBeUndefined();
   });
+
+  it('2-e-1 登録', () => {
+    const _mockFunction = jest.fn(() => "dummy signup")
+    const wrapper = mountFunction({
+      data() {
+        return {
+          max_length_password: 8,
+        };
+      },
+    })
+    wrapper.vm.signup = _mockFunction;
+    wrapper.get('[data-test-id="inputEmail"]').setValue("example@example.com")
+    wrapper.get('[data-test-id="inputPassword"]').setValue("exampleexample")
+    // 2-e-1 登録ボタンクリックできる→関数コール
+    // MEMO: VeeValidateのobserver判定に16msかかるので時間差でテスト
+    setTimeout(() => {
+      expect(wrapper.findComponent('[data-test-id="execSignup"]').exists()).toBe(true);
+      wrapper.get('[data-test-id="execSignup"]').trigger("click");
+      expect(_mockFunction).toHaveBeenCalled()
+      expect(wrapper.vm.signup()).toBe("dummy signup")
+    }, 500)
+  });
 })
-/** 
- * テストケース
- * 1. 初期表示
- * ├── 「ユーザー登録」のタイトルが存在する
- * ├── 「登録する」のボタンが存在する
- * ├── 「外部サービスでアカウント作成」の文言が存在する
- * ├── Googleログイン用のボタンが存在する
- * ├── 「ログインがこちら」ボタンが存在する
- * ├──「ログインはこちら」ボタンのrouter-linkが"/auth/signin"
- * 2. 入力データテスト
- * ├── emailが空 = input要素も空
- * ├── passwordが空 = input要素も空
- * ├── emailに"example@example.com"を代入 → inputに"example@example.com"が入る
- * ├── passwordに"exampleexample"を代入 →passwordに"exampleexample"が入る
- * ├── input要素[email]に"example@example.com"を入力 → emailに"example@example.com"が格納される
- * ├── input要素[password]に"exampleexample"を入力 → passwordに"exampleexample"が格納される
- * 3. 認証エラーメッセージ
- * ├── data errorに「UT認証エラーメッセージ」がセットされる
- * ├── 「UT認証エラーメッセージ」のアラートが表示される
- * 4. バリデーションエラー
- * ├── email, passwordに空文字をセット→ エラーメッセージ「〇〇は必須です」と表示される
- * ├── email, passwordに空文字をセット→ veevalidateのerrors[0]に「〇〇は必須です」が格納される
- * ├── emailに"example"をセット→ エラーメッセージ「有効なメールアドレスではありません」と表示される
- *        veevalidateのerrors[0]に「有効なメールアドレスではありません」が格納される
- * ├── passwordに"example"をセット → エラーメッセージ「パスワードは8文字以上でなければなりません」と表示される
- *        veevalidateのerrors[0]に「パスワードは8文字以上でなければなりません」が格納される
- * ├── email, passwordに正しい形式で値をセット→ エラーメッセージは表示されない
- *        veevalidateのerrors[0]はundefinedになる
- * 5. 登録するボタン
- * MEMO:認証チェックはe2eテストで実施
- *      VeeValidateのValidationObserverの状態取得がうまくいかないので、登録ボタンの検証は一旦スキップ
- *      e2eでカバーできるならコンポーネントテストでは無理に実施しない
- *        
- * 
-*/
+
+// 5. 登録するボタン
+// MEMO:認証チェックはe2eテストで実施するので以下を検証
+// （１）バリデーションが通過した際にボタンがクリックできるか
+// （２）サインアップ用の関数がコールされるか
