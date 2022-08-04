@@ -1,25 +1,31 @@
-import TaskIndex from '@/components/pages/task/TaskIndex.vue'
+import TaskIndexTest from '@/components/pages/task/TaskIndexTest.vue'
 import Vuetify from 'vuetify'
-import { createLocalVue, shallowMount, RouterLinkStub, config } from '@vue/test-utils'
+import { createLocalVue, shallowMount, mount, RouterLinkStub, config } from '@vue/test-utils'
 import flushPromises from 'flush-promises';
 
 config.showDeprecationWarnings = false
 jest.useFakeTimers();
 
-describe('Signin.vue', () => {
+describe('TaskIndexTest.vue', () => {
     const localVue = createLocalVue()
     let vuetify
 
-    const mockFunction = jest.fn();
     const mountFunction = options => {
-        return shallowMount(TaskIndex, {
+        return shallowMount(TaskIndexTest, {
             localVue,
             vuetify,
             stubs: {
                 RouterLink: RouterLinkStub
             },
-            methods: {
-                setRoutetitle: mockFunction
+            ...options
+        })
+    }
+    const domMountFunction = options => {
+        return mount(TaskIndexTest, {
+            localVue,
+            vuetify,
+            stubs: {
+                RouterLink: RouterLinkStub
             },
             ...options
         })
@@ -28,13 +34,41 @@ describe('Signin.vue', () => {
     beforeEach(() => {
         vuetify = new Vuetify()
     })
-    it('1. 初期表示', () => {
+
+    it('1. メッセージ  error', async () => {
+        const wrapper = domMountFunction()
+        wrapper.setData({
+            messages: {
+                error: "hoge error"
+            },
+        })
+        await flushPromises()
+        expect(wrapper.get('.v-alert').text()).toBe("hoge error");
+    });
+    it('1. メッセージ success', async () => {
+        const wrapper = domMountFunction()
+        wrapper.setData({
+            messages: {
+                success: "hoge success"
+            },
+        })
+        await flushPromises()
+        expect(wrapper.get('.v-alert').text()).toBe("hoge success");
+    });
+    it('2-1. 初期表示', () => {
         const wrapper = mountFunction()
-        console.log(wrapper.html());
+        expect(wrapper.findComponent("tasklist-stub").exists()).toBe(true)
+        expect(wrapper.findComponent("taskdetail-stub").exists()).toBe(false)
     })
+
+    it('2-2. 詳細コンポーネント表示', async () => {
+        const wrapper = mountFunction()
+        wrapper.setData({
+            detail_mode: true,
+        })
+        await flushPromises()
+        expect(wrapper.findComponent("tasklist-stub").exists()).toBe(true)
+        expect(wrapper.findComponent("taskdetail-stub").exists()).toBe(true)
+    })
+
 })
-/** 
- * テストケース
- * 1. 初期表示
- * ├── 「パスワード再設定」のタイトルが存在する
-*/
