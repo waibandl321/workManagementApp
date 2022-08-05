@@ -106,7 +106,7 @@
                         to="/auth/signin"
                         data-test-id="pageMoveSignin"
                     >
-                        ログインはこちら
+                        サインインはこちら
                     </v-btn>
                 </div>
             </v-card>

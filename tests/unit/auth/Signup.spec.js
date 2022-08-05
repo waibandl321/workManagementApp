@@ -42,7 +42,7 @@ describe('Signup.vue', () => {
     expect(wrapper.get('[data-test-id="execSignup"]').text()).toBe("登録する");
     expect(wrapper.get('[data-test-id="otherSignup"]').text()).toBe("外部サービスでアカウント作成");
     expect((wrapper.get('[data-test-id="googleSignup"]').element.tagName)).toBe("BUTTON");
-    expect(wrapper.get('[data-test-id="pageMoveSignin"]').text()).toBe("ログインはこちら");
+    expect(wrapper.get('[data-test-id="pageMoveSignin"]').text()).toBe("サインインはこちら");
     // router-linkのパスも確認しておく
     expect(wrapper.findComponent(RouterLinkStub).props().to).toBe('/auth/signin')
   })

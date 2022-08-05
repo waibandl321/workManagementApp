@@ -5,7 +5,7 @@ describe('サインアップ画面', () => {
         cy.get('.v-card__title').should('contain', '外部サービスでアカウント作成')
         // MEMO: Google認証は複雑なので要素存在のみチェック
         cy.get('[data-test-id="googleSignup"]')
-        cy.get('[data-test-id="pageMoveSignin"]').should('contain', 'ログインはこちら')
+        cy.get('[data-test-id="pageMoveSignin"]').should('contain', 'サインインはこちら')
     })
 
     it('入力エラーチェック', () => {
