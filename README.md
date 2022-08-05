@@ -3,33 +3,33 @@
 ## 開発環境
 ### フロントエンド(FW、ライブラリ)
 vue@2.6.1  
-├─vue/cli@4.5.15  
-├─vuetify@2.6.3  
-├─vue-router@3.5.3  
-├─vuex@3.6.2  
-├─vue-head@2.2.0  
-├─vue-apexcharts@1.6.2：グラフ用  
-├─vue-pdf@4.3.0：PDFプレビュー用  
-├─vue-quill-editor@3.0,6：リッチテキストエディタ用  
-├─vuedeaggable@2.24.3：リストをドラッグで並べ替え用  
-├─vee-validate@3.4.5：バリデーション用  
+└ vue/cli@4.5.15  
+└ vuetify@2.6.3  
+└ vue-router@3.5.3  
+└ vuex@3.6.2  
+└ vue-head@2.2.0  
+└ vue-apexcharts@1.6.2：グラフ用  
+└ vue-pdf@4.3.0：PDFプレビュー用  
+└ vue-quill-editor@3.0,6：リッチテキストエディタ用  
+└ vuedeaggable@2.24.3：リストをドラッグで並べ替え用  
+└ vee-validate@3.4.5：バリデーション用  
 
 ### インフラ
 Firebase  
-├─Authentication：認証  
-├─Realtime Database：DB  
-├─Storage：ファイルなどのコンテンツ管理  
-├─Firebase Hosting：ホスティング  
+└ Authentication：認証  
+└ Realtime Database：DB  
+└ Storage：ファイルなどのコンテンツ管理  
+└ Firebase Hosting：ホスティング  
 
 ## テスト
 ### E2Eテスト
-├─Cypress  
+└ Cypress  
 画面単位でユーザーの操作を再現し、イベントに応じた望ましい結果が得られるかを検証  
 ソース：cypressディレクトリ参照  
 
 ### コンポーネントテスト
-├─Vue Test Utils  
-├─Jest  
+└ Vue Test Utils  
+└ Jest  
 コンポーネントのデータとDOMの関連性にフォーカスして検証  
 各関数一行一行の内部ロジック検証はコンポーネントテストでは行わない  
 ・コンポーネントの描画  
