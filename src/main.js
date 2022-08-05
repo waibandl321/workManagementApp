@@ -40,6 +40,11 @@ const firebaseApp = initializeApp(firebaseSettings.firebaseConfig);
 getDatabase(firebaseApp);
 
 Vue.config.productionTip = false
+// Error Handling
+Vue.config.errorHandler = (err, vm, info) => {
+  console.error(`errorHandler: ${info}`, err)
+  router.replace({ name: 'InternalServerError' })
+}
 
 new Vue({
   router,

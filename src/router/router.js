@@ -4,6 +4,7 @@ import VueHead from 'vue-head'
 import Route from './route/route.js'
 import Utils from './utils'
 import NotFountError from '@/components/common/NotFountError.vue' 
+import InternalServerError from '@/components/common/InternalServerError.vue' 
 
 Vue.use(Router)
 Vue.use(VueHead)
@@ -23,6 +24,11 @@ const router = new Router({
         name: 'NotFountError',
         component: NotFountError
     },
+    {
+        path: '/error',
+        name: 'InternalServerError',
+        component: InternalServerError
+    }
   ]
 })
 
