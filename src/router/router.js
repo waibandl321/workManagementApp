@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import VueHead from 'vue-head'
 import Route from './route/route.js'
 import Utils from './utils'
-
+import NotFountError from '@/components/common/NotFountError.vue' 
 
 Vue.use(Router)
 Vue.use(VueHead)
@@ -17,7 +17,13 @@ const router = new Router({
       return { x: 0, y: 0 }
     }
   },
-  routes: [...Route]
+  routes: [...Route, 
+    {
+        path: '*',
+        name: 'NotFountError',
+        component: NotFountError
+    },
+  ]
 })
 
 
