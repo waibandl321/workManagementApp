@@ -945,6 +945,14 @@ export default {
     bottom: 0;
     height: 100%!important;
 }
+.subtask-card__wrap {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+}
+.subtask-card__body {
+    width: 100%;
+}
 .relative {
     position: relative;
 }
