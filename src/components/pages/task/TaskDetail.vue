@@ -379,10 +379,14 @@
                     <tr v-for="(file, i) in task_files" :key="i">
                     <td>
                         <img
+                        v-if="file.contentType.includes('image')"
                         :src="file.download_path"
                         width="40"
                         data-test-id="taskAttachmentView"
                         >
+                        <v-icon v-else>
+                            mdi-file-outline
+                        </v-icon>
                     </td>
                     <td data-test-id="taskAttachmentName">{{ file.name }}</td>
                     <td data-test-id="taskAttachmentSize">{{ convertUnitSize(file.size) }}</td>
