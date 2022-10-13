@@ -53,7 +53,7 @@
                             hover
                         >
                             <v-card-text>
-                                {{ toDatetime(item.task_deadline, "yyyy/mm/dd") }} : {{ item.task_name }}
+                                {{ item.task_name }}
                             </v-card-text>
                         </v-card>
                     </div>
@@ -80,7 +80,7 @@
                             @click="clickTaskList(item)"
                         >
                             <v-card-text>
-                                {{ toDatetime(item.task_deadline, "yyyy/mm/dd") }} : {{ item.task_name }}
+                                {{ item.task_name }}
                             </v-card-text>
                         </v-card>
                     </div>
@@ -107,7 +107,7 @@
                             @click="clickTaskList(item)"
                         >
                             <v-card-text>
-                                {{ item.task_id }} : {{ item.task_name }}
+                                {{ item.task_name }}
                             </v-card-text>
                         </v-card>
                     </div>
