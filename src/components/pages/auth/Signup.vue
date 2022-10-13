@@ -137,7 +137,7 @@ export default {
                 const uid = await this.firebaseSignup(this.email, this.password)
                 if(uid) {
                     this.storeSetFirebaseUid(uid);
-                    this.pageMove('/account')
+                    this.pageMove('/account/register')
                 } else {
                     throw new Error()
                 }
