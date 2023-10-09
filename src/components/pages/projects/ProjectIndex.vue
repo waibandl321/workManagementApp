@@ -171,7 +171,7 @@ export default {
     filter_items: [],
     filter_text: "",
     filter_status: null,
-    // ソート
+    // ソート データ
     sort_by_deadline: false,
     sort_by_created: true,
     // 詳細
