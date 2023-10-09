@@ -17,8 +17,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
-    "build": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",
+    "serve": "vue-cli-service --openssl-legacy-provider serve",
+    "build": "vue-cli-service --openssl-legacy-provider build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "test": "cypress run"
