@@ -1,17 +1,17 @@
+import { orderBy } from "lodash";
+
 export default {
   methods: {
     // サブタスク一覧取得
     async getSubtaskList(task_viewer) {
       if (task_viewer.task_id) {
-        let result = await this.firebaseGetSubtaskList();
-        if (!result) return [];
-        result = Object.keys(result)
-          .map((key) => {
-            return result[key];
-          })
-          .filter((v) => v.task_id === task_viewer.task_id);
-
-        return result;
+        let results = await this.firebaseGetSubtaskList();
+        if (!results) return [];
+        return orderBy(Object.keys(results)
+        .map((key) => {
+          return results[key];
+        })
+        .filter((v) => v.task_id === task_viewer.task_id), 'created', 'desc');
       }
     },
     // 戻り値：タスク期日 - タスク作成日
